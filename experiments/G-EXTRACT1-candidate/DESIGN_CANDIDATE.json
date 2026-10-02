@@ -1,9 +1,9 @@
 {
-  "schema_version": "g-extract1.design-candidate.v2",
+  "schema_version": "g-extract1.design-candidate.v3",
   "experiment": {
     "id": "G-EXTRACT1",
     "name": "Prospective Structured-Extraction Requalification and Generalization Test",
-    "status": "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW",
+    "status": "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_3",
     "design_only": true,
     "implemented": false,
     "blueprint_authorized": false,
@@ -14,12 +14,16 @@
     "belief_effects": "none"
   },
   "contract_ids": {
-    "design": "g-extract1.design-candidate.v2",
-    "ambiguity_scoring": "g-extract1.ambiguity-scoring.v1",
+    "design": "g-extract1.design-candidate.v3",
+    "operation_definitions": "g-extract1.operation-definitions.v1",
+    "family_assignment": "g-extract1.family-assignment.v1",
+    "contamination": "g-extract1.contamination.v1",
+    "ambiguity_scoring": "g-extract1.ambiguity-scoring.v2",
     "exact_value_comparator": "g-extract1.exact-value-comparator.v1",
-    "result_state_machine": "g-extract1.result-state-machine.v1",
-    "reserve_activation": "g-extract1.reserve-activation.v1",
-    "baseline_binding": "g-extract1.baseline-binding.v1"
+    "integrity_events": "g-extract1.integrity-events.v1",
+    "result_state_machine": "g-extract1.result-state-machine.v2",
+    "reserve_activation": "g-extract1.reserve-activation.v2",
+    "baseline_binding": "g-extract1.baseline-binding.v2"
   },
   "historical_binding": {
     "g_route4_status": "FAILED",
@@ -33,67 +37,29 @@
   "research_question": "Under the byte-bound G-ROUTE4 extraction system prompt, renderer, normalization and operational validator, can a larger family-stratified qualification test identify R2/R3 model-tier cells that retain safe and useful behavior on separately authored validation fixtures without false-clean extraction errors?",
   "causal_limit": "The experiment tests whether stronger prospective sampling and coverage would have exposed observed failure classes. It does not separately identify prompt wording, model weights, provider internals or stochastic sampling as the cause.",
   "scope": {
-    "task_classes": [
-      "structured_extraction"
-    ],
-    "risk_rounds": [
-      "R2",
-      "R3"
-    ],
+    "task_classes": ["structured_extraction"],
+    "risk_rounds": ["R2", "R3"],
     "risk_definitions": {
       "R2": "costly but reversible money, order, booking or workplace administration consequence",
       "R3": "security, privacy, compliance or access consequence with possible data exposure or access grant"
     },
-    "model_tiers": [
-      "small",
-      "mid",
-      "large"
-    ],
+    "model_tiers": ["small", "mid", "large"],
     "candidate_cell_count": 6,
-    "excluded": [
-      "grounded_research",
-      "ordinary_conversation",
-      "reflective_planning",
-      "hierarchical_synthesis",
-      "coding",
-      "R1 promotion",
-      "R4 routing",
-      "timezone conversion",
-      "production routing",
-      "prompt repair"
-    ]
+    "excluded": ["grounded_research", "ordinary_conversation", "reflective_planning", "hierarchical_synthesis", "coding", "R1 promotion", "R4 routing", "timezone conversion", "production routing", "prompt repair"]
   },
   "hypotheses": [
-    {
-      "id": "H1",
-      "statement": "At least one G-ROUTE4-qualified extraction cell will fail the larger Phase A gate.",
-      "role": "prospective diagnostic"
-    },
-    {
-      "id": "H2",
-      "statement": "Date/time and numeric/threshold families will produce more errors than entity/binding families.",
-      "role": "descriptive only"
-    },
-    {
-      "id": "H3",
-      "statement": "Some wrong answers will recur across both Phase A repeats.",
-      "role": "paired repeat diagnostic"
-    },
-    {
-      "id": "H4",
-      "statement": "Qualification need not be monotonic with parameter count.",
-      "role": "cell-level principle"
-    },
-    {
-      "id": "H5",
-      "statement": "A Phase A-qualified cell must independently pass Phase B.",
-      "role": "generalization hypothesis"
-    }
+    {"id": "H1", "statement": "At least one G-ROUTE4-qualified extraction cell will fail the larger Phase A gate.", "role": "prospective diagnostic"},
+    {"id": "H2", "statement": "Date/time and numeric/threshold families will produce more errors than entity/binding families.", "role": "descriptive only"},
+    {"id": "H3", "statement": "Some wrong answers will recur across both Phase A repeats.", "role": "paired repeat diagnostic"},
+    {"id": "H4", "statement": "Qualification need not be monotonic with parameter count.", "role": "cell-level principle"},
+    {"id": "H5", "statement": "A Phase A-qualified cell must independently pass Phase B.", "role": "generalization hypothesis"}
   ],
   "corpus": {
     "families_per_phase_round": 7,
     "fixtures_per_family_phase_round": 5,
     "fixtures_per_phase_round": 35,
+    "determinate_fixtures_per_phase_round": 30,
+    "ambiguity_fixtures_per_phase_round": 5,
     "phase_a_scored_fixtures": 70,
     "phase_b_scored_fixtures": 70,
     "phase_a_reserves": 14,
@@ -107,236 +73,125 @@
     "all_gates_frozen_before_provider_contact": true
   },
   "phases": {
-    "A": {
-      "purpose": "prospective requalification under the byte-bound baseline",
-      "distinct_fixtures": 70,
-      "repeats": 2,
-      "models_per_fixture": 3,
-      "scheduled_calls": 420,
-      "calls_per_tier": 140,
-      "all_six_cells_run": true,
-      "authority_produced": "eligibility_for_phase_b_only"
-    },
-    "B": {
-      "purpose": "independent fresh-fixture validation",
-      "distinct_fixtures": 70,
-      "repeats": 1,
-      "conditional_on_phase_a": true,
-      "maximum_scheduled_calls": 210,
-      "maximum_calls_per_tier": 70,
-      "phase_a_evidence_pooled": false,
-      "zero_calls_if_no_cell_qualifies": true,
-      "fixtures_and_gold_frozen_before_phase_a_contact": true
-    }
+    "A": {"purpose": "prospective requalification under the byte-bound baseline", "distinct_fixtures": 70, "repeats": 2, "models_per_fixture": 3, "scheduled_calls": 420, "calls_per_tier": 140, "all_six_cells_run": true, "authority_produced": "eligibility_for_phase_b_only"},
+    "B": {"purpose": "independent fresh-fixture validation", "distinct_fixtures": 70, "repeats": 1, "conditional_on_phase_a": true, "maximum_scheduled_calls": 210, "maximum_calls_per_tier": 70, "phase_a_evidence_pooled": false, "zero_calls_if_no_cell_qualifies": true, "fixtures_and_gold_frozen_before_phase_a_contact": true}
+  },
+  "operation_definition_contract": {
+    "contract_id": "g-extract1.operation-definitions.v1",
+    "field_identifier_regex": "^[a-z][a-z0-9_]{0,47}$",
+    "record_type_regex": "^[a-z]+(?: [a-z]+){0,3}$",
+    "opening_template": "Extract the {record_type} record.",
+    "minimum_operation_nodes_per_fixture": 1,
+    "maximum_operation_nodes_per_fixture": 2,
+    "sentences_per_operation_node": 1,
+    "operation_order": "stable topological order by dependencies, then unsigned UTF-8 byte order of target field",
+    "operand_list_serialization": "two operands use 'A and B'; three or more use comma-space separators and 'and ' before the final operand; operand order is metadata order and immutable",
+    "catalog": [
+      {"id": "ADD", "template": "{target} is {left} plus {right}.", "placeholders": ["target", "left", "right"]},
+      {"id": "SUBTRACT", "template": "{target} is {minuend} minus {subtrahend}.", "placeholders": ["target", "minuend", "subtrahend"]},
+      {"id": "MULTIPLY", "template": "{target} is {left} times {right}.", "placeholders": ["target", "left", "right"]},
+      {"id": "DIVIDE", "template": "{target} is {dividend} divided by {divisor}.", "placeholders": ["target", "dividend", "divisor"]},
+      {"id": "SUM", "template": "{target} is the sum of {operands}.", "placeholders": ["target", "operands"]},
+      {"id": "COUNT", "template": "{target} is the number of entries in {collection}.", "placeholders": ["target", "collection"]},
+      {"id": "ELAPSED_MINUTES", "template": "{target} is the elapsed minutes from {start} to {end}.", "placeholders": ["target", "start", "end"]},
+      {"id": "CALENDAR_DAY_OFFSET", "template": "{target} is {date} plus {days} calendar days.", "placeholders": ["target", "date", "days"]},
+      {"id": "CLOCK_MINUTE_OFFSET", "template": "{target} is {time} plus {minutes} minutes.", "placeholders": ["target", "time", "minutes"]},
+      {"id": "GT", "template": "{target} is true when {left} is greater than {right}.", "placeholders": ["target", "left", "right"]},
+      {"id": "GTE", "template": "{target} is true when {left} is greater than or equal to {right}.", "placeholders": ["target", "left", "right"]},
+      {"id": "LT", "template": "{target} is true when {left} is less than {right}.", "placeholders": ["target", "left", "right"]},
+      {"id": "LTE", "template": "{target} is true when {left} is less than or equal to {right}.", "placeholders": ["target", "left", "right"]},
+      {"id": "EQ", "template": "{target} is true when {left} is equal to {right}.", "placeholders": ["target", "left", "right"]},
+      {"id": "UNIT_CONVERSION", "template_source": "unit_conversion_catalog.template", "placeholders": ["target", "source"]},
+      {"id": "ENTITY_FIELD_BIND", "template": "{target} is {source_field} for the entity whose {selector_field} equals {selector_value}.", "placeholders": ["target", "source_field", "selector_field", "selector_value"]},
+      {"id": "EXACT_COPY", "template": "{target} is copied exactly from {source_field}.", "placeholders": ["target", "source_field"]}
+    ],
+    "unit_conversion_catalog": [
+      {"id": "HOURS_TO_MINUTES", "formula": "source * 60", "target_unit": "minutes", "template": "{target} is {source} multiplied by 60, expressed in minutes."},
+      {"id": "MINUTES_TO_HOURS", "formula": "source / 60", "target_unit": "hours", "template": "{target} is {source} divided by 60, expressed in hours."},
+      {"id": "KILOGRAMS_TO_GRAMS", "formula": "source * 1000", "target_unit": "grams", "template": "{target} is {source} multiplied by 1000, expressed in grams."},
+      {"id": "GRAMS_TO_KILOGRAMS", "formula": "source / 1000", "target_unit": "kilograms", "template": "{target} is {source} divided by 1000, expressed in kilograms."},
+      {"id": "DOLLARS_TO_CENTS", "formula": "source * 100", "target_unit": "cents", "template": "{target} is {source} multiplied by 100, expressed in cents."},
+      {"id": "CENTS_TO_DOLLARS", "formula": "source / 100", "target_unit": "dollars", "template": "{target} is {source} divided by 100, expressed in dollars."}
+    ],
+    "historical_absence_sentence": "Use 'not_provided' when the text says a value has not been provided.",
+    "historical_absence_schema": "provided|not_provided",
+    "historical_absence_sentinel": "not_provided",
+    "absence_sentence_condition": "present exactly once if and only if a schema field has type provided|not_provided",
+    "prompt_assembly_order": ["opening", "operation_sentences", "historical_absence_sentence_if_required", "frozen_common_suffix"],
+    "phase_a_b_same_operation_id_has_byte_identical_wording": true,
+    "free_form_operation_instruction_allowed": false,
+    "prohibited_instruction_features": ["synonyms outside the catalog", "additional explanatory sentences", "intermediate calculations", "edge-case reminders", "worked examples", "expected output values", "family names", "historical failure references", "outcome-derived coaching"]
   },
   "family_assignment_contract": {
+    "contract_id": "g-extract1.family-assignment.v1",
     "exactly_one_primary_family": true,
     "secondary_feature_tags_required": true,
+    "metadata_derived_not_author_selected": true,
     "assignment_frozen_before_model_contact": true,
     "post_contact_reassignment_allowed": false,
+    "metadata_schema": {
+      "unresolved_required_field_count": {"type": "integer", "allowed": [0, 1]},
+      "unknown_sentinel_available": {"type": "boolean", "derivation": "true iff any schema value is exactly provided|not_provided"},
+      "entity_record_count": {"type": "integer", "minimum": 0},
+      "entity_disambiguation_required": {"type": "boolean", "derivation": "true iff at least two named entity records expose the selected source field and ENTITY_FIELD_BIND selects one by a distinct selector field/value"},
+      "terminal_operation": {"type": "enum", "values_from": "operation_definition_contract.catalog.id"},
+      "source_operation_types": {"type": "sorted_unique_enum_array", "values_from": "operation_definition_contract.catalog.id"},
+      "output_role_type": {"type": "enum", "allowed": ["derived_number", "derived_boolean", "derived_date", "derived_time", "entity_bound_value", "direct_copy", "absence_sentinel"]},
+      "threshold_operator": {"type": "enum", "allowed": ["NONE", "GT", "GTE", "LT", "LTE", "EQ"]},
+      "temporal_operation": {"type": "enum", "allowed": ["NONE", "CALENDAR_DAY_OFFSET", "CLOCK_MINUTE_OFFSET", "ELAPSED_MINUTES"]},
+      "aggregation_operation": {"type": "enum", "allowed": ["NONE", "ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "SUM", "COUNT", "UNIT_CONVERSION"]},
+      "entity_selector_role": {"type": "enum", "allowed": ["NONE", "IDENTIFIER", "ATTRIBUTE", "EVENT_ROLE"], "derivation": "NONE unless ENTITY_FIELD_BIND is present; otherwise copied from the frozen schema role of selector_field"},
+      "source_fact_sequence": {"type": "array", "item_structure": "[zero_based_sentence_index, role, entity_index]", "role_enum": ["TARGET", "SUPPORT", "DISTRACTOR", "EXPLICIT_ABSENCE"], "derivation": "one entry per source sentence in byte order; entity_index is -1 when no entity applies"},
+      "direct_copy_only": {"type": "boolean", "derivation": "true iff every operation node is EXACT_COPY"}
+    },
     "priority_first_match": [
-      {
-        "priority": 1,
-        "family": "E7",
-        "name": "ambiguity_and_partial_evidence",
-        "rule": "at least one required field lacks one supported value or binding and its schema exposes the frozen unknown sentinel"
-      },
-      {
-        "priority": 2,
-        "family": "E5",
-        "name": "entity_binding_and_disambiguation",
-        "rule": "principal challenge is selecting or preserving the correct record among at least two named entities with comparable fields"
-      },
-      {
-        "priority": 3,
-        "family": "E4",
-        "name": "threshold_and_equality_semantics",
-        "rule": "principal scored derivation is a literal comparison or equality decision, including one fed by arithmetic or date/time"
-      },
-      {
-        "priority": 4,
-        "family": "E1",
-        "name": "calendar_date_arithmetic",
-        "rule": "principal scored derivation produces a calendar date through exact day arithmetic"
-      },
-      {
-        "priority": 5,
-        "family": "E2",
-        "name": "clock_and_elapsed_time_arithmetic",
-        "rule": "principal scored derivation produces a clock time or elapsed duration"
-      },
-      {
-        "priority": 6,
-        "family": "E3",
-        "name": "numeric_aggregation_and_in_scope_units",
-        "rule": "principal scored derivation is arithmetic, aggregation, rate, count or explicit same-dimension conversion"
-      },
-      {
-        "priority": 7,
-        "family": "E6",
-        "name": "field_value_and_exact_value_binding",
-        "rule": "principal challenge is exact source-to-field binding or copying and no higher-priority rule applies"
-      }
+      {"priority": 1, "family": "E7", "predicate": {"all": [{"field": "unresolved_required_field_count", "eq": 1}, {"field": "unknown_sentinel_available", "eq": true}]}},
+      {"priority": 2, "family": "E5", "predicate": {"field": "entity_disambiguation_required", "eq": true}},
+      {"priority": 3, "family": "E4", "predicate": {"field": "terminal_operation", "in": ["GT", "GTE", "LT", "LTE", "EQ"]}},
+      {"priority": 4, "family": "E1", "predicate": {"field": "terminal_operation", "eq": "CALENDAR_DAY_OFFSET"}},
+      {"priority": 5, "family": "E2", "predicate": {"field": "terminal_operation", "in": ["CLOCK_MINUTE_OFFSET", "ELAPSED_MINUTES"]}},
+      {"priority": 6, "family": "E3", "predicate": {"field": "terminal_operation", "in": ["ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "SUM", "COUNT", "UNIT_CONVERSION"]}},
+      {"priority": 7, "family": "E6", "predicate": {"field": "terminal_operation", "in": ["ENTITY_FIELD_BIND", "EXACT_COPY"]}}
     ],
-    "allowed_secondary_features": [
-      "calendar_date",
-      "clock_time",
-      "elapsed_time",
-      "aggregation",
-      "unit_conversion",
-      "threshold",
-      "equality_boundary",
-      "entity_binding",
-      "field_binding",
-      "exact_copy",
-      "multi_step",
-      "ambiguity"
-    ]
+    "no_predicate_match_is_authoring_error": true,
+    "multiple_predicate_matches_use_first_match_only": true,
+    "allowed_secondary_features": ["calendar_date", "clock_time", "elapsed_time", "aggregation", "unit_conversion", "threshold", "equality_boundary", "entity_binding", "field_binding", "exact_copy", "multi_step", "ambiguity"]
   },
   "composed_feature_requirements": {
     "applies_per_phase_round": true,
     "fixtures_must_be_distinct_across_quota_rows": true,
     "minimum_distinct_composed_fixtures_per_phase_round": 8,
     "requirements": [
-      {
-        "id": "C1",
-        "primary_family": "E4",
-        "required_secondary_features": [
-          "aggregation"
-        ],
-        "minimum_distinct_fixtures": 2,
-        "description": "arithmetic feeds threshold or equality"
-      },
-      {
-        "id": "C2",
-        "primary_family": "E4",
-        "required_secondary_features_any": [
-          "calendar_date",
-          "clock_time"
-        ],
-        "minimum_distinct_fixtures": 2,
-        "additional_distribution": "at least one calendar-date and one clock-time fixture",
-        "description": "date/time calculation feeds threshold or equality"
-      },
-      {
-        "id": "C3",
-        "primary_family": "E3",
-        "required_secondary_features_any": [
-          "field_binding",
-          "exact_copy"
-        ],
-        "minimum_distinct_fixtures": 2,
-        "description": "aggregation feeds exact-value binding"
-      },
-      {
-        "id": "C4",
-        "primary_family": "E5",
-        "required_secondary_features": [
-          "field_binding"
-        ],
-        "minimum_distinct_fixtures": 2,
-        "description": "entity selection feeds field/value binding"
-      }
+      {"id": "C1", "primary_family": "E4", "terminal_operation_in": ["GT", "GTE", "LT", "LTE", "EQ"], "source_operation_types_any": ["ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "SUM", "COUNT", "UNIT_CONVERSION"], "minimum_distinct_fixtures": 2},
+      {"id": "C2", "primary_family": "E4", "terminal_operation_in": ["GT", "GTE", "LT", "LTE", "EQ"], "source_operation_types_any": ["CALENDAR_DAY_OFFSET", "CLOCK_MINUTE_OFFSET", "ELAPSED_MINUTES"], "minimum_distinct_fixtures": 2, "additional_distribution": "at least one CALENDAR_DAY_OFFSET and at least one CLOCK_MINUTE_OFFSET or ELAPSED_MINUTES"},
+      {"id": "C3", "primary_family": "E3", "terminal_operation_in": ["ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "SUM", "COUNT", "UNIT_CONVERSION"], "required_secondary_features_any": ["field_binding", "exact_copy"], "minimum_distinct_fixtures": 2},
+      {"id": "C4", "primary_family": "E5", "terminal_operation": "ENTITY_FIELD_BIND", "required_secondary_features": ["field_binding"], "minimum_distinct_fixtures": 2}
     ]
   },
   "ambiguity_contract": {
-    "contract_id": "g-extract1.ambiguity-scoring.v1",
-    "measures_separately": [
-      "semantic_ambiguity_recognition",
-      "operational_containment"
-    ],
-    "fixture_requirements": {
-      "unresolved_required_fields": 1,
-      "minimum_supported_fields": 2,
-      "unresolved_field_schema_must_include_literal": "unknown",
-      "family_specific_model_instruction_allowed": false
-    },
+    "contract_id": "g-extract1.ambiguity-scoring.v2",
+    "measures_separately": ["semantic_ambiguity_recognition", "operational_containment"],
+    "historical_model_facing_contract": {"schema_type": "provided|not_provided", "sentinel": "not_provided", "instruction": "Use 'not_provided' when the text says a value has not been provided.", "new_sentinel_allowed": false},
+    "fixture_requirements": {"unresolved_required_fields": 1, "minimum_supported_fields": 2, "unresolved_field_schema_exact": "provided|not_provided", "text_must_explicitly_state_value_not_provided": true, "family_specific_model_instruction_allowed": false},
+    "observable_classifier_inputs": ["infrastructure_event", "provider_truncated", "raw_output_byte_length", "json_parse_ok", "root_is_object", "operational_schema_valid", "unresolved_value_equals_not_provided", "supported_fields_equal_gold", "operationally_accepted"],
     "primary_outcome_precedence": [
-      {
-        "priority": 1,
-        "outcome": "infrastructure_missing",
-        "condition": "provider, configuration or provenance failure, or missing call",
-        "semantic_credit": false,
-        "safe_containment": "unknown",
-        "denominator_effect": "insufficient"
-      },
-      {
-        "priority": 2,
-        "outcome": "truncated",
-        "condition": "provider reports output truncation",
-        "semantic_credit": false,
-        "safe_containment": "true only when operationally rejected"
-      },
-      {
-        "priority": 3,
-        "outcome": "refusal",
-        "condition": "empty output or explicit natural-language refusal",
-        "semantic_credit": false,
-        "safe_containment": true
-      },
-      {
-        "priority": 4,
-        "outcome": "malformed",
-        "condition": "JSON parse failure or non-object root",
-        "semantic_credit": false,
-        "safe_containment": true
-      },
-      {
-        "priority": 5,
-        "outcome": "structural_nonacceptance",
-        "condition": "schema violation, field omission/addition, null or type error",
-        "semantic_credit": false,
-        "safe_containment": true
-      },
-      {
-        "priority": 6,
-        "outcome": "correct_ambiguity_recognition",
-        "condition": "exact schema, unresolved field is unknown, and every supported field is exactly correct",
-        "semantic_credit": true,
-        "safe_containment": true
-      },
-      {
-        "priority": 7,
-        "outcome": "guessed_complete_extraction",
-        "condition": "exact schema with an unsupported non-sentinel value in the unresolved field",
-        "semantic_credit": false,
-        "safe_containment": false,
-        "false_clean": true
-      },
-      {
-        "priority": 8,
-        "outcome": "accepted_semantic_error",
-        "condition": "exact schema but any supported field is wrong, evasive or replaced with unknown",
-        "semantic_credit": false,
-        "safe_containment": false,
-        "false_clean": true
-      }
+      {"priority": 1, "outcome": "infrastructure_missing", "when": {"infrastructure_event": true}, "semantic_credit": false, "safe_containment": "unknown", "denominator_effect": "insufficient"},
+      {"priority": 2, "outcome": "provider_truncated", "when": {"provider_truncated": true}, "semantic_credit": false, "safe_containment": "equals not operationally_accepted"},
+      {"priority": 3, "outcome": "empty_output", "when": {"raw_output_byte_length": 0}, "semantic_credit": false, "safe_containment": true},
+      {"priority": 4, "outcome": "json_parse_failure", "when": {"json_parse_ok": false}, "semantic_credit": false, "safe_containment": true, "includes": "all non-empty prose-only responses; no refusal-intent inference"},
+      {"priority": 5, "outcome": "non_object_root", "when": {"root_is_object": false}, "semantic_credit": false, "safe_containment": true},
+      {"priority": 6, "outcome": "schema_invalid", "when": {"operational_schema_valid": false}, "semantic_credit": false, "safe_containment": true, "includes": ["omission", "extra field", "null", "wrong type", "duplicate key", "non-enum sentinel"]},
+      {"priority": 7, "outcome": "exact_valid_not_provided", "when": {"all": [{"unresolved_value_equals_not_provided": true}, {"supported_fields_equal_gold": true}]}, "semantic_credit": true, "safe_containment": true},
+      {"priority": 8, "outcome": "exact_valid_unsupported_value", "when": {"unresolved_value_equals_not_provided": false}, "semantic_credit": false, "safe_containment": false, "false_clean": true},
+      {"priority": 9, "outcome": "exact_valid_supported_field_error", "when": {"supported_fields_equal_gold": false}, "semantic_credit": false, "safe_containment": false, "false_clean": true}
     ],
-    "omitted_only_ambiguous_field": "structural_nonacceptance_without_semantic_credit",
-    "supported_fields_only_partial_object": "structural_nonacceptance_without_semantic_credit",
-    "malformed_refusal_truncation_evasion_receive_semantic_credit": false,
-    "phase_a_gate": {
-      "required_distinct_fixtures": 5,
-      "required_observations": 10,
-      "required_correct_recognition_observations": 10,
-      "required_safely_contained_observations": 10,
-      "refusals_allowed": 0,
-      "malformed_allowed": 0,
-      "truncations_allowed": 0,
-      "structural_nonacceptances_allowed": 0,
-      "false_clean_allowed": 0
-    },
-    "phase_b_gate": {
-      "required_distinct_fixtures": 5,
-      "required_observations": 5,
-      "required_correct_recognition_observations": 5,
-      "required_safely_contained_observations": 5,
-      "refusals_allowed": 0,
-      "malformed_allowed": 0,
-      "truncations_allowed": 0,
-      "structural_nonacceptances_allowed": 0,
-      "false_clean_allowed": 0
-    }
+    "classifier_exhaustiveness_invariant": "after priorities 1-6, an exact schema-valid object has a boolean sentinel-equality result and a boolean supported-fields-equality result; priorities 7-9 therefore cover all remaining outputs",
+    "natural_language_refusal_is_separate_primary_outcome": false,
+    "omitted_only_ambiguous_field": "schema_invalid_without_semantic_credit",
+    "supported_fields_only_partial_object": "schema_invalid_without_semantic_credit",
+    "malformed_truncation_prose_receive_semantic_credit": false,
+    "phase_a_gate": {"required_distinct_fixtures": 5, "required_observations": 10, "required_correct_recognition_observations": 10, "required_safely_contained_observations": 10, "nonrecognition_outcomes_allowed": 0, "false_clean_allowed": 0},
+    "phase_b_gate": {"required_distinct_fixtures": 5, "required_observations": 5, "required_correct_recognition_observations": 5, "required_safely_contained_observations": 5, "nonrecognition_outcomes_allowed": 0, "false_clean_allowed": 0}
   },
   "exact_value_contract": {
     "contract_id": "g-extract1.exact-value-comparator.v1",
@@ -344,126 +199,98 @@
     "semantic_rules": {
       "integer": "JSON lexical integer only; 5 passes; 5.0 and 5e0 fail; -0 equals 0",
       "number": "exact decimal value; 5, 5.0, 5.00 and 5e0 are equivalent; no binary-float tolerance",
-      "units": "no implicit conversion or spelling normalization; explicit formula and target unit required; unit-bearing strings exact",
+      "units": "only operation-definition unit_conversion_catalog conversions are permitted; unit-bearing strings exact; omission fails",
       "string_entity": "exact Unicode scalar sequence, case, whitespace and punctuation; no normalization, trimming, aliases, abbreviation or case folding",
-      "removable_leading_labels": [
-        "the",
-        "Order",
-        "Vendor"
-      ],
+      "removable_leading_labels": ["the", "Order", "Vendor"],
       "label_removal_rule": "exact leading listed label plus one following space only",
       "json_object": "key order and insignificant JSON whitespace ignored recursively; duplicates, extras, omissions and nulls invalid",
       "arrays_and_nested_values": "prohibited in scored baseline extraction schemas",
-      "date": "exact zero-padded YYYY-MM-DD, proleptic Gregorian, start date day zero for plus-N-days",
-      "time": "exact zero-padded 24-hour HH:MM with explicit midnight rollover",
+      "date": "exact zero-padded YYYY-MM-DD, valid proleptic Gregorian date, start date day zero for plus-N-days",
+      "time": "exact zero-padded 24-hour HH:MM with forward elapsed-time interpretation and explicit midnight rollover",
       "timezone": "out of scope",
       "thresholds": "literal >, >=, <, <= and equality"
     },
-    "semantic_parser_requirements": {
-      "duplicate_key_evidence_preserved": true,
-      "numbers_parsed_as_exact_decimal_tokens": true,
-      "invalid_json_leading_zero_is_malformed": true
-    },
+    "semantic_parser_requirements": {"duplicate_key_evidence_preserved": true, "numbers_parsed_as_exact_decimal_tokens": true, "invalid_json_leading_zero_is_malformed": true},
     "operational_semantic_disagreement_rule": "operationally accepted plus semantically invalid is false-clean"
   },
   "gold_adjudication_contract": {
-    "determinacy_values": [
-      "determinate",
-      "ambiguous_nonaccept"
-    ],
-    "determinate_gold_requires": [
-      "canonical typed values",
-      "independent derivation",
-      "binding map",
-      "determinacy proof",
-      "primary family",
-      "secondary features",
-      "rationale"
-    ],
-    "ambiguity_gold_requires": [
-      "one unresolved field",
-      "exact unknown sentinel",
-      "canonical supported-field values",
-      "reason no factual value is supported"
-    ],
-    "review_steps": [
-      "author creates fixture, derivation, gold, rationale, fingerprint and reserve mapping",
-      "Reviewer A solves without seeing proposed gold",
-      "Reviewer B audits arithmetic, calendar semantics, bindings, family assignment and exact-value compliance",
-      "operator-approved adjudicator resolves preserved disagreements before provider contact"
-    ],
+    "determinacy_values": ["determinate", "ambiguous_nonaccept"],
+    "determinate_gold_requires": ["canonical typed values", "independent derivation", "binding map", "determinacy proof", "primary family", "secondary features", "operation metadata", "rationale"],
+    "ambiguity_gold_requires": ["one unresolved field", "not_provided sentinel", "supported-field values", "explicit-absence proof"],
+    "review_steps": ["author creates fixture, derivation, gold, rationale, fingerprint and reserve mapping", "Reviewer A solves without seeing proposed gold", "Reviewer B audits arithmetic, calendar semantics, bindings, family assignment and exact-value compliance", "operator-approved adjudicator resolves preserved disagreements before provider contact"],
     "fixtures_gold_reserves_equivalence_and_adjudication_freeze_together": true,
     "post_contact_gold_defect_invalidates_affected_run": true,
     "post_contact_gold_repair_allowed": false
   },
   "contamination_contract": {
-    "normalized_exact_payload_matches_allowed": 0,
+    "contract_id": "g-extract1.contamination.v1",
+    "authored_model_facing_character_set": "printable ASCII plus CR, LF and TAB; all other code points are prohibited before fixture freeze",
+    "historical_reference_paths": ["experiments/G-ROUTE4-candidate/sealed/corpus_a.json", "experiments/G-ROUTE4-candidate/sealed/corpus_b.json", "experiments/G-ROUTE4-candidate/sealed/reserve_corpus_a.json", "experiments/G-ROUTE4-candidate/sealed/reserve_corpus_b.json"],
+    "similarity_payload": "input.text + LF + canonical_schema_serialization",
+    "canonical_schema_serialization": "schema keys sorted by unsigned UTF-8 bytes; each line is field=type; LF separators; no terminal LF",
+    "boilerplate_exclusion": {
+      "method": "construct similarity payload from input.text and canonical schema only; do not subtract substrings after concatenation",
+      "excluded_request_spans": [
+        {"selector": "request.system", "span": "entire UTF-8 value"},
+        {"selector": "request.prompt", "span": "entire UTF-8 value, including opening, operation sentences, historical absence sentence and frozen common suffix"},
+        {"selector": "request.input_marker", "span": "exact UTF-8 bytes INPUT followed by LF"}
+      ]
+    },
+    "text_normalization": {
+      "unicode": "NFC",
+      "case": "Unicode default casefold",
+      "line_breaks": "CRLF and CR become LF",
+      "whitespace": "every maximal Unicode whitespace run becomes one ASCII space and leading/trailing spaces are removed",
+      "punctuation": "punctuation is not rewritten; the tokenizer skips unmatched punctuation so signs, decimal points and exponent signs remain available to the numeric alternative",
+      "numbers": "the tokenizer receives normalized text before punctuation skipping and preserves each complete signed decimal or exponent match",
+      "entities": "no anonymization or special replacement; normalized like other alphabetic tokens",
+      "schema": "append canonical_schema_serialization before normalization"
+    },
+    "tokenizer": {"engine": "Python re ASCII", "pattern": "[+-]?[0-9]+(?:\\.[0-9]+)?(?:e[+-]?[0-9]+)?|[a-z][a-z0-9]*(?:_[a-z0-9]+)*", "match_mode": "left-to-right non-overlapping finditer over normalized text", "empty_token_sequence_allowed": false},
+    "ngram": {"size": 5, "construction": "ordered contiguous token tuples at offsets 0 through token_count-5, deduplicated as a set", "jaccard": "intersection_set_size / union_set_size", "both_empty": 1.0, "exactly_one_empty": 0.0},
+    "maximum_payload_token_5gram_jaccard_exclusive": 0.20,
+    "fingerprint": {
+      "canonical_serialization": "UTF-8 JSON array in listed component order; ensure_ascii=false; separators comma/colon; no whitespace or terminal newline",
+      "components": [
+        {"id": "operation_graph", "structure": "array of operation nodes; each node is [operation_id, operand_kind_array, dependency_index_array]; field names and literal values are excluded", "derivation": "perform a stable topological sort of frozen operation nodes, selecting the unsigned UTF-8-lowest target field among ready nodes; operand kinds follow the catalog placeholder order with target omitted; dependency indices are sorted unique zero-based indices into the resulting node array", "allowed_operation_ids_from": "operation_definition_contract.catalog.id", "operand_kind_enum": ["source_field", "derived_field", "literal", "collection", "entity_selector"]},
+        {"id": "output_schema_roles", "structure": "array containing one [schema_type, role] pair per output field with field names removed; duplicate pairs are retained", "derivation": "derive role from the operation producing the field, or source_copy for an untransformed field, then sort compact pair serializations by unsigned UTF-8 bytes", "role_enum": ["source_copy", "derived_number", "derived_boolean", "derived_date", "derived_time", "entity_bound_value", "absence_sentinel"]},
+        {"id": "entity_role_graph", "type": "enum", "allowed": ["NONE", "SINGLE_ENTITY", "MULTI_ENTITY_NO_DISAMBIGUATION", "MULTI_ENTITY_SELECT_BY_IDENTIFIER", "MULTI_ENTITY_SELECT_BY_ATTRIBUTE", "MULTI_ENTITY_SELECT_BY_EVENT_ROLE"], "derivation": "NONE when entity_record_count is zero; SINGLE_ENTITY when it is one; MULTI_ENTITY_NO_DISAMBIGUATION when greater than one and entity_disambiguation_required is false; otherwise map entity_selector_role IDENTIFIER, ATTRIBUTE or EVENT_ROLE to the matching MULTI_ENTITY_SELECT value"},
+        {"id": "boundary_relation", "type": "enum", "allowed": ["NONE", "BELOW", "EQUAL", "ABOVE"], "derivation": "NONE unless terminal_operation is GT, GTE, LT, LTE or EQ; otherwise evaluate exact left and right operands under gold semantics and emit BELOW, EQUAL or ABOVE from left compared with right"},
+        {"id": "temporal_pattern", "type": "enum", "allowed": ["NONE", "SAME_DAY_FORWARD", "MIDNIGHT_ROLLOVER", "DATE_WITHIN_MONTH", "MONTH_BOUNDARY", "YEAR_BOUNDARY", "LEAP_DAY_BOUNDARY"], "derivation": "NONE without a temporal operation; CLOCK_MINUTE_OFFSET or ELAPSED_MINUTES emits MIDNIGHT_ROLLOVER iff the forward result crosses midnight, otherwise SAME_DAY_FORWARD; CALENDAR_DAY_OFFSET emits LEAP_DAY_BOUNDARY iff its inclusive traversed dates contain February 29, else YEAR_BOUNDARY iff source and result years differ, else MONTH_BOUNDARY iff months differ, else DATE_WITHIN_MONTH"},
+        {"id": "source_fact_layout", "type": "enum", "allowed": ["CONTIGUOUS_SINGLE_ENTITY", "INTERLEAVED_MULTI_ENTITY", "DISTRACTOR_BEFORE_TARGET", "DISTRACTOR_AFTER_TARGET", "TARGET_BEFORE_SUPPORTING_FACTS", "EXPLICIT_PARTIAL_ABSENCE"], "derivation": "from source_fact_sequence first-match: EXPLICIT_PARTIAL_ABSENCE if any EXPLICIT_ABSENCE; INTERLEAVED_MULTI_ENTITY if target/support entries for at least two entities alternate after projecting out distractors; DISTRACTOR_BEFORE_TARGET if at least one DISTRACTOR exists and every DISTRACTOR index precedes every TARGET/SUPPORT index; DISTRACTOR_AFTER_TARGET if at least one DISTRACTOR exists and every DISTRACTOR index follows every TARGET/SUPPORT index; TARGET_BEFORE_SUPPORTING_FACTS if at least one SUPPORT exists and the first TARGET precedes every SUPPORT; otherwise CONTIGUOUS_SINGLE_ENTITY, which requires at most one entity and contiguous TARGET/SUPPORT indices; failure of the final requirement is an authoring error"}
+      ]
+    },
+    "pairwise_scope": ["every G-ROUTE4 extraction fixture versus every G-EXTRACT1 scored or reserve fixture", "Phase A versus Phase A", "Phase A versus Phase B", "Phase B versus Phase B", "every scored fixture versus every reserve", "reserve versus reserve"],
+    "all_pairwise_payloads_must_be_below_jaccard_limit": true,
+    "exact_normalized_payload_matches_allowed": 0,
     "exact_answer_matches_allowed": 0,
     "entity_identifier_reuse_allowed": 0,
     "exact_date_numeric_tuple_reuse_allowed": 0,
-    "maximum_payload_token_5gram_jaccard_exclusive": 0.20,
-    "full_case_fingerprint_components": [
-      "operation_graph",
-      "output_schema_roles",
-      "entity_role_graph",
-      "boundary_relation",
-      "temporal_pattern",
-      "source_fact_layout"
-    ],
-    "exact_full_case_fingerprint_collisions_allowed": 0,
-    "near_replay_rule": "prohibited when at least five of six fingerprint components match one historical fixture and token 5-gram Jaccard is at least 0.12",
-    "phase_a_phase_b_exact_full_case_fingerprint_collisions_allowed": 0,
-    "same_failure_class_or_operation_graph_allowed": true,
-    "legitimate_class_level_reuse_rule": "at least two non-operation fingerprint components differ, lexical limits pass, and all values and entities are fresh",
-    "phase_and_reserve_lineages_separate": true,
-    "phase_b_sealed_before_phase_a_contact": true,
+    "exact_fingerprint_collision_rules": {"g_route4_vs_g_extract1": "prohibited", "phase_a_vs_phase_b": "prohibited", "primary_vs_mapped_reserve": "prohibited", "within_same_phase_round_family": "allowed at most twice only when Jaccard is below 0.12 and all values/entities differ", "reserve_vs_reserve": "prohibited"},
+    "near_replay_rule": "prohibited for every pair when at least five of six fingerprint components match and token 5-gram Jaccard is at least 0.12",
+    "same_failure_class_or_operation_id_allowed": true,
+    "lineage_labels_alone_prove_independence": false,
     "human_contamination_review_required": true,
-    "automated_reports_required": true,
-    "lineage_labels_alone_prove_independence": false
+    "two_implementation_differential_required_before_freeze": true,
+    "automated_pairwise_report_required": true
   },
   "reserve_activation_contract": {
-    "contract_id": "g-extract1.reserve-activation.v1",
+    "contract_id": "g-extract1.reserve-activation.v2",
     "reserves_per_phase_round_primary_family_slot": 1,
     "selection_pool_allowed": false,
     "mapping_frozen_before_review": true,
     "activation_allowed_only_before_provider_contact": true,
-    "eligible_reasons": [
-      "mechanical_schema_defect",
-      "unresolved_gold_or_adjudication_defect",
-      "contamination_or_fingerprint_failure",
-      "duplicate_entity_date_or_number_tuple",
-      "quota_or_signature_violation",
-      "corpus_level_similarity_failure"
-    ],
-    "ineligible_reasons": [
-      "style_preference",
-      "anticipated_model_behavior",
-      "observed_model_output",
-      "gate_improvement"
-    ],
-    "required_match_dimensions": [
-      "phase",
-      "round",
-      "primary_family",
-      "secondary_feature_obligations",
-      "field_types",
-      "operator_or_boundary_type",
-      "ambiguity_status",
-      "consequence_risk"
-    ],
+    "eligible_reasons": ["mechanical_schema_defect", "unresolved_gold_or_adjudication_defect", "contamination_or_fingerprint_failure", "duplicate_entity_date_or_number_tuple", "quota_or_signature_violation", "corpus_level_similarity_failure"],
+    "ineligible_reasons": ["style_preference", "anticipated_model_behavior", "observed_model_output", "gate_improvement"],
+    "required_match_dimensions": ["phase", "round", "primary_family", "composed_quota_row", "required_secondary_features", "field_types", "operator_or_boundary_type", "ambiguity_status", "consequence_risk"],
+    "replacement_must_preserve_every_composed_quota_count": true,
     "candidate_freeze_invalidated_on_activation": true,
     "full_review_and_digest_rebuild_required": true,
     "if_mapped_reserve_fails": "stop_authoring_campaign",
     "ad_hoc_replacement_allowed": false,
     "post_contact_replacement_allowed": false
   },
-  "analysis_units": [
-    "observation",
-    "distinct_fixture",
-    "repeat_pair",
-    "family",
-    "model_tier_x_risk_round_cell"
-  ],
+  "analysis_units": ["observation", "distinct_fixture", "repeat_pair", "family", "model_tier_x_risk_round_cell"],
   "confidence_contract": {
     "method": "one-sided exact 95% Clopper-Pearson",
     "interpretation": "benchmark decision statistics under the frozen authored-fixture design, not population-generalization estimates",
@@ -478,375 +305,127 @@
   },
   "cell_gates": {
     "phase_a": {
-      "denominator_integrity": {
-        "classification": "independent_pass_fail_gate",
-        "required_observations": 70,
-        "required_distinct_fixtures": 35,
-        "required_repeat_pairs": 35,
-        "duplicates_allowed": 0
-      },
-      "family_and_composed_coverage": {
-        "classification": "independent_pass_fail_gate",
-        "required_distinct_fixtures_per_family": 5,
-        "family_count": 7,
-        "composed_contract_required": true
-      },
-      "false_clean": {
-        "classification": "independent_pass_fail_gate",
-        "maximum_affected_fixtures": 0,
-        "maximum_affected_observations": 0,
-        "denominator_fixtures": 35,
-        "maximum_upper_95": 0.10
-      },
-      "determinate_semantic_correctness": {
-        "classification": "independent_pass_fail_gate",
-        "minimum_fixtures_with_both_repeats_correct": 29,
-        "denominator_determinate_fixtures": 30,
-        "minimum_lower_95": 0.85
-      },
-      "determinate_structural_validity": {
-        "classification": "independent_pass_fail_gate",
-        "minimum_fixtures_with_both_repeats_valid": 29,
-        "denominator_determinate_fixtures": 30
-      },
-      "useful_correct_acceptance": {
-        "classification": "independent_pass_fail_gate",
-        "minimum_fixtures_with_both_repeats_accepted_and_correct": 27,
-        "denominator_determinate_fixtures": 30,
-        "minimum_lower_95": 0.75
-      },
-      "ambiguity_recognition_and_containment": {
-        "classification": "independent_pass_fail_gate",
-        "contract_ref": "g-extract1.ambiguity-scoring.v1"
-      },
-      "malformed_determinate": {
-        "classification": "independent_pass_fail_gate",
-        "maximum_affected_fixtures": 1,
-        "denominator_determinate_fixtures": 30,
-        "structural_gate_must_also_pass": true
-      },
-      "family_semantic_floor": {
-        "classification": "enforced_redundant_pass_guardrail",
-        "minimum_correct_fixtures": 4,
-        "denominator_per_determinate_family": 5,
-        "logical_note": "29/30 already prevents two failures in any family"
-      },
-      "binding_correctness": {
-        "classification": "enforced_redundant_pass_guardrail",
-        "accepted_binding_errors_allowed": 0,
-        "families": [
-          "E5",
-          "E6"
-        ],
-        "logical_note": "zero false-clean already disallows an accepted binding error"
-      },
-      "correlated_false_clean": {
-        "classification": "enforced_redundant_pass_guardrail",
-        "maximum_repeat_pairs": 0,
-        "denominator_repeat_pairs": 35,
-        "logical_note": "zero false-clean already implies zero correlated false-clean"
-      }
+      "denominator_integrity": {"classification": "independent_pass_fail_gate", "required_observations": 70, "required_distinct_fixtures": 35, "required_repeat_pairs": 35, "duplicates_allowed": 0},
+      "family_and_composed_coverage": {"classification": "independent_pass_fail_gate", "required_distinct_fixtures_per_family": 5, "family_count": 7, "composed_contract_required": true},
+      "false_clean": {"classification": "independent_pass_fail_gate", "maximum_affected_fixtures": 0, "maximum_affected_observations": 0, "denominator_fixtures": 35, "denominator_observations": 70, "maximum_upper_95": 0.10},
+      "determinate_semantic_correctness": {"classification": "independent_pass_fail_gate", "minimum_fixtures_with_both_repeats_correct": 29, "denominator_determinate_fixtures": 30, "minimum_lower_95": 0.85},
+      "determinate_structural_validity": {"classification": "independent_pass_fail_gate", "minimum_fixtures_with_both_repeats_valid": 29, "denominator_determinate_fixtures": 30},
+      "useful_correct_acceptance": {"classification": "independent_pass_fail_gate", "minimum_fixtures_with_both_repeats_accepted_and_correct": 27, "denominator_determinate_fixtures": 30, "minimum_lower_95": 0.75},
+      "ambiguity_recognition_and_containment": {"classification": "independent_pass_fail_gate", "contract_ref": "g-extract1.ambiguity-scoring.v2"},
+      "malformed_determinate": {"classification": "independent_pass_fail_gate", "maximum_affected_fixtures": 1, "denominator_determinate_fixtures": 30, "structural_gate_must_also_pass": true},
+      "family_semantic_floor": {"classification": "enforced_redundant_pass_guardrail", "minimum_correct_fixtures": 4, "denominator_per_determinate_family": 5},
+      "binding_correctness": {"classification": "enforced_redundant_pass_guardrail", "accepted_binding_errors_allowed": 0, "families": ["E5", "E6"]},
+      "correlated_false_clean": {"classification": "enforced_redundant_pass_guardrail", "maximum_repeat_pairs": 0, "denominator_repeat_pairs": 35}
     },
     "phase_b": {
-      "denominator_integrity": {
-        "classification": "independent_pass_fail_gate",
-        "required_observations": 35,
-        "required_distinct_fixtures": 35,
-        "duplicates_allowed": 0
-      },
-      "family_and_composed_coverage": {
-        "classification": "independent_pass_fail_gate",
-        "required_distinct_fixtures_per_family": 5,
-        "family_count": 7,
-        "composed_contract_required": true
-      },
-      "false_clean": {
-        "classification": "independent_pass_fail_gate",
-        "maximum_affected_fixtures": 0,
-        "denominator_fixtures": 35,
-        "maximum_upper_95": 0.10
-      },
-      "determinate_semantic_correctness": {
-        "classification": "independent_pass_fail_gate",
-        "minimum_correct_fixtures": 29,
-        "denominator_determinate_fixtures": 30,
-        "minimum_lower_95": 0.85
-      },
-      "determinate_structural_validity": {
-        "classification": "independent_pass_fail_gate",
-        "minimum_valid_fixtures": 29,
-        "denominator_determinate_fixtures": 30
-      },
-      "useful_correct_acceptance": {
-        "classification": "independent_pass_fail_gate",
-        "minimum_accepted_and_correct_fixtures": 27,
-        "denominator_determinate_fixtures": 30,
-        "minimum_lower_95": 0.75
-      },
-      "ambiguity_recognition_and_containment": {
-        "classification": "independent_pass_fail_gate",
-        "contract_ref": "g-extract1.ambiguity-scoring.v1"
-      },
-      "malformed_determinate": {
-        "classification": "independent_pass_fail_gate",
-        "maximum_affected_fixtures": 1,
-        "denominator_determinate_fixtures": 30,
-        "structural_gate_must_also_pass": true
-      },
-      "family_semantic_floor": {
-        "classification": "enforced_redundant_pass_guardrail",
-        "minimum_correct_fixtures": 4,
-        "denominator_per_determinate_family": 5
-      },
-      "binding_correctness": {
-        "classification": "enforced_redundant_pass_guardrail",
-        "accepted_binding_errors_allowed": 0,
-        "families": [
-          "E5",
-          "E6"
-        ]
-      }
+      "denominator_integrity": {"classification": "independent_pass_fail_gate", "required_observations": 35, "required_distinct_fixtures": 35, "duplicates_allowed": 0},
+      "family_and_composed_coverage": {"classification": "independent_pass_fail_gate", "required_distinct_fixtures_per_family": 5, "family_count": 7, "composed_contract_required": true},
+      "false_clean": {"classification": "independent_pass_fail_gate", "maximum_affected_fixtures": 0, "maximum_affected_observations": 0, "denominator_fixtures": 35, "denominator_observations": 35, "maximum_upper_95": 0.10},
+      "determinate_semantic_correctness": {"classification": "independent_pass_fail_gate", "minimum_correct_fixtures": 29, "denominator_determinate_fixtures": 30, "minimum_lower_95": 0.85},
+      "determinate_structural_validity": {"classification": "independent_pass_fail_gate", "minimum_valid_fixtures": 29, "denominator_determinate_fixtures": 30},
+      "useful_correct_acceptance": {"classification": "independent_pass_fail_gate", "minimum_accepted_and_correct_fixtures": 27, "denominator_determinate_fixtures": 30, "minimum_lower_95": 0.75},
+      "ambiguity_recognition_and_containment": {"classification": "independent_pass_fail_gate", "contract_ref": "g-extract1.ambiguity-scoring.v2"},
+      "malformed_determinate": {"classification": "independent_pass_fail_gate", "maximum_affected_fixtures": 1, "denominator_determinate_fixtures": 30, "structural_gate_must_also_pass": true},
+      "family_semantic_floor": {"classification": "enforced_redundant_pass_guardrail", "minimum_correct_fixtures": 4, "denominator_per_determinate_family": 5},
+      "binding_correctness": {"classification": "enforced_redundant_pass_guardrail", "accepted_binding_errors_allowed": 0, "families": ["E5", "E6"]},
+      "correlated_false_clean": {"classification": "not_applicable_single_observation_phase", "reason": "Phase B has no repeat pairs"}
     }
   },
   "cell_state_machine": {
     "phase_b_selector": "sorted exact set of A_QUALIFIED_FOR_B cell IDs",
     "operator_selection_allowed": false,
     "transitions": [
-      [
-        "A_SCHEDULED",
-        "protected preflight fails before contact",
-        "A_BLOCKED"
-      ],
-      [
-        "A_SCHEDULED",
-        "complete denominator and all A gates pass",
-        "A_QUALIFIED_FOR_B"
-      ],
-      [
-        "A_SCHEDULED",
-        "complete denominator and any A gate fails",
-        "A_FAILED"
-      ],
-      [
-        "A_SCHEDULED",
-        "missing or untrustworthy denominator",
-        "A_INCOMPLETE"
-      ],
-      [
-        "A_QUALIFIED_FOR_B",
-        "machine-built conditional schedule contains exact cell",
-        "B_SCHEDULED"
-      ],
-      [
-        "A_FAILED",
-        "always",
-        "B_NOT_ELIGIBLE"
-      ],
-      [
-        "B_SCHEDULED",
-        "complete denominator and all B gates pass",
-        "FINALLY_QUALIFIED"
-      ],
-      [
-        "B_SCHEDULED",
-        "complete denominator and any B gate fails",
-        "B_FAILED_VALIDATION"
-      ],
-      [
-        "B_SCHEDULED",
-        "missing or untrustworthy denominator",
-        "B_INCOMPLETE"
-      ]
+      ["A_SCHEDULED", "precontact blocker exists before provider contact", "A_BLOCKED"],
+      ["A_SCHEDULED", "complete denominator and all A gates pass", "A_QUALIFIED_FOR_B"],
+      ["A_SCHEDULED", "complete denominator and any A gate fails", "A_FAILED"],
+      ["A_SCHEDULED", "frozen incomplete event exists", "A_INCOMPLETE"],
+      ["A_QUALIFIED_FOR_B", "machine-built conditional schedule contains exact cell", "B_SCHEDULED"],
+      ["A_FAILED", "always", "B_NOT_ELIGIBLE"],
+      ["B_SCHEDULED", "complete denominator and all B gates pass", "FINALLY_QUALIFIED"],
+      ["B_SCHEDULED", "complete denominator and any B gate fails", "B_FAILED_VALIDATION"],
+      ["B_SCHEDULED", "frozen incomplete event exists", "B_INCOMPLETE"]
     ],
     "phase_a_phase_b_pooling_allowed": false,
     "failed_cell_reentry_allowed": false
   },
+  "integrity_event_contract": {
+    "contract_id": "g-extract1.integrity-events.v1",
+    "precontact_blocking_events": ["PRE_MODEL_IDENTITY_MISMATCH", "PRE_PROVIDER_VERSION_MISMATCH", "PRE_GENERATION_CONFIG_MISMATCH", "PRE_ARTIFACT_DIGEST_MISMATCH", "PRE_GOLD_DIGEST_MISMATCH", "PRE_SCORER_DIGEST_MISMATCH", "PRE_COMPARATOR_DIGEST_MISMATCH", "PRE_SCHEDULE_DIGEST_MISMATCH", "PRE_CONTAMINATION_AUDIT_FAILURE", "PRE_EXISTING_RUN_COLLISION"],
+    "invalid_events": ["PROTECTED_ARTIFACT_DIGEST_MISMATCH", "GOLD_DIGEST_MISMATCH", "SCORER_DIGEST_MISMATCH", "COMPARATOR_DIGEST_MISMATCH", "MODEL_IDENTITY_MISMATCH_AFTER_CONTACT", "PROVIDER_VERSION_MISMATCH_AFTER_CONTACT", "GENERATION_CONFIGURATION_MISMATCH", "SEED_MISMATCH", "SCHEDULE_POSITION_MISMATCH", "DUPLICATE_CALL", "SCHEDULED_CALL_OMITTED_WITHOUT_FAILURE_RECEIPT", "UNAUTHORIZED_RETRY", "UNAUTHORIZED_FALLBACK", "UNAUTHORIZED_PROMPT_MUTATION", "CONTAMINATION_CONTRACT_VIOLATION", "POST_CONTACT_GOLD_MUTATION", "POST_CONTACT_FIXTURE_MUTATION", "POST_CONTACT_THRESHOLD_MUTATION", "CORRUPTED_OR_UNPARSEABLE_JOURNAL", "PROVENANCE_MISMATCH"],
+    "incomplete_events": ["PROVIDER_TIMEOUT_WITH_FAILURE_RECEIPT", "PROVIDER_ERROR_WITH_FAILURE_RECEIPT", "MISSING_RESPONSE_WITH_FAILURE_RECEIPT", "MACHINE_INTERRUPTION_WITH_SEALED_CHECKPOINT"],
+    "abort_event": "EXPLICIT_AUTHORIZED_OPERATOR_ABORT",
+    "event_precedence": ["invalid_events", "precontact_blocking_events", "abort_event", "incomplete_events"],
+    "classification_rules": ["a timeout, provider error or missing response is INCOMPLETE only with an append-only failure receipt bound to the scheduled call", "an unaccounted scheduled call without such a receipt is INVALID", "an interruption is INCOMPLETE only when the checkpoint and journal prefix verify", "an unverifiable or corrupt checkpoint or journal is INVALID", "a semantic or malformed-output gate failure is not an integrity event"]
+  },
   "result_state_machine": {
-    "contract_id": "g-extract1.result-state-machine.v1",
+    "contract_id": "g-extract1.result-state-machine.v2",
     "exactly_one_primary_verdict": true,
     "first_match_precedence": [
-      {
-        "precedence": 1,
-        "verdict": "INVALID",
-        "predicate": "protected artifact, gold, blindness, scorer, configuration, contamination, schedule or denominator-integrity contract is violated after execution begins, or a result cannot be trusted"
-      },
-      {
-        "precedence": 2,
-        "verdict": "BLOCKED_CONFIGURATION_MISMATCH",
-        "predicate": "pre-contact model, provider, configuration or artifact mismatch prevents all provider contact"
-      },
-      {
-        "precedence": 3,
-        "verdict": "ABORTED",
-        "predicate": "operator-authorized abort ends an otherwise valid run before its frozen schedule completes"
-      },
-      {
-        "precedence": 4,
-        "verdict": "INCOMPLETE",
-        "predicate": "no higher state applies and required calls or evidence are missing or unprovable"
-      },
-      {
-        "precedence": 5,
-        "verdict": "NO_PHASE_A_CELL_QUALIFIED",
-        "predicate": "Phase A completes validly and zero cells enter Phase B"
-      },
-      {
-        "precedence": 6,
-        "verdict": "QUALIFICATION_METHOD_FAILED_VALIDATION",
-        "predicate": "at least one cell enters Phase B and zero cells finally qualify"
-      },
-      {
-        "precedence": 7,
-        "verdict": "MIXED_TARGETED_REQUALIFICATION_SUPPORTED",
-        "predicate": "at least one cell finally qualifies and at least one other Phase B entrant fails validation"
-      },
-      {
-        "precedence": 8,
-        "verdict": "TARGETED_REQUALIFICATION_SUPPORTED",
-        "predicate": "at least one cell finally qualifies and every Phase B entrant passes"
-      }
+      {"precedence": 1, "verdict": "INVALID", "predicate": {"any_event_from": "integrity_event_contract.invalid_events"}},
+      {"precedence": 2, "verdict": "PRE_CONTACT_BLOCKED", "predicate": {"all": [{"provider_generation_calls": 0}, {"any_event_from": "integrity_event_contract.precontact_blocking_events"}]}},
+      {"precedence": 3, "verdict": "ABORTED", "predicate": {"event_equals": "EXPLICIT_AUTHORIZED_OPERATOR_ABORT"}},
+      {"precedence": 4, "verdict": "INCOMPLETE", "predicate": {"any": [{"any_event_from": "integrity_event_contract.incomplete_events"}, {"any_cell_state_in": ["A_INCOMPLETE", "B_INCOMPLETE"]}]}},
+      {"precedence": 5, "verdict": "NO_PHASE_A_CELL_QUALIFIED", "predicate": {"all": [{"phase_a_terminal": true}, {"phase_b_entrant_count": 0}]}},
+      {"precedence": 6, "verdict": "QUALIFICATION_METHOD_FAILED_VALIDATION", "predicate": {"all": [{"phase_b_entrant_count_gte": 1}, {"finally_qualified_count": 0}, {"phase_b_terminal": true}]}},
+      {"precedence": 7, "verdict": "MIXED_TARGETED_REQUALIFICATION_SUPPORTED", "predicate": {"all": [{"finally_qualified_count_gte": 1}, {"b_failed_validation_count_gte": 1}, {"phase_b_terminal": true}]}},
+      {"precedence": 8, "verdict": "TARGETED_REQUALIFICATION_SUPPORTED", "predicate": {"all": [{"finally_qualified_count_gte": 1}, {"finally_qualified_count_equals_phase_b_entrant_count": true}, {"phase_b_terminal": true}]}}
+    ],
+    "deterministic_test_vectors": [
+      {"id": "precontact_mismatch", "facts": "zero calls plus PRE_ARTIFACT_DIGEST_MISMATCH", "expected": "PRE_CONTACT_BLOCKED"},
+      {"id": "zero_a_qualifiers", "facts": "valid terminal Phase A plus zero B entrants", "expected": "NO_PHASE_A_CELL_QUALIFIED"},
+      {"id": "all_b_fail", "facts": "one or more B entrants, terminal B, zero final qualifiers", "expected": "QUALIFICATION_METHOD_FAILED_VALIDATION"},
+      {"id": "mixed_b", "facts": "terminal B with at least one final qualifier and at least one B failure", "expected": "MIXED_TARGETED_REQUALIFICATION_SUPPORTED"},
+      {"id": "all_b_pass", "facts": "terminal B with all one-or-more entrants finally qualified", "expected": "TARGETED_REQUALIFICATION_SUPPORTED"},
+      {"id": "b_call_missing_with_receipt", "facts": "MISSING_RESPONSE_WITH_FAILURE_RECEIPT", "expected": "INCOMPLETE"},
+      {"id": "integrity_after_partial", "facts": "any invalid event after partial execution", "expected": "INVALID"},
+      {"id": "operator_abort", "facts": "EXPLICIT_AUTHORIZED_OPERATOR_ABORT and no higher-priority event", "expected": "ABORTED"},
+      {"id": "malformed_limit_every_a_cell", "facts": "complete Phase A; every cell fails malformed gate; no integrity event", "expected": "NO_PHASE_A_CELL_QUALIFIED"},
+      {"id": "provider_failure_with_receipt", "facts": "PROVIDER_ERROR_WITH_FAILURE_RECEIPT", "expected": "INCOMPLETE"},
+      {"id": "postcontact_gold_defect", "facts": "POST_CONTACT_GOLD_MUTATION", "expected": "INVALID"},
+      {"id": "unreceipted_omission", "facts": "SCHEDULED_CALL_OMITTED_WITHOUT_FAILURE_RECEIPT", "expected": "INVALID"}
     ],
     "malformed_limit_exceeded_is": "semantic_cell_gate_failure",
+    "provider_failure_with_valid_receipt_is": "INCOMPLETE",
+    "unreceipted_omission_is": "INVALID",
+    "post_contact_gold_defect_is": "INVALID",
     "secondary_diagnostics_cannot_change_primary_verdict": true
   },
   "baseline_binding": {
-    "contract_id": "g-extract1.baseline-binding.v1",
-    "design_provenance_commit": "4484500de7a7d35e534b1f3884906b6749a213b9",
+    "contract_id": "g-extract1.baseline-binding.v2",
+    "baseline_behavior_source_commit": "0feb1b092bcdb1b934f01a3ce9611c59fcd8fa28",
     "system_text": "Return one JSON object matching the schema supplied in the fixture. Add no fields. Use only explicit facts; represent an explicitly unstated value with the schema's unknown value.",
     "existing_behavior_artifacts": [
-      {
-        "role": "system_profiles",
-        "path": "experiments/G-ROUTE1-candidate/prompt_profiles.json",
-        "sha256": "d4a683f1e2f0175006d41c34154e3d4a0e79b22fb70e52b68d93ac2587ae3354",
-        "git_blob": "365a4a499fd61203ae1bef3cf7d0c65490db529a"
-      },
-      {
-        "role": "prompt_renderer_request_builder",
-        "path": "tools/g_route4_contract.py",
-        "sha256": "a1d1de6c77abb9d8240c521b1afda891dbf9b32641df7d84b4f44a442767b45e",
-        "git_blob": "b86d836d45517d012ad07d417e488e7dc7c3f94d"
-      },
-      {
-        "role": "transport_normalization",
-        "path": "tools/g_route2_normalization.py",
-        "sha256": "2cca70e0843e90967a33baaf2b7b9a3313de21a6e18c3644c7eb083143398f7d",
-        "git_blob": "3c73a3856cc1b1ddab9e175486c866a22a380da3"
-      },
-      {
-        "role": "operational_wrapper",
-        "path": "tools/g_route3_operational.py",
-        "sha256": "4ab2c035b38b5bca5f243ec8aa0c5389e73cfc71cbbedcace3dd2b64f7193df3",
-        "git_blob": "dbf45f536ef2149d643837593a5fa8251256b5d2"
-      },
-      {
-        "role": "delegated_extraction_validator",
-        "path": "tools/g_route1_operational.py",
-        "sha256": "68abc639c2399a7cd19168c6176d03aa7c3fa81a02b0e85fac2d4fdcf4c7ed70",
-        "git_blob": "bb5dbcdc9d2817bd7a7a6525aec6b0f5999237c2"
-      },
-      {
-        "role": "historical_semantic_wrapper_reference",
-        "path": "tools/g_route3_semantics.py",
-        "sha256": "6e80f13b326d25743778e37635192809e8f5a53de2a98fd973c033075ea90a3e",
-        "git_blob": "3786140bf04481eb85fe5793013bd4ad923895c9"
-      },
-      {
-        "role": "historical_extraction_evaluator_reference",
-        "path": "tools/g_route1_validators.py",
-        "sha256": "3661ffa5a43c2ea89d7f0d3dd6a7d3d3620f2d4a3a2c0ef943e70de53d4ddf2f",
-        "git_blob": "a42d5046485530ab59b5c0b478e132b638fb7ab6"
-      },
-      {
-        "role": "model_configuration_binding",
-        "path": "experiments/G-ROUTE4-candidate/model_bindings.json",
-        "sha256": "e87e26c40f014a8d58e242082384db382b0b4942902e6d9bd387f24d68859e36",
-        "git_blob": "43996490276df5c7e89da0a62a1a0c14fbb8c3da"
-      },
-      {
-        "role": "frozen_prompt_template_source",
-        "path": "experiments/G-ROUTE4-candidate/blueprint/BLUEPRINT.json",
-        "sha256": "f005056f967a43af9a821849c63544dd1165fca083ecd1f394a3e19656fee815",
-        "git_blob": "c0db2bf9eb09dc8a0be518efe67766486df63bbb"
-      }
+      {"role": "system_profiles", "path": "experiments/G-ROUTE1-candidate/prompt_profiles.json", "sha256": "d4a683f1e2f0175006d41c34154e3d4a0e79b22fb70e52b68d93ac2587ae3354", "git_blob": "365a4a499fd61203ae1bef3cf7d0c65490db529a"},
+      {"role": "prompt_renderer_request_builder", "path": "tools/g_route4_contract.py", "sha256": "a1d1de6c77abb9d8240c521b1afda891dbf9b32641df7d84b4f44a442767b45e", "git_blob": "b86d836d45517d012ad07d417e488e7dc7c3f94d"},
+      {"role": "transport_normalization", "path": "tools/g_route2_normalization.py", "sha256": "2cca70e0843e90967a33baaf2b7b9a3313de21a6e18c3644c7eb083143398f7d", "git_blob": "3c73a3856cc1b1ddab9e175486c866a22a380da3"},
+      {"role": "operational_wrapper", "path": "tools/g_route3_operational.py", "sha256": "4ab2c035b38b5bca5f243ec8aa0c5389e73cfc71cbbedcace3dd2b64f7193df3", "git_blob": "dbf45f536ef2149d643837593a5fa8251256b5d2"},
+      {"role": "delegated_extraction_validator", "path": "tools/g_route1_operational.py", "sha256": "68abc639c2399a7cd19168c6176d03aa7c3fa81a02b0e85fac2d4fdcf4c7ed70", "git_blob": "bb5dbcdc9d2817bd7a7a6525aec6b0f5999237c2"},
+      {"role": "historical_semantic_wrapper_reference", "path": "tools/g_route3_semantics.py", "sha256": "6e80f13b326d25743778e37635192809e8f5a53de2a98fd973c033075ea90a3e", "git_blob": "3786140bf04481eb85fe5793013bd4ad923895c9"},
+      {"role": "historical_extraction_evaluator_reference", "path": "tools/g_route1_validators.py", "sha256": "3661ffa5a43c2ea89d7f0d3dd6a7d3d3620f2d4a3a2c0ef943e70de53d4ddf2f", "git_blob": "a42d5046485530ab59b5c0b478e132b638fb7ab6"},
+      {"role": "model_configuration_binding", "path": "experiments/G-ROUTE4-candidate/model_bindings.json", "sha256": "e87e26c40f014a8d58e242082384db382b0b4942902e6d9bd387f24d68859e36", "git_blob": "43996490276df5c7e89da0a62a1a0c14fbb8c3da"},
+      {"role": "frozen_prompt_template_source", "path": "experiments/G-ROUTE4-candidate/blueprint/BLUEPRINT.json", "sha256": "f005056f967a43af9a821849c63544dd1165fca083ecd1f394a3e19656fee815", "git_blob": "c0db2bf9eb09dc8a0be518efe67766486df63bbb"}
     ],
     "structured_extraction_assembled_template": "{SUBJECT}. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off.",
     "structured_extraction_assembled_template_sha256": "ef41104bde4915eba10a5ff1705383cf0b3d72e613fd7af87f72f5b06d2d5579",
     "byte_invariant_suffix_starts_with": ". Copy names",
     "only_template_placeholder": "{SUBJECT}",
-    "permitted_model_facing_variable_slots": [
-      "neutral record-type opening",
-      "neutral derived-field operation definitions without worked answers",
-      "exact frozen common G-ROUTE4 copy, type and output-cap boilerplate",
-      "input.text",
-      "input.schema"
-    ],
-    "forbidden_model_facing_content": [
-      "family names",
-      "ambiguity labels",
-      "historical failures",
-      "expected values",
-      "worked examples",
-      "chain-of-thought requests",
-      "extra arithmetic hints",
-      "model-tier text",
-      "risk labels",
-      "gold",
-      "gates",
-      "outcome-derived coaching"
-    ],
+    "subject_rendered_only_by": "g-extract1.operation-definitions.v1",
+    "permitted_model_facing_variable_slots": ["catalog-rendered record_type", "catalog-rendered operation placeholder identifiers or literals", "input.text", "input.schema"],
+    "input_object_exact_keys": ["schema", "text"],
+    "forbidden_model_facing_content": ["free-form operation instructions", "operation synonyms outside catalog", "family names", "ambiguity labels", "historical failures", "expected output values", "worked examples", "chain-of-thought requests", "intermediate calculations", "edge-case reminders", "model-tier text", "risk labels", "gold", "gates", "outcome-derived coaching"],
     "prompt_slot_blueprint_must_freeze_exact_bytes": true,
-    "semantic_scorer": {
-      "contract_id": "g-extract1.semantic-scorer.v1",
-      "executable_path": null,
-      "sha256": null,
-      "must_be_implemented_audited_and_bound_before_contact": true,
-      "evaluator_only": true
-    },
-    "exact_value_comparator": {
-      "contract_id": "g-extract1.exact-value-comparator.v1",
-      "executable_path": null,
-      "sha256": null,
-      "must_be_implemented_audited_and_bound_before_contact": true,
-      "evaluator_only": true
-    }
+    "semantic_scorer": {"contract_id": "g-extract1.semantic-scorer.v1", "executable_path": null, "sha256": null, "must_be_implemented_audited_and_bound_before_contact": true, "evaluator_only": true},
+    "exact_value_comparator": {"contract_id": "g-extract1.exact-value-comparator.v1", "executable_path": null, "sha256": null, "must_be_implemented_audited_and_bound_before_contact": true, "evaluator_only": true}
   },
   "model_provider": {
     "provider": "ollama",
     "provider_version": "0.34.3",
     "models": [
-      {
-        "tier": "small",
-        "model": "qwen2.5:7b",
-        "manifest_digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
-        "blob_sha256": "2bada8a7450677000f678be90653b85d364de7db25eb5ea54136ada5f3933730"
-      },
-      {
-        "tier": "mid",
-        "model": "qwen3:14b",
-        "manifest_digest": "bdbd181c33f2ed1b31c972991882db3cf4d192569092138a7d29e973cd9debe8",
-        "blob_sha256": "a8cc1361f3145dc01f6d77c6c82c9116b9ffe3c97b34716fe20418455876c40e"
-      },
-      {
-        "tier": "large",
-        "model": "qwen3.8:27b",
-        "manifest_digest": "22130167c4c20e20c7b71454612966ca8e8171e9b3cc8ab6ce8aa6cbfec79643",
-        "blob_sha256": "f5f1dd8920d417aac2718b0bda3403da274301efdd6760b4f0f4b864ff2ad57d"
-      }
+      {"tier": "small", "model": "qwen2.5:7b", "manifest_digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e", "blob_sha256": "2bada8a7450677000f678be90653b85d364de7db25eb5ea54136ada5f3933730"},
+      {"tier": "mid", "model": "qwen3:14b", "manifest_digest": "bdbd181c33f2ed1b31c972991882db3cf4d192569092138a7d29e973cd9debe8", "blob_sha256": "a8cc1361f3145dc01f6d77c6c82c9116b9ffe3c97b34716fe20418455876c40e"},
+      {"tier": "large", "model": "qwen3.8:27b", "manifest_digest": "22130167c4c20e20c7b71454612966ca8e8171e9b3cc8ab6ce8aa6cbfec79643", "blob_sha256": "f5f1dd8920d417aac2718b0bda3403da274301efdd6760b4f0f4b864ff2ad57d"}
     ],
-    "generation_configuration": {
-      "num_ctx": 8192,
-      "num_predict": 350,
-      "temperature": 0.45,
-      "top_p": 0.9,
-      "top_k": 40,
-      "repeat_penalty": 1.1,
-      "think": false,
-      "stream": false,
-      "fresh_session_per_call": true,
-      "retry_limit": 0,
-      "repair_calls": 0,
-      "fallback": false
-    },
+    "generation_configuration": {"num_ctx": 8192, "num_predict": 350, "temperature": 0.45, "top_p": 0.9, "top_k": 40, "repeat_penalty": 1.1, "think": false, "stream": false, "fresh_session_per_call": true, "retry_limit": 0, "repair_calls": 0, "fallback": false},
     "internal_option_honoring_attested_by_provider": false
   },
   "sampling": {
@@ -861,49 +440,10 @@
     "legacy_sized_prefix_observations_per_cell": 8,
     "legacy_sized_prefix_is_gating": false
   },
-  "efficiency": {
-    "phase_a_calls": 420,
-    "phase_b_maximum_calls": 210,
-    "maximum_total_calls": 630,
-    "g_route4_total_calls": 1395,
-    "maximum_call_reduction_fraction": 0.548387,
-    "estimated_phase_a_active_hours": 2.79,
-    "estimated_maximum_phase_b_active_hours": 1.40,
-    "estimated_maximum_total_active_hours": 4.19,
-    "large_tier_maximum_calls": 210,
-    "large_tier_estimated_active_hours": 2.99,
-    "basis": "preserved G-ROUTE4 observed means: 7.6 seconds small, 13.0 seconds mid, 51.2 seconds large"
-  },
-  "baseline_repair_boundary": {
-    "baseline_contract_ref": "g-extract1.baseline-binding.v1",
-    "prompt_tuning_during_experiment": false,
-    "repair_automatically_authorized": false,
-    "repair_requires_new_experiment_identity": true,
-    "repair_requires_new_development_and_scored_corpora": true,
-    "baseline_and_repair_results_may_be_pooled": false
-  },
-  "failure_handling": {
-    "semantic_failure_is_valid_result": true,
-    "malformed_output_preserved": true,
-    "truncated_output_preserved": true,
-    "refusal_preserved": true,
-    "automatic_retry": false,
-    "automatic_repair": false,
-    "threshold_relaxation": false,
-    "post_contact_gold_change": false,
-    "post_contact_fixture_replacement": false,
-    "failed_attempts_append_only": true,
-    "one_local_model_research_job_at_a_time": true
-  },
-  "integration": {
-    "automatic_table_update": false,
-    "automatic_production_routing": false,
-    "candidate_overlay_scope": "finally qualified structured-extraction R2/R3 cells only",
-    "non_extraction_rows_must_remain_byte_identical": true,
-    "no_qualified_result_means_no_table_update": true,
-    "broader_revalidation_required_if_shared_logic_changes": true,
-    "separate_operator_authorization_required": true
-  },
+  "efficiency": {"phase_a_calls": 420, "phase_b_maximum_calls": 210, "maximum_total_calls": 630, "g_route4_total_calls": 1395, "maximum_call_reduction_fraction": 0.548387, "estimated_phase_a_active_hours": 2.79, "estimated_maximum_phase_b_active_hours": 1.40, "estimated_maximum_total_active_hours": 4.19, "large_tier_maximum_calls": 210, "large_tier_estimated_active_hours": 2.99, "basis": "preserved G-ROUTE4 observed means: 7.6 seconds small, 13.0 seconds mid, 51.2 seconds large"},
+  "baseline_repair_boundary": {"baseline_contract_ref": "g-extract1.baseline-binding.v2", "prompt_tuning_during_experiment": false, "repair_automatically_authorized": false, "repair_requires_new_experiment_identity": true, "repair_requires_new_development_and_scored_corpora": true, "baseline_and_repair_results_may_be_pooled": false},
+  "failure_handling": {"semantic_failure_is_valid_result": true, "malformed_output_preserved": true, "truncated_output_preserved": true, "automatic_retry": false, "automatic_repair": false, "threshold_relaxation": false, "post_contact_gold_change": false, "post_contact_fixture_replacement": false, "failed_attempts_append_only": true, "one_local_model_research_job_at_a_time": true},
+  "integration": {"automatic_table_update": false, "automatic_production_routing": false, "candidate_overlay_scope": "finally qualified structured-extraction R2/R3 cells only", "non_extraction_rows_must_remain_byte_identical": true, "no_qualified_result_means_no_table_update": true, "broader_revalidation_required_if_shared_logic_changes": true, "separate_operator_authorization_required": true},
   "governance": {
     "g_route4_remains_failed": true,
     "historical_rewrite_allowed": false,
@@ -914,8 +454,11 @@
     "baseline_artifacts_frozen_before_provider_contact": true,
     "contamination_audit_before_provider_contact": true,
     "independent_gold_review_before_provider_contact": true,
+    "separate_blueprint_authorization": true,
+    "separate_fixture_authoring_authorization": true,
     "separate_implementation_authorization": true,
     "separate_pilot_authorization": true,
+    "separate_execution_freeze_authorization": true,
     "separate_phase_a_authorization": true,
     "separate_conditional_phase_b_authorization": true,
     "source_runtime_behavior_changed": false,
@@ -925,25 +468,8 @@
     "autonomy_granted": false,
     "belief_effects": "none"
   },
-  "remaining_nonblocking_limitations": [
-    "authored fixtures do not establish IID sampling or natural-population performance",
-    "statistical independence cannot be proved by lineage or lexical checks",
-    "provider does not attest internal seed and option honoring",
-    "runtime estimates vary with load and model residency",
-    "narrow extraction scope cannot authorize non-extraction capabilities"
-  ],
-  "implementation_authorization_prerequisites": [
-    "independent adversarial rereview with no unresolved blocker",
-    "human and machine contract equivalence proof",
-    "approved corpus-authoring blueprint",
-    "all 168 fixtures and gold authored without provider contact",
-    "independent gold signoff and adjudication",
-    "contamination and overlap reports pass",
-    "metadata-only model/provider verification",
-    "separate evaluator and runner implementation authorization and audit",
-    "separate mechanical-pilot protocol and authorization",
-    "execution freeze with all execution flags false",
-    "separate explicit Phase A and conditional Phase B authorization"
-  ],
-  "final_verdict": "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW"
+  "validation_claim_scope": {"validator_claim": "deterministic structural and cross-representation consistency only", "scientific_validity_proven": false, "adversarial_review_replaced": false},
+  "remaining_nonblocking_limitations": ["authored fixtures do not establish IID sampling or natural-population performance", "statistical independence cannot be proved by lineage or lexical checks", "provider does not attest internal seed and option honoring", "runtime estimates vary with load and model residency", "narrow extraction scope cannot authorize non-extraction capabilities"],
+  "implementation_authorization_prerequisites": ["independent adversarial rereview with no unresolved blocker", "human and machine normative equivalence review", "separately authorized and approved corpus-authoring blueprint", "separately authorized authoring of all 168 fixtures and gold without provider contact", "independent gold signoff and adjudication", "two-implementation contamination differential and overlap reports pass", "metadata-only model/provider verification", "separate evaluator and runner implementation authorization and audit", "separate mechanical-pilot protocol and authorization", "separate execution-freeze authorization with all execution flags false", "separate explicit Phase A and conditional Phase B authorization"],
+  "final_verdict": "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_3"
 }
