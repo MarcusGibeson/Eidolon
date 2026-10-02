@@ -1,6 +1,6 @@
-# G-EXTRACT1 v7 Human/Machine Equivalence Checklist
+# G-EXTRACT1 v8 Human/Machine Equivalence Checklist
 
-Both design files are co-normative. The v7 human annex embeds exact structured normative objects; the validator parses them and compares them with the machine contract. This checklist is an index of checks and reviewer obligations, not a proof of complete prose equivalence or scientific validity.
+Both design files are co-normative. The v8 human annex embeds exact structured normative objects; the validator parses them and compares them with the machine contract. This checklist is an index of checks and reviewer obligations, not a proof of complete prose equivalence or scientific validity.
 
 | Normative area | Human location | Machine location | Check |
 |---|---|---|---|
@@ -34,3 +34,7 @@ The validator executes representative mechanics and exact normative-object compa
 ## Blueprint boundary
 
 The checkpoint permits independent rereview only. A separately authorized blueprint may instantiate frozen IDs, templates, schema/type rules, subtype slots, reserve profiles, schedules and file formats. It may not choose new lexical vocabularies, operation domains, enum compatibility, gold, sampling coverage, contamination semantics, reserve equivalence, thresholds, integrity states or governance authority.
+
+## Candidate v8 exact-object checks
+
+Section19/annex directly encode legacy projection, E4 context matrices, entity discrimination, enum positions, reserve01-only rules, subtype content, identity shape and lexical categories. Behavioral tests cover all 106 historical inputs, constant strategies, wrong entities, uncovered reserves and actual-domain/E7 mutations. Exact normative objects are compared with JSON; no scientific or later authorization claim.

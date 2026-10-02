@@ -1,5 +1,25 @@
 # G-EXTRACT1 Design Revision Changelog
 
+## Candidate v8
+
+Reviewed parent: 6eef00a09a90fb8a50a6e18ff9cdcc90ae712d6e. Prospective design/checking only.
+
+| Rereview-7 finding | Disposition |
+|---|---|
+| Historical fingerprint gap | Resolved: 106-input surface projection with separate rules, no invented metadata. |
+| All E4 true | Resolved: rotating matrices each 3 true/2 false; both constants fail. |
+| Entity discrimination | Resolved: semantic pairwise distinctness/wrong-selection tests; Boolean excluded; three-option enum. |
+| Enum positions | Resolved: fixed E5/E7 context index/permutation. |
+| Reserve contradiction | Resolved: 01-only activation, explicit 02..05/multiple stops. |
+| Legacy atom shape | Resolved: two-element comparison atoms. |
+| Lexical wording | Resolved: exact inclusion/exclusion and association, no causal claim. |
+| Whole-answer limitation | Intentionally retained exact-object rule with complementary controls. |
+| Unproven profile domains | Resolved: actual semantic/subtype validation first. |
+| E7 integration | Resolved: exact mix/order/context/placement. |
+| New/new refinement | Intentionally retained, discrimination change documented separately. |
+
+G-ROUTE4 stays CLOSED FAILED; gates unchanged. No blueprint, fixtures/reserves, production code, provider contact or execution. Scientific approval unresolved until v8 rereview. Validator scope remains structural/cross-representation only.
+
 ## Candidate v7
 
 Reviewed parent: v6 at `1ba43663d0c646b0dc743c65424019782bd2f696`.

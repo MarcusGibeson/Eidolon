@@ -1,9 +1,9 @@
 {
-  "schema_version": "g-extract1.design-candidate.v7",
+  "schema_version": "g-extract1.design-candidate.v8",
   "experiment": {
     "id": "G-EXTRACT1",
     "name": "Prospective Structured-Extraction Requalification and Generalization Test",
-    "status": "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_7",
+    "status": "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_8",
     "design_only": true,
     "implemented": false,
     "blueprint_authorized": false,
@@ -12,25 +12,27 @@
     "provider_generation_calls": 0,
     "experiment_launches": 0,
     "belief_effects": "none",
-    "design_revision": 7
+    "design_revision": 8
   },
   "contract_ids": {
-    "design": "g-extract1.design-candidate.v7",
+    "design": "g-extract1.design-candidate.v8",
     "operation_definitions": "g-extract1.operation-definitions.v4",
     "family_assignment": "g-extract1.family-assignment.v4",
-    "contamination": "g-extract1.contamination.v4",
+    "contamination": "g-extract1.contamination.v5",
     "ambiguity_scoring": "g-extract1.explicit-absence-scoring.v4",
     "exact_value_comparator": "g-extract1.exact-value-comparator.v1",
     "integrity_events": "g-extract1.integrity-events.v2",
     "result_state_machine": "g-extract1.result-state-machine.v3",
-    "reserve_activation": "g-extract1.reserve-activation.v4",
+    "reserve_activation": "g-extract1.reserve-activation.v5",
     "baseline_binding": "g-extract1.baseline-binding.v4",
     "schema_types": "g-extract1.schema-types.v1",
     "operation_semantics": "g-extract1.operation-semantics.v2",
     "lexical_neutrality": "g-extract1.lexical-neutrality.v1",
-    "entity_population": "g-extract1.entity-population.v1",
+    "entity_population": "g-extract1.entity-population.v2",
     "reserve_equivalence": "g-extract1.reserve-equivalence.v1",
-    "subtype_allocation": "g-extract1.subtype-allocation.v1"
+    "subtype_allocation": "g-extract1.subtype-allocation.v2",
+    "historical_fingerprint_adapter": "g-extract1.historical-fingerprint-adapter.v1",
+    "subtype_content_validation": "g-extract1.subtype-content-validation.v1"
   },
   "historical_binding": {
     "g_route4_status": "FAILED",
@@ -688,10 +690,10 @@
         "gold": "exact typed equality after only numeric INTEGER/NUMBER promotion; STRING and ENUM equality operations prohibited"
       },
       "ENTITY_FIELD_BIND": {
-        "operand_contract": "selector_field and source_field must each exist exactly once for each relevant entity; selector_value selects exactly one entity",
+        "operand_contract": "selector_field and source_field must each exist exactly once for every entity in the complete entities array; selector_value selects exactly one entity",
         "result_rule": "exact semantic type and historical schema of selected source field; no coercion",
         "gold": "selected entity source value",
-        "population_binding": "g-extract1.entity-population.v1; every entity, exactly 2 or 3, must expose complete selector and source facts"
+        "population_binding": "g-extract1.entity-population.v2; every entity, exactly 2 or 3, must expose complete selector and source facts"
       },
       "EXACT_COPY": {
         "operand_contract": "source field or prior derived target exists uniquely",
@@ -1618,7 +1620,7 @@
         }
       ]
     },
-    "entity_population_binding": "g-extract1.entity-population.v1",
+    "entity_population_binding": "g-extract1.entity-population.v2",
     "exact_arithmetic_engine": "integers and fractions.Fraction; finite decimal serialization by integer scale arithmetic; no finite Decimal context divisions"
   },
   "operation_definition_contract": {
@@ -2686,7 +2688,7 @@
       },
       "entity_disambiguation_required": {
         "type": "boolean",
-        "derivation": "true iff the operation graph contains ENTITY_FIELD_BIND and the complete entity-population.v1 contract succeeds; malformed population is AUTHORING_ERROR, never false"
+        "derivation": "true iff the operation graph contains ENTITY_FIELD_BIND and the complete entity-population.v2 contract succeeds; malformed population is AUTHORING_ERROR, never false"
       },
       "terminal_operation": {
         "type": "enum",
@@ -3326,7 +3328,7 @@
         "expected": "f001_01 was not provided."
       }
     ],
-    "entity_population_binding": "g-extract1.entity-population.v1"
+    "entity_population_binding": "g-extract1.entity-population.v2"
   },
   "composed_feature_requirements": {
     "applies_per_phase_round": true,
@@ -3407,7 +3409,7 @@
         "minimum_distinct_fixtures": 2
       }
     ],
-    "allocation_binding": "g-extract1.subtype-allocation.v1"
+    "allocation_binding": "g-extract1.subtype-allocation.v2"
   },
   "ambiguity_contract": {
     "contract_id": "g-extract1.explicit-absence-scoring.v4",
@@ -3790,7 +3792,7 @@
     "post_contact_gold_repair_allowed": false
   },
   "contamination_contract": {
-    "contract_id": "g-extract1.contamination.v4",
+    "contract_id": "g-extract1.contamination.v5",
     "authored_model_facing_character_set": "printable ASCII plus CR, LF and TAB; all other code points are prohibited before fixture freeze",
     "historical_reference_paths": [
       "experiments/G-ROUTE4-candidate/sealed/corpus_a.json",
@@ -4471,7 +4473,7 @@
       "output_component": "[layout_enum, [[role,schema_type,entity_index],...]] in source record order; the layout_enum precedence remains unchanged"
     },
     "pairwise_scope": [
-      "every G-ROUTE4 extraction fixture versus every G-EXTRACT1 scored or reserve fixture",
+      "every historical extraction versus every new scored/reserve using shared three-component projection",
       "Phase A versus Phase A",
       "Phase A versus Phase B",
       "Phase B versus Phase B",
@@ -4501,14 +4503,16 @@
           "ENUM"
         ],
         "canonical_values": "derive through schema-types.v1; explicit not_provided retains schema provided|not_provided, semantic tag ENUM and exact value not_provided",
-        "match_rule": "canonical answer bytes equal"
+        "match_rule": "canonical answer bytes equal",
+        "limit": "exact full-object replay only, not semantic-content deduplication; fixture-specific names limit sensitivity; tuples/identities/Jaccard/structure/human review provide complementary content controls"
       },
       "entity_identifier_atoms": {
         "entity_atom": "[\"ENTITY\", exact entity selector string] for generated entities; historical entities use their preserved original strings",
         "identifier_atom": "[\"IDENTIFIER\",canonical value] for every string VALUE matching generated id_{fixture_ordinal:03d}_{value_ordinal:02d}; no syntactic field name atom",
-        "excluded": "f/d positional field identifiers, record types, shared opaque enum labels, label_/code_ values; these remain in similarity payload and existing fingerprint derivations",
+        "excluded": "f/d positional field identifiers, shared opaque enum labels and label_/code_ values are not identity atoms but remain in input/schema similarity; record types are also not identity atoms and are excluded from similarity because they exist only in SUBJECT, with their allocation separately audited",
         "serialization": "deduplicated atoms sorted by compact UTF-8 JSON bytes, then compact JSON array ensure_ascii=true",
-        "match_rule": "any atom intersection is prohibited"
+        "match_rule": "any atom intersection is prohibited",
+        "canonical_atom_shape": "[kind,canonical_value] exactly two strings; kind ENTITY/IDENTIFIER; historical selector field removed"
       },
       "date_number_tuple": {
         "sources_in_order": [
@@ -4593,7 +4597,6 @@
             ],
             [
               "IDENTIFIER",
-              "order_id",
               "AX7"
             ]
           ],
@@ -4604,7 +4607,6 @@
             ],
             [
               "IDENTIFIER",
-              "order_id",
               "AX7"
             ]
           ],
@@ -4615,14 +4617,12 @@
           "left_atoms": [
             [
               "IDENTIFIER",
-              "order_id",
               "AX7"
             ]
           ],
           "right_atoms": [
             [
               "IDENTIFIER",
-              "order_id",
               "BX8"
             ]
           ],
@@ -4836,7 +4836,8 @@
         "entity": "every generated entities.selector_value",
         "identifier": "every source string VALUE matching ^id_(?:00[1-9]|0[1-9][0-9]|1[0-5][0-9]|16[0-8])_(?:0[1-9]|[1-9][0-9])$",
         "syntactic_field_names_excluded": true,
-        "historical_identifier_rule": "for historical G-ROUTE4 only, retain its id/_id/_code/_identifier/_reference field rule; compare canonical value atoms across old and new"
+        "historical_identifier_rule": "for historical G-ROUTE4 only, retain its id/_id/_code/_identifier/_reference field rule; compare canonical value atoms across old and new",
+        "historical_projection": "structured historical id/_id/_code/_identifier/_reference fields select canonical values, field names removed; unstructured identity semantics reported unavailable, never guessed"
       }
     },
     "all_pairwise_payloads_must_be_below_jaccard_limit": true,
@@ -4845,13 +4846,13 @@
     "entity_identifier_reuse_allowed": 0,
     "exact_date_numeric_tuple_reuse_allowed": 0,
     "exact_fingerprint_collision_rules": {
-      "g_route4_vs_g_extract1": "prohibited",
+      "g_route4_vs_g_extract1": "3/3 historical projection equal => prohibited",
       "phase_a_vs_phase_b": "prohibited",
       "primary_vs_mapped_reserve": "prohibited",
       "within_same_phase_round_family": "allowed at most twice only when Jaccard is below 0.12 and all values/entities differ",
       "reserve_vs_reserve": "prohibited"
     },
-    "near_replay_rule": "prohibited for every pair when at least five of six fingerprint components match and token 5-gram Jaccard is at least 0.12",
+    "near_replay_rule": "NEW/NEW >=5/6 plus Jaccard>=0.12; HISTORICAL/NEW >=2/3 projection plus Jaccard>=0.12; prohibit every applicable pair",
     "same_failure_class_or_operation_id_allowed": true,
     "lineage_labels_alone_prove_independence": false,
     "human_contamination_review_required": true,
@@ -4870,20 +4871,34 @@
     "lexical_neutrality_binding": "g-extract1.lexical-neutrality.v1",
     "lexical_atoms": {
       "included_in_similarity_payload": [
-        "source/derived/output identifiers",
-        "enum options",
-        "entity labels",
-        "string values"
+        "input.text source identifiers",
+        "input.text entity labels",
+        "input.text string/code/id values",
+        "canonical schema field names",
+        "canonical schema type/enum option bytes"
       ],
       "identity_atoms": "generated entity labels plus generated id_ string values; historical identifier field rule retained only for historical comparison",
       "not_identity_atoms": "generated f/d identifiers, record types, shared opaque enums, label_/code_ values",
       "no_similarity_or_fingerprint_exemption_created": true,
-      "record_type_reporting": "record_type and catalog SUBJECT excluded by existing historical prompt-boilerplate payload rule; record-type allocation separately audited; no new exemption"
+      "record_type_reporting": "separate frozen allocation audit; family/phase association, not statistical independence",
+      "excluded_from_similarity_payload": [
+        "system text",
+        "prompt SUBJECT",
+        "record type (only in SUBJECT)",
+        "operation instruction text",
+        "historical common suffix",
+        "INPUT marker"
+      ],
+      "inclusion_rule": "all input.text/canonical schema atoms included, not all model-facing atoms"
+    },
+    "comparison_modes": {
+      "historical_new": "three-component historical-fingerprint-adapter.v1",
+      "new_new": "full six typed-layout components"
     }
   },
   "reserve_activation_contract": {
-    "contract_id": "g-extract1.reserve-activation.v4",
-    "interpretation": "one family-slot reserve, not one reserve per scored fixture",
+    "contract_id": "g-extract1.reserve-activation.v5",
+    "interpretation": "one prospective subtype01-only backup per phase/round/family, not a generic family reserve or one reserve per scored fixture",
     "slot_id_format": "RESERVE:{phase}:{round}:{primary_family}",
     "slot_domains": {
       "phase": [
@@ -4995,36 +5010,77 @@
       {
         "id": "one_matching_claim",
         "defective_primary_ids": [
-          "A-R2-E3-03"
+          "A-R2-E3-01"
         ],
         "profile_matches": [
-          "A-R2-E3-03"
+          "A-R2-E3-01"
         ],
         "expected": "ACTIVATE_SINGLE_RESERVE"
       },
       {
         "id": "one_nonmatching_claim",
         "defective_primary_ids": [
-          "A-R2-E3-03"
+          "A-R2-E3-01"
         ],
         "profile_matches": [],
         "expected": "STOP_AUTHORING"
       },
       {
-        "id": "two_claims",
+        "id": "uncovered_slot_2",
         "defective_primary_ids": [
-          "A-R2-E3-02",
+          "A-R2-E3-02"
+        ],
+        "profile_matches": [
+          "A-R2-E3-02"
+        ],
+        "expected": "STOP_AUTHORING"
+      },
+      {
+        "id": "uncovered_slot_3",
+        "defective_primary_ids": [
           "A-R2-E3-03"
         ],
         "profile_matches": [
-          "A-R2-E3-02",
+          "A-R2-E3-03"
+        ],
+        "expected": "STOP_AUTHORING"
+      },
+      {
+        "id": "uncovered_slot_4",
+        "defective_primary_ids": [
+          "A-R2-E3-04"
+        ],
+        "profile_matches": [
+          "A-R2-E3-04"
+        ],
+        "expected": "STOP_AUTHORING"
+      },
+      {
+        "id": "uncovered_slot_5",
+        "defective_primary_ids": [
+          "A-R2-E3-05"
+        ],
+        "profile_matches": [
+          "A-R2-E3-05"
+        ],
+        "expected": "STOP_AUTHORING"
+      },
+      {
+        "id": "two_claims",
+        "defective_primary_ids": [
+          "A-R2-E3-01",
+          "A-R2-E3-03"
+        ],
+        "profile_matches": [
+          "A-R2-E3-01",
           "A-R2-E3-03"
         ],
         "expected": "STOP_AUTHORING"
       }
     ],
     "replacement_rule": "byte-identical canonical reserve-equivalence profile",
-    "covered_primary_slot": "the single family reserve is authored against within-family subtype slot 01; defects in slots 02..05 have no matching reserve and stop authoring; no choice is made after defect discovery"
+    "covered_primary_slot": "the single family reserve is authored against within-family subtype slot 01; defects in slots 02..05 have no matching reserve and stop authoring; no choice is made after defect discovery",
+    "reserve_coverage_limit": "28 prospective subtype01 backups only: 2 phases x 2 rounds x 7 families; not generic family reserves; 02..05 and multiple defects stop"
   },
   "analysis_units": [
     "observation",
@@ -5908,9 +5964,9 @@
     "validator_claim": "deterministic structural and cross-representation consistency only",
     "scientific_validity_proven": false,
     "adversarial_review_replaced": false,
-    "validator_version": "v7",
+    "validator_version": "v8",
     "new_rule_boundary": "behavioral vectors are disposable checking examples; none are scored fixtures or reserve records; no production code is implemented",
-    "validator_coverage_notes": "behavioral v7 mechanics and parsed co-normative annex comparisons; neither complete human prose proof nor scientific validity is claimed"
+    "validator_coverage_notes": "behavioral v8 mechanics, all 106 historical projections, actual subtype/profile validation and parsed co-normative annex comparisons; neither complete human prose proof nor scientific validity is claimed"
   },
   "remaining_nonblocking_limitations": [
     "authored fixtures do not establish IID sampling or natural-population performance",
@@ -5937,7 +5993,7 @@
     "reserve-equivalence bytes and subtype allocation matrix are frozen",
     "schema-derived contamination atom typing passes independent differential checks"
   ],
-  "final_verdict": "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_7",
+  "final_verdict": "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_8",
   "lexical_neutrality_contract": {
     "contract_id": "g-extract1.lexical-neutrality.v1",
     "all_model_facing_atoms_are_generated": true,
@@ -6033,10 +6089,10 @@
       "ordinary_enum_catalog_intentionally_shared": true,
       "record_type_pool_disjoint_by_phase": true,
       "record_type_exactly_five_per_family": true,
-      "all_lexical_atoms_in_similarity_payload": true,
       "generated_field_identifiers_are_not_identity_atoms": true,
       "field_identifiers_retained_where_existing_fingerprint_rules_retain_roles": true,
-      "string_prefixes_deterministic": true
+      "string_prefixes_deterministic": true,
+      "all_input_text_and_canonical_schema_atoms_included": true
     },
     "rejected_examples": [
       "correct_answer",
@@ -6175,10 +6231,11 @@
       "frozen_before_content": true,
       "meaning_independence": "ordinals depend only on frozen authoring position; expected value, operator direction, gold and observed performance never affect naming"
     },
-    "non_scored_legacy_parser_vectors": "isolated raw-output classifier vectors may retain historical illustrative status/name/count strings solely to test parsing; they are not authorable fixture content"
+    "non_scored_legacy_parser_vectors": "isolated raw-output classifier vectors may retain historical illustrative status/name/count strings solely to test parsing; they are not authorable fixture content",
+    "causal_limit": "fixed/unavailable to authors but structurally associated with family/phase; not statistical independence or causal lexical isolation"
   },
   "entity_population_contract": {
-    "contract_id": "g-extract1.entity-population.v1",
+    "contract_id": "g-extract1.entity-population.v2",
     "applies_when": "operation graph contains ENTITY_FIELD_BIND",
     "entity_count_allowed": [
       2,
@@ -6220,7 +6277,9 @@
       "unknown entity fact",
       "non-entity duplicate selector/source field",
       "extra entity-scoped fact",
-      "selected entity absent"
+      "selected entity absent",
+      "equal source values",
+      "boolean source schema"
     ],
     "validation_scenarios": [
       {
@@ -6293,7 +6352,11 @@
       }
     ],
     "selector_role_rule": "all entities share one role from the frozen subtype row; no author choice",
-    "selector_field_must_differ_from_source_field": true
+    "selector_field_must_differ_from_source_field": true,
+    "source_values_pairwise_semantically_distinct": true,
+    "source_value_comparison": "same-schema equality: exact rational NUMBER, exact INTEGER, string/enum bytes, DATE/TIME; equal pair AUTHORING_ERROR",
+    "boolean_source_schema_allowed": false,
+    "wrong_selection_invariant": "any nonselected source value substituted for selected gold fails exact comparison"
   },
   "reserve_equivalence_contract": {
     "contract_id": "g-extract1.reserve-equivalence.v1",
@@ -6440,12 +6503,18 @@
       "field_count": "output field count",
       "operation_node_count": "operation node count",
       "subtype_slot": "frozen E1-01..E7-05 allocation slot",
-      "domain_classes": "canonical object containing the exact subtype row domain plus applicable secondary_temporal_domains, edge_temporal_domain, field_typing_for_numeric_slots, numeric_result_sign_coverage, comparison_pair_types, entity_selected_index, unit_conversion_assignment; entries for other slots omitted, values taken directly from subtype-allocation.v1, never selected by author",
+      "domain_classes": "applicable slot obligations after subtype-content-validation.v1 proves actual content: context comparison row/enum position, temporal predicates, numeric types/signs, selection/unit ID",
       "operation_operand_semantic_types": "one array per stable-topological node in catalog placeholder order with SUM array order; resolved semantic operand tags; ENTITY_FIELD_BIND is [selected source semantic type,STRING,STRING]"
-    }
+    },
+    "validation_sequence": [
+      "derive actual semantics",
+      "validate actual lexical/subtype context",
+      "derive profile from proven actual type/domain/results",
+      "compare bytes; never bypass contamination/gold review"
+    ]
   },
   "subtype_allocation_contract": {
-    "contract_id": "g-extract1.subtype-allocation.v1",
+    "contract_id": "g-extract1.subtype-allocation.v2",
     "applies_identically_to": [
       "A:R2",
       "A:R3",
@@ -6556,31 +6625,31 @@
           "slot_id": "E4-01",
           "operation_shape": "ADD>GT",
           "coverage_class": "C1",
-          "domain": "numeric:ABOVE:strict"
+          "domain": "comparison_slot_matrix[phase:risk_round][slot_id]"
         },
         {
           "slot_id": "E4-02",
           "operation_shape": "SUBTRACT>LTE",
           "coverage_class": "C1",
-          "domain": "numeric:EQUAL:inclusive"
+          "domain": "comparison_slot_matrix[phase:risk_round][slot_id]"
         },
         {
           "slot_id": "E4-03",
           "operation_shape": "CALENDAR_DAY_OFFSET>GTE",
           "coverage_class": "C2",
-          "domain": "date:EQUAL:inclusive"
+          "domain": "comparison_slot_matrix[phase:risk_round][slot_id]"
         },
         {
           "slot_id": "E4-04",
           "operation_shape": "CLOCK_MINUTE_OFFSET>LT",
           "coverage_class": "C2",
-          "domain": "time:BELOW:strict"
+          "domain": "comparison_slot_matrix[phase:risk_round][slot_id]"
         },
         {
           "slot_id": "E4-05",
           "operation_shape": "EQ",
           "coverage_class": "direct_comparison",
-          "domain": "numeric:EQUAL:equality"
+          "domain": "comparison_slot_matrix[phase:risk_round][slot_id]"
         }
       ],
       "E5": [
@@ -6600,7 +6669,7 @@
           "slot_id": "E5-03",
           "operation_shape": "ENTITY_FIELD_BIND",
           "coverage_class": "entities_3:EVENT_ROLE",
-          "domain": "option_a|option_b"
+          "domain": "option_a|option_b|option_c"
         },
         {
           "slot_id": "E5-04",
@@ -6751,17 +6820,58 @@
       ]
     },
     "comparison_boundary_coverage": {
-      "ABOVE": [
-        "E4-01"
-      ],
-      "EQUAL": [
-        "E4-02",
-        "E4-03",
-        "E4-05"
-      ],
-      "BELOW": [
-        "E4-04"
-      ]
+      "A:R2": {
+        "BELOW": [
+          "E4-04",
+          "E4-05"
+        ],
+        "EQUAL": [
+          "E4-03"
+        ],
+        "ABOVE": [
+          "E4-01",
+          "E4-02"
+        ]
+      },
+      "A:R3": {
+        "BELOW": [
+          "E4-01"
+        ],
+        "EQUAL": [
+          "E4-02",
+          "E4-05"
+        ],
+        "ABOVE": [
+          "E4-03",
+          "E4-04"
+        ]
+      },
+      "B:R2": {
+        "BELOW": [
+          "E4-02"
+        ],
+        "EQUAL": [
+          "E4-01",
+          "E4-05"
+        ],
+        "ABOVE": [
+          "E4-03",
+          "E4-04"
+        ]
+      },
+      "B:R3": {
+        "BELOW": [
+          "E4-03",
+          "E4-04"
+        ],
+        "EQUAL": [
+          "E4-02"
+        ],
+        "ABOVE": [
+          "E4-01",
+          "E4-05"
+        ]
+      }
     },
     "comparison_domain_coverage": {
       "numeric": [
@@ -6784,9 +6894,9 @@
       "BOOLEAN": 5,
       "STRING_OR_ENUM_SOURCE_COPY": 1
     },
-    "phase_a_b_structure": "same slot matrix and operation/domain obligations",
-    "phase_a_b_content": "disjoint generated lexical pools, values, gold objects and fingerprints under contamination.v4",
-    "multiplication_note": "MULTIPLY remains catalog-valid but has zero scored allocation in G-EXTRACT1 v7; the fixed five-slot E3 allocation prioritizes SUM, DIVIDE, and UNIT_CONVERSION diagnosed coverage",
+    "phase_a_b_structure": "same operation/type/subtype matrix except explicit context E4 boundary/truth rotation; 3 true/2 false each",
+    "phase_a_b_content": "disjoint generated lexical pools, values, gold objects and fingerprints under contamination.v5",
+    "multiplication_note": "MULTIPLY remains catalog-valid but has zero scored allocation in G-EXTRACT1 v8; the fixed five-slot E3 allocation prioritizes SUM, DIVIDE, and UNIT_CONVERSION diagnosed coverage",
     "blueprint_reallocation_allowed": false,
     "unit_conversion_assignment": {
       "A:R2": "HOURS_TO_MINUTES",
@@ -6917,6 +7027,416 @@
       "A": "absence then supported facts in frozen support-schema order",
       "B": "supported facts in frozen support-schema order then absence",
       "reserve": "first supported fact then absence then remaining supported facts in frozen order"
-    }
+    },
+    "comparison_slot_matrix": {
+      "A:R2": {
+        "E4-01": {
+          "operator": "GT",
+          "operand_domain": "numeric",
+          "boundary_relation": "ABOVE",
+          "gold_boolean": true,
+          "composed_row": "C1",
+          "numeric_promotion_class": "INTEGER_ONLY",
+          "operand_type_pair": [
+            "INTEGER",
+            "INTEGER"
+          ]
+        },
+        "E4-02": {
+          "operator": "LTE",
+          "operand_domain": "numeric",
+          "boundary_relation": "ABOVE",
+          "gold_boolean": false,
+          "composed_row": "C1",
+          "numeric_promotion_class": "MIXED_TO_NUMBER",
+          "operand_type_pair": [
+            "NUMBER",
+            "NUMBER"
+          ]
+        },
+        "E4-03": {
+          "operator": "GTE",
+          "operand_domain": "date",
+          "boundary_relation": "EQUAL",
+          "gold_boolean": true,
+          "composed_row": "C2",
+          "numeric_promotion_class": "NOT_APPLICABLE",
+          "operand_type_pair": [
+            "DATE",
+            "DATE"
+          ]
+        },
+        "E4-04": {
+          "operator": "LT",
+          "operand_domain": "time",
+          "boundary_relation": "BELOW",
+          "gold_boolean": true,
+          "composed_row": "C2",
+          "numeric_promotion_class": "NOT_APPLICABLE",
+          "operand_type_pair": [
+            "TIME",
+            "TIME"
+          ]
+        },
+        "E4-05": {
+          "operator": "EQ",
+          "operand_domain": "numeric",
+          "boundary_relation": "BELOW",
+          "gold_boolean": false,
+          "composed_row": "NONE",
+          "numeric_promotion_class": "NUMBER_ONLY",
+          "operand_type_pair": [
+            "NUMBER",
+            "NUMBER"
+          ]
+        }
+      },
+      "A:R3": {
+        "E4-01": {
+          "operator": "GT",
+          "operand_domain": "numeric",
+          "boundary_relation": "BELOW",
+          "gold_boolean": false,
+          "composed_row": "C1",
+          "numeric_promotion_class": "INTEGER_ONLY",
+          "operand_type_pair": [
+            "INTEGER",
+            "INTEGER"
+          ]
+        },
+        "E4-02": {
+          "operator": "LTE",
+          "operand_domain": "numeric",
+          "boundary_relation": "EQUAL",
+          "gold_boolean": true,
+          "composed_row": "C1",
+          "numeric_promotion_class": "MIXED_TO_NUMBER",
+          "operand_type_pair": [
+            "NUMBER",
+            "NUMBER"
+          ]
+        },
+        "E4-03": {
+          "operator": "GTE",
+          "operand_domain": "date",
+          "boundary_relation": "ABOVE",
+          "gold_boolean": true,
+          "composed_row": "C2",
+          "numeric_promotion_class": "NOT_APPLICABLE",
+          "operand_type_pair": [
+            "DATE",
+            "DATE"
+          ]
+        },
+        "E4-04": {
+          "operator": "LT",
+          "operand_domain": "time",
+          "boundary_relation": "ABOVE",
+          "gold_boolean": false,
+          "composed_row": "C2",
+          "numeric_promotion_class": "NOT_APPLICABLE",
+          "operand_type_pair": [
+            "TIME",
+            "TIME"
+          ]
+        },
+        "E4-05": {
+          "operator": "EQ",
+          "operand_domain": "numeric",
+          "boundary_relation": "EQUAL",
+          "gold_boolean": true,
+          "composed_row": "NONE",
+          "numeric_promotion_class": "NUMBER_ONLY",
+          "operand_type_pair": [
+            "NUMBER",
+            "NUMBER"
+          ]
+        }
+      },
+      "B:R2": {
+        "E4-01": {
+          "operator": "GT",
+          "operand_domain": "numeric",
+          "boundary_relation": "EQUAL",
+          "gold_boolean": false,
+          "composed_row": "C1",
+          "numeric_promotion_class": "INTEGER_ONLY",
+          "operand_type_pair": [
+            "INTEGER",
+            "INTEGER"
+          ]
+        },
+        "E4-02": {
+          "operator": "LTE",
+          "operand_domain": "numeric",
+          "boundary_relation": "BELOW",
+          "gold_boolean": true,
+          "composed_row": "C1",
+          "numeric_promotion_class": "MIXED_TO_NUMBER",
+          "operand_type_pair": [
+            "NUMBER",
+            "NUMBER"
+          ]
+        },
+        "E4-03": {
+          "operator": "GTE",
+          "operand_domain": "date",
+          "boundary_relation": "ABOVE",
+          "gold_boolean": true,
+          "composed_row": "C2",
+          "numeric_promotion_class": "NOT_APPLICABLE",
+          "operand_type_pair": [
+            "DATE",
+            "DATE"
+          ]
+        },
+        "E4-04": {
+          "operator": "LT",
+          "operand_domain": "time",
+          "boundary_relation": "ABOVE",
+          "gold_boolean": false,
+          "composed_row": "C2",
+          "numeric_promotion_class": "NOT_APPLICABLE",
+          "operand_type_pair": [
+            "TIME",
+            "TIME"
+          ]
+        },
+        "E4-05": {
+          "operator": "EQ",
+          "operand_domain": "numeric",
+          "boundary_relation": "EQUAL",
+          "gold_boolean": true,
+          "composed_row": "NONE",
+          "numeric_promotion_class": "NUMBER_ONLY",
+          "operand_type_pair": [
+            "NUMBER",
+            "NUMBER"
+          ]
+        }
+      },
+      "B:R3": {
+        "E4-01": {
+          "operator": "GT",
+          "operand_domain": "numeric",
+          "boundary_relation": "ABOVE",
+          "gold_boolean": true,
+          "composed_row": "C1",
+          "numeric_promotion_class": "INTEGER_ONLY",
+          "operand_type_pair": [
+            "INTEGER",
+            "INTEGER"
+          ]
+        },
+        "E4-02": {
+          "operator": "LTE",
+          "operand_domain": "numeric",
+          "boundary_relation": "EQUAL",
+          "gold_boolean": true,
+          "composed_row": "C1",
+          "numeric_promotion_class": "MIXED_TO_NUMBER",
+          "operand_type_pair": [
+            "NUMBER",
+            "NUMBER"
+          ]
+        },
+        "E4-03": {
+          "operator": "GTE",
+          "operand_domain": "date",
+          "boundary_relation": "BELOW",
+          "gold_boolean": false,
+          "composed_row": "C2",
+          "numeric_promotion_class": "NOT_APPLICABLE",
+          "operand_type_pair": [
+            "DATE",
+            "DATE"
+          ]
+        },
+        "E4-04": {
+          "operator": "LT",
+          "operand_domain": "time",
+          "boundary_relation": "BELOW",
+          "gold_boolean": true,
+          "composed_row": "C2",
+          "numeric_promotion_class": "NOT_APPLICABLE",
+          "operand_type_pair": [
+            "TIME",
+            "TIME"
+          ]
+        },
+        "E4-05": {
+          "operator": "EQ",
+          "operand_domain": "numeric",
+          "boundary_relation": "ABOVE",
+          "gold_boolean": false,
+          "composed_row": "NONE",
+          "numeric_promotion_class": "NUMBER_ONLY",
+          "operand_type_pair": [
+            "NUMBER",
+            "NUMBER"
+          ]
+        }
+      }
+    },
+    "comparison_truth_invariant": {
+      "true_count_per_phase_round": 3,
+      "false_count_per_phase_round": 2,
+      "constant_true_baseline_score": "3/5",
+      "constant_false_baseline_score": "2/5",
+      "both_constants_fail_family_floor_4_of_5": true,
+      "rotation_rule": "each operator has both true and false across exact contexts; not independence from observable position"
+    },
+    "enum_answer_positions": {
+      "A:R2": {
+        "E5-03": 0,
+        "E7-04": 1
+      },
+      "A:R3": {
+        "E5-03": 1,
+        "E7-04": 0
+      },
+      "B:R2": {
+        "E5-03": 2,
+        "E7-04": 1
+      },
+      "B:R3": {
+        "E5-03": 1,
+        "E7-04": 0
+      }
+    },
+    "enum_position_rule": "zero-based schema index; E5-03 has three options, entity i receives option[(i-selected_index+gold_index) mod 3]; E7-04 support enum uses exact context index; E6 no enum slot; missing not_provided excluded from ordinary balancing"
+  },
+  "historical_fingerprint_adapter_contract": {
+    "contract_id": "g-extract1.historical-fingerprint-adapter.v1",
+    "recoverability": "fixture_id/task_class/input.schema/input.text/prompt available; no typed graph/entity/fact roles; never reconstruct unavailable semantics",
+    "artifact_bindings": [
+      {
+        "path": "experiments/G-ROUTE4-candidate/sealed/corpus_a.json",
+        "sha256": "6eb8683581fc66f6d445eaed38120415edb05c4779bf082b6c27ef10f899e82d"
+      },
+      {
+        "path": "experiments/G-ROUTE4-candidate/sealed/corpus_b.json",
+        "sha256": "f8d93db6bde59f548c5792ad7717fad6238f70a755550391ec7c855a39afc1bf"
+      },
+      {
+        "path": "experiments/G-ROUTE4-candidate/sealed/reserve_corpus_a.json",
+        "sha256": "cd5d5c4325c1fd476989082c18a9164150ef32763d3d46d2b144e5bb3afd30e9"
+      },
+      {
+        "path": "experiments/G-ROUTE4-candidate/sealed/reserve_corpus_b.json",
+        "sha256": "1f1eced43fb4e2b34acc21e96d5f6c991f3e328fab17bb8ad6e6e1b110d5c088"
+      }
+    ],
+    "expected_historical_extraction_count": 106,
+    "selection": "listed artifact order then fixtures array order; task_class exactly structured_extraction; historical duplicates remain distinct inputs",
+    "projection_component_order": [
+      "output_schema_signature",
+      "source_token_kind_sequence",
+      "instruction_surface_sequence"
+    ],
+    "output_schema_signature": "parse schema-types.v1; [semantic_tag,enum_option_count] per output, primitive count 0; duplicates retained, compact row bytes sorted UTF-8; no field names/enum lexemes",
+    "source_token_kind_sequence": "NFC/casefold/CRLF-or-CR-to-LF/Unicode whitespace collapse; frozen ASCII tokenizer; full DATE/TIME/NUMBER regex selects kind, otherwise IDENTIFIER; preserve order/duplicates; lexical shapes, not source semantic tags",
+    "instruction_surface_sequence": "require exact terminal historical suffix (template minus {SUBJECT}); strip only that suffix; normalize SUBJECT as above; ASCII re.finditer catalog alternation order; emit surface IDs, never operation/dependency semantics",
+    "surface_catalog": [
+      {
+        "id": "GTE_WORDS",
+        "regex": "\\bgreater than or equal to\\b"
+      },
+      {
+        "id": "LTE_WORDS",
+        "regex": "\\bless than or equal to\\b"
+      },
+      {
+        "id": "GT_WORDS",
+        "regex": "\\bgreater than\\b"
+      },
+      {
+        "id": "LT_WORDS",
+        "regex": "\\bless than\\b"
+      },
+      {
+        "id": "EQ_WORDS",
+        "regex": "\\bequal to\\b"
+      },
+      {
+        "id": "MORE_THAN",
+        "regex": "\\bmore than\\b"
+      },
+      {
+        "id": "AT_LEAST",
+        "regex": "\\bat least\\b"
+      },
+      {
+        "id": "AT_MOST",
+        "regex": "\\bat most\\b"
+      },
+      {
+        "id": "PLUS",
+        "regex": "\\bplus\\b"
+      },
+      {
+        "id": "MINUS",
+        "regex": "\\bminus\\b"
+      },
+      {
+        "id": "TIMES",
+        "regex": "\\btimes\\b"
+      },
+      {
+        "id": "DIVIDED_BY",
+        "regex": "\\bdivided by\\b"
+      },
+      {
+        "id": "SUM_OF",
+        "regex": "\\b(?:the )?sum of\\b"
+      },
+      {
+        "id": "BEFORE",
+        "regex": "\\bbefore\\b"
+      },
+      {
+        "id": "AFTER",
+        "regex": "\\bafter\\b"
+      }
+    ],
+    "source_kind_regex": {
+      "DATE": "[0-9]{4}-[0-9]{2}-[0-9]{2}",
+      "TIME": "[0-9]{2}:[0-9]{2}",
+      "NUMBER": "[+-]?(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:e[+-]?[0-9]+)?"
+    },
+    "serialization": "UTF-8 compact JSON array in component order; ensure_ascii=true; comma/colon separators; no newline",
+    "new_projection": "validate canonical fixture/subtype; render source facts/schema/catalog SUBJECT/full prompt; apply identical projection to rendered input/schema/prompt",
+    "unavailable_components": "omitted on both sides, no sentinel/fabricated graph/entity/fact roles",
+    "historical_new_collision": "3/3 equal => prohibited regardless of Jaccard",
+    "historical_new_near_replay": "at least 2/3 equal AND existing payload token-5gram Jaccard>=0.12 => prohibited",
+    "new_new": "unchanged full six typed-layout components; collision rules unchanged; near replay >=5/6 plus Jaccard>=0.12",
+    "jaccard_gate": "every payload pair strictly <0.20",
+    "rationale": "separate conservative observable check, at most one differing component for near replay; not recovered semantic independence; exact reuse/human review still mandatory",
+    "unsupported_handling": "wrong/missing types, unsupported schema, empty tokens, suffix/digest mismatch or unstable bytes => BLOCK_AUTHORING_AND_FREEZE, path/fixture/reason reported; never skip/invent",
+    "independence": "both independent contamination modules compare these bytes and all existing new/new outputs; disagreement blocks freeze"
+  },
+  "subtype_content_validation_contract": {
+    "contract_id": "g-extract1.subtype-content-validation.v1",
+    "context": "exact lexical_context keys phase,risk_round,fixture_ordinal,primary_family_slot,within_family_slot; computed ordinal; within_family_slot 01..05 primary or null reserve; reserve only01",
+    "sequence": [
+      "typed semantics/gold",
+      "generated lexical context",
+      "actual operation shape/output count/schema",
+      "resolved operand types/promotion",
+      "sign/SUM count/conversion",
+      "comparison matrix/orientation",
+      "temporal slot predicates",
+      "entity row/enum permutation",
+      "E7 support mix/order",
+      "then reserve profile"
+    ],
+    "numeric": "field_typing_for_numeric_slots exact resolved first-node types; three SUM operands; exact sign/nonintegral DIVIDE; exact context conversion",
+    "comparison": "exact matrix operator/domain/boundary/truth/pair; upstream left argument in composed slots; direct EQ two NUMBER source fields",
+    "temporal": "evaluate actual source/result then exact slot calendar interval/range/Feb29/month/year/edge predicates, positive clock exact rollover, elapsed >/< /== by slot",
+    "entity": "complete pairwise-distinct population; exact row count/role/schema/selected index and E5-03 option permutation",
+    "E6": "EXACT_COPY(source) requires field_identifier; temporal-copy schema/domain exact",
+    "E7": "zero-node shape plus exact output/source counts and support order; no extras/entities; generated bindings; A absence-first/B-last/reserve between support1/2; support enum gold index fixed",
+    "any_mismatch": "AUTHORING_ERROR before profile; never copy unproven declaration",
+    "non_scored_mechanical_vectors": "existing validator vectors may be reindexed to exact lexical slot context for deterministic checking only; no scored/reserve corpus created"
   }
 }

@@ -11,6 +11,7 @@ import math
 from pathlib import Path
 import re
 import subprocess
+import unicodedata
 from typing import Any
 
 
@@ -508,6 +509,7 @@ def validate_entity_population(
         raise ValueError("non_entity_duplicate")
     selector_schemas, source_schemas = set(), set()
     selected_source = None
+    source_values = []
     for entity in entities:
         label = entity["selector_value"]
         selector_matches = [x for x in scoped if x["entity_selector_value"] == label and x["field_identifier"] == selector_field and x["template_id"] == "VALUE"]
@@ -520,6 +522,11 @@ def validate_entity_population(
             raise ValueError("entity_selector_fact")
         selector_schemas.add(selector_schema)
         source_schemas.add(source_schema)
+        if any(source_value == previous for previous in source_values):
+            raise ValueError("entity_source_values_not_distinct")
+        source_values.append(source_value)
+        if source_type == "BOOLEAN":
+            raise ValueError("entity_boolean_source_prohibited")
         if label == selected:
             selected_source = (source_type, source_value, source_schema)
     if len(selector_schemas) != 1 or len(source_schemas) != 1 or selected_source is None:
@@ -1002,6 +1009,8 @@ def canonical_answer_bytes(answer: dict[str, dict[str, Any]], schema_contract: d
 
 
 def identity_reuse(left: list[list[str]], right: list[list[str]]) -> bool:
+    if any(not isinstance(atom, list) or len(atom) != 2 or atom[0] not in {"IDENTIFIER", "ENTITY"} or not isinstance(atom[1], str) for atom in left + right):
+        raise ValueError("identity_comparison_atom_shape")
     encode = lambda atom: json.dumps(atom, ensure_ascii=True, separators=(",", ":"))
     return bool({encode(item) for item in left} & {encode(item) for item in right})
 
@@ -1087,6 +1096,8 @@ def reserve_decision(vector: dict[str, Any]) -> str:
         return "NO_ACTIVATION"
     if len(defective) != 1:
         return "STOP_AUTHORING"
+    if re.fullmatch(r"[AB]-R[23]-E[1-7]-01", defective[0], re.ASCII) is None:
+        return "STOP_AUTHORING"
     return "ACTIVATE_SINGLE_RESERVE" if defective == vector["profile_matches"] else "STOP_AUTHORING"
 
 
@@ -1170,7 +1181,231 @@ def typed_operands(fixture: dict[str, Any], contract: dict[str, Any], derived: d
     return resolve
 
 
+def fixture_ordinal(phase: str, risk: str, family: str, index: int, reserve: bool) -> int:
+    p = {"A": 0, "B": 84}[phase]
+    f = int(family[1:]) - 1
+    return 71 + p + {"R2": 0, "R3": 7}[risk] + f if reserve else 1 + p + {"R2": 0, "R3": 35}[risk] + f * 5 + index - 1
+
+
+def validate_subtype_fixture(fixture: dict[str, Any], slot: dict[str, Any], contract: dict[str, Any]) -> None:
+    family, index_text = slot["slot_id"].split("-")
+    index = int(index_text)
+    allocation = contract["subtype_allocation_contract"]
+    row = next(x for x in allocation["slot_rows"][family] if x["slot_id"] == slot["slot_id"])
+    nodes = stable_topological_nodes(fixture["operation_nodes"])
+    schema = contract["schema_type_contract"]
+    fields = fixture["output_fields"]
+    if family == "E7":
+        validate_e7_fixture(fixture, contract)
+        derived = {}
+    else:
+        derived = validate_fixture_semantics(fixture, schema, contract["operation_definition_contract"], contract["operation_semantics_contract"], contract["entity_population_contract"])
+    context = fixture["lexical_context"]
+    phase, risk = context["phase"], context["risk_round"]
+    reserve = context["within_family_slot"] is None
+    if risk != slot["risk_round"] or phase != slot.get("phase", phase) or (reserve and index != 1):
+        raise ValueError("subtype_context")
+    ordinal = fixture_ordinal(phase, risk, family, index, reserve)
+    expected = dict(phase=phase, risk_round=risk, fixture_ordinal=ordinal, primary_family_slot=family, within_family_slot=None if reserve else index_text)
+    if context != expected:
+        raise ValueError("subtype_lexical_context")
+    validate_lexical_fixture(fixture, contract, ordinal)
+    if len(fields) != allocation["output_field_counts"].get(slot["slot_id"], allocation["output_field_counts"].get(family)):
+        raise ValueError("subtype_output_count")
+    if family == "E7":
+        facts = fixture["source_fact_records"]
+        absence = [x for x in facts if x["template_id"] == "EXPLICIT_ABSENCE"]
+        support = [x for x in facts if x["template_id"] == "VALUE"]
+        if len(absence) != 1 or len(facts) != len(fields) or [x["schema_type"] for x in support] != row["domain"]:
+            raise ValueError("e7_slot_support_shape")
+        ordered = [support[0], absence[0], *support[1:]] if reserve else [absence[0], *support] if phase == "A" else [*support, absence[0]]
+        if facts != ordered:
+            raise ValueError("e7_slot_presentation")
+        for fact in support:
+            if "|" in fact["schema_type"]:
+                option_index = allocation["enum_answer_positions"][f"{phase}:{risk}"][slot["slot_id"]]
+                if fact["value"]["value"] != fact["schema_type"].split("|")[option_index]:
+                    raise ValueError("enum_answer_position")
+        return
+    shape = ">".join(x["id"] for x in nodes)
+    if shape != row["operation_shape"].replace("(source)", ""):
+        raise ValueError("subtype_operation_shape")
+    if family == "E6" and index <= 3 and nodes[0]["arguments"]["source_field"]["kind"] != "field_identifier":
+        raise ValueError("subtype_copy_source")
+    resolve = typed_operands(fixture, contract, derived)
+    values, boundary, temporal = evaluate_fixture(fixture)
+    types = []
+    for node in nodes:
+        if node["id"] == "ENTITY_FIELD_BIND":
+            continue
+        op = next(x for x in contract["operation_definition_contract"]["catalog"] if x["id"] == node["id"])
+        operands = [raw for key in op["placeholders"] if key != "target" for raw in (node["arguments"][key] if isinstance(node["arguments"][key], list) else [node["arguments"][key]])]
+        types.append([resolve(x)[0] for x in operands])
+    if slot["slot_id"] in allocation["field_typing_for_numeric_slots"] and types[0] != allocation["field_typing_for_numeric_slots"][slot["slot_id"]]:
+        raise ValueError("subtype_operand_types")
+    sign = allocation["numeric_result_sign_coverage"].get(slot["slot_id"])
+    if sign:
+        value = derived[nodes[0]["target"]]["value"]
+        if sign.startswith("positive") and value <= 0 or sign == "negative" and value >= 0 or sign == "positive_non_integral" and _fraction(value).denominator == 1:
+            raise ValueError("subtype_numeric_sign")
+    if family == "E3" and index == 3 and len(nodes[0]["arguments"]["operands"]) != 3:
+        raise ValueError("subtype_sum_count")
+    if family == "E3" and index == 5 and nodes[0]["conversion_id"] != allocation["unit_conversion_assignment"][f"{phase}:{risk}"]:
+        raise ValueError("subtype_conversion")
+    if family == "E4":
+        expected_comparison = allocation["comparison_slot_matrix"][f"{phase}:{risk}"][slot["slot_id"]]
+        comparison = nodes[-1]
+        pair = [resolve(comparison["arguments"][key])[0] for key in ("left", "right")]
+        if comparison["id"] != expected_comparison["operator"] or boundary != expected_comparison["boundary_relation"] or pair != expected_comparison["operand_type_pair"] or derived[comparison["target"]]["value"] != expected_comparison["gold_boolean"]:
+            raise ValueError("subtype_comparison_matrix")
+        if index <= 4 and comparison["arguments"]["left"] != {"kind": "derived_field_identifier", "value": nodes[0]["target"]}:
+            raise ValueError("subtype_comparison_orientation")
+        if index == 5 and any(comparison["arguments"][key]["kind"] != "field_identifier" for key in ("left", "right")):
+            raise ValueError("subtype_direct_comparison_sources")
+    if family == "E5":
+        population = fixture["entities"]
+        count, role = row["coverage_class"].split(":")
+        selected = nodes[0]["arguments"]["selector_value"]["value"]
+        if len(population) != int(count.split("_")[1]) or any(x["selector_role"] != role for x in population) or selected != population[allocation["entity_selected_index"][slot["slot_id"]]]["selector_value"] or fields[0]["schema_type"] != row["domain"]:
+            raise ValueError("subtype_entity_population")
+        if index == 3:
+            source = nodes[0]["arguments"]["source_field"]["value"]
+            gold_index = allocation["enum_answer_positions"][f"{phase}:{risk}"][slot["slot_id"]]
+            selected_index = allocation["entity_selected_index"][slot["slot_id"]]
+            for i, entity in enumerate(population):
+                fact = next(x for x in fixture["source_fact_records"] if x["field_identifier"] == source and x["entity_selector_value"] == entity["selector_value"])
+                if fact["value"]["value"] != row["domain"].split("|")[(i - selected_index + gold_index) % len(population)]:
+                    raise ValueError("enum_entity_permutation")
+    if family == "E6" and fields[0]["schema_type"] != row["domain"]:
+        raise ValueError("subtype_copy_schema")
+    temporal_nodes = [x for x in nodes if x["id"] in {"CALENDAR_DAY_OFFSET", "CLOCK_MINUTE_OFFSET", "ELAPSED_MINUTES"}]
+    if temporal_nodes:
+        node = temporal_nodes[0]
+        args = node["arguments"]
+        if node["id"] == "CALENDAR_DAY_OFFSET":
+            start, offset = resolve(args["date"])[1], resolve(args["days"])[1]
+            end = derived[node["target"]]["value"]
+            if family == "E1":
+                valid = {1: 1 <= offset <= 27 and temporal == "DATE_WITHIN_MONTH", 2: 1 <= offset <= 31 and temporal == "MONTH_BOUNDARY", 3: 1 <= offset <= 31 and temporal == "YEAR_BOUNDARY", 4: start != end and temporal == "LEAP_DAY_BOUNDARY", 5: offset == (0 if risk == "R2" else 366) and temporal == ("DATE_WITHIN_MONTH" if risk == "R2" else "YEAR_BOUNDARY")}[index]
+            else:
+                valid = 1 <= offset <= 31 and temporal == ("MONTH_BOUNDARY" if family == "E4" else "YEAR_BOUNDARY")
+            if not valid:
+                raise ValueError("subtype_calendar_boundary")
+        elif node["id"] == "CLOCK_MINUTE_OFFSET":
+            offset = resolve(args["minutes"])[1]
+            required = "SAME_DAY_FORWARD" if family == "E2" and index == 1 else "MIDNIGHT_ROLLOVER"
+            if offset <= 0 or temporal != required:
+                raise ValueError("subtype_clock_boundary")
+        else:
+            start, end = (_minutes(resolve(args[key])[1]) for key in ("start", "end"))
+            if not {3: end > start, 4: end < start, 5: end == start}[index]:
+                raise ValueError("subtype_elapsed_boundary")
+
+
+def historical_projection(fixture: dict[str, Any], contract: dict[str, Any]) -> bytes:
+    adapter = contract["historical_fingerprint_adapter_contract"]
+    if not isinstance(fixture, dict) or not isinstance(fixture.get("input"), dict):
+        raise ValueError("legacy_input_object")
+    payload = fixture["input"]
+    schema = payload.get("schema")
+    if not isinstance(schema, dict) or not schema or any(not isinstance(k, str) or not isinstance(v, str) for k, v in schema.items()):
+        raise ValueError("legacy_schema_object")
+    if not isinstance(payload.get("text"), str) or not isinstance(fixture.get("prompt"), str):
+        raise ValueError("legacy_text_or_prompt_type")
+    tags = []
+    for value in schema.values():
+        info = parse_schema_type(value, contract["schema_type_contract"])
+        tags.append([info["semantic_tag"], len(info.get("options", []))])
+    tags.sort(key=lambda x: json.dumps(x, separators=(",", ":")).encode())
+    normalize = lambda x: " ".join(unicodedata.normalize("NFC", x.replace("\r\n", "\n").replace("\r", "\n")).casefold().split())
+    token_pattern = re.compile(contract["contamination_contract"]["tokenizer"]["pattern"], re.ASCII)
+    tokens = token_pattern.findall(normalize(fixture["input"]["text"]))
+    shapes = [next((kind for kind in ("DATE", "TIME", "NUMBER") if re.fullmatch(adapter["source_kind_regex"][kind], token, re.ASCII)), "IDENTIFIER") for token in tokens]
+    suffix = contract["baseline_binding"]["structured_extraction_assembled_template"].replace("{SUBJECT}", "")
+    prompt = fixture["prompt"]
+    if not prompt.endswith(suffix) or not tokens:
+        raise ValueError("legacy_projection_shape_or_suffix")
+    subject = normalize(prompt[:-len(suffix)])
+    pattern = "|".join("(?P<S%d>%s)" % (i, row["regex"]) for i, row in enumerate(adapter["surface_catalog"]))
+    surface = [adapter["surface_catalog"][int(x.lastgroup[1:])]["id"] for x in re.finditer(pattern, subject, re.ASCII)]
+    return json.dumps([tags, shapes, surface], ensure_ascii=True, separators=(",", ":")).encode()
+
+
+def historical_adaptation_summary(contract: dict[str, Any]) -> dict[str, Any]:
+    examined, adapted, rejected, evidence, artifacts = 0, 0, [], [], []
+    for item in contract["historical_fingerprint_adapter_contract"]["artifact_bindings"]:
+        path = ROOT / item["path"]
+        if sha256(path) != item["sha256"]:
+            raise ValueError("historical_input_digest")
+        artifact_examined, artifact_adapted = 0, 0
+        for fixture in load_json_unique(path)["fixtures"]:
+            if fixture["task_class"] != "structured_extraction":
+                continue
+            examined += 1
+            artifact_examined += 1
+            try:
+                first = historical_projection(fixture, contract)
+                if first != historical_projection(fixture, contract):
+                    raise ValueError("unstable_projection")
+            except (KeyError, ValueError, TypeError) as error:
+                rejected.append(dict(path=item["path"], fixture_id=fixture.get("fixture_id"), reason=str(error)))
+            else:
+                adapted += 1
+                artifact_adapted += 1
+                evidence.append([item["path"], fixture["fixture_id"], json.loads(first)])
+        artifacts.append(dict(path=item["path"], examined=artifact_examined, adapted=artifact_adapted, rejected=artifact_examined-artifact_adapted))
+    digest = hashlib.sha256(json.dumps(evidence, ensure_ascii=True, separators=(",", ":")).encode()).hexdigest()
+    return dict(examined=examined, adapted=adapted, rejected=len(rejected), rejection_reasons=rejected, artifacts=artifacts, projection_evidence_sha256=digest)
+
+
+def historical_structural_replay(left: bytes, right: bytes, jaccard: float) -> bool:
+    lhs, rhs = json.loads(left), json.loads(right)
+    if len(lhs) != 3 or len(rhs) != 3 or not 0 <= jaccard <= 1:
+        raise ValueError("legacy_comparison_shape")
+    equal = sum(a == b for a, b in zip(lhs, rhs))
+    return equal == 3 or (equal >= 2 and jaccard >= 0.12)
+
+
+def similarity_vector_payload(request: dict[str, Any]) -> str:
+    schema = request["input"]["schema"]
+    rendered = "\n".join(f"{key}={schema[key]}" for key in sorted(schema, key=lambda key: key.encode("utf-8")))
+    payload = request["input"]["text"] + "\n" + rendered
+    return " ".join(unicodedata.normalize("NFC", payload.replace("\r\n", "\n").replace("\r", "\n")).casefold().split())
+
+
+def slot_vector(fixture: dict[str, Any], slot: dict[str, Any], reserve: bool = False) -> dict[str, Any]:
+    """Reindex isolated design test vectors; never write corpus records."""
+    phase, risk = slot.get("phase", "A"), slot["risk_round"]
+    family, index = slot["slot_id"].split("-")
+    ordinal = fixture_ordinal(phase, risk, family, int(index), reserve)
+    names = list(dict.fromkeys(x["field_identifier"] for x in fixture["source_fact_records"]))
+    mapping = {name: f"f{ordinal:03d}_{i:02d}" for i, name in enumerate(names, 1)}
+    mapping.update({x["target"]: f"d{ordinal:03d}_{i:02d}" for i, x in enumerate(stable_topological_nodes(fixture["operation_nodes"]), 1)})
+    mapping.update({x["selector_value"]: f"Entity {ordinal:03d} {chr(ord('A') + i)}" for i, x in enumerate(fixture.get("entities", []))})
+    strings = list(dict.fromkeys(x["value"]["value"] for x in fixture["source_fact_records"] if x["value"] and x["value"]["kind"] == "string_literal"))
+    mapping.update({value: f"{('label','code','id')[(i-1)%3]}_{ordinal:03d}_{i:02d}" for i, value in enumerate(strings, 1)})
+    def renamed(value: Any) -> Any:
+        if isinstance(value, dict): return {mapping.get(k, k): renamed(v) for k, v in value.items()}
+        if isinstance(value, list): return [renamed(x) for x in value]
+        return mapping.get(value, value) if isinstance(value, str) else value
+    result = renamed(fixture)
+    result["output_fields"].sort(key=lambda x: x["name"].encode())
+    result["lexical_context"] = dict(phase=phase, risk_round=risk, fixture_ordinal=ordinal, primary_family_slot=family, within_family_slot=None if reserve else index)
+    return result
+
+
+def new_fixture_projection(fixture: dict[str, Any], slot: dict[str, Any], contract: dict[str, Any]) -> bytes:
+    validate_subtype_fixture(fixture, slot, contract)
+    context = fixture["lexical_context"]
+    family_index = int(context["primary_family_slot"][1:]) - 1
+    operation = contract["operation_definition_contract"]
+    subject = render_subject(dict(record_type=contract["lexical_neutrality_contract"]["record_type_catalog_by_phase"][context["phase"]][family_index], nodes=fixture["operation_nodes"], include_absence_sentence=not fixture["operation_nodes"]), operation)
+    request = dict(input=dict(schema={x["name"]: x["schema_type"] for x in fixture["output_fields"]}, text=" ".join(render_fact(x, operation["placeholder_type_system"], contract["schema_type_contract"]) for x in fixture["source_fact_records"])), prompt=assemble_prompt(subject, contract["baseline_binding"]))
+    return historical_projection(request, contract)
+
+
 def reserve_profile_bytes(fixture: dict[str, Any], slot: dict[str, Any], contract: dict[str, Any]) -> bytes:
+    validate_subtype_fixture(fixture, slot, contract)
     nodes = stable_topological_nodes(fixture["operation_nodes"])
     is_e7 = not nodes
     if is_e7:
@@ -1207,6 +1442,9 @@ def reserve_profile_bytes(fixture: dict[str, Any], slot: dict[str, Any], contrac
     allocation = contract["subtype_allocation_contract"]
     allocated = next(x for x in allocation["slot_rows"][family] if x["slot_id"]==slot_id)
     domain_classes = {"slot_domain":allocated["domain"]}
+    context_key = f"{fixture['lexical_context']['phase']}:{fixture['lexical_context']['risk_round']}"
+    if family == "E4": domain_classes["comparison_slot"] = allocation["comparison_slot_matrix"][context_key][slot_id]
+    if slot_id in allocation["enum_answer_positions"][context_key]: domain_classes["enum_answer_position"] = allocation["enum_answer_positions"][context_key][slot_id]
     for name in ("secondary_temporal_domains","field_typing_for_numeric_slots","numeric_result_sign_coverage","comparison_pair_types","entity_selected_index"):
         if slot_id in allocation.get(name,{}):
             domain_classes[name]=allocation[name][slot_id]
@@ -1307,7 +1545,7 @@ def validate_v7(contract: dict[str, Any], checks: list[str]) -> None:
     for vector in semantics["exact_schema_identity_for_preserving_operations"]["test_vectors"]:
         v=copy.deepcopy(base)
         for source in v["source_fact_records"]:
-            if source["field_identifier"]=="f001_02":source.update(schema_type=vector["source"],value=dict(kind="enum_literal",value="option_a"))
+            if source["field_identifier"]=="f001_02":source.update(schema_type=vector["source"],value=dict(kind="enum_literal",value="option_a" if source["entity_selector_value"]=="Entity 001 A" else "option_b"))
         v["output_fields"][0]["schema_type"]=vector["output"]
         v["gold_values"]["d001_01"]="option_a"
         test_fixture(v,vector["expected"],f"entity_enum_identity:{vector['source']}:{vector['output']}")
@@ -1362,7 +1600,7 @@ def validate_v7(contract: dict[str, Any], checks: list[str]) -> None:
     require([x["operation_shape"] for x in allocation["slot_rows"]["E3"]]==["ADD","SUBTRACT","SUM","DIVIDE>EXACT_COPY","UNIT_CONVERSION>EXACT_COPY"],"numeric_subtypes_exact",checks)
     require(set(allocation["numeric_promotion_coverage"])=={"INTEGER_ONLY","NUMBER_ONLY","MIXED_TO_NUMBER","DIVIDE_TO_NUMBER","UNIT_CONVERSION_TO_NUMBER"},"promotion_coverage_exact",checks)
     require(set(allocation["comparison_operator_coverage"])=={"GT","GTE","LT","LTE","EQ"},"comparison_operators_exact",checks)
-    require(set(allocation["comparison_boundary_coverage"])=={"BELOW","EQUAL","ABOVE"},"comparison_boundaries_exact",checks)
+    require(all(set(x)=={"BELOW","EQUAL","ABOVE"} for x in allocation["comparison_boundary_coverage"].values()),"comparison_boundaries_exact",checks)
     composed=[s for slots in allocation["composed_rows"].values() for s in slots]
     require(len(composed)==8 and len(set(composed))==8,"subtype_eight_distinct_composed_slots",checks)
     support_shapes=[x["domain"] for x in allocation["slot_rows"]["E7"]]
@@ -1372,17 +1610,21 @@ def validate_v7(contract: dict[str, Any], checks: list[str]) -> None:
     # Profile equality is checked as bytes from canonical typed fixtures, not selected fields.
     numeric=copy.deepcopy(semantics["validation_vectors"][0]["fixture"])
     slot={"slot_id":"E3-01","risk_round":"R2","domain":"INTEGER_ONLY"}
-    a=reserve_profile_bytes(numeric,slot,contract)
-    require(a==reserve_profile_bytes(copy.deepcopy(numeric),slot,contract),"reserve_profile_identical_bytes",checks)
+    profile = lambda fixture, position, reserve=False: reserve_profile_bytes(slot_vector(fixture, position, reserve), position, contract)
+    a=profile(numeric,slot)
+    require(a==profile(copy.deepcopy(numeric),slot),"reserve_profile_identical_bytes",checks)
     fabricated=copy.deepcopy(slot);fabricated["domain"]="author-selected arbitrary domain"
-    require(a==reserve_profile_bytes(numeric,fabricated,contract),"reserve_domain_derived_from_frozen_matrix",checks)
+    require(a==profile(numeric,fabricated),"reserve_domain_derived_from_frozen_matrix",checks)
     n=copy.deepcopy(numeric)
     for x in n["source_fact_records"]:x["schema_type"]="number"
     n["output_fields"][0]["schema_type"]="number"
-    b=reserve_profile_bytes(n,slot,contract)
-    require(a!=b,"reserve_profile_integer_number_mismatch",checks)
+    try: profile(n,slot)
+    except ValueError: checks.append("reserve_wrong_integer_number_slot_rejected")
+    else: raise AssertionError("reserve_wrong_integer_number_slot_accepted")
     m=copy.deepcopy(numeric);m["source_fact_records"][1]["schema_type"]="number";m["output_fields"][0]["schema_type"]="number"
-    require(a!=reserve_profile_bytes(m,slot,contract),"reserve_profile_promotion_mismatch",checks)
+    try: profile(m,slot)
+    except ValueError: checks.append("reserve_wrong_promotion_slot_rejected")
+    else: raise AssertionError("reserve_wrong_promotion_slot_accepted")
     absent=copy.deepcopy(e7)
     absent["source_fact_records"][2]["schema_type"]="integer"
     absent["source_fact_records"][2]["value"]={"kind":"integer_literal","value":"4"}
@@ -1398,7 +1640,7 @@ def validate_v7(contract: dict[str, Any], checks: list[str]) -> None:
     moved["output_fields"].sort(key=lambda x:x["name"])
     moved["gold_values"]={mapping[k]:v for k,v in moved["gold_values"].items()}
     validate_e7_fixture(moved,contract);validate_lexical_fixture(moved,contract,1)
-    require(reserve_profile_bytes(absent,absent_slot,contract)==reserve_profile_bytes(moved,absent_slot,contract),"e7_reserve_profile_preserves_types_across_frozen_order",checks)
+    require(profile(absent,absent_slot)==profile(moved,absent_slot,True),"e7_reserve_profile_preserves_types_across_frozen_order",checks)
     require(fingerprint_bytes({"fixture":absent},operation)!=fingerprint_bytes({"fixture":moved},operation),"e7_typed_layout_distinguishes_primary_reserve",checks)
     conversion = {
         "operation_nodes":[dict(id="UNIT_CONVERSION",conversion_id="HOURS_TO_MINUTES",target="d001_01",arguments={"source":dict(kind="field_identifier",value="f001_01")}),dict(id="EXACT_COPY",target="d001_02",arguments={"source_field":dict(kind="derived_field_identifier",value="d001_01")})],
@@ -1406,9 +1648,11 @@ def validate_v7(contract: dict[str, Any], checks: list[str]) -> None:
         "output_fields":[field("d001_02","OPERATION_TARGET","number",producer="d001_02")],"gold_values":{"d001_02":"120.0"},
     }
     cs={"slot_id":"E3-05","risk_round":"R2","domain":"UNIT_CONVERSION_TO_NUMBER"}
-    c1=reserve_profile_bytes(conversion,cs,contract)
+    c1=profile(conversion,cs)
     conversion["operation_nodes"][0]["conversion_id"]="KILOGRAMS_TO_GRAMS";conversion["gold_values"]["d001_02"]="2000.0"
-    require(c1!=reserve_profile_bytes(conversion,cs,contract),"reserve_profile_derived_conversion_id_mismatch",checks)
+    try: profile(conversion,cs)
+    except ValueError: checks.append("reserve_wrong_conversion_slot_rejected")
+    else: raise AssertionError("reserve_wrong_conversion_slot_accepted")
     for vector in contract["reserve_equivalence_contract"]["test_vectors"]:
         require((json.dumps(vector["left"],sort_keys=True,separators=(",",":"))==json.dumps(vector["right"],sort_keys=True,separators=(",",":")))==vector["expected"],f"reserve_profile_differential:{vector['id']}",checks)
     # Field/derived references in atom tuples use their resolved schema/result tags.
@@ -1426,6 +1670,231 @@ def validate_v7(contract: dict[str, Any], checks: list[str]) -> None:
             try:render_operand({"kind":kind,"value":atoms_input},operation["placeholder_type_system"])
             except ValueError:checks.append(f"render_reject_coaching:{kind}:{atoms_input}")
             else:raise AssertionError(f"render_accept_coaching:{kind}:{atoms_input}")
+
+
+def validate_v8(contract: dict[str, Any], checks: list[str]) -> None:
+    schema, operation, semantics = (contract[x] for x in ("schema_type_contract", "operation_definition_contract", "operation_semantics_contract"))
+    allocation = contract["subtype_allocation_contract"]
+    summary = historical_adaptation_summary(contract)
+    require(summary["examined"] == summary["adapted"] == 106 and summary["rejected"] == 0, "historical_106_adapted_zero_rejections", checks)
+    require(summary == historical_adaptation_summary(contract), "historical_projection_repeat_identical", checks)
+    for binding in contract["historical_fingerprint_adapter_contract"]["artifact_bindings"]:
+        rows = [x for x in load_json_unique(ROOT / binding["path"])["fixtures"] if x["task_class"] == "structured_extraction"]
+        for historical in rows:
+            encoded = historical_projection(historical, contract)
+            require(encoded == historical_projection(historical, contract) and len(json.loads(encoded)) == 3, f"historical_projection:{binding['path']}:{historical['fixture_id']}", checks)
+    historical = copy.deepcopy(rows[0])
+    for name, mutation in (
+        ("missing_input", lambda x: x.pop("input")),
+        ("schema_not_object", lambda x: x["input"].update(schema=[])),
+        ("unsupported_schema", lambda x: x["input"].update(schema={"field": "date"})),
+        ("text_not_string", lambda x: x["input"].update(text=None)),
+        ("empty_tokens", lambda x: x["input"].update(text="")),
+        ("prompt_not_string", lambda x: x.update(prompt=None)),
+        ("suffix_mismatch", lambda x: x.update(prompt="different prompt")),
+    ):
+        broken = copy.deepcopy(historical); mutation(broken)
+        try: historical_projection(broken, contract)
+        except ValueError: checks.append(f"historical_unsupported_blocks:{name}")
+        else: raise AssertionError(f"historical_unsupported_accepted:{name}")
+    encoded = historical_projection(historical, contract)
+    changed = json.loads(encoded); changed[2] = ["unmatched_surface"]
+    changed_bytes = json.dumps(changed, separators=(",", ":")).encode()
+    require(historical_structural_replay(encoded, encoded, 0.0), "historical_exact_collision_even_zero_jaccard", checks)
+    require(historical_structural_replay(encoded, changed_bytes, 0.12), "historical_two_of_three_at_threshold", checks)
+    require(not historical_structural_replay(encoded, changed_bytes, 0.119999), "historical_two_of_three_below_threshold", checks)
+    changed[1] = ["different_kind_sequence"]
+    require(not historical_structural_replay(encoded, json.dumps(changed).encode(), 0.19), "historical_one_component_not_structural_replay", checks)
+    require(contract["contamination_contract"]["maximum_payload_token_5gram_jaccard_exclusive"] == 0.20, "historical_shared_jaccard_unchanged", checks)
+    probe = dict(input=dict(text="f001_01 for Entity 001 A is label_001_01.", schema={"f001_02": "option_a|option_b", "f001_01": "string"}), prompt="record plus hints", system="system text", input_marker="INPUT\n")
+    payload = similarity_vector_payload(probe)
+    require(payload == "f001_01 for entity 001 a is label_001_01. f001_01=string f001_02=option_a|option_b", "similarity_exact_input_schema_lexical_inclusion", checks)
+    altered = copy.deepcopy(probe); altered.update(prompt="different SUBJECT, record type and suffix", system="different system", input_marker="different INPUT")
+    require(payload == similarity_vector_payload(altered), "similarity_excludes_request_boilerplate", checks)
+    altered["input"]["schema"]["f001_02"] = "option_a|option_b|option_c"
+    require(payload != similarity_vector_payload(altered), "similarity_includes_schema_option_bytes", checks)
+
+    def rejected(fixture: dict[str, Any], slot: dict[str, Any], name: str) -> None:
+        try: reserve_profile_bytes(fixture, slot, contract)
+        except (ValueError, KeyError): checks.append(name)
+        else: raise AssertionError(name)
+
+    def field(name: str, st: str, binding: str = "OPERATION_TARGET") -> dict[str, Any]:
+        return dict(name=name, schema_type=st, required=True, binding_kind=binding, source_field=name if binding != "OPERATION_TARGET" else None, producer_target=name if binding == "OPERATION_TARGET" else None, label_removal=False, absence_capable=binding == "EXPLICIT_ABSENCE")
+
+    def fact(name: str, st: str, kind: str, value: str, entity: str | None = None) -> dict[str, Any]:
+        return dict(template_id="VALUE", field_identifier=name, schema_type=st, value=dict(kind=kind, value=value), entity_selector_value=entity)
+
+    def raw(kind: str, value: str) -> dict[str, str]: return dict(kind=kind, value=value)
+
+    # Mechanical type/operation vectors have no scored identity or corpus file.
+    for context, rows in allocation["comparison_slot_matrix"].items():
+        phase, risk = context.split(":")
+        truths = []
+        for slot_id, expected in rows.items():
+            index = int(slot_id[-2:])
+            if index == 1:
+                base = copy.deepcopy(semantics["validation_vectors"][0]["fixture"])
+                value, kind = "5", "integer_literal"
+            elif index == 2:
+                base = copy.deepcopy(semantics["validation_vectors"][0]["fixture"])
+                base["operation_nodes"][0].update(id="SUBTRACT", arguments=dict(minuend=raw("field_identifier", "f001_01"), subtrahend=raw("field_identifier", "f001_02")))
+                base["source_fact_records"][0]["value"]["value"] = "5"
+                base["source_fact_records"][1].update(schema_type="number", value=raw("decimal_literal", "2.0"))
+                value, kind = "3.0", "decimal_literal"
+            elif index == 3:
+                base = copy.deepcopy(next(x["fixture"] for x in contract["contamination_contract"]["fingerprint"]["generation_test_vectors"] if x["id"] == "calendar_threshold"))
+                base["operation_nodes"] = base["operation_nodes"][:1]
+                value, kind = "2027-03-01", "date_literal"
+            elif index == 4:
+                base = dict(operation_nodes=[dict(id="CLOCK_MINUTE_OFFSET", target="d001_01", arguments=dict(time=raw("field_identifier", "f001_01"), minutes=raw("integer_literal", "30")))], source_fact_records=[fact("f001_01", "HH:MM", "time_literal", "23:45")], entities=[])
+                value, kind = "00:15", "time_literal"
+            else:
+                base = dict(operation_nodes=[], entities=[], source_fact_records=[fact("f001_01", "number", "decimal_literal", "2.0"), fact("f001_02", "number", "decimal_literal", "2.0")])
+                bd = expected["boundary_relation"]
+                base["source_fact_records"][0]["value"]["value"] = "3.0" if bd == "ABOVE" else "2.0"
+                base["source_fact_records"][1]["value"]["value"] = "3.0" if bd == "BELOW" else "2.0"
+            if index <= 4:
+                bd = expected["boundary_relation"]
+                if kind == "date_literal": threshold = {"ABOVE": "2027-02-28", "EQUAL": value, "BELOW": "2027-03-02"}[bd]
+                elif kind == "time_literal": threshold = {"ABOVE": "00:00", "EQUAL": value, "BELOW": "00:30"}[bd]
+                else: threshold = exact_decimal_from_fraction(Fraction(value) + {"ABOVE": -1, "EQUAL": 0, "BELOW": 1}[bd]) if kind == "decimal_literal" else str(int(value) + {"ABOVE": -1, "EQUAL": 0, "BELOW": 1}[bd])
+                target = "d001_02"
+                args = dict(left=raw("derived_field_identifier", "d001_01"), right=raw(kind, threshold))
+            else:
+                target = "d001_01"
+                args = dict(left=raw("field_identifier", "f001_01"), right=raw("field_identifier", "f001_02"))
+            base["operation_nodes"].append(dict(id=expected["operator"], target=target, arguments=args))
+            base["output_fields"] = [field(target, "boolean")]
+            base["gold_values"] = {target: expected["gold_boolean"]}
+            slot = dict(slot_id=slot_id, phase=phase, risk_round=risk)
+            vector = slot_vector(base, slot)
+            validate_subtype_fixture(vector, slot, contract)
+            require(new_fixture_projection(vector, slot, contract) == new_fixture_projection(vector, slot, contract), f"new_shared_projection:{context}:{slot_id}", checks)
+            truths.append(expected["gold_boolean"])
+            changed = copy.deepcopy(vector); changed["operation_nodes"][-1]["id"] = "LTE" if expected["operator"] != "LTE" else "GT"
+            bd = expected["boundary_relation"]
+            changed["gold_values"][changed["output_fields"][0]["name"]] = (bd != "ABOVE") if changed["operation_nodes"][-1]["id"] == "LTE" else (bd == "ABOVE")
+            rejected(changed, slot, f"wrong_slot_operator:{context}:{slot_id}")
+        require(sum(truths) == 3 and truths.count(False) == 2 and max(sum(truths), truths.count(False)) < 4, f"both_constants_fail_family_floor:{context}", checks)
+        require({x["boundary_relation"] for x in rows.values()} == {"BELOW", "EQUAL", "ABOVE"}, f"boundary_coverage:{context}", checks)
+    for slot_id in allocation["comparison_slot_matrix"]["A:R2"]:
+        require({x[slot_id]["gold_boolean"] for x in allocation["comparison_slot_matrix"].values()} == {True, False}, f"operator_truth_rotates:{slot_id}", checks)
+
+    for context in allocation["enum_answer_positions"]:
+        phase, risk = context.split(":")
+        for row in allocation["slot_rows"]["E5"]:
+            slot_id, st = row["slot_id"], row["domain"]
+            count = int(row["coverage_class"].split(":")[0].split("_")[1]); role = row["coverage_class"].split(":")[1]
+            selected = allocation["entity_selected_index"][slot_id]
+            labels = [f"Entity 001 {chr(65+i)}" for i in range(count)]
+            entities = [dict(selector_value=x, selector_role=role) for x in labels]
+            selectors = [fact("f001_01", "string", "entity_selector_literal", x, x) for x in labels]
+            if st == "number": kind, vals = "integer_literal", [str(i+2) for i in range(count)]
+            elif st == "string": kind, vals = "string_literal", [f"{('label','code','id')[i]}_001_{i+1:02d}" for i in range(count)]
+            elif st == "YYYY-MM-DD": kind, vals = "date_literal", [f"2027-01-0{i+1}" for i in range(count)]
+            elif st == "HH:MM": kind, vals = "time_literal", [f"0{i+1}:00" for i in range(count)]
+            else:
+                kind = "enum_literal"; gi = allocation["enum_answer_positions"][context][slot_id]
+                vals = [st.split("|")[(i-selected+gi)%count] for i in range(count)]
+            sources = [fact("f001_02", st, kind, val, entity) for val, entity in zip(vals, labels)]
+            base = dict(entities=entities, source_fact_records=selectors+sources, operation_nodes=[dict(id="ENTITY_FIELD_BIND", target="d001_01", arguments=dict(source_field=raw("field_identifier", "f001_02"), selector_field=raw("field_identifier", "f001_01"), selector_value=raw("entity_selector_literal", labels[selected])))], output_fields=[field("d001_01", st)], gold_values={"d001_01":vals[selected]})
+            slot = dict(slot_id=slot_id, phase=phase, risk_round=risk); vector = slot_vector(base, slot)
+            validate_subtype_fixture(vector, slot, contract)
+            require("AUTHORING_ERROR" not in fingerprint_bytes(dict(fixture=vector), operation), f"entity_slot_typed_fingerprint:{context}:{slot_id}", checks)
+            for i in range(count):
+                if i == selected: continue
+                wrong = copy.deepcopy(vector)
+                source = [x for x in wrong["source_fact_records"] if x["field_identifier"] == wrong["operation_nodes"][0]["arguments"]["source_field"]["value"]][i]
+                wrong["gold_values"][wrong["output_fields"][0]["name"]] = source["value"]["value"]
+                rejected(wrong, slot, f"wrong_entity_value_fails_gold:{context}:{slot_id}:{i}")
+            duplicate = copy.deepcopy(vector)
+            sf = [x for x in duplicate["source_fact_records"] if x["field_identifier"] == duplicate["operation_nodes"][0]["arguments"]["source_field"]["value"]]
+            sf[-1]["value"] = copy.deepcopy(sf[0]["value"])
+            rejected(duplicate, slot, f"equal_entity_values_rejected:{context}:{slot_id}")
+            if slot_id == "E5-01":
+                boolean_source = copy.deepcopy(vector)
+                source_name = boolean_source["operation_nodes"][0]["arguments"]["source_field"]["value"]
+                source_fields = [x for x in boolean_source["source_fact_records"] if x["field_identifier"] == source_name]
+                for i, source in enumerate(source_fields): source.update(schema_type="boolean", value=raw("boolean_literal", "true" if i == 0 else "false"))
+                boolean_source["output_fields"][0]["schema_type"] = "boolean"
+                boolean_source["gold_values"][boolean_source["output_fields"][0]["name"]] = selected == 0
+                try: validate_fixture_semantics(boolean_source, schema, operation, semantics, contract["entity_population_contract"])
+                except ValueError as error: require(str(error) == "entity_boolean_source_prohibited", f"boolean_entity_source_prohibited:{context}", checks)
+                else: raise AssertionError("boolean_entity_source_accepted")
+            if slot_id == "E5-03":
+                wrong = copy.deepcopy(vector)
+                source_fields = [x for x in wrong["source_fact_records"] if x["field_identifier"] == wrong["operation_nodes"][0]["arguments"]["source_field"]["value"]]
+                for source in source_fields:
+                    options = source["schema_type"].split("|")
+                    source["value"]["value"] = options[(options.index(source["value"]["value"])+1)%3]
+                wrong["gold_values"][wrong["output_fields"][0]["name"]] = source_fields[selected]["value"]["value"]
+                rejected(wrong, slot, f"wrong_enum_gold_position:{context}:{slot_id}")
+
+        for row in allocation["slot_rows"]["E7"]:
+            facts = [dict(template_id="EXPLICIT_ABSENCE", field_identifier="f001_01", schema_type="provided|not_provided", value=None, entity_selector_value=None)]
+            gold = {"f001_01":"not_provided"}
+            for i, st in enumerate(row["domain"], 2):
+                if st == "integer": kind,val="integer_literal",str(i+2)
+                elif st == "number": kind,val="decimal_literal","2.5"
+                elif st == "string": kind,val="string_literal","label_001_01"
+                elif st == "boolean": kind,val="boolean_literal","true"
+                elif st == "YYYY-MM-DD": kind,val="date_literal","2027-01-01"
+                elif st == "HH:MM": kind,val="time_literal","08:00"
+                else: kind,val="enum_literal",st.split("|")[allocation["enum_answer_positions"][context][row["slot_id"]]]
+                facts.append(fact(f"f001_{i:02d}",st,kind,val))
+                gold[f"f001_{i:02d}"]=int(val) if st == "integer" else val == "true" if st == "boolean" else val
+            if phase == "B": facts = facts[1:]+facts[:1]
+            base = dict(operation_nodes=[], entities=[], source_fact_records=facts, output_fields=[field(name, next(x["schema_type"] for x in facts if x["field_identifier"]==name), "EXPLICIT_ABSENCE" if name=="f001_01" else "SOURCE_COPY") for name in sorted(gold)], gold_values=gold)
+            slot = dict(slot_id=row["slot_id"],phase=phase,risk_round=risk); vector=slot_vector(base,slot)
+            validate_subtype_fixture(vector,slot,contract)
+            require(len(json.loads(new_fixture_projection(vector,slot,contract)))==3,f"e7_integrated_slot:{context}:{row['slot_id']}",checks)
+            wrong=copy.deepcopy(vector);wrong["source_fact_records"].reverse();wrong=slot_vector(wrong,slot)
+            rejected(wrong,slot,f"e7_wrong_presentation:{context}:{row['slot_id']}")
+            wrong=copy.deepcopy(vector);wrong["lexical_context"]["fixture_ordinal"]+=1
+            rejected(wrong,slot,f"e7_wrong_lexical_context:{context}:{row['slot_id']}")
+            wrong=copy.deepcopy(vector);support=next(x for x in wrong["source_fact_records"] if x["template_id"]=="VALUE")
+            support["schema_type"]="string";support["value"]=raw("string_literal","label_001_99")
+            rejected(wrong,slot,f"e7_wrong_support_shape:{context}:{row['slot_id']}")
+            if row["slot_id"] == "E7-04":
+                wrong = copy.deepcopy(vector)
+                enum_fact = next(x for x in wrong["source_fact_records"] if x["schema_type"] == "option_a|option_b")
+                enum_fact["value"]["value"] = "option_b" if enum_fact["value"]["value"] == "option_a" else "option_a"
+                wrong["gold_values"][enum_fact["field_identifier"]] = enum_fact["value"]["value"]
+                rejected(wrong, slot, f"wrong_enum_gold_position:{context}:{row['slot_id']}")
+            if row["slot_id"]=="E7-01":
+                reserve_base=copy.deepcopy(base)
+                absent=next(x for x in reserve_base["source_fact_records"] if x["template_id"]=="EXPLICIT_ABSENCE")
+                support=[x for x in reserve_base["source_fact_records"] if x["template_id"]=="VALUE"]
+                reserve_base["source_fact_records"]=[support[0],absent,*support[1:]]
+                reserved=slot_vector(reserve_base,slot,True)
+                require(reserve_profile_bytes(vector,slot,contract)==reserve_profile_bytes(reserved,slot,contract),f"e7_matched_reserve_profile:{context}",checks)
+
+    numeric=copy.deepcopy(semantics["validation_vectors"][0]["fixture"])
+    slot=dict(slot_id="E3-01",phase="A",risk_round="R2")
+    wrong=copy.deepcopy(numeric)
+    for x in wrong["source_fact_records"]:x["schema_type"]="number"
+    wrong["output_fields"][0]["schema_type"]="number"
+    rejected(slot_vector(wrong,slot),slot,"subtype_INTEGER_ONLY_rejects_NUMBER_ONLY")
+    calendar=copy.deepcopy(semantics["validation_vectors"][5]["fixture"])
+    calendar_slot=dict(slot_id="E1-03",phase="A",risk_round="R2")
+    rejected(slot_vector(calendar,calendar_slot),calendar_slot,"subtype_year_boundary_rejects_other_actual_boundary")
+    for vector in contract["reserve_activation_contract"]["test_vectors"]:
+        require(reserve_decision(vector)==vector["expected"],f"v8_reserve:{vector['id']}",checks)
+    for phase in "AB":
+        for risk in ("R2","R3"):
+            for family in range(1,8):
+                for index in range(2,6):
+                    claim=f"{phase}-{risk}-E{family}-{index:02d}"
+                    require(reserve_decision(dict(defective_primary_ids=[claim],profile_matches=[claim]))=="STOP_AUTHORING",f"uncovered_reserve_forced_stop:{claim}",checks)
+    for vector in contract["contamination_contract"]["exact_reuse_contract"]["test_vectors"]:
+        for key in ("left_atoms","right_atoms"):
+            for atom in vector.get(key,[]):
+                if atom[0] in {"IDENTIFIER","ENTITY"}:require(len(atom)==2,"canonical_identity_two_strings",checks)
+    for atom in (["IDENTIFIER", "old_field", "value"], ["ENTITY"], ["ENTITY", 1]):
+        try: identity_reuse([atom], [])
+        except ValueError: checks.append(f"noncanonical_identity_rejected:{atom}")
+        else: raise AssertionError("noncanonical_identity_accepted")
 
 
 def event_category(event: str, events: dict[str, Any]) -> str:
@@ -1467,13 +1936,15 @@ def result_verdict(facts: dict[str, Any], events: dict[str, Any]) -> str:
 
 def validate(contract: dict[str, Any], human: str) -> list[str]:
     checks: list[str] = []
-    require(contract["schema_version"] == "g-extract1.design-candidate.v7", "schema_v7", checks)
-    require(contract["experiment"]["status"] == "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_7", "status_v7", checks)
+    require(contract["schema_version"] == "g-extract1.design-candidate.v8", "schema_v8", checks)
+    require(contract["experiment"]["status"] == "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_8", "status_v8", checks)
+    require(contract["experiment"]["design_revision"] == 8, "design_revision_v8", checks)
     for field in ("implemented", "blueprint_authorized", "fixture_authoring_authorized", "execution_authorized"):
         require(contract["experiment"][field] is False, f"authority_false:{field}", checks)
     require(contract["experiment"]["provider_generation_calls"] == 0, "provider_calls_zero", checks)
     require(contract["experiment"]["belief_effects"] == "none", "belief_effects_none", checks)
     validate_v7(contract, checks)
+    validate_v8(contract, checks)
 
     corpus, phases = contract["corpus"], contract["phases"]
     expected_counts = {
@@ -1718,7 +2189,7 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     require(exact["operational_semantic_disagreement_rule"] == "operationally accepted plus semantically invalid is false-clean", "false_clean_bridge", checks)
 
     contamination = contract["contamination_contract"]
-    require(contamination["contract_id"] == "g-extract1.contamination.v4", "contamination_contract_v4", checks)
+    require(contamination["contract_id"] == "g-extract1.contamination.v5", "contamination_contract_v5", checks)
     tokenizer = contamination["tokenizer"]
     require(tokenizer["alternative_precedence"] == ["date", "time", "number", "identifier"], "token_precedence", checks)
     compiled = re.compile(tokenizer["pattern"], re.ASCII)
@@ -1747,7 +2218,7 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     require(not independent["shared_derivation_helpers_allowed"], "no_shared_derivation_helpers", checks)
     require(independent["any_disagreement"] == "block_freeze", "differential_blocks_freeze", checks)
     required_scopes = {
-        "every G-ROUTE4 extraction fixture versus every G-EXTRACT1 scored or reserve fixture",
+        "every historical extraction versus every new scored/reserve using shared three-component projection",
         "Phase A versus Phase A", "Phase A versus Phase B", "Phase B versus Phase B",
         "every scored fixture versus every reserve", "reserve versus reserve",
     }
@@ -1776,7 +2247,7 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
             require(date_number_tuple_bytes(observed[:1]) != date_number_tuple_bytes(observed[1:]), f"reuse_tuple_type_distinction:{vector['id']}", checks)
 
     reserve = contract["reserve_activation_contract"]
-    require(reserve["contract_id"] == "g-extract1.reserve-activation.v4", "reserve_contract_v4", checks)
+    require(reserve["contract_id"] == "g-extract1.reserve-activation.v5", "reserve_contract_v5", checks)
     require(reserve["total_reserve_slots"] == 2 * 2 * 7 == 28, "reserve_slot_count", checks)
     require(reserve["slot_id_format"] == "RESERVE:{phase}:{round}:{primary_family}", "reserve_slot_id", checks)
     require(not reserve["selection_pool_allowed"], "no_reserve_pool", checks)
@@ -1886,24 +2357,25 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     require(sha256(ROOT / "experiments/G-ROUTE4-candidate/closure/PHASE_B_UNSAFE_STOP_DIAGNOSTIC.json") == history["diagnostic_sha256"], "diagnostic_unchanged", checks)
 
     human_literals = [
-        "g-extract1.design-candidate.v7", "g-extract1.operation-definitions.v4",
+        "g-extract1.design-candidate.v8", "g-extract1.operation-definitions.v4",
         "g-extract1.schema-types.v1", "g-extract1.operation-semantics.v2",
-        "g-extract1.family-assignment.v4", "g-extract1.contamination.v4",
-        "g-extract1.explicit-absence-scoring.v4", "g-extract1.reserve-activation.v4",
-        "g-extract1.lexical-neutrality.v1", "g-extract1.entity-population.v1",
-        "g-extract1.reserve-equivalence.v1", "g-extract1.subtype-allocation.v1",
+        "g-extract1.family-assignment.v4", "g-extract1.contamination.v5",
+        "g-extract1.explicit-absence-scoring.v4", "g-extract1.reserve-activation.v5",
+        "g-extract1.lexical-neutrality.v1", "g-extract1.entity-population.v2",
+        "g-extract1.reserve-equivalence.v1", "g-extract1.subtype-allocation.v2",
+        "g-extract1.historical-fingerprint-adapter.v1", "g-extract1.subtype-content-validation.v1",
         "g-extract1.integrity-events.v2", "g-extract1.result-state-machine.v3",
         "POST_CONTACT_GOLD_DEFECT_DISCOVERED", "UNVERIFIABLE_INTERRUPTION_CHECKPOINT",
         "RESERVE:{phase}:{round}:{primary_family}", "2026-10-01", "5-3",
-        "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_7", "does not prove scientific validity",
+        "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_8", "does not prove scientific validity",
         "SOURCE_COPY", "explicit partial absence", "both repeats semantically correct",
     ]
     for literal in human_literals:
         require(literal in human, f"human_literal:{literal}", checks)
-    match = re.search(r"<!-- V7_NORMATIVE_BEGIN -->\s*```json\s*(.*?)\s*```\s*<!-- V7_NORMATIVE_END -->", human, re.DOTALL)
-    require(match is not None,"human_v7_normative_annex_present",checks)
+    match = re.search(r"<!-- V8_NORMATIVE_BEGIN -->\s*```json\s*(.*?)\s*```\s*<!-- V8_NORMATIVE_END -->", human, re.DOTALL)
+    require(match is not None,"human_v8_normative_annex_present",checks)
     annex = json.loads(match.group(1))
-    expected_annex = {name:contract[name] for name in ("lexical_neutrality_contract","entity_population_contract","reserve_equivalence_contract","subtype_allocation_contract")}
+    expected_annex = {name:contract[name] for name in ("lexical_neutrality_contract","entity_population_contract","reserve_equivalence_contract","subtype_allocation_contract","historical_fingerprint_adapter_contract","subtype_content_validation_contract")}
     expected_annex.update(
         source_contamination_atom_contract=contract["contamination_contract"]["exact_reuse_contract"]["date_number_tuple"],
         identity_atom_contract=contract["contamination_contract"]["exact_reuse_contract"]["identity_atom_derivation"],
@@ -1911,10 +2383,14 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
         e7_integrated_shape_contract=contract["ambiguity_contract"]["integrated_fixture_shape_validation"],
         fingerprint_layout_contract=next(x for x in contract["contamination_contract"]["fingerprint"]["components"] if x["id"]=="source_fact_layout"),
         reserve_activation_contract=contract["reserve_activation_contract"],
+        comparison_modes=contract["contamination_contract"]["comparison_modes"],
+        lexical_similarity_categories=contract["contamination_contract"]["lexical_atoms"],
+        whole_answer_reuse_limit=contract["contamination_contract"]["exact_reuse_contract"]["whole_answer"]["limit"],
+        canonical_identity_atom_shape=contract["contamination_contract"]["exact_reuse_contract"]["entity_identifier_atoms"]["canonical_atom_shape"],
     )
-    require(set(annex)==set(expected_annex),"human_machine_v7_annex_exact_sections",checks)
+    require(set(annex)==set(expected_annex),"human_machine_v8_annex_exact_sections",checks)
     for name,value in expected_annex.items():
-        require(annex[name]==value,f"human_machine_v7_normative_object:{name}",checks)
+        require(annex[name]==value,f"human_machine_v8_normative_object:{name}",checks)
     for row in operation["catalog"]:
         if "template" in row:
             require(f"`{row['template']}`" in human, f"human_template:{row['id']}", checks)
@@ -1942,12 +2418,13 @@ def main() -> int:
     human = HUMAN.read_text(encoding="utf-8")
     checks = validate(contract, human)
     report = {
-        "schema_version": "g-extract1.design-validation-report.v7",
+        "schema_version": "g-extract1.design-validation-report.v8",
         "verdict": "PASS",
         "validation_scope": "deterministic structural and cross-representation consistency only",
         "scientific_validity_assessed": False,
         "adversarial_review_replaced": False,
         "check_count": len(checks),
+        "historical_adapter": historical_adaptation_summary(contract),
         "checks": checks,
         "artifacts": {
             "DESIGN_CANDIDATE.md": sha256(HUMAN),
