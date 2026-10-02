@@ -1,8 +1,8 @@
-# G-EXTRACT1 Design Candidate v5
+# G-EXTRACT1 Design Candidate v6
 
-Status: `READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_5`
+Status: `READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_6`
 
-This document and `DESIGN_CANDIDATE.json` are co-normative. The machine contract is `g-extract1.design-candidate.v5`. This checkpoint authorizes design rereview only. It authorizes no blueprint, fixture, implementation, pilot, freeze, or execution work.
+This document and `DESIGN_CANDIDATE.json` are co-normative. The machine contract is `g-extract1.design-candidate.v6`. This checkpoint authorizes design rereview only. It authorizes no blueprint, fixture, implementation, pilot, freeze, or execution work.
 
 ## 1. Historical boundary and question
 
@@ -20,7 +20,7 @@ All 140 scored fixtures, 28 reserves, all gold, gates, schedules, and Phase B ma
 
 ## 3. Canonical operation and prompt contract
 
-The operation contract is `g-extract1.operation-definitions.v3`. SUBJECT contains no terminal period. Its opening fragment is exactly `Extract the {record_type} record`; operation and absence fragments are joined by exactly `. `. The unchanged historical template begins its invariant suffix with `. Copy names`, so replacing its sole `{SUBJECT}` token terminates SUBJECT exactly once. No trimming, normalization, punctuation insertion, or whitespace insertion occurs during substitution.
+The operation rendering contract is `g-extract1.operation-definitions.v3`. SUBJECT contains no terminal period. Its opening fragment is exactly `Extract the {record_type} record`; operation and absence fragments are joined by exactly `. `. The unchanged historical template begins its invariant suffix with `. Copy names`, so replacing its sole `{SUBJECT}` token terminates SUBJECT exactly once. No trimming, normalization, punctuation insertion, or whitespace insertion occurs during substitution.
 
 Zero operation nodes are legal only for E7. Otherwise there is one node or one connected two-node chain. In a two-node chain, node two consumes node one's target and is the unique sink. Stable topological order applies, then unsigned UTF-8 target order. SUM has two through four operands in immutable array order. Two operands render `A and B`; three or four use comma-space and `, and ` before the last operand.
 
@@ -31,7 +31,8 @@ Zero operation nodes are legal only for E7. Otherwise there is one node or one c
 - `decimal_literal`: metadata must already be canonical. Parse exact decimal, render fixed point, remove trailing fractional zeros while retaining one fractional digit, and render every signed zero as `0.0`. Thus `5.0`, `0.5`, and `-0.5` are valid metadata; `5.00`, `0.50`, `-0.50`, `-0.0`, and exponent notation are authoring errors. This metadata rule is distinct from semantic equivalence of provider JSON numbers.
 - `date_literal`: a valid proleptic-Gregorian `YYYY-MM-DD`.
 - `time_literal`: valid 24-hour `HH:MM`.
-- `string_literal` and `entity_selector_literal`: printable ASCII, rendered with Python `json.dumps(value, ensure_ascii=True, separators=(',', ':'))`.
+- `boolean_literal`: exactly lowercase `true` or `false`.
+- `string_literal` and `entity_selector_literal`: printable ASCII, rendered with Python `json.dumps(value, ensure_ascii=True, separators=(',', ':'))` after the positive factual-value grammar passes.
 - `enum_literal`: `^[a-z][a-z0-9_]{0,47}$`, exact unquoted ASCII.
 
 COUNT is not authorable. No collection source model is needed by the diagnosed scope.
@@ -60,9 +61,63 @@ UNIT_CONVERSION uses only the six cataloged conversions and their exact template
 
 The historical absence fragment is exactly `Use 'not_provided' when the text says a value has not been provided`, inserted once iff a schema field has type `provided|not_provided`. E7 introduces no new sentinel or instruction.
 
-Five full-prompt vectors in the machine contract bind SUBJECT bytes, final prompt bytes, and SHA-256 for a one-node prompt, a two-node prompt, E7, a quoted selector, and SUM. `validate_design.py` reconstructs all five and rejects `.. Copy names`.
+Five full-prompt vectors bind SUBJECT bytes, final prompt bytes, and SHA-256 for a one-node prompt, a two-node prompt, E7, a quoted selector, and SUM. `validate_design.py` reconstructs all five and rejects `.. Copy names`.
 
-## 4. Canonical fixture and output binding
+## 4. Historical schema type system
+
+The normative contract is `g-extract1.schema-types.v1`. Only these historical primitive tokens are legal: `string`, `number`, `integer`, `boolean`, `YYYY-MM-DD`, and `HH:MM`. Aliases including `date`, `time`, `bool`, `int`, and `float` are authoring errors.
+
+Finite enum schemas contain two through eight `^[a-z][a-z0-9_]{0,47}$` options separated by literal `|`. Whitespace and duplicate options are prohibited. Option byte order is preserved in the schema but conveys no ranking. A provider value must equal one listed option exactly. `provided|not_provided` is the historical E7 enum.
+
+| Schema | Semantic tag | SOURCE_COPY kinds | Permitted result roles | Contamination tag |
+|---|---|---|---|---|
+| `string` | STRING | string/entity-selector literal | source copy, entity-bound value | STRING |
+| `number` | NUMBER | integer or decimal literal | source/derived number, entity-bound | NUMBER |
+| `integer` | INTEGER | integer literal | source/derived number, entity-bound | INTEGER |
+| `boolean` | BOOLEAN | boolean literal | source/derived Boolean, entity-bound | BOOLEAN |
+| `YYYY-MM-DD` | DATE | date literal | source/derived date, entity-bound | DATE |
+| `HH:MM` | TIME | time literal | source/derived time, entity-bound | TIME |
+| finite enum | ENUM | enum literal | source, entity-bound, special absence | ENUM |
+
+Unknown schema tokens are `AUTHORING_ERROR`. Gold uses the exact semantic form named by this table. Exact-answer contamination rows retain the historical schema token and derive only the uppercase semantic tag from this contract.
+
+## 5. Semantic operation and domain contract
+
+The normative contract is `g-extract1.operation-semantics.v1`. Placeholder syntax alone never establishes legality. Every field reference, operand type, result type, output schema, domain condition, and gold result must satisfy this contract.
+
+### 5.1 Source references and output compatibility
+
+An ordinary `field_identifier` operand resolves to exactly one non-entity VALUE fact. A missing or duplicate non-entity field is `AUTHORING_ERROR`. Entity-scoped facts cannot be consumed implicitly; they require `ENTITY_FIELD_BIND`. A `derived_field_identifier` resolves to one prior operation target in stable topological order. The source fact's historical `schema_type` is authoritative: its literal kind must be one allowed by that schema, and an integral literal under `number` evaluates as exact NUMBER rather than INTEGER.
+
+Every OPERATION_TARGET schema must exactly match the producer result: comparison to `boolean`, calendar offset to `YYYY-MM-DD`, clock offset to `HH:MM`, elapsed minutes to `integer`, and numeric operations to the frozen promoted `integer` or `number`. Entity binding and EXACT_COPY preserve the source semantic type and historical schema without coercion. A mismatched producer/schema pair is `AUTHORING_ERROR`.
+
+### 5.2 Numeric operations
+
+ADD, SUBTRACT, MULTIPLY, and SUM accept only INTEGER/NUMBER operands. All-INTEGER operands produce INTEGER; any NUMBER operand produces NUMBER. No date, time, Boolean, string, or enum overload exists.
+
+DIVIDE accepts numeric operands, requires an exactly nonzero divisor, and always produces NUMBER. The reduced exact rational denominator may contain only prime factors 2 and 5, so the decimal terminates. `10 / 4` is valid gold `2.5`; `1 / 3` and `5 / 0` are `AUTHORING_ERROR`. No rounding exists.
+
+Each UNIT_CONVERSION uses its frozen conversion ID as the complete source-unit assertion, accepts INTEGER/NUMBER, produces NUMBER, and must yield an exact terminating decimal. The catalog is exactly: HOURS_TO_MINUTES `source * 60`, MINUTES_TO_HOURS `source / 60`, KILOGRAMS_TO_GRAMS `source * 1000`, GRAMS_TO_KILOGRAMS `source / 1000`, DOLLARS_TO_CENTS `source * 100`, and CENTS_TO_DOLLARS `source / 100`. Those IDs respectively bind source/result units as hours/minutes, minutes/hours, kilograms/grams, grams/kilograms, dollars/cents, and cents/dollars. No free-form unit metadata or implicit conversion exists.
+
+### 5.3 Temporal operations
+
+ELAPSED_MINUTES accepts TIME/TIME and produces `integer`. It is the forward interval: if end is earlier, end is on the next day; equal times produce 0, not 1440. Result range is 0 through 1439.
+
+CALENDAR_DAY_OFFSET accepts DATE and INTEGER, permits offsets 0 through 366 inclusive, prohibits negatives, and produces `YYYY-MM-DD`. The source date is day zero.
+
+CLOCK_MINUTE_OFFSET accepts TIME and INTEGER, permits offsets 0 through 1439 inclusive, prohibits negatives, and produces `HH:MM`. Gold is modulo 1440; rollover occurs exactly when source minutes plus offset is at least 1440.
+
+### 5.4 Comparisons, binding, and chains
+
+GT/GTE/LT/LTE allow INTEGER/NUMBER pairs with exact numeric promotion, DATE/DATE, or TIME/TIME. STRING, ENUM, BOOLEAN ordering is prohibited. EQ allows same-type INTEGER, NUMBER, DATE, TIME, or BOOLEAN plus INTEGER/NUMBER promotion; string and enum equality operations are not authorable. Every comparison produces `boolean`.
+
+ENTITY_FIELD_BIND requires the selector and source field for relevant entities, a selector value choosing exactly one entity, and no coercion. EXACT_COPY requires one unique source field or upstream target and preserves its exact semantic type/schema.
+
+In a two-node chain, node two's argument position must accept the exact semantic type produced by node one, with only the numeric comparison promotion above. Numeric-to-date, date-to-SUM, Boolean-to-arithmetic, and entity-string-to-numeric-comparison chains are authoring errors.
+
+Gold is never manually chosen. Typed operands resolve mechanically, the exact frozen operation is evaluated, and its result is serialized through `g-extract1.schema-types.v1`; disagreement with proposed gold is `AUTHORING_ERROR`.
+
+## 6. Canonical fixture and output binding
 
 Every output field has exactly these keys:
 
@@ -70,21 +125,25 @@ Every output field has exactly these keys:
 
 `binding_kind` is exactly one of `SOURCE_COPY`, `OPERATION_TARGET`, or `EXPLICIT_ABSENCE`.
 
-- `SOURCE_COPY`: `source_field` names exactly one non-entity VALUE fact; `producer_target` is null; `absence_capable` is false.
-- `OPERATION_TARGET`: `source_field` is null; `producer_target` names exactly one operation target; `absence_capable` is false.
+- `SOURCE_COPY`: `source_field` names exactly one non-entity VALUE fact; `producer_target` is null; `absence_capable` is false; source literal and schema must match the schema contract.
+- `OPERATION_TARGET`: `source_field` is null; `producer_target` names exactly one operation target; `absence_capable` is false; producer type and schema must match the operation contract.
 - `EXPLICIT_ABSENCE`: `source_field` equals the output name and exactly one EXPLICIT_ABSENCE fact; `producer_target` is null; schema is `provided|not_provided`; gold is `not_provided`; `absence_capable` is true.
 
-Output roles are exactly `source_copy`, `derived_number`, `derived_boolean`, `derived_date`, `derived_time`, `entity_bound_value`, and `absence_sentinel`. EXACT_COPY is a producer and secondary feature, not an output-role synonym. An EXACT_COPY from a source field has role `source_copy`; an EXACT_COPY of a derived target inherits its upstream role.
+Output roles are exactly `source_copy`, `derived_number`, `derived_boolean`, `derived_date`, `derived_time`, `entity_bound_value`, and `absence_sentinel`. EXACT_COPY is a producer and secondary feature, not an output-role synonym. An EXACT_COPY from a source field has role `source_copy`; an EXACT_COPY of a derived target inherits its upstream role. Every role must also be allowed by the field's schema.
 
 E7 therefore needs no fake operations: it contains exactly one EXPLICIT_ABSENCE output plus at least two supported SOURCE_COPY outputs.
 
-## 5. Typed source facts and coaching exclusion
+## 7. Typed source facts and positive anti-coaching grammar
 
-Each source fact has exactly `template_id`, `field_identifier`, `value`, and `entity_selector_value`. VALUE renders `{field_identifier} is {value}.` or `For {entity_selector_literal}, {field_identifier} is {value}.`; EXPLICIT_ABSENCE renders `{field_identifier} was not provided.` or its entity-prefixed form. One record is one sentence, sentence index is record index, sentences join with one ASCII space, and no heuristic sentence segmentation is used.
+Each source fact has exactly `template_id`, `field_identifier`, `schema_type`, `value`, and `entity_selector_value`. `schema_type` must be accepted by `g-extract1.schema-types.v1`; a VALUE literal kind must be allowed by that schema, while EXPLICIT_ABSENCE must use `provided|not_provided` and a null value. The schema metadata is not rendered model-facing. VALUE renders `{field_identifier} is {value}.` or `For {entity_selector_literal}, {field_identifier} is {value}.`; EXPLICIT_ABSENCE renders `{field_identifier} was not provided.` or its entity-prefixed form. One record is one sentence, sentence index is record index, sentences join with one ASCII space, and no heuristic sentence segmentation is used.
 
-String and entity values are facts, not a back door for instructions. After ASCII lowercase and maximal non-`[a-z0-9_]` replacement, the frozen forbidden token and phrase lists reject operation language, calculation instructions, output/JSON/schema guidance, threshold language, expected answers, gold, gates, families, and risk labels. Violations are `AUTHORING_ERROR`.
+String and entity values are factual atoms, never arbitrary prose. Both are printable ASCII, 1 through 64 bytes, with no newline, tab, braces, brackets, equals sign, colon, semicolon, or JSON/math syntax.
 
-## 6. Families and composed rows
+Entity selectors have at most four space-separated components. Each is a Title token beginning A-Z with internal apostrophe, period, or hyphen; an all-uppercase/digit code token; or a standalone `&` connector. String facts are exactly one lowercase status from the frozen catalog (`active`, `approved`, `closed`, `complete`, `delayed`, `denied`, `inactive`, `open`, `pending`, `priority`, `standard`), one uppercase code token, or the same factual-label grammar.
+
+The grammar additionally rejects case-insensitive reserved instruction tokens including `answer`, `calculate`, `choose`, `compare`, `compute`, `field`, `first`, `gold`, `higher`, `json`, `output`, `pick`, `prefer`, `result`, `return`, `schema`, `subtotal`, `threshold`, `total`, `use`, and `value`. Anything outside the positive grammar is `AUTHORING_ERROR`; arbitrary natural-language strings are not available to blueprint authors.
+
+## 8. Families and composed rows
 
 The family contract is `g-extract1.family-assignment.v3`. All metadata are derived from the canonical fixture; authors do not select tags. First-match precedence is E7, E5, E4, E1, E2, E3, E6:
 
@@ -102,7 +161,7 @@ E7 permits zero operation nodes only. It prohibits temporal, comparison, numeric
 
 Every phase/round has eight distinct composed fixtures: two C1 numeric-to-comparison, two C2 temporal-to-comparison, two C3 numeric-to-EXACT_COPY, and two C4 entity-to-field binding. One fixture cannot satisfy multiple rows. C3 is exactly a numeric node followed by an EXACT_COPY sink consuming the first target.
 
-## 7. E7 explicit partial absence
+## 9. E7 explicit partial absence
 
 The scoring contract is `g-extract1.explicit-absence-scoring.v4`. E7 tests explicit partial absence / not-provided handling, not broad ambiguity. It separately reports semantic recognition and operational containment.
 
@@ -114,7 +173,7 @@ Truncation keeps primary outcome `provider_truncated` and earns no semantic cred
 
 Phase A requires five distinct E7 fixtures and 10/10 semantically correct, safely contained observations. Phase B requires five fixtures and 5/5. Guessed unsupported values, supported-field errors, malformed output, omissions, nulls, extras, wrong types, and duplicate keys fail recognition.
 
-## 8. Exact-value semantics
+## 10. Exact-value semantics
 
 The evaluator contract is `g-extract1.exact-value-comparator.v1`; it does not alter the model-facing baseline.
 
@@ -124,34 +183,34 @@ The evaluator contract is `g-extract1.exact-value-comparator.v1`; it does not al
 - Strings/entities are exact in case, whitespace, punctuation, and Unicode scalar sequence except a field explicitly frozen with label removal may remove one leading `the`, `Order`, or `Vendor` plus one space.
 - Object key order and insignificant JSON whitespace are ignored. Duplicate, extra, omitted, or null fields fail. Arrays and nested values are out of scope.
 - Dates are exact valid zero-padded Gregorian `YYYY-MM-DD`; calendar offset uses source date as day zero.
-- Times are exact `HH:MM`, with forward elapsed interpretation and explicit midnight rollover.
+- Times are exact `HH:MM`, with the temporal rules in `operation-semantics.v1`.
 - Threshold operators have literal mathematical meaning, including equality boundaries.
 
 Operational acceptance plus any semantic invalidity is false-clean.
 
-## 9. Contamination and exact reuse
+## 11. Contamination and exact reuse
 
 The contamination contract is `g-extract1.contamination.v3`. Similarity payload is input text, LF, then schema lines sorted by unsigned UTF-8 field name. Historical system/prompt boilerplate is excluded by construction. Normalize NFC, default casefold, CRLF/CR to LF, collapse Unicode whitespace, and preserve punctuation for tokenization.
 
 Tokenizer precedence is whole date, whole time, context-valid signed number, identifier. The exact Python ASCII regex is frozen in the machine contract. It intentionally keeps `2026-10-01`, `23:45`, `-5`, and `5e-3` whole; `5-3` becomes `5`, `3`. Five-token contiguous n-grams are deduplicated sets. Jaccard must be strictly below 0.20; empty/empty is 1.0 and one-empty is 0.0.
 
-Fingerprint is a compact JSON array of operation graph, output schema roles, entity role graph, boundary relation, temporal pattern, and source fact layout. Every component is derived from the canonical fixture; end-to-end vectors include numeric, entity, temporal-comparison, and E7 fixtures.
+Fingerprint is a compact JSON array of operation graph, output schema roles, entity role graph, boundary relation, temporal pattern, and source fact layout. Every component is derived from the canonical fixture in stable topological operation order; end-to-end vectors contain no injected boundary or temporal values.
 
-Exact whole-answer reuse uses sorted `[field_name,schema_type,[value_tag,canonical_value]]` rows and prohibits only whole-answer equality. Entity atoms are entity selector values. Identifier atoms are VALUE facts whose field name is exactly `id` or ends `_id`, `_code`, `_identifier`, or `_reference`; ordinary field names and generic labels are excluded. Any entity/identifier atom overlap is prohibited.
+Exact whole-answer reuse uses sorted `[field_name,historical_schema_type,[semantic_tag,canonical_value]]` rows and prohibits only whole-answer equality. Tags are STRING, NUMBER, INTEGER, BOOLEAN, DATE, TIME, or ENUM and derive only from `schema-types.v1`. Entity atoms are entity selector values. Identifier atoms are VALUE facts whose field name is exactly `id` or ends `_id`, `_code`, `_identifier`, or `_reference`; ordinary field names and generic labels are excluded. Any entity/identifier atom overlap is prohibited.
 
-The date-number tuple preserves duplicates and ordered typed atoms from source facts, then operation arguments, then gold fields. It is compared only when at least one temporal and one numeric atom occur. Exact eligible tuple equality is prohibited.
+The date-number tuple preserves duplicates and ordered typed atoms from source facts, then stable-topological operation arguments, then gold fields. It is compared only when at least one temporal and one numeric atom occur. Exact eligible tuple equality is prohibited.
 
 Each exact-reuse rule applies explicitly to historical/new, A/A, A/B, B/B, scored/reserve, and reserve/reserve comparisons. All historical/new and A/B fingerprint collisions are prohibited. Near replay is five of six fingerprint components plus Jaccard at least 0.12. Same operation classes remain allowed. Within one phase/round/family, a fingerprint may occur at most twice only below 0.12 Jaccard with fresh values and entities.
 
 Two separately authored contamination modules may share the frozen contract and standard library only. They cannot share normative derivation, tokenization, fingerprint, serialization code, or helpers. Byte disagreement blocks freeze.
 
-## 10. Reserves
+## 12. Reserves
 
 The reserve contract is `g-extract1.reserve-activation.v3`. There is one reserve per `RESERVE:{phase}:{round}:{primary_family}` slot: 2 phases x 2 rounds x 7 families = 28. There is no pool and no one-to-one reserve per primary fixture.
 
 All five primary IDs in a slot are frozen in unsigned UTF-8 order. Zero eligible defects means no activation; more than one defective primary stops authoring; exactly one may claim the single reserve only when every replacement-profile dimension matches. A reserve must preserve phase, round, family, composed row, secondary features, field types, operation/boundary, explicit-absence status, risk, and output schema roles. After activation, all balances, contamination comparisons, gold reviews, and digests rerun. No replacement is possible after provider contact or from observed outputs.
 
-## 11. Phase A repeat reduction and gates
+## 13. Phase A repeat reduction and gates
 
 The reduction contract is `g-extract1.phase-a-fixture-reduction.v1`. Positive fixture properties (semantic correctness, structural validity, useful correct acceptance) require both repeats. Adverse properties (malformed, binding error, false-clean) affect a fixture if either repeat is affected. A correlated false-clean pair requires both repeats, but the zero-false-clean observation gate is stricter.
 
@@ -161,9 +220,9 @@ Per cell, A requires 70 observations, 35 fixtures, and 35 repeat pairs; B requir
 
 One-sided exact 95% Clopper-Pearson values are benchmark decision statistics only: 0/35 upper 0.082031636; 0/30 upper 0.095033853; 29/30 lower 0.851403931; 27/30 lower 0.761402143. They are not claims about an IID natural population.
 
-## 12. Gold, state, and integrity
+## 14. Gold, state, and integrity
 
-Gold includes typed values, independent derivation, binding map, determinacy proof, family/features, operation metadata, and rationale. Two independent reviewers solve/audit before an operator-approved adjudication. Gold, fixtures, reserves, equivalence rules, and adjudication freeze together before contact. A defect discovered after contact invalidates the affected run and is not repaired in place.
+Gold includes typed values, mechanically evaluated operation results, binding map, determinacy proof, family/features, operation metadata, and rationale. Two independent reviewers solve/audit before an operator-approved adjudication. Gold, fixtures, reserves, equivalence rules, and adjudication freeze together before contact. A defect discovered after contact invalidates the affected run and is not repaired in place.
 
 The integrity catalog is `g-extract1.integrity-events.v2`; the verdict contract is `g-extract1.result-state-machine.v3`.
 
@@ -175,9 +234,9 @@ Invalid events are exhaustive and include:
 
 Receipted provider timeout/error/missing response and a verifiable sealed interruption are INCOMPLETE. Explicit authorized operator abort is ABORTED. Before contact, pinned mismatches are PRE_CONTACT_BLOCKED. Primary verdict precedence is INVALID, PRE_CONTACT_BLOCKED, ABORTED, INCOMPLETE, NO_PHASE_A_CELL_QUALIFIED, QUALIFICATION_METHOD_FAILED_VALIDATION, MIXED_TARGETED_REQUALIFICATION_SUPPORTED, then TARGETED_REQUALIFICATION_SUPPORTED.
 
-## 13. Frozen baseline and provider
+## 15. Frozen baseline and provider
 
-The baseline contract is `g-extract1.baseline-binding.v3`. The historical system text, request builder, normalization, operational wrapper, extraction validator, semantic references, model binding, and blueprint template are bound by path, SHA-256, and Git blob in the machine contract. The common extraction suffix is byte-identical to G-ROUTE4. Only record type, catalog operands, source text, and schema vary.
+The baseline contract is `g-extract1.baseline-binding.v3`. The historical system text, request builder, normalization, operational wrapper, extraction validator, semantic references, model binding, and blueprint template are bound by path, SHA-256, and Git blob in the machine contract. The common extraction suffix is byte-identical to G-ROUTE4. Only record type, catalog operands, source text, and historical schema vary.
 
 Provider is Ollama 0.34.3. Models and blob SHA-256 values are:
 
@@ -187,7 +246,7 @@ Provider is Ollama 0.34.3. Models and blob SHA-256 values are:
 
 Generation remains context 8192, output 350, temperature 0.45, top_p 0.9, top_k 40, repeat penalty 1.1, thinking off, stream off, fresh session, zero retry/repair/fallback. Seeds are `base + zero_based_fixture_index * 10 + one_based_repeat`, with candidate bases 610000 and 620000.
 
-## 14. Governance and readiness boundary
+## 16. Governance and readiness boundary
 
 G-ROUTE4 remains failed and immutable. There is no historical rewrite, prompt tuning, threshold loosening, post-contact gold/fixture change, autonomy, or belief effect. Failed attempts are append-only. One local-model research job may run at a time. Reviewer output is non-authoritative.
 
