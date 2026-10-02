@@ -1,9 +1,15 @@
-# G-EXTRACT1 v8 Human/Machine Equivalence Checklist
+# G-EXTRACT1 v9 Human/Machine Equivalence Checklist
 
-Both design files are co-normative. The v8 human annex embeds exact structured normative objects; the validator parses them and compares them with the machine contract. This checklist is an index of checks and reviewer obligations, not a proof of complete prose equivalence or scientific validity.
+Both design files are co-normative. The v9 human annex embeds exact structured normative objects; the validator parses them and compares them with the machine contract. This checklist is an index of checks and reviewer obligations, not a proof of complete prose equivalence or scientific validity.
 
 | Normative area | Human location | Machine location | Check |
 |---|---|---|---|
+| 168-position recurrence and scopes | section20 and annex | template_recurrence_contract | 51 exact classes, 35 subtype groups, all 14,028 structural pairs; four E7 reserves |
+| Ordinal-neutral and scoped comparison modes | section20 and annex | ordinal_neutral_similarity_contract | text/schema masking, historical unchanged, ordinary/shape/content probes and prospective exception |
+| Entity selected-index counterbalance | section20 and annex | entity_selection_allocation_contract | exact matrix, constants, exhaustive finite mappings, both-phase failure invariant |
+| Value difficulty and zero distractors | section20 and annex | value_allocation_contract | all 140 primary context-profile expansions; actual magnitude/sign/carry mutations; exact arithmetic/precision |
+| Validated reserve difficulty | sections12/20 and annex | reserve_equivalence_contract.value_shape_profile | actual semantics/slot/profile/ledger validation precedes byte comparison |
+| E7 shifted-order interpretation | section20 | ambiguity_contract.phase_b_interpretation | not freshness-only or identically distributed |
 | Identity, scope, calls and authority | sections 1-2,16 | experiment/corpus/phases/governance | constants, zero authority/calls/fixtures |
 | Historical closure and baseline | sections 1,15 | historical_binding/baseline_binding | literal SHA-256 and Git blobs |
 | Canonical full prompt and literals | section 3 | operation_definition_contract | full bytes/SHA, literal rejects, 2-4 SUM |
@@ -38,3 +44,7 @@ The checkpoint permits independent rereview only. A separately authorized bluepr
 ## Candidate v8 exact-object checks
 
 Section19/annex directly encode legacy projection, E4 context matrices, entity discrimination, enum positions, reserve01-only rules, subtype content, identity shape and lexical categories. Behavioral tests cover all 106 historical inputs, constant strategies, wrong entities, uncovered reserves and actual-domain/E7 mutations. Exact normative objects are compared with JSON; no scientific or later authorization claim.
+
+## Candidate v9 validation limits
+
+Section20 and the exact annex freeze the recurrence ledger, comparison decision table, entity matrix and value profiles. Symbolic structural feasibility is not content feasibility or scientific independence. Every future actual fixture must pass semantic/slot/value/wiring checks before claiming ledger compatibility or reserve equivalence. Old isolated test vectors intentionally test historical/individual mechanics, not full v9 corpus conformance. No corpus/reserve content is created by the symbolic ledger or checking probes. The content-view correction and fixed-boundary confounds are explicitly prospective and require adversarial rereview.

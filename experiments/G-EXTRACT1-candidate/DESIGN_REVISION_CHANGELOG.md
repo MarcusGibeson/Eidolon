@@ -1,5 +1,32 @@
 # G-EXTRACT1 Design Revision Changelog
 
+## Candidate v9
+
+Reviewed parent: `9ac3db265a1ae2ed6936ff4890b8eb001f0ab266`. Design/checking only; no blueprint or corpus authoring.
+
+| Rereview-8 finding | Disposition and prospective repair |
+|---|---|
+| Four E7 reserves have unavoidable identical fingerprints | Resolved: full value-free 168-position ledger, 51 exact classes/35 subtype groups, exact member maxima and all collision scopes. All 45 recurring classes are preregistered, not an E7-only exception. |
+| Ordinalized names mask similarity | Resolved: NEW text/schema ordinal-neutralization, historical text unchanged; ordinary/shape/content views and adversarial probes. Ordinal masking alone still gives the demonstrated fresh-value replay 0.0; undeclared layout and shape replay checks catch it. |
+| E5 schema/subtype predicts entity | Resolved: exact four-context index matrix; all 243 schema, 243 subtype and 27 selector-role mappings evaluated. None passes both phases of a round; one-context schema/subtype maxima can still be 5/5 and are disclosed. |
+| Value difficulty is author-selectable | Resolved: 35 profiles with exact context expansion for magnitude, precision, signs, carry/borrow, three-operand SUM, exact quotient/denominator complexity, conversion, comparison/temporal gaps, entity ranks/separation and zero distractors. Actual value validation precedes reserve profile derivation. |
+| Cross-round/unmapped reserve collisions implicit | Resolved: all pair scopes explicit; same-subtype ledger compatibility never grants replacement rights. Slot01-only activation preserved. |
+| E7 B overinterpreted as freshness-only | Resolved: explicitly fresh-fixture validation under prospectively shifted order, not IID/freshness-only. |
+| Whole-answer control overclaim | Intentionally retained as exact-object replay only; ordinal names limit sensitivity. Complementary controls and limits disclosed. |
+| Historical adapter after comparison change | Retained: all106 read-only adaptations, unchanged projection/digest and historical thresholds; only NEW similarity side masked. |
+
+### Necessary prospective consistency corrections
+
+1. Fixed-template ordinary similarity cannot universally satisfy <0.20 after ordinal masking (E7 probe 0.272727, generated-only copy 1.0). Exact preregistered same-subtype positions instead require content five-gram Jaccard <0.12 plus raw typed VALUE freshness and every exact-reuse check. Both-empty content sets are NOT_APPLICABLE, restricted to fixed generated labels/enums. This scoped contamination exception is explicit and requires scientific rereview; no qualification gate changes.
+2. Required E4 rotations/E7 order shifts are planned 5/6 variants. Exact ledger variants may recur; different fully validated subtypes retain the original ordinary near-replay test. Shape replay adds evidence for undeclared variants, which are authoring errors regardless score. No post-authoring layout exceptions.
+3. E1-05 uses a source offset and E2-05 a literal end to distinguish otherwise unavoidable unrelated-subtype fingerprints. Other catalog/system/common-suffix bytes and full prompt checking hashes are preserved.
+4. E4-02 positive INTEGER-minus-fractional-NUMBER always borrows at a fractional column. Its profile is borrow=true rather than an impossible rotated no-borrow case. E3-02 absolute-difference borrow remains counterbalanced.
+5. The reserve profile appends its validated value_shape_profile. Old isolated mechanics are not v9 corpus-valid evidence; enforce_v9=True checks actual subtype/value/wiring before full reserve-profile comparison.
+6. Finite enum/Boolean catalog tokens are not scalable freshness evidence in the declared content view (but remain in ordinary/shape views). Their exact allocation/scoring remains required; E7-05 Boolean support is true/false/false/true. Both-empty content is disclosed as NOT_APPLICABLE, not a low-similarity claim.
+7. Entity-bound source/selector contamination atoms resolve the selected entity's complete facts, rather than the ordinary non-entity reference path. Twenty typed entity checking vectors exercise this existing binding semantic explicitly. Actual E4/E5/E7 profiles and exact DIVIDE complexity are now behaviorally exercised, not only declared.
+
+Validator PASS means deterministic structural/cross-representation consistency only. The 168-object proof is symbolic structural feasibility, not proof that future content/gold/contamination will pass. Scientific validity and blueprint readiness remain for independent v9 rereview. G-ROUTE4 remains immutable CLOSED FAILED; model/provider calls, scored fixtures and reserve authoring are zero. All later authorizations remain separate.
+
 ## Candidate v8
 
 Reviewed parent: 6eef00a09a90fb8a50a6e18ff9cdcc90ae712d6e. Prospective design/checking only.

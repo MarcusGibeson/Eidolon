@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import itertools
 import copy
 from datetime import date, datetime, time, timedelta
 from decimal import Decimal
@@ -1062,7 +1063,8 @@ def extract_date_number_atoms(
                     tag = literal_tags[item["kind"]]
                     tag, value = _literal_value(item, semantics)
                 elif item["kind"] == "field_identifier":
-                    matches = [x for x in facts if x["template_id"] == "VALUE" and x["field_identifier"] == item["value"] and x["entity_selector_value"] is None]
+                    selected_entity = node["arguments"]["selector_value"]["value"] if node["id"]=="ENTITY_FIELD_BIND" else None
+                    matches = [x for x in facts if x["template_id"] == "VALUE" and x["field_identifier"] == item["value"] and x["entity_selector_value"] == selected_entity]
                     if len(matches) != 1:
                         raise ValueError("atom_source_cardinality")
                     tag, value, _ = _typed_source_value(matches[0], schema_contract, semantics)
@@ -1266,12 +1268,12 @@ def validate_subtype_fixture(fixture: dict[str, Any], slot: dict[str, Any], cont
         population = fixture["entities"]
         count, role = row["coverage_class"].split(":")
         selected = nodes[0]["arguments"]["selector_value"]["value"]
-        if len(population) != int(count.split("_")[1]) or any(x["selector_role"] != role for x in population) or selected != population[allocation["entity_selected_index"][slot["slot_id"]]]["selector_value"] or fields[0]["schema_type"] != row["domain"]:
+        selected_index = contract["entity_selection_allocation_contract"]["selected_index_matrix"][f"{phase}:{risk}"][index-1]
+        if len(population) != int(count.split("_")[1]) or any(x["selector_role"] != role for x in population) or selected != population[selected_index]["selector_value"] or fields[0]["schema_type"] != row["domain"]:
             raise ValueError("subtype_entity_population")
         if index == 3:
             source = nodes[0]["arguments"]["source_field"]["value"]
             gold_index = allocation["enum_answer_positions"][f"{phase}:{risk}"][slot["slot_id"]]
-            selected_index = allocation["entity_selected_index"][slot["slot_id"]]
             for i, entity in enumerate(population):
                 fact = next(x for x in fixture["source_fact_records"] if x["field_identifier"] == source and x["entity_selector_value"] == entity["selector_value"])
                 if fact["value"]["value"] != row["domain"].split("|")[(i - selected_index + gold_index) % len(population)]:
@@ -1373,6 +1375,447 @@ def similarity_vector_payload(request: dict[str, Any]) -> str:
     return " ".join(unicodedata.normalize("NFC", payload.replace("\r\n", "\n").replace("\r", "\n")).casefold().split())
 
 
+def ordinal_neutral_payload(request: dict[str, Any], historical: bool = False) -> str:
+    payload = similarity_vector_payload(request)
+    if historical:
+        return payload
+    ordinal = r"(?:00[1-9]|0[1-9][0-9]|1[0-5][0-9]|16[0-8])"
+    payload = re.sub(r"\b([fd])" + ordinal + r"_(\d{2})\b", r"\1_\2", payload, flags=re.ASCII)
+    payload = re.sub(r"\bentity " + ordinal + r" ([abc])\b", r"entity \1", payload, flags=re.ASCII)
+    return re.sub(r"\b(label|code|id)_" + ordinal + r"_(\d{2})\b", r"\1_\2", payload, flags=re.ASCII)
+
+
+def comparison_grams(payload: str, contract: dict[str, Any], view: str = "ordinary") -> set[tuple[str, ...]]:
+    tokens = re.findall(contract["contamination_contract"]["tokenizer"]["pattern"], payload, re.ASCII)
+    value_pattern = r"(?:[0-9]{4}-[0-9]{2}-[0-9]{2}|[0-9]{2}:[0-9]{2}|[+-]?(?:[0-9]+(?:\.[0-9]+)?|\.[0-9]+)(?:e[+-]?[0-9]+)?|option_[a-h]|true|false)"
+    is_value = [bool(re.fullmatch(value_pattern, x, re.ASCII)) for x in tokens]
+    if view == "shape":
+        tokens = ["value" if value else token for token, value in zip(tokens, is_value)]
+    elif view not in {"ordinary", "content"}:
+        raise ValueError("similarity_view")
+    if view=="content":
+        content_pattern=contract["ordinal_neutral_similarity_contract"]["declared_template_content_view"]["content_value_regex"]
+        is_value=[bool(re.fullmatch(content_pattern,x,re.ASCII)) for x in tokens]
+    return {tuple(tokens[i:i+5]) for i in range(max(0, len(tokens)-4)) if view != "content" or any(is_value[i:i+5])}
+
+
+def gram_jaccard(left: set[tuple[str, ...]], right: set[tuple[str, ...]]) -> float:
+    return len(left & right) / len(left | right) if left | right else 1.0
+
+
+def planned_fingerprint(contract: dict[str, Any], context: str, slot_id: str, reserve: bool) -> list[Any]:
+    """Derive a value-free design position, not an authored corpus fixture."""
+    phase, risk = context.split(":")
+    family, index_text = slot_id.split("-"); index = int(index_text)
+    row = next(x for x in contract["subtype_allocation_contract"]["slot_rows"][family] if x["slot_id"] == slot_id)
+    graph, roles, sequence = [], [], []
+    boundary, temporal, entity_role, layout = "NONE", "NONE", "NONE", "CONTIGUOUS_SINGLE_ENTITY"
+    if family == "E7":
+        support = [["TARGET", st, -1] for st in row["domain"]]
+        absence = ["EXPLICIT_ABSENCE", "provided|not_provided", -1]
+        sequence = [support[0], absence, *support[1:]] if reserve else [absence, *support] if phase == "A" else [*support, absence]
+        roles = [[st, "source_copy"] for st in row["domain"]] + [["provided|not_provided", "absence_sentinel"]]
+        layout = "EXPLICIT_PARTIAL_ABSENCE"
+    elif family == "E5":
+        count, selector = row["coverage_class"].split(":"); count = int(count.split("_")[1])
+        graph = [["ENTITY_FIELD_BIND", ["source_field", "source_field", "entity_selector"], []]]
+        roles = [[row["domain"], "entity_bound_value"]]
+        sequence = [["SUPPORT", "string", i] for i in range(count)] + [["TARGET", row["domain"], i] for i in range(count)]
+        entity_role, layout = "MULTI_ENTITY_SELECT_BY_" + selector, "INTERLEAVED_MULTI_ENTITY"
+    else:
+        operations = row["operation_shape"].replace("(source)", "").split(">")
+        first = operations[0]
+        if family == "E1" or first == "CALENDAR_DAY_OFFSET":
+            source_types = ["YYYY-MM-DD", "integer"] if family == "E1" and index == 5 else ["YYYY-MM-DD"]
+            kinds = ["source_field", "source_field" if len(source_types) == 2 else "literal"]
+            temporal = {1:"DATE_WITHIN_MONTH", 2:"MONTH_BOUNDARY", 3:"YEAR_BOUNDARY", 4:"LEAP_DAY_BOUNDARY", 5:"DATE_WITHIN_MONTH" if risk=="R2" else "YEAR_BOUNDARY"}[index] if family=="E1" else "MONTH_BOUNDARY" if family=="E4" else "YEAR_BOUNDARY"
+            result_schema, role = "YYYY-MM-DD", "derived_date"
+        elif first == "CLOCK_MINUTE_OFFSET":
+            source_types, kinds = ["HH:MM"], ["source_field", "literal"]
+            temporal = "SAME_DAY_FORWARD" if family=="E2" and index==1 else "MIDNIGHT_ROLLOVER"
+            result_schema, role = "HH:MM", "derived_time"
+        elif first == "ELAPSED_MINUTES":
+            source_types = ["HH:MM"] if index==5 else ["HH:MM","HH:MM"]
+            kinds = ["source_field", "literal" if index==5 else "source_field"]
+            temporal = "MIDNIGHT_ROLLOVER" if index==4 else "SAME_DAY_FORWARD"
+            result_schema, role = "integer", "derived_number"
+        elif first == "EXACT_COPY":
+            source_types, kinds = [row["domain"]], ["source_field"]
+            result_schema, role = row["domain"], "source_copy"
+        elif family=="E4" and index==5:
+            source_types, kinds = ["number","number"], ["source_field","source_field"]
+            result_schema, role = "boolean", "derived_boolean"
+        else:
+            types = contract["subtype_allocation_contract"]["field_typing_for_numeric_slots"][slot_id]
+            source_types = [{"INTEGER":"integer", "NUMBER":"number"}[t] for t in types]
+            kinds = ["source_field"] * len(types)
+            result_schema, role = ("integer" if set(types)=={"INTEGER"} and first!="DIVIDE" else "number"), "derived_number"
+        graph = [[first, kinds, []]]
+        if len(operations)==2:
+            graph.append([operations[1], ["derived_field", "literal"] if operations[1] in COMPARISON else ["derived_field"], [0]])
+            if operations[1] in COMPARISON: result_schema,role="boolean","derived_boolean"
+        if family=="E4": boundary=contract["subtype_allocation_contract"]["comparison_slot_matrix"][context][slot_id]["boundary_relation"]
+        roles = [[result_schema, role]]
+        sequence = [["TARGET" if first=="EXACT_COPY" else "SUPPORT", st, -1] for st in source_types]
+    roles.sort(key=lambda x:json.dumps(x,separators=(",",":")).encode())
+    return [graph,roles,entity_role,boundary,temporal,[layout,sequence]]
+
+
+def template_ledger(contract: dict[str, Any]) -> dict[str, Any]:
+    positions, classes = [], {}
+    for context in ("A:R2","A:R3","B:R2","B:R3"):
+        for family in ("E1","E2","E3","E4","E5","E6","E7"):
+            for index in range(1,7):
+                reserve=index==6; slot=f"{family}-{1 if reserve else index:02d}"
+                position=f"{context}:{slot}:{'RESERVE' if reserve else 'PRIMARY'}"
+                fp=planned_fingerprint(contract,context,slot,reserve)
+                encoded=json.dumps(fp,ensure_ascii=True,separators=(",",":")).encode()
+                key=hashlib.sha256(encoded).hexdigest()
+                classes.setdefault(key,dict(slot=slot,fingerprint=fp,members=[]))["members"].append(position)
+                positions.append(dict(position=position,subtype_slot=slot,fingerprint_class=key))
+    for key, group in classes.items():
+        if any(x.split(":")[2]!=group["slot"] for x in group["members"]):
+            raise ValueError("unrelated_subtype_fingerprint_collision")
+        group["maximum_recurrence_count"]=len(group["members"])
+    return dict(positions=positions,classes=classes)
+
+
+def selector_blind_summary(matrix: dict[str, list[int]]) -> dict[str, Any]:
+    contexts=list(matrix)
+    scores={str(i):[sum(x==i for x in matrix[c]) for c in contexts] for i in range(3)}
+    result=dict(context_order=contexts,always_index_scores=scores,mapping_families={})
+    for name,groups in (("schema",[0,1,2,3,4]),("subtype",[0,1,2,3,4]),("selector_role",[0,1,2,0,1])):
+        unique=sorted(set(groups)); rows=[]
+        for assignment in itertools.product(range(3),repeat=len(unique)):
+            mapping=dict(zip(unique,assignment))
+            row=[sum(mapping[g]==selected for g,selected in zip(groups,matrix[c])) for c in contexts]
+            rows.append(row)
+            if any(row[contexts.index('A:'+risk)]>=4 and row[contexts.index('B:'+risk)]>=4 for risk in ('R2','R3')):
+                raise ValueError("selector_blind_passes_both_phases")
+        result["mapping_families"][name]=dict(exhaustive_mapping_count=len(rows),maximum_by_context=[max(x[i] for x in rows) for i in range(4)],maps_passing_all_contexts=sum(all(x>=4 for x in row) for row in rows),maps_passing_both_phases_same_round=0)
+    return result
+
+
+def value_shape_profile(contract: dict[str, Any], context: str, slot_id: str) -> dict[str, Any]:
+    rules = contract["value_allocation_contract"]
+    row = copy.deepcopy(rules["slot_profiles"][slot_id])
+    phase, risk = context.split(":")
+    parameters = rules["context_parameters"][str(rules["context_pattern"][context])]
+    substitutions = {
+        "CONTEXT_PRECISION": parameters["precision_places"],
+        "CONTEXT_ADD_CARRY": {"operation":"ADD", "carry":parameters["add_carry"]},
+        "CONTEXT_SUBTRACT_BORROW": {"operation":"SUBTRACT", "borrow":parameters["subtract_borrow"]},
+        "TERMINATING_NONINTEGRAL_QUOTIENT_CONTEXT_DECIMAL_LENGTH": {
+            "operation":"DIVIDE", "places":parameters["divide_quotient_places"],
+            "denominator_class":parameters["divide_reduced_denominator"], "divisor_digits":2},
+        "FROZEN_CONVERSION_ID": contract["subtype_allocation_contract"]["unit_conversion_assignment"][context],
+        "CONTEXT_NUMERIC_GAP": parameters["numeric_gap"],
+        "CONTEXT_DATE_GAP": parameters["date_gap_days"],
+        "CONTEXT_TIME_GAP": parameters["time_gap_minutes"],
+        "CONTEXT_NUMERIC_ENTITY_GAP": parameters["numeric_entity_gap"],
+        "CONTEXT_DATE_ENTITY_GAP": parameters["date_entity_gap_days"],
+        "CONTEXT_TIME_ENTITY_GAP": parameters["time_entity_gap_minutes"],
+        "CONTEXT_TWO_ENTITY_RANK": parameters["two_entity_selected_rank"],
+        "CONTEXT_THREE_ENTITY_RANK": rules["three_entity_rank_override"][context],
+        "R2_SMALL_R3_LARGE": ["SMALL" if risk=="R2" else "LARGE"],
+        "R2_0_R3_366": [0,0] if risk=="R2" else [366,366],
+    }
+    for key, value in row.items():
+        if isinstance(value,str) and value in substitutions: row[key]=substitutions[value]
+    if slot_id.startswith("E4") and contract["subtype_allocation_contract"]["comparison_slot_matrix"][context][slot_id]["boundary_relation"]=="EQUAL":
+        row["comparison_distance"]=0
+    return row
+
+
+def fractional_places(value: Any) -> int:
+    fixed = exact_decimal_from_fraction(Fraction(str(value)))
+    return len(fixed.split(".")[1].rstrip("0"))
+
+
+def digit_event(values: list[Any], operation: str) -> bool:
+    precision=max(fractional_places(x) for x in values)
+    integers=[int(abs(Fraction(str(x)))*10**precision) for x in values]
+    if operation in {"ADD","SUM"}:
+        carry=0; event=False
+        while any(integers) or carry:
+            total=sum(x%10 for x in integers)+carry
+            carry=total//10;event |= carry>0
+            integers=[x//10 for x in integers]
+        return event
+    if operation!="SUBTRACT" or len(integers)!=2: raise ValueError("digit_event_operation")
+    large,small=sorted(integers,reverse=True);borrow=0;event=False
+    while large or small:
+        borrow=int(large%10-borrow<small%10);event |= bool(borrow)
+        large//=10;small//=10
+    return event
+
+
+def validate_value_shape(fixture: dict[str, Any], slot: dict[str, Any], contract: dict[str, Any]) -> dict[str, Any]:
+    context=f"{fixture['lexical_context']['phase']}:{fixture['lexical_context']['risk_round']}"
+    profile=value_shape_profile(contract,context,slot["slot_id"])
+    nodes=stable_topological_nodes(fixture["operation_nodes"])
+    typed=[_typed_source_value(x,contract["schema_type_contract"],contract["operation_semantics_contract"]) for x in fixture["source_fact_records"] if x["template_id"]=="VALUE"]
+    # Use the same exact gold evaluator as the existing design checks, not floats.
+    derived={} if not nodes else validate_fixture_semantics(fixture,contract["schema_type_contract"],contract["operation_definition_contract"],contract["operation_semantics_contract"],contract["entity_population_contract"])
+    resolve=typed_operands(fixture,contract,derived)
+    for result in derived.values():
+        if result["semantic_type"]=="DATE" and not profile["date_years"][0]<=result["value"].year<=profile["date_years"][1]:raise ValueError("value_result_year")
+    for node in nodes:
+        for raw in node["arguments"].values():
+            for item in raw if isinstance(raw,list) else [raw]:
+                if item["kind"] in {"integer_literal","decimal_literal"}:
+                    value=Fraction(item["value"])
+                    if value<=0 and not (slot["slot_id"]=="E1-05" and value==0):raise ValueError("value_literal_sign")
+                if item["kind"]=="date_literal" and not profile["date_years"][0]<=date.fromisoformat(item["value"]).year<=profile["date_years"][1]:raise ValueError("value_literal_year")
+    numeric=[x[1] for x in typed if x[0] in {"INTEGER","NUMBER"}]
+    bands=profile["magnitude_bands"]
+    if bands and len(bands)!=len(numeric):raise ValueError("value_magnitude_count")
+    for value,band in zip(numeric,bands):
+        lower,upper=contract["value_allocation_contract"]["magnitude_bands"][band]
+        if not lower<=abs(Fraction(str(value)))//1<=upper:raise ValueError("value_magnitude_band")
+    if any(Fraction(str(x))<=0 for x in numeric) and not slot["slot_id"].startswith("E1"):
+        raise ValueError("value_numeric_sign")
+    for tag,value,_schema in typed:
+        if tag=="NUMBER" and fractional_places(value)!=profile["number_precision"]:raise ValueError("value_number_precision")
+        if tag=="DATE" and not profile["date_years"][0]<=value.year<=profile["date_years"][1]:raise ValueError("value_date_year")
+        if tag=="TIME" and profile["source_time_class"]=="IRREGULAR_MINUTE" and _minutes(value)%30==0:raise ValueError("value_time_precision")
+        if tag=="BOOLEAN" and value!=contract["value_allocation_contract"]["e7_boolean_source_allocation"][context]:raise ValueError("value_boolean_allocation")
+    complexity=profile["arithmetic_complexity"]
+    if isinstance(complexity,dict) and complexity["operation"] in {"ADD","SUBTRACT"}:
+        if digit_event(numeric,complexity["operation"])!=complexity.get("carry",complexity.get("borrow")):raise ValueError("value_digit_complexity")
+    if complexity=="THREE_OPERANDS_AT_LEAST_ONE_CARRY" and (len(numeric)!=3 or not digit_event(numeric,"SUM")):raise ValueError("value_sum_complexity")
+    if isinstance(complexity,dict) and complexity["operation"]=="DIVIDE":
+        quotient=Fraction(str(numeric[0]))/Fraction(str(numeric[1])); denominator=quotient.denominator
+        twos=fives=0
+        while denominator%2==0:denominator//=2;twos+=1
+        while denominator%5==0:denominator//=5;fives+=1
+        kind="POWER_OF_2_ONLY" if twos and not fives else "BOTH_2_AND_5" if twos and fives else "OTHER"
+        if denominator!=1 or kind!=complexity["denominator_class"] or fractional_places(exact_decimal_from_fraction(quotient))!=complexity["places"]:raise ValueError("value_divide_complexity")
+    for node in nodes:
+        args=node["arguments"];op=node["id"]
+        if op in COMPARISON:
+            operands=[resolve(args[k]) for k in ("left","right")]
+            tag=operands[0][0];a,b=(x[1] for x in operands)
+            gap=abs((a-b).days) if tag=="DATE" else abs(_minutes(a)-_minutes(b)) if tag=="TIME" else abs(Fraction(str(a))-Fraction(str(b)))
+            if gap!=Fraction(str(profile["comparison_distance"])):raise ValueError("value_comparison_distance")
+        if op=="CALENDAR_DAY_OFFSET":distance=resolve(args["days"])[1]
+        elif op=="CLOCK_MINUTE_OFFSET":distance=resolve(args["minutes"])[1]
+        elif op=="ELAPSED_MINUTES":distance=derived[node["target"]]["value"]
+        else:continue
+        if not profile["temporal_distance"][0]<=distance<=profile["temporal_distance"][1]:raise ValueError("value_temporal_distance")
+    if slot["slot_id"] in {"E5-01","E5-04","E5-05"}:
+        node=nodes[0]; source=node["arguments"]["source_field"]["value"]
+        sources=[x for x in fixture["source_fact_records"] if x["field_identifier"]==source]
+        vals=[_typed_source_value(x,contract["schema_type_contract"],contract["operation_semantics_contract"])[1] for x in sources]
+        scalar=lambda v:v.toordinal() if slot["slot_id"]=="E5-04" else _minutes(v) if slot["slot_id"]=="E5-05" else Fraction(str(v))
+        ordered=sorted(scalar(x) for x in vals)
+        if any(b-a!=Fraction(str(profile["entity_separation"])) for a,b in zip(ordered,ordered[1:])):raise ValueError("value_entity_separation")
+        selected=node["arguments"]["selector_value"]["value"]
+        chosen=next(x for x in sources if x["entity_selector_value"]==selected)
+        if ordered.index(scalar(_typed_source_value(chosen,contract["schema_type_contract"],contract["operation_semantics_contract"])[1]))!=profile["entity_selected_rank"]:raise ValueError("value_entity_rank")
+    return profile
+
+
+def validate_v9_fixture(fixture: dict[str, Any], slot: dict[str, Any], contract: dict[str, Any]) -> dict[str, Any]:
+    validate_subtype_fixture(fixture,slot,contract)
+    profile=validate_value_shape(fixture,slot,contract)
+    ctx=fixture["lexical_context"];context=f"{ctx['phase']}:{ctx['risk_round']}"
+    actual=json.loads(fingerprint_bytes(dict(fixture=fixture),contract["operation_definition_contract"]))
+    if actual!=planned_fingerprint(contract,context,slot["slot_id"],ctx["within_family_slot"] is None):raise ValueError("unallocated_structural_layout")
+    return profile
+
+
+def declared_template_pair(left: str, right: str, contract: dict[str, Any]) -> bool:
+    rows={x["position"]:x for x in contract["template_recurrence_contract"]["positions"]}
+    if left==right or left not in rows or right not in rows:raise ValueError("template_position_pair")
+    return rows[left]["subtype_slot"]==rows[right]["subtype_slot"]
+
+
+def checking_pair_decision(left: str, right: str, actual_left: list[Any], actual_right: list[Any], facts: dict[str, Any], contract: dict[str, Any]) -> str:
+    """Exercise the frozen decision table with checked design facts, not model outputs."""
+    rules=contract["template_recurrence_contract"]
+    positions={x["position"]:x for x in rules["positions"]}
+    if left not in positions or right not in positions or left==right:raise ValueError("comparison_positions")
+    expected=lambda pos:rules["fingerprint_classes"][positions[pos]["fingerprint_class"]]["fingerprint"]
+    if not facts["slot_value_semantics_valid"] or actual_left!=expected(left) or actual_right!=expected(right):return "AUTHORING_ERROR_STRUCTURE"
+    if not facts["exact_reuse_pass"] or not facts["raw_value_sequence_fresh"] or facts["raw_payload_equal"]:return "REJECT_CONTAMINATION"
+    if declared_template_pair(left,right,contract):
+        content=facts["content_jaccard"]
+        if content is None:
+            numeric={"integer","number","YYYY-MM-DD","HH:MM"}
+            if any(row[1] in numeric for fp in (actual_left,actual_right) for row in fp[5][1]):return "AUTHORING_ERROR_EMPTY_CONTENT"
+            return "PERMITTED_DECLARED_RECURRENCE"
+        return "PERMITTED_DECLARED_RECURRENCE" if content<0.12 else "REJECT_CONTAMINATION"
+    matched=sum(a==b for a,b in zip(actual_left,actual_right))
+    return "REJECT_CONTAMINATION" if facts["ordinary_jaccard"]>=0.20 or matched==6 or matched>=5 and facts["ordinary_jaccard"]>=0.12 else "PERMITTED_DISTINCT_SUBTYPE"
+
+
+def similarity_diagnostics(contract: dict[str, Any]) -> dict[str, Any]:
+    def request(text: str, field: str, st: str="integer") -> dict[str, Any]:
+        return dict(input=dict(text=text,schema={field:st}))
+    a=request("f011_01 is 2. f011_02 is 3.","d011_01")
+    cases={
+        "A_ordinal_only":request("f095_01 is 2. f095_02 is 3.","d095_01"),
+        "B_same_subtype_fresh":request("f095_01 is 4. f095_02 is 5.","d095_01"),
+        "C_demonstrated_near_replay":request("f095_01 is 4. f095_02 is 5. f095_03 is 6.","d095_01"),
+        "D_distinct_subtype_valid_values":request("f095_01 is 12. f095_02 is 27.","d095_01"),
+    }
+    output={}
+    for name,b in cases.items():
+        raw=gram_jaccard(comparison_grams(similarity_vector_payload(a),contract),comparison_grams(similarity_vector_payload(b),contract))
+        left,right=ordinal_neutral_payload(a),ordinal_neutral_payload(b)
+        normal=gram_jaccard(comparison_grams(left,contract),comparison_grams(right,contract))
+        shape=gram_jaccard(comparison_grams(left,contract,"shape"),comparison_grams(right,contract,"shape"))
+        content_left,content_right=comparison_grams(left,contract,"content"),comparison_grams(right,contract,"content")
+        content=gram_jaccard(content_left,content_right) if content_left or content_right else None
+        output[name]=dict(before=raw,ordinal_neutral=normal,shape=shape,content=content)
+    # Mechanical fixed-template probes, not scored/reserve content authoring.
+    a=request("f071_01 is 5. f071_02 has not been provided. f071_03 is 7.","f071_01")
+    a["input"]["schema"].update(f071_02="provided|not_provided",f071_03="integer")
+    b=request("f078_01 is 8. f078_02 has not been provided. f078_03 is 9.","f078_01")
+    b["input"]["schema"].update(f078_02="provided|not_provided",f078_03="integer")
+    left,right=ordinal_neutral_payload(a),ordinal_neutral_payload(b)
+    output["E7_required_template_contradiction"]=dict(ordinal_neutral=gram_jaccard(comparison_grams(left,contract),comparison_grams(right,contract)),content=gram_jaccard(comparison_grams(left,contract,"content"),comparison_grams(right,contract,"content")))
+    return output
+
+
+def validate_v9(contract: dict[str, Any], checks: list[str]) -> None:
+    preserved=preserved_v8_sections(contract)
+    for name,identical in preserved["sections"].items():
+        require(identical,"v9_preserved_parent_section:"+name,checks)
+    frozen=contract["template_recurrence_contract"]; ledger=template_ledger(contract)
+    require(ledger["positions"]==frozen["positions"],"v9_168_position_ledger_rederived",checks)
+    require(ledger["classes"]==frozen["fingerprint_classes"],"v9_all_exact_classes_rederived",checks)
+    require(len(ledger["positions"])==168,"v9_168_no_authored_content",checks)
+    positions=ledger["positions"]; exact_count=0
+    for left,right in itertools.combinations(positions,2):
+        if left["fingerprint_class"]==right["fingerprint_class"]:
+            exact_count+=1
+            if not declared_template_pair(left["position"],right["position"],contract):raise AssertionError("undeclared_exact_collision")
+    require(exact_count>0,"v9_all_14028_pairs_no_prohibited_exact_collision",checks)
+    expected_groups={slot:dict(members=[x["position"] for x in positions if x["subtype_slot"]==slot],fingerprint_classes=sorted({x["fingerprint_class"] for x in positions if x["subtype_slot"]==slot}),maximum_members=sum(x["subtype_slot"]==slot for x in positions)) for slot in sorted({x["subtype_slot"] for x in positions})}
+    require(expected_groups==frozen["subtype_template_groups"],"v9_35_template_groups_exact_members_maxima",checks)
+    for key,group in ledger["classes"].items():
+        require(group["maximum_recurrence_count"]==len(group["members"]) and len({x.split(':')[2] for x in group["members"]})==1,f"v9_class_maximum:{key}",checks)
+    reserves=[x for x in positions if x["subtype_slot"]=="E7-01" and x["position"].endswith(":RESERVE")]
+    require(len(reserves)==4 and len({x["fingerprint_class"] for x in reserves})==1,"v9_four_E7_reserves_one_exact_class",checks)
+    for left,right,expected in (
+        ("A:R2:E7-01:RESERVE","B:R3:E7-01:RESERVE",True),
+        ("A:R2:E7-01:RESERVE","A:R3:E7-01:PRIMARY",True),
+        ("A:R2:E3-01:PRIMARY","A:R2:E3-01:RESERVE",True),
+        ("A:R2:E7-01:RESERVE","A:R3:E7-02:PRIMARY",False),
+        ("A:R2:E1-01:PRIMARY","B:R2:E1-02:PRIMARY",False),
+    ):require(declared_template_pair(left,right,contract)==expected,f"v9_scope:{left}:{right}",checks)
+    pair=("A:R2:E7-01:RESERVE","B:R3:E7-01:RESERVE")
+    fp=[planned_fingerprint(contract,x.rsplit(":",2)[0],x.split(':')[2],True) for x in pair]
+    facts=dict(slot_value_semantics_valid=True,exact_reuse_pass=True,raw_value_sequence_fresh=True,raw_payload_equal=False,content_jaccard=0.0,ordinary_jaccard=0.272727272727)
+    require(checking_pair_decision(*pair,*fp,facts,contract)=="PERMITTED_DECLARED_RECURRENCE","v9_E7_four_way_pair_content_pass",checks)
+    for name,key,value,expected in (
+        ("no_value_freshness","raw_value_sequence_fresh",False,"REJECT_CONTAMINATION"),
+        ("identity_or_answer_reuse","exact_reuse_pass",False,"REJECT_CONTAMINATION"),
+        ("raw_payload_replay","raw_payload_equal",True,"REJECT_CONTAMINATION"),
+        ("content_at_threshold","content_jaccard",0.12,"REJECT_CONTAMINATION"),
+        ("profile_not_validated","slot_value_semantics_valid",False,"AUTHORING_ERROR_STRUCTURE"),
+        ("numeric_empty_content","content_jaccard",None,"AUTHORING_ERROR_EMPTY_CONTENT"),
+    ):
+        changed=dict(facts);changed[key]=value
+        require(checking_pair_decision(*pair,*fp,changed,contract)==expected,"v9_pair_rule:"+name,checks)
+    forged=copy.deepcopy(fp);forged[1][5][1].append(["DISTRACTOR","integer",-1])
+    require(checking_pair_decision(*pair,*forged,facts,contract)=="AUTHORING_ERROR_STRUCTURE","v9_near_replay_forged_layout_not_ledger",checks)
+    strings=("A:R2:E6-03:PRIMARY","B:R3:E6-03:PRIMARY")
+    string_fp=[planned_fingerprint(contract,x.rsplit(':',2)[0],"E6-03",False) for x in strings]
+    empty=dict(facts);empty.update(content_jaccard=None,ordinary_jaccard=1.0)
+    require(checking_pair_decision(*strings,*string_fp,empty,contract)=="PERMITTED_DECLARED_RECURRENCE","v9_generated_label_NA_not_dissimilarity_claim",checks)
+    different=("A:R2:E1-01:PRIMARY","B:R3:E1-02:PRIMARY")
+    different_fp=[planned_fingerprint(contract,x.rsplit(':',2)[0],x.split(':')[2],False) for x in different]
+    fresh=dict(facts);fresh['ordinary_jaccard']=0.0
+    require(checking_pair_decision(*different,*different_fp,fresh,contract)=="PERMITTED_DISTINCT_SUBTYPE","v9_planned_boundary_variant_retains_ordinary_rule",checks)
+    fresh['ordinary_jaccard']=0.12
+    require(checking_pair_decision(*different,*different_fp,fresh,contract)=="REJECT_CONTAMINATION","v9_different_subtype_near_threshold_not_exempt",checks)
+    for token,expected in (
+        ("f001_01","f_01"),("f087_02","f_02"),("d168_02","d_02"),
+        ("Entity 001 A","entity a"),("label_001_01","label_01"),("code_087_02","code_02"),("id_168_03","id_03"),
+    ):
+        request=dict(input=dict(text=token,schema={}))
+        require(ordinal_neutral_payload(request)==expected,f"v9_mask:{token}",checks)
+        require(ordinal_neutral_payload(request,True)==token.casefold(),f"v9_historical_not_masked:{token}",checks)
+    x=dict(input=dict(text="f011_01 is 2.",schema={"f011_01":"integer"}))
+    require("f011" not in ordinal_neutral_payload(x) and "f_01=integer" in ordinal_neutral_payload(x),"v9_schema_and_text_both_neutral",checks)
+    diagnostics=similarity_diagnostics(contract)
+    require(diagnostics["A_ordinal_only"]["ordinal_neutral"]==1.0,"v9_only_ordinal_cannot_hide_replay",checks)
+    near=diagnostics["C_demonstrated_near_replay"]
+    require(near["before"]==0 and near["ordinal_neutral"]==0 and near["shape"]>=0.12,"v9_zero_after_ordinal_requires_additional_shape_guard",checks)
+    require(diagnostics["D_distinct_subtype_valid_values"]["content"]<0.12,"v9_fresh_declared_template_content_can_pass",checks)
+    require(diagnostics["E7_required_template_contradiction"]["ordinal_neutral"]>=0.20 and diagnostics["E7_required_template_contradiction"]["content"]<0.12,"v9_bounded_template_correction_needed_and_sufficient_for_probe",checks)
+    selected=contract["entity_selection_allocation_contract"]
+    require(selector_blind_summary(selected["selected_index_matrix"])==selected["baseline_expected"],"v9_exhaustive_selector_blind_baselines",checks)
+    for i in range(5):
+        choices={x[i] for x in selected["selected_index_matrix"].values()}
+        require(choices==set(range(3 if i in (2,4) else 2)),f"v9_E5_slot_index_coverage:{i+1}",checks)
+    values=contract["value_allocation_contract"]
+    require(values["context_pattern"]=={"A:R2":0,"A:R3":1,"B:R2":1,"B:R3":0},"v9_value_pattern_counterbalance",checks)
+    for context in selected["selected_index_matrix"]:
+        for family,rows in contract["subtype_allocation_contract"]["slot_rows"].items():
+            for row in rows:
+                profile=value_shape_profile(contract,context,row["slot_id"])
+                require(profile["distractor_count"]==0,f"v9_exact_zero_distractors:{context}:{row['slot_id']}",checks)
+                require(not any(isinstance(x,str) and x.startswith("CONTEXT_") for x in profile.values()),f"v9_profile_fully_expanded:{context}:{row['slot_id']}",checks)
+                require(set(profile)==set(values["slot_profiles"][row["slot_id"]]),f"v9_profile_exact_keys:{context}:{row['slot_id']}",checks)
+    for op,args,expected in (("ADD",[12,27],False),("ADD",[18,27],True),("SUM",["12.8","23.7","34.6"],True),("SUBTRACT",[98,12],False),("SUBTRACT",[92,18],True)):
+        require(digit_event(args,op)==expected,f"v9_digit_event:{op}:{args}",checks)
+    for token,places in (("5.0",0),("5.1",1),("5.12",2),("100.01",2)):
+        require(fractional_places(token)==places,f"v9_exact_precision:{token}",checks)
+    for fraction,places in ((Fraction(100,40),1),(Fraction(101,20),2)):
+        require(fractional_places(exact_decimal_from_fraction(fraction))==places,f"v9_divide_exact_shape:{fraction}",checks)
+    # Perturb an existing isolated numerical checking vector, not scored content.
+    base=copy.deepcopy(contract["operation_semantics_contract"]["validation_vectors"][0]["fixture"])
+    for fact,value in zip(base["source_fact_records"],[18,27]):fact["value"]["value"]=str(value)
+    base["gold_values"][base["output_fields"][0]["name"]]=45
+    slot=dict(phase="A",risk_round="R2",slot_id="E3-01")
+    vector=slot_vector(base,slot)
+    require(validate_v9_fixture(vector,slot,contract)==value_shape_profile(contract,"A:R2","E3-01"),"v9_actual_fixture_profile_and_ledger",checks)
+    require(json.loads(reserve_profile_bytes(vector,slot,contract,True))["value_shape_profile"]==value_shape_profile(contract,"A:R2","E3-01"),"v9_profile_after_actual_value_validation",checks)
+    for name,mutation in (
+        ("magnitude",lambda x:x["source_fact_records"][0]["value"].update(value="8")),
+        ("negative",lambda x:x["source_fact_records"][0]["value"].update(value="-18")),
+        ("carry",lambda x:x["source_fact_records"][0]["value"].update(value="12")),
+    ):
+        broken=copy.deepcopy(vector);mutation(broken)
+        a,b=[int(x["value"]["value"]) for x in broken["source_fact_records"]]
+        broken["gold_values"][broken["output_fields"][0]["name"]]=a+b
+        try:validate_v9_fixture(broken,slot,contract)
+        except ValueError:checks.append("v9_actual_profile_reject:"+name)
+        else:raise AssertionError("v9_profile_mutation_accepted:"+name)
+    extra=copy.deepcopy(vector)
+    fact=copy.deepcopy(extra["source_fact_records"][0]);fact.update(field_identifier=f"f{vector['lexical_context']['fixture_ordinal']:03d}_03");extra["source_fact_records"].append(fact)
+    try:validate_v9_fixture(extra,slot,contract)
+    except ValueError:checks.append("v9_unallocated_distractor_rejects_demonstrated_escape")
+    else:raise AssertionError("v9_unallocated_distractor_accepted")
+    for context,numerator,denominator in (("A:R2",100,40),("B:R2",101,20)):
+        divide=copy.deepcopy(base)
+        divide["operation_nodes"][0].update(id="DIVIDE",arguments={"dividend":{"kind":"field_identifier","value":"f001_01"},"divisor":{"kind":"field_identifier","value":"f001_02"}})
+        divide["operation_nodes"].append(dict(id="EXACT_COPY",target="d001_02",arguments={"source_field":{"kind":"derived_field_identifier","value":"d001_01"}}))
+        for fact,value in zip(divide["source_fact_records"],[numerator,denominator]):fact["value"]["value"]=str(value)
+        field=divide["output_fields"][0];field.update(name="d001_02",schema_type="number",producer_target="d001_02")
+        divide["gold_values"]={"d001_02":exact_decimal_from_fraction(Fraction(numerator,denominator))}
+        phase,risk=context.split(":");slot=dict(phase=phase,risk_round=risk,slot_id="E3-04")
+        divide=slot_vector(divide,slot)
+        require(validate_v9_fixture(divide,slot,contract)==value_shape_profile(contract,context,"E3-04"),f"v9_divide_actual_profile:{context}",checks)
+        broken=copy.deepcopy(divide);broken["source_fact_records"][1]["value"]["value"]="25"
+        broken["gold_values"][broken["output_fields"][0]["name"]]=exact_decimal_from_fraction(Fraction(numerator,25))
+        try:validate_v9_fixture(broken,slot,contract)
+        except ValueError:checks.append(f"v9_divide_wrong_profile_denominator:{context}")
+        else:raise AssertionError("v9_divide_wrong_complexity_accepted")
+    require("prospectively shifted presentation order" in contract["ambiguity_contract"]["phase_b_interpretation"],"v9_E7_presentation_shift_not_freshness_only",checks)
+
+
+def preserved_v8_sections(contract: dict[str, Any]) -> dict[str, Any]:
+    parent="9ac3db265a1ae2ed6936ff4890b8eb001f0ab266"
+    old=json.loads(subprocess.check_output(["git","show",parent+":experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.json"],cwd=ROOT,text=True,encoding="utf-8"))
+    names=("baseline_binding","operation_definition_contract","schema_type_contract","operation_semantics_contract","cell_gates","phase_a_fixture_reduction_contract","confidence_contract","integrity_event_contract","result_state_machine","model_provider","sampling","governance","historical_binding")
+    return dict(reviewed_parent=parent,sections={name:contract[name]==old[name] for name in names})
+
+
 def slot_vector(fixture: dict[str, Any], slot: dict[str, Any], reserve: bool = False) -> dict[str, Any]:
     """Reindex isolated design test vectors; never write corpus records."""
     phase, risk = slot.get("phase", "A"), slot["risk_round"]
@@ -1404,7 +1847,9 @@ def new_fixture_projection(fixture: dict[str, Any], slot: dict[str, Any], contra
     return historical_projection(request, contract)
 
 
-def reserve_profile_bytes(fixture: dict[str, Any], slot: dict[str, Any], contract: dict[str, Any]) -> bytes:
+def reserve_profile_bytes(fixture: dict[str, Any], slot: dict[str, Any], contract: dict[str, Any], enforce_v9: bool = False) -> bytes:
+    if enforce_v9:
+        validate_v9_fixture(fixture, slot, contract)
     validate_subtype_fixture(fixture, slot, contract)
     nodes = stable_topological_nodes(fixture["operation_nodes"])
     is_e7 = not nodes
@@ -1478,6 +1923,7 @@ def reserve_profile_bytes(fixture: dict[str, Any], slot: dict[str, Any], contrac
         "consequence_risk":slot["risk_round"], "field_count":len(output), "operation_node_count":len(nodes),
         "subtype_slot":slot_id, "domain_classes":domain_classes,
         "operation_operand_semantic_types":operand_type_sequences,
+        "value_shape_profile":value_shape_profile(contract, context_key, slot_id),
     }
     keys = contract["reserve_equivalence_contract"]["profile_exact_keys_in_order"]
     if list(profile) != keys:
@@ -1733,31 +2179,39 @@ def validate_v8(contract: dict[str, Any], checks: list[str]) -> None:
         truths = []
         for slot_id, expected in rows.items():
             index = int(slot_id[-2:])
+            difficulty=value_shape_profile(contract,context,slot_id)
             if index == 1:
                 base = copy.deepcopy(semantics["validation_vectors"][0]["fixture"])
-                value, kind = "5", "integer_literal"
+                operands=[18,27] if difficulty["arithmetic_complexity"]["carry"] else [12,27]
+                for fact_row,operand in zip(base["source_fact_records"],operands):fact_row["value"]["value"]=str(operand)
+                value, kind = str(sum(operands)), "integer_literal"
             elif index == 2:
                 base = copy.deepcopy(semantics["validation_vectors"][0]["fixture"])
                 base["operation_nodes"][0].update(id="SUBTRACT", arguments=dict(minuend=raw("field_identifier", "f001_01"), subtrahend=raw("field_identifier", "f001_02")))
-                base["source_fact_records"][0]["value"]["value"] = "5"
-                base["source_fact_records"][1].update(schema_type="number", value=raw("decimal_literal", "2.0"))
-                value, kind = "3.0", "decimal_literal"
+                base["source_fact_records"][0]["value"]["value"] = "31"
+                fractional="12.1" if difficulty["number_precision"]==1 else "12.12"
+                base["source_fact_records"][1].update(schema_type="number", value=raw("decimal_literal", fractional))
+                value, kind = exact_decimal_from_fraction(Fraction(31)-Fraction(fractional)), "decimal_literal"
             elif index == 3:
                 base = copy.deepcopy(next(x["fixture"] for x in contract["contamination_contract"]["fingerprint"]["generation_test_vectors"] if x["id"] == "calendar_threshold"))
                 base["operation_nodes"] = base["operation_nodes"][:1]
-                value, kind = "2027-03-01", "date_literal"
+                base["source_fact_records"][0]["value"]["value"]="2031-02-28"
+                base["operation_nodes"][0]["arguments"]["days"]["value"]="7"
+                value, kind = "2031-03-07", "date_literal"
             elif index == 4:
-                base = dict(operation_nodes=[dict(id="CLOCK_MINUTE_OFFSET", target="d001_01", arguments=dict(time=raw("field_identifier", "f001_01"), minutes=raw("integer_literal", "30")))], source_fact_records=[fact("f001_01", "HH:MM", "time_literal", "23:45")], entities=[])
-                value, kind = "00:15", "time_literal"
+                base = dict(operation_nodes=[dict(id="CLOCK_MINUTE_OFFSET", target="d001_01", arguments=dict(time=raw("field_identifier", "f001_01"), minutes=raw("integer_literal", "35")))], source_fact_records=[fact("f001_01", "HH:MM", "time_literal", "23:41")], entities=[])
+                value, kind = "00:16", "time_literal"
             else:
-                base = dict(operation_nodes=[], entities=[], source_fact_records=[fact("f001_01", "number", "decimal_literal", "2.0"), fact("f001_02", "number", "decimal_literal", "2.0")])
+                lo="20.1" if difficulty["number_precision"]==1 else "20.12"
+                hi=exact_decimal_from_fraction(Fraction(lo)+1)
+                base = dict(operation_nodes=[], entities=[], source_fact_records=[fact("f001_01", "number", "decimal_literal", lo), fact("f001_02", "number", "decimal_literal", lo)])
                 bd = expected["boundary_relation"]
-                base["source_fact_records"][0]["value"]["value"] = "3.0" if bd == "ABOVE" else "2.0"
-                base["source_fact_records"][1]["value"]["value"] = "3.0" if bd == "BELOW" else "2.0"
+                base["source_fact_records"][0]["value"]["value"] = hi if bd == "ABOVE" else lo
+                base["source_fact_records"][1]["value"]["value"] = hi if bd == "BELOW" else lo
             if index <= 4:
                 bd = expected["boundary_relation"]
-                if kind == "date_literal": threshold = {"ABOVE": "2027-02-28", "EQUAL": value, "BELOW": "2027-03-02"}[bd]
-                elif kind == "time_literal": threshold = {"ABOVE": "00:00", "EQUAL": value, "BELOW": "00:30"}[bd]
+                if kind == "date_literal": threshold = {"ABOVE": "2031-03-06", "EQUAL": value, "BELOW": "2031-03-08"}[bd]
+                elif kind == "time_literal": threshold = {"ABOVE": "00:11", "EQUAL": value, "BELOW": "00:21"}[bd]
                 else: threshold = exact_decimal_from_fraction(Fraction(value) + {"ABOVE": -1, "EQUAL": 0, "BELOW": 1}[bd]) if kind == "decimal_literal" else str(int(value) + {"ABOVE": -1, "EQUAL": 0, "BELOW": 1}[bd])
                 target = "d001_02"
                 args = dict(left=raw("derived_field_identifier", "d001_01"), right=raw(kind, threshold))
@@ -1770,6 +2224,7 @@ def validate_v8(contract: dict[str, Any], checks: list[str]) -> None:
             slot = dict(slot_id=slot_id, phase=phase, risk_round=risk)
             vector = slot_vector(base, slot)
             validate_subtype_fixture(vector, slot, contract)
+            require(validate_v9_fixture(vector,slot,contract)==difficulty,f"v9_comparison_gap_actual:{context}:{slot_id}",checks)
             require(new_fixture_projection(vector, slot, contract) == new_fixture_projection(vector, slot, contract), f"new_shared_projection:{context}:{slot_id}", checks)
             truths.append(expected["gold_boolean"])
             changed = copy.deepcopy(vector); changed["operation_nodes"][-1]["id"] = "LTE" if expected["operator"] != "LTE" else "GT"
@@ -1786,14 +2241,23 @@ def validate_v8(contract: dict[str, Any], checks: list[str]) -> None:
         for row in allocation["slot_rows"]["E5"]:
             slot_id, st = row["slot_id"], row["domain"]
             count = int(row["coverage_class"].split(":")[0].split("_")[1]); role = row["coverage_class"].split(":")[1]
-            selected = allocation["entity_selected_index"][slot_id]
+            selected = contract["entity_selection_allocation_contract"]["selected_index_matrix"][context][int(slot_id[-2:])-1]
             labels = [f"Entity 001 {chr(65+i)}" for i in range(count)]
             entities = [dict(selector_value=x, selector_role=role) for x in labels]
             selectors = [fact("f001_01", "string", "entity_selector_literal", x, x) for x in labels]
-            if st == "number": kind, vals = "integer_literal", [str(i+2) for i in range(count)]
+            profile=value_shape_profile(contract,context,slot_id)
+            if st == "number":
+                kind="decimal_literal"
+                suffix=".1" if profile["number_precision"]==1 else ".12"
+                sorted_vals=[str(20+2*i)+suffix for i in range(count)]
+                vals=[sorted_vals[(i-selected+profile["entity_selected_rank"])%count] for i in range(count)]
             elif st == "string": kind, vals = "string_literal", [f"{('label','code','id')[i]}_001_{i+1:02d}" for i in range(count)]
-            elif st == "YYYY-MM-DD": kind, vals = "date_literal", [f"2027-01-0{i+1}" for i in range(count)]
-            elif st == "HH:MM": kind, vals = "time_literal", [f"0{i+1}:00" for i in range(count)]
+            elif st == "YYYY-MM-DD":
+                kind="date_literal"; sorted_vals=[f"2031-01-{1+2*i:02d}" for i in range(count)]
+                vals=[sorted_vals[(i-selected+profile["entity_selected_rank"])%count] for i in range(count)]
+            elif st == "HH:MM":
+                kind="time_literal"; sorted_vals=[f"08:{1+13*i:02d}" for i in range(count)]
+                vals=[sorted_vals[(i-selected+profile["entity_selected_rank"])%count] for i in range(count)]
             else:
                 kind = "enum_literal"; gi = allocation["enum_answer_positions"][context][slot_id]
                 vals = [st.split("|")[(i-selected+gi)%count] for i in range(count)]
@@ -1801,6 +2265,10 @@ def validate_v8(contract: dict[str, Any], checks: list[str]) -> None:
             base = dict(entities=entities, source_fact_records=selectors+sources, operation_nodes=[dict(id="ENTITY_FIELD_BIND", target="d001_01", arguments=dict(source_field=raw("field_identifier", "f001_02"), selector_field=raw("field_identifier", "f001_01"), selector_value=raw("entity_selector_literal", labels[selected])))], output_fields=[field("d001_01", st)], gold_values={"d001_01":vals[selected]})
             slot = dict(slot_id=slot_id, phase=phase, risk_round=risk); vector = slot_vector(base, slot)
             validate_subtype_fixture(vector, slot, contract)
+            require(validate_v9_fixture(vector,slot,contract)==profile,f"v9_entity_separation_rank_actual:{context}:{slot_id}",checks)
+            atoms=extract_date_number_atoms(vector,operation,schema,semantics,contract["entity_population_contract"])
+            expected_atom_count=count+2 if st in {"number","YYYY-MM-DD","HH:MM"} else 0
+            require(len(atoms)==expected_atom_count,f"v9_entity_contamination_operand_resolution:{context}:{slot_id}",checks)
             require("AUTHORING_ERROR" not in fingerprint_bytes(dict(fixture=vector), operation), f"entity_slot_typed_fingerprint:{context}:{slot_id}", checks)
             for i in range(count):
                 if i == selected: continue
@@ -1832,15 +2300,16 @@ def validate_v8(contract: dict[str, Any], checks: list[str]) -> None:
                 rejected(wrong, slot, f"wrong_enum_gold_position:{context}:{slot_id}")
 
         for row in allocation["slot_rows"]["E7"]:
+            profile=value_shape_profile(contract,context,row["slot_id"])
             facts = [dict(template_id="EXPLICIT_ABSENCE", field_identifier="f001_01", schema_type="provided|not_provided", value=None, entity_selector_value=None)]
             gold = {"f001_01":"not_provided"}
             for i, st in enumerate(row["domain"], 2):
                 if st == "integer": kind,val="integer_literal",str(i+2)
-                elif st == "number": kind,val="decimal_literal","2.5"
+                elif st == "number": kind,val="decimal_literal","20.1" if profile["number_precision"]==1 else "20.12"
                 elif st == "string": kind,val="string_literal","label_001_01"
-                elif st == "boolean": kind,val="boolean_literal","true"
-                elif st == "YYYY-MM-DD": kind,val="date_literal","2027-01-01"
-                elif st == "HH:MM": kind,val="time_literal","08:00"
+                elif st == "boolean": kind,val="boolean_literal","true" if contract["value_allocation_contract"]["e7_boolean_source_allocation"][context] else "false"
+                elif st == "YYYY-MM-DD": kind,val="date_literal","2031-01-01"
+                elif st == "HH:MM": kind,val="time_literal","08:11"
                 else: kind,val="enum_literal",st.split("|")[allocation["enum_answer_positions"][context][row["slot_id"]]]
                 facts.append(fact(f"f001_{i:02d}",st,kind,val))
                 gold[f"f001_{i:02d}"]=int(val) if st == "integer" else val == "true" if st == "boolean" else val
@@ -1848,6 +2317,7 @@ def validate_v8(contract: dict[str, Any], checks: list[str]) -> None:
             base = dict(operation_nodes=[], entities=[], source_fact_records=facts, output_fields=[field(name, next(x["schema_type"] for x in facts if x["field_identifier"]==name), "EXPLICIT_ABSENCE" if name=="f001_01" else "SOURCE_COPY") for name in sorted(gold)], gold_values=gold)
             slot = dict(slot_id=row["slot_id"],phase=phase,risk_round=risk); vector=slot_vector(base,slot)
             validate_subtype_fixture(vector,slot,contract)
+            require(validate_v9_fixture(vector,slot,contract)==profile,f"v9_e7_actual_support_value_profile:{context}:{row['slot_id']}",checks)
             require(len(json.loads(new_fixture_projection(vector,slot,contract)))==3,f"e7_integrated_slot:{context}:{row['slot_id']}",checks)
             wrong=copy.deepcopy(vector);wrong["source_fact_records"].reverse();wrong=slot_vector(wrong,slot)
             rejected(wrong,slot,f"e7_wrong_presentation:{context}:{row['slot_id']}")
@@ -1868,7 +2338,7 @@ def validate_v8(contract: dict[str, Any], checks: list[str]) -> None:
                 support=[x for x in reserve_base["source_fact_records"] if x["template_id"]=="VALUE"]
                 reserve_base["source_fact_records"]=[support[0],absent,*support[1:]]
                 reserved=slot_vector(reserve_base,slot,True)
-                require(reserve_profile_bytes(vector,slot,contract)==reserve_profile_bytes(reserved,slot,contract),f"e7_matched_reserve_profile:{context}",checks)
+                require(reserve_profile_bytes(vector,slot,contract,True)==reserve_profile_bytes(reserved,slot,contract,True),f"e7_matched_reserve_profile:{context}",checks)
 
     numeric=copy.deepcopy(semantics["validation_vectors"][0]["fixture"])
     slot=dict(slot_id="E3-01",phase="A",risk_round="R2")
@@ -1936,15 +2406,16 @@ def result_verdict(facts: dict[str, Any], events: dict[str, Any]) -> str:
 
 def validate(contract: dict[str, Any], human: str) -> list[str]:
     checks: list[str] = []
-    require(contract["schema_version"] == "g-extract1.design-candidate.v8", "schema_v8", checks)
-    require(contract["experiment"]["status"] == "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_8", "status_v8", checks)
-    require(contract["experiment"]["design_revision"] == 8, "design_revision_v8", checks)
+    require(contract["schema_version"] == "g-extract1.design-candidate.v9", "schema_v9", checks)
+    require(contract["experiment"]["status"] == "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_9", "status_v9", checks)
+    require(contract["experiment"]["design_revision"] == 9, "design_revision_v9", checks)
     for field in ("implemented", "blueprint_authorized", "fixture_authoring_authorized", "execution_authorized"):
         require(contract["experiment"][field] is False, f"authority_false:{field}", checks)
     require(contract["experiment"]["provider_generation_calls"] == 0, "provider_calls_zero", checks)
     require(contract["experiment"]["belief_effects"] == "none", "belief_effects_none", checks)
     validate_v7(contract, checks)
     validate_v8(contract, checks)
+    validate_v9(contract, checks)
 
     corpus, phases = contract["corpus"], contract["phases"]
     expected_counts = {
@@ -2357,7 +2828,7 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     require(sha256(ROOT / "experiments/G-ROUTE4-candidate/closure/PHASE_B_UNSAFE_STOP_DIAGNOSTIC.json") == history["diagnostic_sha256"], "diagnostic_unchanged", checks)
 
     human_literals = [
-        "g-extract1.design-candidate.v8", "g-extract1.operation-definitions.v4",
+        "g-extract1.design-candidate.v9", "g-extract1.operation-definitions.v4",
         "g-extract1.schema-types.v1", "g-extract1.operation-semantics.v2",
         "g-extract1.family-assignment.v4", "g-extract1.contamination.v5",
         "g-extract1.explicit-absence-scoring.v4", "g-extract1.reserve-activation.v5",
@@ -2367,13 +2838,13 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
         "g-extract1.integrity-events.v2", "g-extract1.result-state-machine.v3",
         "POST_CONTACT_GOLD_DEFECT_DISCOVERED", "UNVERIFIABLE_INTERRUPTION_CHECKPOINT",
         "RESERVE:{phase}:{round}:{primary_family}", "2026-10-01", "5-3",
-        "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_8", "does not prove scientific validity",
+        "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_9", "does not prove scientific validity",
         "SOURCE_COPY", "explicit partial absence", "both repeats semantically correct",
     ]
     for literal in human_literals:
         require(literal in human, f"human_literal:{literal}", checks)
-    match = re.search(r"<!-- V8_NORMATIVE_BEGIN -->\s*```json\s*(.*?)\s*```\s*<!-- V8_NORMATIVE_END -->", human, re.DOTALL)
-    require(match is not None,"human_v8_normative_annex_present",checks)
+    match = re.search(r"<!-- V9_NORMATIVE_BEGIN -->\s*```json\s*(.*?)\s*```\s*<!-- V9_NORMATIVE_END -->", human, re.DOTALL)
+    require(match is not None,"human_v9_normative_annex_present",checks)
     annex = json.loads(match.group(1))
     expected_annex = {name:contract[name] for name in ("lexical_neutrality_contract","entity_population_contract","reserve_equivalence_contract","subtype_allocation_contract","historical_fingerprint_adapter_contract","subtype_content_validation_contract")}
     expected_annex.update(
@@ -2388,9 +2859,10 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
         whole_answer_reuse_limit=contract["contamination_contract"]["exact_reuse_contract"]["whole_answer"]["limit"],
         canonical_identity_atom_shape=contract["contamination_contract"]["exact_reuse_contract"]["entity_identifier_atoms"]["canonical_atom_shape"],
     )
-    require(set(annex)==set(expected_annex),"human_machine_v8_annex_exact_sections",checks)
+    expected_annex.update({name:contract[name] for name in ("template_recurrence_contract","ordinal_neutral_similarity_contract","entity_selection_allocation_contract","value_allocation_contract")})
+    require(set(annex)==set(expected_annex),"human_machine_v9_annex_exact_sections",checks)
     for name,value in expected_annex.items():
-        require(annex[name]==value,f"human_machine_v8_normative_object:{name}",checks)
+        require(annex[name]==value,f"human_machine_v9_normative_object:{name}",checks)
     for row in operation["catalog"]:
         if "template" in row:
             require(f"`{row['template']}`" in human, f"human_template:{row['id']}", checks)
@@ -2418,13 +2890,24 @@ def main() -> int:
     human = HUMAN.read_text(encoding="utf-8")
     checks = validate(contract, human)
     report = {
-        "schema_version": "g-extract1.design-validation-report.v8",
+        "schema_version": "g-extract1.design-validation-report.v9",
         "verdict": "PASS",
         "validation_scope": "deterministic structural and cross-representation consistency only",
         "scientific_validity_assessed": False,
         "adversarial_review_replaced": False,
         "check_count": len(checks),
         "historical_adapter": historical_adaptation_summary(contract),
+        "preserved_v8_sections":preserved_v8_sections(contract),
+        "template_ledger_summary": {
+            "positions":len(contract["template_recurrence_contract"]["positions"]),
+            "classes":len(contract["template_recurrence_contract"]["fingerprint_classes"]),
+            "recurring_exact_classes":sum(len(x["members"])>1 for x in contract["template_recurrence_contract"]["fingerprint_classes"].values()),
+            "subtype_groups":len(contract["template_recurrence_contract"]["subtype_template_groups"]),
+            "pairwise_structural_checks":168*167//2,
+            "scope":"symbolic structural feasibility only; future content/gold/contamination audit still mandatory",
+        },
+        "similarity_diagnostics":similarity_diagnostics(contract),
+        "selector_blind_baselines":selector_blind_summary(contract["entity_selection_allocation_contract"]["selected_index_matrix"]),
         "checks": checks,
         "artifacts": {
             "DESIGN_CANDIDATE.md": sha256(HUMAN),
