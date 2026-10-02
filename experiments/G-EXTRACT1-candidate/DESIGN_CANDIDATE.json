@@ -1,9 +1,9 @@
 {
-  "schema_version": "g-extract1.design-candidate.v4",
+  "schema_version": "g-extract1.design-candidate.v5",
   "experiment": {
     "id": "G-EXTRACT1",
     "name": "Prospective Structured-Extraction Requalification and Generalization Test",
-    "status": "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_4",
+    "status": "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_5",
     "design_only": true,
     "implemented": false,
     "blueprint_authorized": false,
@@ -14,16 +14,16 @@
     "belief_effects": "none"
   },
   "contract_ids": {
-    "design": "g-extract1.design-candidate.v4",
-    "operation_definitions": "g-extract1.operation-definitions.v2",
-    "family_assignment": "g-extract1.family-assignment.v2",
-    "contamination": "g-extract1.contamination.v2",
-    "ambiguity_scoring": "g-extract1.ambiguity-scoring.v3",
+    "design": "g-extract1.design-candidate.v5",
+    "operation_definitions": "g-extract1.operation-definitions.v3",
+    "family_assignment": "g-extract1.family-assignment.v3",
+    "contamination": "g-extract1.contamination.v3",
+    "ambiguity_scoring": "g-extract1.explicit-absence-scoring.v4",
     "exact_value_comparator": "g-extract1.exact-value-comparator.v1",
     "integrity_events": "g-extract1.integrity-events.v2",
     "result_state_machine": "g-extract1.result-state-machine.v3",
     "reserve_activation": "g-extract1.reserve-activation.v3",
-    "baseline_binding": "g-extract1.baseline-binding.v2"
+    "baseline_binding": "g-extract1.baseline-binding.v3"
   },
   "historical_binding": {
     "g_route4_status": "FAILED",
@@ -77,14 +77,15 @@
     "B": {"purpose": "independent fresh-fixture validation", "distinct_fixtures": 70, "repeats": 1, "conditional_on_phase_a": true, "maximum_scheduled_calls": 210, "maximum_calls_per_tier": 70, "phase_a_evidence_pooled": false, "zero_calls_if_no_cell_qualifies": true, "fixtures_and_gold_frozen_before_phase_a_contact": true}
   },
   "operation_definition_contract": {
-    "contract_id": "g-extract1.operation-definitions.v2",
+    "contract_id": "g-extract1.operation-definitions.v3",
     "field_identifier_regex": "^[a-z][a-z0-9_]{0,47}$",
     "collection_identifier_regex": "^[a-z][a-z0-9_]{0,47}$",
     "enum_literal_regex": "^[a-z][a-z0-9_]{0,47}$",
     "record_type_regex": "^[a-z]+(?: [a-z]+){0,3}$",
-    "opening_template": "Extract the {record_type} record.",
-    "minimum_operation_nodes_per_fixture": 1,
+    "opening_template": "Extract the {record_type} record",
+    "minimum_operation_nodes_per_fixture": 0,
     "maximum_operation_nodes_per_fixture": 2,
+    "zero_node_rule": "allowed only for E7 explicit-partial-absence fixtures whose outputs are exactly one EXPLICIT_ABSENCE binding and at least two SOURCE_COPY bindings",
     "two_node_graph_rule": "the second node must consume the first node target and is the unique graph sink; two independent nodes are prohibited",
     "sentences_per_operation_node": 1,
     "operation_order": "stable topological order by dependencies, then unsigned UTF-8 byte order of target field",
@@ -93,7 +94,7 @@
       "derived_field_identifier": {"regex": "^[a-z][a-z0-9_]{0,47}$", "render": "exact ASCII metadata value without quotes; must equal an operation target"},
       "collection_identifier": {"regex": "^[a-z][a-z0-9_]{0,47}$", "render": "exact ASCII metadata value without quotes"},
       "integer_literal": {"regex": "^(?:0|-[1-9][0-9]*|[1-9][0-9]*)$", "render": "canonical base-10 ASCII; plus sign, leading zero and negative zero prohibited"},
-      "decimal_literal": {"regex": "^-?(?:0|[1-9][0-9]*)\\.[0-9]+$", "render": "plain ASCII decimal without exponent; remove trailing fractional zeroes but retain one fractional digit; negative zero renders 0.0"},
+      "decimal_literal": {"regex": "^-?(?:0|[1-9][0-9]*)\\.[0-9]+$", "metadata_policy": "metadata MUST already equal canonical_decimal(value); noncanonical metadata is AUTHORING_ERROR", "canonical_decimal": "parse exact decimal, render fixed-point, remove trailing fractional zeroes while retaining one fractional digit, and render every signed zero as 0.0", "valid_examples": ["5.0", "0.5", "-0.5"], "invalid_examples": ["5.00", "0.50", "-0.50", "-0.0", "5e0"], "render": "exact canonical metadata bytes; no exponent"},
       "date_literal": {"regex": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$", "render": "exact valid proleptic-Gregorian YYYY-MM-DD"},
       "time_literal": {"regex": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$", "render": "exact 24-hour HH:MM"},
       "string_literal": {"source_character_set": "printable ASCII U+0020 through U+007E", "render": "Python json.dumps(value, ensure_ascii=True, separators=(',', ':')); double quotes required; quote and backslash escaped with one backslash; JSON control escapes only"},
@@ -105,100 +106,141 @@
     "sum_operands": {"minimum": 2, "maximum": 4, "allowed_kinds": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal"], "order": "array order is immutable", "two": "A and B", "three_or_four": "comma-space between earlier operands and ', and ' before final operand"},
     "operand_list_serialization": "SUM uses sum_operands exactly; no other operation accepts an operand list",
     "catalog": [
-      {"id": "ADD", "template": "{target} is {left} plus {right}.", "placeholders": ["target", "left", "right"], "argument_kinds": {"left": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal"], "right": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal"]}},
-      {"id": "SUBTRACT", "template": "{target} is {minuend} minus {subtrahend}.", "placeholders": ["target", "minuend", "subtrahend"], "argument_kinds": {"minuend": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal"], "subtrahend": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal"]}},
-      {"id": "MULTIPLY", "template": "{target} is {left} times {right}.", "placeholders": ["target", "left", "right"], "argument_kinds": {"left": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal"], "right": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal"]}},
-      {"id": "DIVIDE", "template": "{target} is {dividend} divided by {divisor}.", "placeholders": ["target", "dividend", "divisor"], "argument_kinds": {"dividend": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal"], "divisor": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal"]}},
-      {"id": "SUM", "template": "{target} is the sum of {operands}.", "placeholders": ["target", "operands"], "argument_kinds": {"operands": ["operand_list"]}},
-      {"id": "COUNT", "template": "{target} is the number of entries in {collection}.", "placeholders": ["target", "collection"], "argument_kinds": {"collection": ["collection_identifier"]}},
-      {"id": "ELAPSED_MINUTES", "template": "{target} is the elapsed minutes from {start} to {end}.", "placeholders": ["target", "start", "end"], "argument_kinds": {"start": ["field_identifier", "derived_field_identifier", "time_literal"], "end": ["field_identifier", "derived_field_identifier", "time_literal"]}},
-      {"id": "CALENDAR_DAY_OFFSET", "template": "{target} is {date} plus {days} calendar days.", "placeholders": ["target", "date", "days"], "argument_kinds": {"date": ["field_identifier", "derived_field_identifier", "date_literal"], "days": ["field_identifier", "derived_field_identifier", "integer_literal"]}},
-      {"id": "CLOCK_MINUTE_OFFSET", "template": "{target} is {time} plus {minutes} minutes.", "placeholders": ["target", "time", "minutes"], "argument_kinds": {"time": ["field_identifier", "derived_field_identifier", "time_literal"], "minutes": ["field_identifier", "derived_field_identifier", "integer_literal"]}},
-      {"id": "GT", "template": "{target} is true when {left} is greater than {right}.", "placeholders": ["target", "left", "right"], "argument_kinds": {"left": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal", "date_literal", "time_literal"], "right": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal", "date_literal", "time_literal"]}},
-      {"id": "GTE", "template": "{target} is true when {left} is greater than or equal to {right}.", "placeholders": ["target", "left", "right"], "argument_kinds": {"left": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal", "date_literal", "time_literal"], "right": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal", "date_literal", "time_literal"]}},
-      {"id": "LT", "template": "{target} is true when {left} is less than {right}.", "placeholders": ["target", "left", "right"], "argument_kinds": {"left": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal", "date_literal", "time_literal"], "right": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal", "date_literal", "time_literal"]}},
-      {"id": "LTE", "template": "{target} is true when {left} is less than or equal to {right}.", "placeholders": ["target", "left", "right"], "argument_kinds": {"left": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal", "date_literal", "time_literal"], "right": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal", "date_literal", "time_literal"]}},
-      {"id": "EQ", "template": "{target} is true when {left} is equal to {right}.", "placeholders": ["target", "left", "right"], "argument_kinds": {"left": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal", "date_literal", "time_literal", "enum_literal"], "right": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal", "date_literal", "time_literal", "enum_literal"]}},
+      {"id": "ADD", "template": "{target} is {left} plus {right}", "placeholders": ["target", "left", "right"], "argument_kinds": {"left": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal"], "right": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal"]}},
+      {"id": "SUBTRACT", "template": "{target} is {minuend} minus {subtrahend}", "placeholders": ["target", "minuend", "subtrahend"], "argument_kinds": {"minuend": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal"], "subtrahend": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal"]}},
+      {"id": "MULTIPLY", "template": "{target} is {left} times {right}", "placeholders": ["target", "left", "right"], "argument_kinds": {"left": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal"], "right": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal"]}},
+      {"id": "DIVIDE", "template": "{target} is {dividend} divided by {divisor}", "placeholders": ["target", "dividend", "divisor"], "argument_kinds": {"dividend": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal"], "divisor": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal"]}},
+      {"id": "SUM", "template": "{target} is the sum of {operands}", "placeholders": ["target", "operands"], "argument_kinds": {"operands": ["operand_list"]}},
+      {"id": "ELAPSED_MINUTES", "template": "{target} is the elapsed minutes from {start} to {end}", "placeholders": ["target", "start", "end"], "argument_kinds": {"start": ["field_identifier", "derived_field_identifier", "time_literal"], "end": ["field_identifier", "derived_field_identifier", "time_literal"]}},
+      {"id": "CALENDAR_DAY_OFFSET", "template": "{target} is {date} plus {days} calendar days", "placeholders": ["target", "date", "days"], "argument_kinds": {"date": ["field_identifier", "derived_field_identifier", "date_literal"], "days": ["field_identifier", "derived_field_identifier", "integer_literal"]}},
+      {"id": "CLOCK_MINUTE_OFFSET", "template": "{target} is {time} plus {minutes} minutes", "placeholders": ["target", "time", "minutes"], "argument_kinds": {"time": ["field_identifier", "derived_field_identifier", "time_literal"], "minutes": ["field_identifier", "derived_field_identifier", "integer_literal"]}},
+      {"id": "GT", "template": "{target} is true when {left} is greater than {right}", "placeholders": ["target", "left", "right"], "argument_kinds": {"left": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal", "date_literal", "time_literal"], "right": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal", "date_literal", "time_literal"]}},
+      {"id": "GTE", "template": "{target} is true when {left} is greater than or equal to {right}", "placeholders": ["target", "left", "right"], "argument_kinds": {"left": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal", "date_literal", "time_literal"], "right": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal", "date_literal", "time_literal"]}},
+      {"id": "LT", "template": "{target} is true when {left} is less than {right}", "placeholders": ["target", "left", "right"], "argument_kinds": {"left": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal", "date_literal", "time_literal"], "right": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal", "date_literal", "time_literal"]}},
+      {"id": "LTE", "template": "{target} is true when {left} is less than or equal to {right}", "placeholders": ["target", "left", "right"], "argument_kinds": {"left": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal", "date_literal", "time_literal"], "right": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal", "date_literal", "time_literal"]}},
+      {"id": "EQ", "template": "{target} is true when {left} is equal to {right}", "placeholders": ["target", "left", "right"], "argument_kinds": {"left": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal", "date_literal", "time_literal", "enum_literal"], "right": ["field_identifier", "derived_field_identifier", "integer_literal", "decimal_literal", "date_literal", "time_literal", "enum_literal"]}},
       {"id": "UNIT_CONVERSION", "template_source": "unit_conversion_catalog.template", "placeholders": ["target", "source"], "argument_kinds": {"source": ["field_identifier"]}},
-      {"id": "ENTITY_FIELD_BIND", "template": "{target} is {source_field} for the entity whose {selector_field} equals {selector_value}.", "placeholders": ["target", "source_field", "selector_field", "selector_value"], "argument_kinds": {"source_field": ["field_identifier"], "selector_field": ["field_identifier"], "selector_value": ["entity_selector_literal"]}},
-      {"id": "EXACT_COPY", "template": "{target} is copied exactly from {source_field}.", "placeholders": ["target", "source_field"], "argument_kinds": {"source_field": ["field_identifier", "derived_field_identifier"]}}
+      {"id": "ENTITY_FIELD_BIND", "template": "{target} is {source_field} for the entity whose {selector_field} equals {selector_value}", "placeholders": ["target", "source_field", "selector_field", "selector_value"], "argument_kinds": {"source_field": ["field_identifier"], "selector_field": ["field_identifier"], "selector_value": ["entity_selector_literal"]}},
+      {"id": "EXACT_COPY", "template": "{target} is copied exactly from {source_field}", "placeholders": ["target", "source_field"], "argument_kinds": {"source_field": ["field_identifier", "derived_field_identifier"]}}
     ],
     "unit_conversion_catalog": [
-      {"id": "HOURS_TO_MINUTES", "formula": "source * 60", "target_unit": "minutes", "template": "{target} is {source} multiplied by 60, expressed in minutes."},
-      {"id": "MINUTES_TO_HOURS", "formula": "source / 60", "target_unit": "hours", "template": "{target} is {source} divided by 60, expressed in hours."},
-      {"id": "KILOGRAMS_TO_GRAMS", "formula": "source * 1000", "target_unit": "grams", "template": "{target} is {source} multiplied by 1000, expressed in grams."},
-      {"id": "GRAMS_TO_KILOGRAMS", "formula": "source / 1000", "target_unit": "kilograms", "template": "{target} is {source} divided by 1000, expressed in kilograms."},
-      {"id": "DOLLARS_TO_CENTS", "formula": "source * 100", "target_unit": "cents", "template": "{target} is {source} multiplied by 100, expressed in cents."},
-      {"id": "CENTS_TO_DOLLARS", "formula": "source / 100", "target_unit": "dollars", "template": "{target} is {source} divided by 100, expressed in dollars."}
+      {"id": "HOURS_TO_MINUTES", "formula": "source * 60", "target_unit": "minutes", "template": "{target} is {source} multiplied by 60, expressed in minutes"},
+      {"id": "MINUTES_TO_HOURS", "formula": "source / 60", "target_unit": "hours", "template": "{target} is {source} divided by 60, expressed in hours"},
+      {"id": "KILOGRAMS_TO_GRAMS", "formula": "source * 1000", "target_unit": "grams", "template": "{target} is {source} multiplied by 1000, expressed in grams"},
+      {"id": "GRAMS_TO_KILOGRAMS", "formula": "source / 1000", "target_unit": "kilograms", "template": "{target} is {source} divided by 1000, expressed in kilograms"},
+      {"id": "DOLLARS_TO_CENTS", "formula": "source * 100", "target_unit": "cents", "template": "{target} is {source} multiplied by 100, expressed in cents"},
+      {"id": "CENTS_TO_DOLLARS", "formula": "source / 100", "target_unit": "dollars", "template": "{target} is {source} divided by 100, expressed in dollars"}
     ],
     "historical_absence_sentence": "Use 'not_provided' when the text says a value has not been provided.",
+    "historical_absence_subject_fragment": "Use 'not_provided' when the text says a value has not been provided",
     "historical_absence_schema": "provided|not_provided",
     "historical_absence_sentinel": "not_provided",
     "absence_sentence_condition": "present exactly once if and only if a schema field has type provided|not_provided",
-    "prompt_assembly_order": ["opening", "operation_sentences", "historical_absence_sentence_if_required", "frozen_common_suffix"],
+    "subject_fragment_join": ". ",
+    "subject_terminal_period_allowed": false,
+    "prompt_assembly_order": ["opening_fragment", "operation_fragments", "historical_absence_fragment_if_required", "substitute_subject_once_into_frozen_template"],
+    "full_prompt_substitution": "replace the single {SUBJECT} token in baseline_binding.structured_extraction_assembled_template with SUBJECT bytes exactly once; no trim, normalization, or punctuation insertion outside the frozen template",
     "rendering_test_vectors": [
-      {"id": "negative_integer", "record_type": "invoice", "nodes": [{"id": "ADD", "target": "net_total", "arguments": {"left": {"kind": "field_identifier", "value": "gross_total"}, "right": {"kind": "integer_literal", "value": "-5"}}}], "expected_subject": "Extract the invoice record. net_total is gross_total plus -5."},
-      {"id": "decimal", "record_type": "measurement", "nodes": [{"id": "ADD", "target": "adjusted_value", "arguments": {"left": {"kind": "field_identifier", "value": "base_value"}, "right": {"kind": "decimal_literal", "value": "-2.5"}}}], "expected_subject": "Extract the measurement record. adjusted_value is base_value plus -2.5."},
-      {"id": "date", "record_type": "permit", "nodes": [{"id": "CALENDAR_DAY_OFFSET", "target": "expires_on", "arguments": {"date": {"kind": "date_literal", "value": "2027-02-28"}, "days": {"kind": "integer_literal", "value": "1"}}}], "expected_subject": "Extract the permit record. expires_on is 2027-02-28 plus 1 calendar days."},
-      {"id": "time", "record_type": "pickup", "nodes": [{"id": "CLOCK_MINUTE_OFFSET", "target": "pickup_time", "arguments": {"time": {"kind": "time_literal", "value": "23:45"}, "minutes": {"kind": "integer_literal", "value": "30"}}}], "expected_subject": "Extract the pickup record. pickup_time is 23:45 plus 30 minutes."},
-      {"id": "sum_two", "record_type": "invoice", "nodes": [{"id": "SUM", "target": "total", "arguments": {"operands": [{"kind": "field_identifier", "value": "subtotal"}, {"kind": "field_identifier", "value": "tax"}]}}], "expected_subject": "Extract the invoice record. total is the sum of subtotal and tax."},
-      {"id": "sum_three", "record_type": "invoice", "nodes": [{"id": "SUM", "target": "total", "arguments": {"operands": [{"kind": "field_identifier", "value": "subtotal"}, {"kind": "field_identifier", "value": "tax"}, {"kind": "field_identifier", "value": "fee"}]}}], "expected_subject": "Extract the invoice record. total is the sum of subtotal, tax, and fee."},
-      {"id": "quoted_selector", "record_type": "account", "nodes": [{"id": "ENTITY_FIELD_BIND", "target": "balance", "arguments": {"source_field": {"kind": "field_identifier", "value": "balance"}, "selector_field": {"kind": "field_identifier", "value": "account_name"}, "selector_value": {"kind": "entity_selector_literal", "value": "North Ridge"}}}], "expected_subject": "Extract the account record. balance is balance for the entity whose account_name equals \"North Ridge\"."},
-      {"id": "escaped_entity_selector", "record_type": "account", "nodes": [{"id": "ENTITY_FIELD_BIND", "target": "balance", "arguments": {"source_field": {"kind": "field_identifier", "value": "balance"}, "selector_field": {"kind": "field_identifier", "value": "account_name"}, "selector_value": {"kind": "entity_selector_literal", "value": "North \"A\""}}}], "expected_subject": "Extract the account record. balance is balance for the entity whose account_name equals \"North \\\"A\\\"\"."},
-      {"id": "two_node_dependency", "record_type": "invoice", "nodes": [{"id": "GTE", "target": "above_limit", "arguments": {"left": {"kind": "derived_field_identifier", "value": "computed_total"}, "right": {"kind": "integer_literal", "value": "100"}}}, {"id": "ADD", "target": "computed_total", "arguments": {"left": {"kind": "field_identifier", "value": "subtotal"}, "right": {"kind": "field_identifier", "value": "fee"}}}], "expected_subject": "Extract the invoice record. computed_total is subtotal plus fee. above_limit is true when computed_total is greater than or equal to 100."}
+      {"id": "negative_integer", "record_type": "invoice", "nodes": [{"id": "ADD", "target": "net_total", "arguments": {"left": {"kind": "field_identifier", "value": "gross_total"}, "right": {"kind": "integer_literal", "value": "-5"}}}], "expected_subject": "Extract the invoice record. net_total is gross_total plus -5"},
+      {"id": "decimal", "record_type": "measurement", "nodes": [{"id": "ADD", "target": "adjusted_value", "arguments": {"left": {"kind": "field_identifier", "value": "base_value"}, "right": {"kind": "decimal_literal", "value": "-2.5"}}}], "expected_subject": "Extract the measurement record. adjusted_value is base_value plus -2.5"},
+      {"id": "date", "record_type": "permit", "nodes": [{"id": "CALENDAR_DAY_OFFSET", "target": "expires_on", "arguments": {"date": {"kind": "date_literal", "value": "2027-02-28"}, "days": {"kind": "integer_literal", "value": "1"}}}], "expected_subject": "Extract the permit record. expires_on is 2027-02-28 plus 1 calendar days"},
+      {"id": "time", "record_type": "pickup", "nodes": [{"id": "CLOCK_MINUTE_OFFSET", "target": "pickup_time", "arguments": {"time": {"kind": "time_literal", "value": "23:45"}, "minutes": {"kind": "integer_literal", "value": "30"}}}], "expected_subject": "Extract the pickup record. pickup_time is 23:45 plus 30 minutes"},
+      {"id": "e7_absence", "record_type": "account", "nodes": [], "include_absence_sentence": true, "expected_subject": "Extract the account record. Use 'not_provided' when the text says a value has not been provided"},
+      {"id": "sum_two", "record_type": "invoice", "nodes": [{"id": "SUM", "target": "total", "arguments": {"operands": [{"kind": "field_identifier", "value": "subtotal"}, {"kind": "field_identifier", "value": "tax"}]}}], "expected_subject": "Extract the invoice record. total is the sum of subtotal and tax"},
+      {"id": "sum_three", "record_type": "invoice", "nodes": [{"id": "SUM", "target": "total", "arguments": {"operands": [{"kind": "field_identifier", "value": "subtotal"}, {"kind": "field_identifier", "value": "tax"}, {"kind": "field_identifier", "value": "fee"}]}}], "expected_subject": "Extract the invoice record. total is the sum of subtotal, tax, and fee"},
+      {"id": "sum_four", "record_type": "invoice", "nodes": [{"id": "SUM", "target": "total", "arguments": {"operands": [{"kind": "field_identifier", "value": "subtotal"}, {"kind": "field_identifier", "value": "tax"}, {"kind": "field_identifier", "value": "fee"}, {"kind": "field_identifier", "value": "shipping"}]}}], "expected_subject": "Extract the invoice record. total is the sum of subtotal, tax, fee, and shipping"},
+      {"id": "quoted_selector", "record_type": "account", "nodes": [{"id": "ENTITY_FIELD_BIND", "target": "balance", "arguments": {"source_field": {"kind": "field_identifier", "value": "balance"}, "selector_field": {"kind": "field_identifier", "value": "account_name"}, "selector_value": {"kind": "entity_selector_literal", "value": "North Ridge"}}}], "expected_subject": "Extract the account record. balance is balance for the entity whose account_name equals \"North Ridge\""},
+      {"id": "escaped_entity_selector", "record_type": "account", "nodes": [{"id": "ENTITY_FIELD_BIND", "target": "balance", "arguments": {"source_field": {"kind": "field_identifier", "value": "balance"}, "selector_field": {"kind": "field_identifier", "value": "account_name"}, "selector_value": {"kind": "entity_selector_literal", "value": "North \"A\""}}}], "expected_subject": "Extract the account record. balance is balance for the entity whose account_name equals \"North \\\"A\\\"\""},
+      {"id": "two_node_dependency", "record_type": "invoice", "nodes": [{"id": "GTE", "target": "above_limit", "arguments": {"left": {"kind": "derived_field_identifier", "value": "computed_total"}, "right": {"kind": "integer_literal", "value": "100"}}}, {"id": "ADD", "target": "computed_total", "arguments": {"left": {"kind": "field_identifier", "value": "subtotal"}, "right": {"kind": "field_identifier", "value": "fee"}}}], "expected_subject": "Extract the invoice record. computed_total is subtotal plus fee. above_limit is true when computed_total is greater than or equal to 100"}
+    ],
+    "full_prompt_test_vectors": [
+      {"id": "one_operation_no_absence", "render_vector_id": "negative_integer", "subject": "Extract the invoice record. net_total is gross_total plus -5", "expected_prompt": "Extract the invoice record. net_total is gross_total plus -5. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off.", "sha256": "2b28615c5dc3cf57b5d277d99184618492c5bd5d34e060725243a5d7807818b2"},
+      {"id": "two_node_no_absence", "render_vector_id": "two_node_dependency", "subject": "Extract the invoice record. computed_total is subtotal plus fee. above_limit is true when computed_total is greater than or equal to 100", "expected_prompt": "Extract the invoice record. computed_total is subtotal plus fee. above_limit is true when computed_total is greater than or equal to 100. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off.", "sha256": "21fd1bcc54525a80c7ae135171b727740c4fed91389784d51771c58d15684dc0"},
+      {"id": "e7_historical_absence", "render_vector_id": "e7_absence", "subject": "Extract the account record. Use 'not_provided' when the text says a value has not been provided", "expected_prompt": "Extract the account record. Use 'not_provided' when the text says a value has not been provided. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off.", "sha256": "4bfb6aba264539ed6ba1abd330c7247efcd911d825da2a9ebe2808a57af93345"},
+      {"id": "quoted_entity_selector", "render_vector_id": "quoted_selector", "subject": "Extract the account record. balance is balance for the entity whose account_name equals \"North Ridge\"", "expected_prompt": "Extract the account record. balance is balance for the entity whose account_name equals \"North Ridge\". Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off.", "sha256": "71ecb5d380e3fe5a169ae17fca202992fed2cfbb8319a7e21e537f4090475ba9"},
+      {"id": "sum_case", "render_vector_id": "sum_three", "subject": "Extract the invoice record. total is the sum of subtotal, tax, and fee", "expected_prompt": "Extract the invoice record. total is the sum of subtotal, tax, and fee. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off.", "sha256": "ae3cd9df44ddd918b0c07e9527fd749c3cd338dd7bf3d9f86ff70fb185562553"}
     ],
     "phase_a_b_same_operation_id_has_byte_identical_wording": true,
     "free_form_operation_instruction_allowed": false,
     "prohibited_instruction_features": ["synonyms outside the catalog", "additional explanatory sentences", "intermediate calculations", "edge-case reminders", "worked examples", "expected output values", "family names", "historical failure references", "outcome-derived coaching"]
   },
   "family_assignment_contract": {
-    "contract_id": "g-extract1.family-assignment.v2",
+    "contract_id": "g-extract1.family-assignment.v3",
     "exactly_one_primary_family": true,
     "secondary_feature_tags_required": true,
     "metadata_derived_not_author_selected": true,
     "assignment_frozen_before_model_contact": true,
     "post_contact_reassignment_allowed": false,
     "fixture_representation": {
-      "operation_nodes": "operation_definition_contract.operation_node_object; one node or one connected two-node chain",
-      "output_fields": "array sorted by unsigned UTF-8 field name; each item has exact keys name,type,required,producer_target,label_removal",
+      "operation_nodes": "zero nodes only for E7 under e7_graph_contract; otherwise one node or one connected two-node chain",
+      "output_fields": "array sorted by unsigned UTF-8 field name; every item conforms to canonical_output_field_contract",
       "gold_values": "object with exactly the output-field keys and exact-value-contract values",
       "entities": "array sorted by canonical entity selector literal bytes; each item has exact keys selector_value,selector_role; selector values are unique",
       "source_fact_records": "ordered array of fact_record_contract records; array order is the immutable sentence order",
       "required_output_fields": "sorted exact names of output_fields where required=true"
     },
+    "canonical_output_field_contract": {
+      "exact_keys": ["name", "schema_type", "required", "binding_kind", "source_field", "producer_target", "label_removal", "absence_capable"],
+      "binding_kind_enum": ["SOURCE_COPY", "OPERATION_TARGET", "EXPLICIT_ABSENCE"],
+      "SOURCE_COPY": "source_field is a field_identifier naming exactly one VALUE source fact; producer_target is null; absence_capable is false",
+      "OPERATION_TARGET": "source_field is null; producer_target equals exactly one operation target; absence_capable is false",
+      "EXPLICIT_ABSENCE": "source_field equals name and identifies exactly one EXPLICIT_ABSENCE fact; producer_target is null; schema_type is provided|not_provided; gold is not_provided; absence_capable is true",
+      "name_and_source_identifier_rule": "name and non-null source_field match operation_definition_contract.field_identifier_regex",
+      "label_removal": "boolean fixed before gold review; when true only exact-value-contract label-removal semantics apply",
+      "ordinary_source_copy_binding": "the unique VALUE fact whose field_identifier equals source_field and whose entity_selector_value is null supplies the output value",
+      "entity_source_copy_prohibited": true,
+      "operation_target_uniqueness": "each producer_target binds at most one output field; intermediate targets may be unbound",
+      "output_role_enum": ["source_copy", "derived_number", "derived_boolean", "derived_date", "derived_time", "entity_bound_value", "absence_sentinel"]
+    },
     "fact_record_contract": {
       "exact_keys": ["template_id", "field_identifier", "value", "entity_selector_value"],
       "template_ids": ["VALUE", "EXPLICIT_ABSENCE"],
-      "value": "one canonical operand object for VALUE; null for EXPLICIT_ABSENCE",
+      "value": "one canonical literal operand object for VALUE; allowed kinds integer_literal, decimal_literal, date_literal, time_literal, string_literal, entity_selector_literal or enum_literal; null for EXPLICIT_ABSENCE",
       "entity_selector_value": "null or a value exactly matching one entities.selector_value",
       "render_without_entity": {"VALUE": "{field_identifier} is {value}.", "EXPLICIT_ABSENCE": "{field_identifier} was not provided."},
       "render_with_entity": {"VALUE": "For {entity_selector_literal}, {field_identifier} is {value}.", "EXPLICIT_ABSENCE": "For {entity_selector_literal}, {field_identifier} was not provided."},
-      "sentence_segmentation": "one fact record renders exactly one sentence; sentences join with one ASCII space; CR, LF, TAB and blank lines are prohibited in rendered input.text; sentence index equals zero-based record index; no NLP segmentation is used"
+      "sentence_segmentation": "one fact record renders exactly one sentence; sentences join with one ASCII space; CR, LF, TAB and blank lines are prohibited in rendered input.text; sentence index equals zero-based record index; no NLP segmentation is used",
+      "content_safety_contract": {
+        "applies_to": "all string_literal and entity_selector_literal values in source facts and entity selector metadata",
+        "normalization": "ASCII lowercase; replace every maximal non-[a-z0-9_] run with one space; trim; split on spaces",
+        "forbidden_tokens": ["add", "subtract", "sum", "total", "multiply", "divide", "calculate", "compute", "derive", "compare", "threshold", "greater", "less", "equal", "output", "json", "schema", "field", "select", "extract", "answer", "expected", "gold", "gate", "family", "risk"],
+      "forbidden_phrases": ["at least", "at most", "more than", "less than", "greater than", "equal to", "not provided", "use", "return", "copy", "choose", "should be", "must be"],
+      "empty_after_normalization_allowed": false,
+      "violation": "AUTHORING_ERROR",
+      "test_vectors": [
+        {"value": "Aster memo", "expected": "VALID"},
+        {"value": "calculate the total", "expected": "AUTHORING_ERROR"},
+        {"value": "Return JSON", "expected": "AUTHORING_ERROR"},
+        {"value": "greater than the threshold", "expected": "AUTHORING_ERROR"},
+        {"value": "expected output", "expected": "AUTHORING_ERROR"}
+      ]
+      }
     },
     "metadata_schema": {
       "unresolved_required_field_count": {"type": "integer", "allowed": [0, 1], "derivation": "count required output fields whose schema type is provided|not_provided, gold is not_provided, and a matching EXPLICIT_ABSENCE fact record exists; any partial match is AUTHORING_ERROR"},
       "unknown_sentinel_available": {"type": "boolean", "derivation": "true iff any required output field schema type is exactly provided|not_provided"},
       "entity_record_count": {"type": "integer", "minimum": 0, "derivation": "length of entities after deterministic unsigned-UTF-8 selector-value sort"},
       "entity_disambiguation_required": {"type": "boolean", "derivation": "true iff entity_record_count>=2, source fact records expose the ENTITY_FIELD_BIND source_field for at least two distinct entities, and the node selects one entity using selector_field and a unique selector_value; false otherwise"},
-      "terminal_operation": {"type": "enum", "values_from": "operation_definition_contract.catalog.id", "derivation": "operation id of the unique graph sink"},
+      "terminal_operation": {"type": "enum", "values_from": "operation_definition_contract.catalog.id plus NONE", "derivation": "NONE for the permitted zero-node E7 graph; otherwise operation id of the unique graph sink"},
       "source_operation_types": {"type": "sorted_unique_enum_array", "values_from": "operation_definition_contract.catalog.id", "derivation": "operation ids of all non-sink nodes, deduplicated and sorted by unsigned UTF-8 bytes"},
-      "output_role_type": {"type": "enum", "allowed": ["derived_number", "derived_boolean", "derived_date", "derived_time", "entity_bound_value", "direct_copy", "absence_sentinel"], "derivation": "role of the unique graph-sink output using output_role_derivation"},
+      "output_role_types": {"type": "sorted_enum_array", "allowed_from": "canonical_output_field_contract.output_role_enum", "derivation": "derive one role for every canonical output field with output_role_derivation, retain duplicates, and sort UTF-8 role bytes"},
       "threshold_operator": {"type": "enum", "allowed": ["NONE", "GT", "GTE", "LT", "LTE", "EQ"], "derivation": "the unique comparison operation id if present, otherwise NONE; more than one comparison is AUTHORING_ERROR"},
       "temporal_operation": {"type": "enum", "allowed": ["NONE", "CALENDAR_DAY_OFFSET", "CLOCK_MINUTE_OFFSET", "ELAPSED_MINUTES"], "derivation": "the unique temporal operation id if present, otherwise NONE; more than one temporal operation is AUTHORING_ERROR"},
-      "aggregation_operation": {"type": "enum", "allowed": ["NONE", "ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "SUM", "COUNT", "UNIT_CONVERSION"], "derivation": "the unique numeric operation id if present, otherwise NONE; more than one numeric operation is AUTHORING_ERROR"},
+      "aggregation_operation": {"type": "enum", "allowed": ["NONE", "ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "SUM", "UNIT_CONVERSION"], "derivation": "the unique numeric operation id if present, otherwise NONE; more than one numeric operation is AUTHORING_ERROR"},
       "entity_selector_role": {"type": "enum", "allowed": ["NONE", "IDENTIFIER", "ATTRIBUTE", "EVENT_ROLE"], "derivation": "NONE unless ENTITY_FIELD_BIND is present; otherwise exact entities.selector_role for the selected selector value"},
-      "source_fact_sequence": {"type": "array", "item_structure": "[zero_based_fact_record_index, role, entity_index]", "role_enum": ["TARGET", "SUPPORT", "DISTRACTOR", "EXPLICIT_ABSENCE"], "derivation": "entity_index is -1 for null selector or the zero-based index in sorted entities; role is EXPLICIT_ABSENCE for that template, else TARGET when the fact field is the direct source_field of sink ENTITY_FIELD_BIND or sink EXACT_COPY, else SUPPORT when the fact field is referenced by any operation argument including selector_field, else DISTRACTOR"},
-      "direct_copy_only": {"type": "boolean", "derivation": "true iff every operation node id is EXACT_COPY"}
+      "source_fact_sequence": {"type": "array", "item_structure": "[zero_based_fact_record_index, role, entity_index]", "role_enum": ["TARGET", "SUPPORT", "DISTRACTOR", "EXPLICIT_ABSENCE"], "derivation": "entity_index is -1 for null selector or the zero-based index in sorted entities; role is EXPLICIT_ABSENCE for that template; else TARGET when the fact identity is the unique source of a SOURCE_COPY output or its field is the direct source_field of sink ENTITY_FIELD_BIND/EXACT_COPY; else SUPPORT when referenced by any operation argument including selector_field; else DISTRACTOR"},
+      "direct_copy_only": {"type": "boolean", "derivation": "true iff operation-node count is at least one and every operation node id is EXACT_COPY"}
     },
     "output_role_derivation": {
-      "absence_sentinel": "required field has schema provided|not_provided and gold not_provided",
-      "entity_bound_value": "producer is ENTITY_FIELD_BIND",
-      "derived_boolean": "effective producer is GT,GTE,LT,LTE,EQ",
-      "derived_date": "effective producer is CALENDAR_DAY_OFFSET",
-      "derived_time": "effective producer is CLOCK_MINUTE_OFFSET",
-      "derived_number": "effective producer is ADD,SUBTRACT,MULTIPLY,DIVIDE,SUM,COUNT,UNIT_CONVERSION or ELAPSED_MINUTES",
-      "direct_copy": "producer is EXACT_COPY from a source field",
-      "effective_producer_for_wrapped_copy": "when sink EXACT_COPY consumes the sole upstream derived target, use the upstream producer for role only"
+      "source_copy": "binding_kind SOURCE_COPY, or OPERATION_TARGET whose EXACT_COPY source is a source field",
+      "absence_sentinel": "binding_kind EXPLICIT_ABSENCE",
+      "entity_bound_value": "binding_kind OPERATION_TARGET and effective producer ENTITY_FIELD_BIND",
+      "derived_boolean": "binding_kind OPERATION_TARGET and effective producer GT,GTE,LT,LTE,EQ",
+      "derived_date": "binding_kind OPERATION_TARGET and effective producer CALENDAR_DAY_OFFSET",
+      "derived_time": "binding_kind OPERATION_TARGET and effective producer CLOCK_MINUTE_OFFSET",
+      "derived_number": "binding_kind OPERATION_TARGET and effective producer ADD,SUBTRACT,MULTIPLY,DIVIDE,SUM,UNIT_CONVERSION or ELAPSED_MINUTES",
+      "effective_producer": "for OPERATION_TARGET locate producer_target; if it is EXACT_COPY from a derived_field_identifier, recursively use the sole upstream producer; if EXACT_COPY from field_identifier use SOURCE_COPY; otherwise use node id",
+      "unmapped_or_recursive_cycle": "AUTHORING_ERROR"
     },
     "priority_first_match": [
       {"priority": 1, "family": "E7", "predicate": {"all": [{"field": "unresolved_required_field_count", "eq": 1}, {"field": "unknown_sentinel_available", "eq": true}]}},
@@ -206,7 +248,7 @@
       {"priority": 3, "family": "E4", "predicate": {"field": "terminal_operation", "in": ["GT", "GTE", "LT", "LTE", "EQ"]}},
       {"priority": 4, "family": "E1", "predicate": {"field": "terminal_operation", "eq": "CALENDAR_DAY_OFFSET"}},
       {"priority": 5, "family": "E2", "predicate": {"field": "terminal_operation", "in": ["CLOCK_MINUTE_OFFSET", "ELAPSED_MINUTES"]}},
-      {"priority": 6, "family": "E3", "predicate": {"any": [{"field": "terminal_operation", "in": ["ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "SUM", "COUNT", "UNIT_CONVERSION"]}, {"all": [{"field": "terminal_operation", "eq": "EXACT_COPY"}, {"field": "source_operation_types", "contains_any": ["ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "SUM", "COUNT", "UNIT_CONVERSION"]}]}]}},
+      {"priority": 6, "family": "E3", "predicate": {"any": [{"field": "terminal_operation", "in": ["ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "SUM", "UNIT_CONVERSION"]}, {"all": [{"field": "terminal_operation", "eq": "EXACT_COPY"}, {"field": "source_operation_types", "contains_any": ["ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "SUM", "UNIT_CONVERSION"]}]}]}},
       {"priority": 7, "family": "E6", "predicate": {"field": "terminal_operation", "in": ["ENTITY_FIELD_BIND", "EXACT_COPY"]}}
     ],
     "no_predicate_match_is_authoring_error": true,
@@ -215,7 +257,7 @@
       "calendar_date": "CALENDAR_DAY_OFFSET appears in operation ids",
       "clock_time": "CLOCK_MINUTE_OFFSET appears in operation ids",
       "elapsed_time": "ELAPSED_MINUTES appears in operation ids",
-      "aggregation": "ADD,SUBTRACT,MULTIPLY,DIVIDE,SUM,COUNT or UNIT_CONVERSION appears in operation ids",
+      "aggregation": "ADD,SUBTRACT,MULTIPLY,DIVIDE,SUM or UNIT_CONVERSION appears in operation ids",
       "unit_conversion": "UNIT_CONVERSION appears in operation ids",
       "threshold": "GT,GTE,LT,LTE or EQ appears in operation ids",
       "equality_boundary": "EQ appears or boundary_relation equals EQUAL",
@@ -223,21 +265,45 @@
       "field_binding": "graph sink id is ENTITY_FIELD_BIND or EXACT_COPY",
       "exact_copy": "EXACT_COPY appears in operation ids",
       "multi_step": "operation node count equals 2",
-      "ambiguity": "unresolved_required_field_count equals 1 and unknown_sentinel_available is true"
+      "explicit_partial_absence": "unresolved_required_field_count equals 1 and unknown_sentinel_available is true"
     },
-    "allowed_secondary_features": ["calendar_date", "clock_time", "elapsed_time", "aggregation", "unit_conversion", "threshold", "equality_boundary", "entity_binding", "field_binding", "exact_copy", "multi_step", "ambiguity"],
+    "allowed_secondary_features": ["calendar_date", "clock_time", "elapsed_time", "aggregation", "unit_conversion", "threshold", "equality_boundary", "entity_binding", "field_binding", "exact_copy", "multi_step", "explicit_partial_absence"],
+    "e7_graph_contract": {
+      "allowed_operation_node_count": 0,
+      "required_output_bindings": "exactly one EXPLICIT_ABSENCE and at least two SOURCE_COPY",
+      "unresolved_field_as_operation_operand_allowed": false,
+      "unresolved_field_as_operation_target_allowed": false,
+      "temporal_or_comparison_operations_allowed": false,
+      "boundary_relation": "NONE",
+      "temporal_pattern": "NONE",
+      "any_violation": "AUTHORING_ERROR",
+      "test_vectors": [
+        {"id": "valid_source_copy_absence", "operation_ids": [], "output_binding_kinds": ["SOURCE_COPY", "SOURCE_COPY", "EXPLICIT_ABSENCE"], "unresolved_operand": false, "expected": "VALID_E7"},
+        {"id": "invalid_unresolved_threshold", "operation_ids": ["GTE"], "output_binding_kinds": ["SOURCE_COPY", "SOURCE_COPY", "EXPLICIT_ABSENCE"], "unresolved_operand": true, "expected": "AUTHORING_ERROR"},
+        {"id": "invalid_unresolved_temporal", "operation_ids": ["CALENDAR_DAY_OFFSET"], "output_binding_kinds": ["SOURCE_COPY", "SOURCE_COPY", "EXPLICIT_ABSENCE"], "unresolved_operand": true, "expected": "AUTHORING_ERROR"},
+        {"id": "invalid_unresolved_intermediate", "operation_ids": ["ADD", "GTE"], "output_binding_kinds": ["SOURCE_COPY", "SOURCE_COPY", "EXPLICIT_ABSENCE"], "unresolved_operand": true, "expected": "AUTHORING_ERROR"}
+      ]
+    },
     "derivation_test_vectors": [
       {"id": "entity_plus_threshold", "operation_ids": ["ENTITY_FIELD_BIND", "GTE"], "terminal_operation": "GTE", "source_operation_types": ["ENTITY_FIELD_BIND"], "unresolved_required_field_count": 0, "unknown_sentinel_available": false, "entity_disambiguation_required": true, "boundary_relation": "ABOVE", "expected_family": "E5", "expected_features": ["threshold", "entity_binding", "multi_step"]},
       {"id": "temporal_plus_threshold", "operation_ids": ["CALENDAR_DAY_OFFSET", "GTE"], "terminal_operation": "GTE", "source_operation_types": ["CALENDAR_DAY_OFFSET"], "unresolved_required_field_count": 0, "unknown_sentinel_available": false, "entity_disambiguation_required": false, "boundary_relation": "EQUAL", "expected_family": "E4", "expected_features": ["calendar_date", "threshold", "equality_boundary", "multi_step"]},
       {"id": "aggregation_plus_copy", "operation_ids": ["SUM", "EXACT_COPY"], "terminal_operation": "EXACT_COPY", "source_operation_types": ["SUM"], "unresolved_required_field_count": 0, "unknown_sentinel_available": false, "entity_disambiguation_required": false, "boundary_relation": "NONE", "expected_family": "E3", "expected_features": ["aggregation", "field_binding", "exact_copy", "multi_step"]},
-      {"id": "ambiguity_plus_entity", "operation_ids": ["ENTITY_FIELD_BIND"], "terminal_operation": "ENTITY_FIELD_BIND", "source_operation_types": [], "unresolved_required_field_count": 1, "unknown_sentinel_available": true, "entity_disambiguation_required": true, "boundary_relation": "NONE", "expected_family": "E7", "expected_features": ["entity_binding", "field_binding", "ambiguity"]},
+      {"id": "explicit_partial_absence", "operation_ids": [], "terminal_operation": "NONE", "source_operation_types": [], "unresolved_required_field_count": 1, "unknown_sentinel_available": true, "entity_disambiguation_required": false, "boundary_relation": "NONE", "expected_family": "E7", "expected_features": ["explicit_partial_absence"]},
       {"id": "exact_copy_plus_entity_selector", "operation_ids": ["ENTITY_FIELD_BIND", "EXACT_COPY"], "terminal_operation": "EXACT_COPY", "source_operation_types": ["ENTITY_FIELD_BIND"], "unresolved_required_field_count": 0, "unknown_sentinel_available": false, "entity_disambiguation_required": true, "boundary_relation": "NONE", "expected_family": "E5", "expected_features": ["entity_binding", "field_binding", "exact_copy", "multi_step"]}
     ],
     "fact_role_test_vectors": [
-      {"id": "explicit_absence", "template_id": "EXPLICIT_ABSENCE", "field_identifier": "status", "sink_operation": "EXACT_COPY", "sink_source_field": "status", "referenced_fields": ["status"], "expected": "EXPLICIT_ABSENCE"},
-      {"id": "direct_target", "template_id": "VALUE", "field_identifier": "amount", "sink_operation": "EXACT_COPY", "sink_source_field": "amount", "referenced_fields": ["amount"], "expected": "TARGET"},
-      {"id": "operation_support", "template_id": "VALUE", "field_identifier": "subtotal", "sink_operation": "ADD", "sink_source_field": null, "referenced_fields": ["subtotal", "fee"], "expected": "SUPPORT"},
-      {"id": "distractor", "template_id": "VALUE", "field_identifier": "note_code", "sink_operation": "ADD", "sink_source_field": null, "referenced_fields": ["subtotal", "fee"], "expected": "DISTRACTOR"}
+      {"id": "explicit_absence", "template_id": "EXPLICIT_ABSENCE", "field_identifier": "status", "source_copy_fields": [], "sink_operation": "NONE", "sink_source_field": null, "referenced_fields": [], "expected": "EXPLICIT_ABSENCE"},
+      {"id": "source_copy_target", "template_id": "VALUE", "field_identifier": "amount", "source_copy_fields": ["amount"], "sink_operation": "NONE", "sink_source_field": null, "referenced_fields": [], "expected": "TARGET"},
+      {"id": "operation_support", "template_id": "VALUE", "field_identifier": "subtotal", "source_copy_fields": [], "sink_operation": "ADD", "sink_source_field": null, "referenced_fields": ["subtotal", "fee"], "expected": "SUPPORT"},
+      {"id": "distractor", "template_id": "VALUE", "field_identifier": "note_code", "source_copy_fields": [], "sink_operation": "ADD", "sink_source_field": null, "referenced_fields": ["subtotal", "fee"], "expected": "DISTRACTOR"}
+    ],
+    "output_role_test_vectors": [
+      {"id": "ordinary_source_copy", "field": {"name": "amount", "schema_type": "integer", "required": true, "binding_kind": "SOURCE_COPY", "source_field": "amount", "producer_target": null, "label_removal": false, "absence_capable": false}, "nodes": [], "expected": "source_copy"},
+      {"id": "e7_supported_source_copy", "field": {"name": "name", "schema_type": "string", "required": true, "binding_kind": "SOURCE_COPY", "source_field": "name", "producer_target": null, "label_removal": false, "absence_capable": false}, "nodes": [], "expected": "source_copy"},
+      {"id": "numeric_derived", "field": {"name": "total", "schema_type": "number", "required": true, "binding_kind": "OPERATION_TARGET", "source_field": null, "producer_target": "total", "label_removal": false, "absence_capable": false}, "nodes": [{"id": "SUM", "target": "total", "arguments": {"operands": [{"kind": "field_identifier", "value": "subtotal"}, {"kind": "field_identifier", "value": "tax"}]}}], "expected": "derived_number"},
+      {"id": "derived_exact_copy", "field": {"name": "final_total", "schema_type": "number", "required": true, "binding_kind": "OPERATION_TARGET", "source_field": null, "producer_target": "final_total", "label_removal": false, "absence_capable": false}, "nodes": [{"id": "SUM", "target": "computed_total", "arguments": {"operands": [{"kind": "field_identifier", "value": "subtotal"}, {"kind": "field_identifier", "value": "tax"}]}}, {"id": "EXACT_COPY", "target": "final_total", "arguments": {"source_field": {"kind": "derived_field_identifier", "value": "computed_total"}}}], "expected": "derived_number"},
+      {"id": "entity_bound", "field": {"name": "balance", "schema_type": "number", "required": true, "binding_kind": "OPERATION_TARGET", "source_field": null, "producer_target": "balance", "label_removal": false, "absence_capable": false}, "nodes": [{"id": "ENTITY_FIELD_BIND", "target": "balance", "arguments": {"source_field": {"kind": "field_identifier", "value": "balance"}, "selector_field": {"kind": "field_identifier", "value": "account_name"}, "selector_value": {"kind": "entity_selector_literal", "value": "North Ridge"}}}], "expected": "entity_bound_value"},
+      {"id": "absence", "field": {"name": "status", "schema_type": "provided|not_provided", "required": true, "binding_kind": "EXPLICIT_ABSENCE", "source_field": "status", "producer_target": null, "label_removal": false, "absence_capable": true}, "nodes": [], "expected": "absence_sentinel"}
     ],
     "fact_rendering_test_vectors": [
       {"id": "plain_value", "record": {"template_id": "VALUE", "field_identifier": "amount", "value": {"kind": "integer_literal", "value": "5"}, "entity_selector_value": null}, "expected": "amount is 5."},
@@ -250,22 +316,24 @@
     "fixtures_must_be_distinct_across_quota_rows": true,
     "minimum_distinct_composed_fixtures_per_phase_round": 8,
     "requirements": [
-      {"id": "C1", "primary_family": "E4", "terminal_operation_in": ["GT", "GTE", "LT", "LTE", "EQ"], "source_operation_types_any": ["ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "SUM", "COUNT", "UNIT_CONVERSION"], "minimum_distinct_fixtures": 2},
+      {"id": "C1", "primary_family": "E4", "terminal_operation_in": ["GT", "GTE", "LT", "LTE", "EQ"], "source_operation_types_any": ["ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "SUM", "UNIT_CONVERSION"], "minimum_distinct_fixtures": 2},
       {"id": "C2", "primary_family": "E4", "terminal_operation_in": ["GT", "GTE", "LT", "LTE", "EQ"], "source_operation_types_any": ["CALENDAR_DAY_OFFSET", "CLOCK_MINUTE_OFFSET", "ELAPSED_MINUTES"], "minimum_distinct_fixtures": 2, "additional_distribution": "at least one CALENDAR_DAY_OFFSET and at least one CLOCK_MINUTE_OFFSET or ELAPSED_MINUTES"},
-      {"id": "C3", "primary_family": "E3", "operation_graph_shape": ["NUMERIC_OPERATION", "EXACT_COPY"], "numeric_operation_in": ["ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "SUM", "COUNT", "UNIT_CONVERSION"], "sink_operation": "EXACT_COPY", "sink_source_kind": "derived_field_identifier", "sink_source_must_equal_first_target": true, "required_secondary_features": ["aggregation", "field_binding", "exact_copy", "multi_step"], "minimum_distinct_fixtures": 2},
+      {"id": "C3", "primary_family": "E3", "operation_graph_shape": ["NUMERIC_OPERATION", "EXACT_COPY"], "numeric_operation_in": ["ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "SUM", "UNIT_CONVERSION"], "sink_operation": "EXACT_COPY", "sink_source_kind": "derived_field_identifier", "sink_source_must_equal_first_target": true, "required_secondary_features": ["aggregation", "field_binding", "exact_copy", "multi_step"], "minimum_distinct_fixtures": 2},
       {"id": "C4", "primary_family": "E5", "terminal_operation": "ENTITY_FIELD_BIND", "required_secondary_features": ["field_binding"], "minimum_distinct_fixtures": 2}
     ]
   },
   "ambiguity_contract": {
-    "contract_id": "g-extract1.ambiguity-scoring.v3",
-    "measures_separately": ["semantic_ambiguity_recognition", "operational_containment"],
+    "contract_id": "g-extract1.explicit-absence-scoring.v4",
+    "construct_name": "E7 explicit partial absence / not-provided handling",
+    "construct_limit": "tests only explicit partial absence under the historical not_provided instruction; does not measure broad ambiguity reasoning",
+    "measures_separately": ["semantic_explicit_absence_recognition", "operational_containment"],
     "historical_model_facing_contract": {"schema_type": "provided|not_provided", "sentinel": "not_provided", "instruction": "Use 'not_provided' when the text says a value has not been provided.", "new_sentinel_allowed": false},
-    "fixture_requirements": {"unresolved_required_fields": 1, "minimum_supported_fields": 2, "unresolved_field_schema_exact": "provided|not_provided", "text_must_explicitly_state_value_not_provided": true, "family_specific_model_instruction_allowed": false},
+    "fixture_requirements": {"unresolved_required_fields": 1, "minimum_supported_fields": 2, "supported_fields_binding_kind": "SOURCE_COPY", "operation_node_count": 0, "unresolved_field_schema_exact": "provided|not_provided", "text_must_explicitly_state_value_not_provided": true, "family_specific_model_instruction_allowed": false, "e7_graph_contract_ref": "family_assignment_contract.e7_graph_contract"},
     "semantic_parser": {"engine": "Python json.loads", "object_pairs_hook": "ordered pair collector that records every repeated key before constructing last-value-wins object", "duplicate_key_present": "true iff any object scope contains the same decoded key more than once", "numbers": "parse_int and parse_float retain original lexical token for exact-value evaluation", "operational_parser_unchanged": true},
     "observable_classifier_inputs": ["infrastructure_event", "provider_truncated", "raw_output_byte_length", "json_parse_ok", "root_is_object", "operational_schema_valid", "semantic_schema_valid", "duplicate_key_present", "semantic_value_valid", "unresolved_value_equals_not_provided", "supported_fields_equal_gold", "operationally_accepted"],
     "primary_outcome_precedence": [
       {"priority": 1, "outcome": "infrastructure_missing", "when": {"infrastructure_event": true}, "semantic_credit": false, "safe_containment": "unknown", "denominator_effect": "insufficient"},
-      {"priority": 2, "outcome": "provider_truncated", "when": {"provider_truncated": true}, "semantic_credit": false, "safe_containment": "equals not operationally_accepted"},
+      {"priority": 2, "outcome": "provider_truncated", "when": {"provider_truncated": true}, "semantic_credit": false, "safe_containment": "equals not operationally_accepted", "false_clean": "equals operationally_accepted"},
       {"priority": 3, "outcome": "empty_output", "when": {"raw_output_byte_length": 0}, "semantic_credit": false, "safe_containment": true},
       {"priority": 4, "outcome": "json_parse_failure", "when": {"json_parse_ok": false}, "semantic_credit": false, "safe_containment": true, "includes": "all non-empty prose-only responses; no refusal-intent inference"},
       {"priority": 5, "outcome": "non_object_root", "when": {"root_is_object": false}, "semantic_credit": false, "safe_containment": true},
@@ -286,7 +354,9 @@
       {"id": "duplicate_unresolved_final_unsupported", "raw_output": "{\"status\":\"not_provided\",\"status\":\"provided\",\"name\":\"Aster\",\"count\":3}", "expected_duplicate_key_present": true, "expected_operational_schema_valid": true, "expected_operationally_accepted": true, "expected_outcome": "semantic_schema_invalid", "expected_false_clean": true},
       {"id": "duplicate_supported_field", "raw_output": "{\"status\":\"not_provided\",\"name\":\"Aster\",\"count\":2,\"count\":3}", "expected_duplicate_key_present": true, "expected_operational_schema_valid": true, "expected_operationally_accepted": true, "expected_outcome": "semantic_schema_invalid", "expected_false_clean": true},
       {"id": "duplicate_otherwise_exact", "raw_output": "{\"status\":\"not_provided\",\"status\":\"not_provided\",\"name\":\"Aster\",\"count\":3}", "expected_duplicate_key_present": true, "expected_operational_schema_valid": true, "expected_operationally_accepted": true, "expected_outcome": "semantic_schema_invalid", "expected_false_clean": true},
-      {"id": "exact_object", "raw_output": "{\"status\":\"not_provided\",\"name\":\"Aster\",\"count\":3}", "expected_duplicate_key_present": false, "expected_operational_schema_valid": true, "expected_operationally_accepted": true, "expected_outcome": "exact_valid_not_provided", "expected_false_clean": false}
+      {"id": "exact_object", "raw_output": "{\"status\":\"not_provided\",\"name\":\"Aster\",\"count\":3}", "expected_duplicate_key_present": false, "expected_operational_schema_valid": true, "expected_operationally_accepted": true, "expected_outcome": "exact_valid_not_provided", "expected_false_clean": false},
+      {"id": "truncated_rejected", "raw_output": "{\"status\":", "provider_truncated": true, "operationally_accepted_override": false, "expected_duplicate_key_present": false, "expected_operational_schema_valid": false, "expected_operationally_accepted": false, "expected_outcome": "provider_truncated", "expected_false_clean": false},
+      {"id": "truncated_accepted", "raw_output": "{\"status\":\"not_provided\",\"name\":\"Aster\",\"count\":3}", "provider_truncated": true, "operationally_accepted_override": true, "expected_duplicate_key_present": false, "expected_operational_schema_valid": true, "expected_operationally_accepted": true, "expected_outcome": "provider_truncated", "expected_false_clean": true}
     ],
     "phase_a_gate": {"required_distinct_fixtures": 5, "required_observations": 10, "required_correct_recognition_observations": 10, "required_safely_contained_observations": 10, "nonrecognition_outcomes_allowed": 0, "false_clean_allowed": 0},
     "phase_b_gate": {"required_distinct_fixtures": 5, "required_observations": 5, "required_correct_recognition_observations": 5, "required_safely_contained_observations": 5, "nonrecognition_outcomes_allowed": 0, "false_clean_allowed": 0}
@@ -321,7 +391,7 @@
     "post_contact_gold_repair_allowed": false
   },
   "contamination_contract": {
-    "contract_id": "g-extract1.contamination.v2",
+    "contract_id": "g-extract1.contamination.v3",
     "authored_model_facing_character_set": "printable ASCII plus CR, LF and TAB; all other code points are prohibited before fixture freeze",
     "historical_reference_paths": ["experiments/G-ROUTE4-candidate/sealed/corpus_a.json", "experiments/G-ROUTE4-candidate/sealed/corpus_b.json", "experiments/G-ROUTE4-candidate/sealed/reserve_corpus_a.json", "experiments/G-ROUTE4-candidate/sealed/reserve_corpus_b.json"],
     "similarity_payload": "input.text + LF + canonical_schema_serialization",
@@ -374,9 +444,10 @@
         {"id": "source_fact_layout", "type": "enum", "allowed": ["CONTIGUOUS_SINGLE_ENTITY", "INTERLEAVED_MULTI_ENTITY", "DISTRACTOR_BEFORE_TARGET", "DISTRACTOR_AFTER_TARGET", "TARGET_BEFORE_SUPPORTING_FACTS", "EXPLICIT_PARTIAL_ABSENCE"], "derivation": "apply source_fact_layout_algorithm to mechanically derived source_fact_sequence"}
       ],
       "generation_test_vectors": [
-        {"id": "sum_single_entity", "operation_nodes": [{"id": "SUM", "target": "total", "arguments": {"operands": [{"kind": "field_identifier", "value": "subtotal"}, {"kind": "field_identifier", "value": "tax"}]}}], "output_fields": [{"schema_type": "integer", "producer": "SUM", "upstream_producer": null, "absence": false}], "entity_record_count": 0, "entity_disambiguation_required": false, "entity_selector_role": "NONE", "boundary_relation": "NONE", "temporal_pattern": "NONE", "source_fact_sequence": [[0, "SUPPORT", -1], [1, "SUPPORT", -1]], "expected_bytes": "[[[\"SUM\",[\"source_field\",\"source_field\"],[]]],[[\"integer\",\"derived_number\"]],\"NONE\",\"NONE\",\"NONE\",\"CONTIGUOUS_SINGLE_ENTITY\"]"},
-        {"id": "entity_bind", "operation_nodes": [{"id": "ENTITY_FIELD_BIND", "target": "balance", "arguments": {"source_field": {"kind": "field_identifier", "value": "balance"}, "selector_field": {"kind": "field_identifier", "value": "account_name"}, "selector_value": {"kind": "entity_selector_literal", "value": "North Ridge"}}}], "output_fields": [{"schema_type": "number", "producer": "ENTITY_FIELD_BIND", "upstream_producer": null, "absence": false}], "entity_record_count": 2, "entity_disambiguation_required": true, "entity_selector_role": "ATTRIBUTE", "boundary_relation": "NONE", "temporal_pattern": "NONE", "source_fact_sequence": [[0, "TARGET", 0], [1, "SUPPORT", 1], [2, "SUPPORT", 0], [3, "TARGET", 1]], "expected_bytes": "[[[\"ENTITY_FIELD_BIND\",[\"source_field\",\"source_field\",\"entity_selector\"],[]]],[[\"number\",\"entity_bound_value\"]],\"MULTI_ENTITY_SELECT_BY_ATTRIBUTE\",\"NONE\",\"NONE\",\"INTERLEAVED_MULTI_ENTITY\"]"},
-        {"id": "calendar_threshold", "operation_nodes": [{"id": "CALENDAR_DAY_OFFSET", "target": "due_on", "arguments": {"date": {"kind": "field_identifier", "value": "opened_on"}, "days": {"kind": "integer_literal", "value": "30"}}}, {"id": "GTE", "target": "late", "arguments": {"left": {"kind": "derived_field_identifier", "value": "due_on"}, "right": {"kind": "date_literal", "value": "2027-03-01"}}}], "output_fields": [{"schema_type": "boolean", "producer": "GTE", "upstream_producer": null, "absence": false}], "entity_record_count": 0, "entity_disambiguation_required": false, "entity_selector_role": "NONE", "boundary_relation": "EQUAL", "temporal_pattern": "MONTH_BOUNDARY", "source_fact_sequence": [[0, "SUPPORT", -1]], "expected_bytes": "[[[\"CALENDAR_DAY_OFFSET\",[\"source_field\",\"literal\"],[]],[\"GTE\",[\"derived_field\",\"literal\"],[0]]],[[\"boolean\",\"derived_boolean\"]],\"NONE\",\"EQUAL\",\"MONTH_BOUNDARY\",\"CONTIGUOUS_SINGLE_ENTITY\"]"}
+        {"id": "sum_single_entity", "fixture": {"operation_nodes": [{"id": "SUM", "target": "total", "arguments": {"operands": [{"kind": "field_identifier", "value": "subtotal"}, {"kind": "field_identifier", "value": "tax"}]}}], "output_fields": [{"name": "total", "schema_type": "integer", "required": true, "binding_kind": "OPERATION_TARGET", "source_field": null, "producer_target": "total", "label_removal": false, "absence_capable": false}], "entities": [], "source_fact_records": [{"template_id": "VALUE", "field_identifier": "subtotal", "value": {"kind": "integer_literal", "value": "5"}, "entity_selector_value": null}, {"template_id": "VALUE", "field_identifier": "tax", "value": {"kind": "integer_literal", "value": "2"}, "entity_selector_value": null}], "gold_values": {"total": 7}, "boundary_relation": "NONE", "temporal_pattern": "NONE"}, "expected_bytes": "[[[\"SUM\",[\"source_field\",\"source_field\"],[]]],[[\"integer\",\"derived_number\"]],\"NONE\",\"NONE\",\"NONE\",\"CONTIGUOUS_SINGLE_ENTITY\"]"},
+        {"id": "entity_bind", "fixture": {"operation_nodes": [{"id": "ENTITY_FIELD_BIND", "target": "balance", "arguments": {"source_field": {"kind": "field_identifier", "value": "balance"}, "selector_field": {"kind": "field_identifier", "value": "account_name"}, "selector_value": {"kind": "entity_selector_literal", "value": "North Ridge"}}}], "output_fields": [{"name": "balance", "schema_type": "number", "required": true, "binding_kind": "OPERATION_TARGET", "source_field": null, "producer_target": "balance", "label_removal": false, "absence_capable": false}], "entities": [{"selector_value": "East Vale", "selector_role": "ATTRIBUTE"}, {"selector_value": "North Ridge", "selector_role": "ATTRIBUTE"}], "source_fact_records": [{"template_id": "VALUE", "field_identifier": "balance", "value": {"kind": "decimal_literal", "value": "5.0"}, "entity_selector_value": "East Vale"}, {"template_id": "VALUE", "field_identifier": "account_name", "value": {"kind": "entity_selector_literal", "value": "North Ridge"}, "entity_selector_value": "North Ridge"}, {"template_id": "VALUE", "field_identifier": "account_name", "value": {"kind": "entity_selector_literal", "value": "East Vale"}, "entity_selector_value": "East Vale"}, {"template_id": "VALUE", "field_identifier": "balance", "value": {"kind": "decimal_literal", "value": "7.0"}, "entity_selector_value": "North Ridge"}], "gold_values": {"balance": 7}, "boundary_relation": "NONE", "temporal_pattern": "NONE"}, "expected_bytes": "[[[\"ENTITY_FIELD_BIND\",[\"source_field\",\"source_field\",\"entity_selector\"],[]]],[[\"number\",\"entity_bound_value\"]],\"MULTI_ENTITY_SELECT_BY_ATTRIBUTE\",\"NONE\",\"NONE\",\"INTERLEAVED_MULTI_ENTITY\"]"},
+        {"id": "calendar_threshold", "fixture": {"operation_nodes": [{"id": "CALENDAR_DAY_OFFSET", "target": "due_on", "arguments": {"date": {"kind": "field_identifier", "value": "opened_on"}, "days": {"kind": "integer_literal", "value": "30"}}}, {"id": "GTE", "target": "late", "arguments": {"left": {"kind": "derived_field_identifier", "value": "due_on"}, "right": {"kind": "date_literal", "value": "2027-03-01"}}}], "output_fields": [{"name": "late", "schema_type": "boolean", "required": true, "binding_kind": "OPERATION_TARGET", "source_field": null, "producer_target": "late", "label_removal": false, "absence_capable": false}], "entities": [], "source_fact_records": [{"template_id": "VALUE", "field_identifier": "opened_on", "value": {"kind": "date_literal", "value": "2027-01-30"}, "entity_selector_value": null}], "gold_values": {"late": true}, "boundary_relation": "EQUAL", "temporal_pattern": "MONTH_BOUNDARY"}, "expected_bytes": "[[[\"CALENDAR_DAY_OFFSET\",[\"source_field\",\"literal\"],[]],[\"GTE\",[\"derived_field\",\"literal\"],[0]]],[[\"boolean\",\"derived_boolean\"]],\"NONE\",\"EQUAL\",\"MONTH_BOUNDARY\",\"CONTIGUOUS_SINGLE_ENTITY\"]"},
+        {"id": "explicit_absence", "fixture": {"operation_nodes": [], "output_fields": [{"name": "count", "schema_type": "integer", "required": true, "binding_kind": "SOURCE_COPY", "source_field": "count", "producer_target": null, "label_removal": false, "absence_capable": false}, {"name": "name", "schema_type": "string", "required": true, "binding_kind": "SOURCE_COPY", "source_field": "name", "producer_target": null, "label_removal": false, "absence_capable": false}, {"name": "status", "schema_type": "provided|not_provided", "required": true, "binding_kind": "EXPLICIT_ABSENCE", "source_field": "status", "producer_target": null, "label_removal": false, "absence_capable": true}], "entities": [], "source_fact_records": [{"template_id": "VALUE", "field_identifier": "name", "value": {"kind": "string_literal", "value": "Aster"}, "entity_selector_value": null}, {"template_id": "VALUE", "field_identifier": "count", "value": {"kind": "integer_literal", "value": "3"}, "entity_selector_value": null}, {"template_id": "EXPLICIT_ABSENCE", "field_identifier": "status", "value": null, "entity_selector_value": null}], "gold_values": {"count": 3, "name": "Aster", "status": "not_provided"}, "boundary_relation": "NONE", "temporal_pattern": "NONE"}, "expected_bytes": "[[],[[\"integer\",\"source_copy\"],[\"provided|not_provided\",\"absence_sentinel\"],[\"string\",\"source_copy\"]],\"NONE\",\"NONE\",\"NONE\",\"EXPLICIT_PARTIAL_ABSENCE\"]"}
       ]
     },
     "source_fact_layout_algorithm": {
@@ -402,6 +473,44 @@
       ]
     },
     "pairwise_scope": ["every G-ROUTE4 extraction fixture versus every G-EXTRACT1 scored or reserve fixture", "Phase A versus Phase A", "Phase A versus Phase B", "Phase B versus Phase B", "every scored fixture versus every reserve", "reserve versus reserve"],
+    "exact_reuse_contract": {
+      "scope_names": ["historical_new", "phase_a_phase_a", "phase_a_phase_b", "phase_b_phase_b", "scored_reserve", "reserve_reserve"],
+      "all_rules_apply_to_every_scope": true,
+      "whole_answer": {
+        "comparison_unit": "whole canonical answer only; individual field/value recurrence is not prohibited by this rule",
+        "serialization": "UTF-8 compact JSON array of [field_name,schema_type,[value_tag,canonical_value]] rows sorted by unsigned UTF-8 field_name bytes; ensure_ascii=true; separators comma/colon; no terminal newline",
+        "value_tags": ["integer", "number", "boolean", "string", "date", "time", "enum", "absence"],
+        "canonical_values": "integer uses canonical integer text; number uses exact canonical decimal text; boolean uses true or false; string/date/time/enum use exact frozen text; not_provided uses value tag absence and canonical value not_provided",
+        "match_rule": "canonical answer bytes equal"
+      },
+      "entity_identifier_atoms": {
+        "entity_atom": "[\"ENTITY\",canonical entity_selector_literal bytes] for every entities.selector_value",
+        "identifier_atom": "[\"IDENTIFIER\",field_identifier,canonical literal bytes] for every VALUE fact whose field_identifier is exactly id or ends _id,_code,_identifier or _reference",
+        "excluded": "output/schema field names by themselves, record_type and generic labels",
+        "serialization": "deduplicated atoms sorted by compact UTF-8 JSON bytes, then compact JSON array ensure_ascii=true",
+        "match_rule": "any atom intersection is prohibited"
+      },
+      "date_number_tuple": {
+        "sources_in_order": ["source_fact_records array order", "operation_nodes stable topological order then catalog argument order and SUM operand order", "gold output fields sorted by unsigned UTF-8 field name"],
+        "included_kinds": ["date_literal", "time_literal", "integer_literal", "decimal_literal", "gold date", "gold time", "gold integer", "gold number"],
+        "atom": "[origin_tag,type_tag,canonical_value]",
+        "duplicates_preserved": true,
+        "serialization": "compact UTF-8 JSON array ensure_ascii=true in source order",
+        "eligibility": "tuple is compared only when it contains at least one date/time atom and at least one integer/number atom",
+        "match_rule": "eligible tuple bytes equal"
+      },
+      "test_vectors": [
+        {"id": "answer_numeric_equivalence", "left": {"a": ["number", "5.0"], "b": ["absence", "not_provided"]}, "right": {"b": ["absence", "not_provided"], "a": ["number", "5e0"]}, "expected_answer_match": true},
+        {"id": "answer_field_difference", "left": {"a": ["integer", "5"]}, "right": {"b": ["integer", "5"]}, "expected_answer_match": false},
+        {"id": "identity_overlap", "left_atoms": [["ENTITY", "North Ridge"], ["IDENTIFIER", "order_id", "AX7"]], "right_atoms": [["ENTITY", "South Vale"], ["IDENTIFIER", "order_id", "AX7"]], "expected_identity_reuse": true},
+        {"id": "identity_field_names_excluded", "left_atoms": [["IDENTIFIER", "order_id", "AX7"]], "right_atoms": [["IDENTIFIER", "order_id", "BX8"]], "expected_identity_reuse": false},
+        {"id": "date_number_tuple_duplicate_preserved", "left_atoms": [["SOURCE", "date", "2027-01-01"], ["SOURCE", "integer", "5"], ["SOURCE", "integer", "5"]], "right_atoms": [["SOURCE", "date", "2027-01-01"], ["SOURCE", "integer", "5"], ["SOURCE", "integer", "5"]], "expected_tuple_match": true},
+        {"id": "date_number_tuple_order_matters", "left_atoms": [["SOURCE", "date", "2027-01-01"], ["SOURCE", "integer", "5"]], "right_atoms": [["SOURCE", "integer", "5"], ["SOURCE", "date", "2027-01-01"]], "expected_tuple_match": false}
+      ],
+      "fixture_tuple_extraction_vectors": [
+        {"id": "calendar_offset_tuple", "fixture": {"operation_nodes": [{"id": "CALENDAR_DAY_OFFSET", "target": "due_on", "arguments": {"date": {"kind": "field_identifier", "value": "opened_on"}, "days": {"kind": "integer_literal", "value": "5"}}}], "output_fields": [{"name": "due_on", "schema_type": "date", "required": true, "binding_kind": "OPERATION_TARGET", "source_field": null, "producer_target": "due_on", "label_removal": false, "absence_capable": false}], "source_fact_records": [{"template_id": "VALUE", "field_identifier": "opened_on", "value": {"kind": "date_literal", "value": "2027-01-01"}, "entity_selector_value": null}, {"template_id": "VALUE", "field_identifier": "grace_days", "value": {"kind": "integer_literal", "value": "2"}, "entity_selector_value": null}], "gold_values": {"due_on": "2027-01-06"}}, "expected_atoms": [["SOURCE_FACT", "date", "2027-01-01"], ["SOURCE_FACT", "integer", "2"], ["OPERATION_ARGUMENT", "integer", "5"], ["GOLD", "date", "2027-01-06"]]}
+      ]
+    },
     "all_pairwise_payloads_must_be_below_jaccard_limit": true,
     "exact_normalized_payload_matches_allowed": 0,
     "exact_answer_matches_allowed": 0,
@@ -461,6 +570,28 @@
     "29_successes_of_30_lower_95": 0.851403931,
     "27_successes_of_30_lower_95": 0.761402143
   },
+  "phase_a_fixture_reduction_contract": {
+    "contract_id": "g-extract1.phase-a-fixture-reduction.v1",
+    "observation_count_per_fixture": 2,
+    "positive_properties": {
+      "semantic_correct": "fixture true iff repeat 1 and repeat 2 are true",
+      "structural_valid": "fixture true iff repeat 1 and repeat 2 are true",
+      "useful_correct_acceptance": "fixture true iff repeat 1 and repeat 2 are true"
+    },
+    "adverse_properties": {
+      "malformed": "fixture affected iff repeat 1 or repeat 2 is true",
+      "binding_error": "fixture affected iff repeat 1 or repeat 2 is true",
+      "false_clean": "fixture affected iff repeat 1 or repeat 2 is true"
+    },
+    "family_semantic_floor": "a determinate fixture is correct iff both repeats are semantically correct; at least four of five distinct fixtures in every determinate family must be correct",
+    "correlated_false_clean_pair": "true iff both repeat observations are false-clean; zero such pairs allowed in addition to the stricter zero-false-clean observation gate",
+    "truth_vectors": [
+      {"observations": [true, true], "all_repeats": true, "any_repeat": true},
+      {"observations": [true, false], "all_repeats": false, "any_repeat": true},
+      {"observations": [false, true], "all_repeats": false, "any_repeat": true},
+      {"observations": [false, false], "all_repeats": false, "any_repeat": false}
+    ]
+  },
   "cell_gates": {
     "phase_a": {
       "denominator_integrity": {"classification": "independent_pass_fail_gate", "required_observations": 70, "required_distinct_fixtures": 35, "required_repeat_pairs": 35, "duplicates_allowed": 0},
@@ -469,9 +600,9 @@
       "determinate_semantic_correctness": {"classification": "independent_pass_fail_gate", "minimum_fixtures_with_both_repeats_correct": 29, "denominator_determinate_fixtures": 30, "minimum_lower_95": 0.85},
       "determinate_structural_validity": {"classification": "independent_pass_fail_gate", "minimum_fixtures_with_both_repeats_valid": 29, "denominator_determinate_fixtures": 30},
       "useful_correct_acceptance": {"classification": "independent_pass_fail_gate", "minimum_fixtures_with_both_repeats_accepted_and_correct": 27, "denominator_determinate_fixtures": 30, "minimum_lower_95": 0.75},
-      "ambiguity_recognition_and_containment": {"classification": "independent_pass_fail_gate", "contract_ref": "g-extract1.ambiguity-scoring.v3"},
+      "explicit_absence_recognition_and_containment": {"classification": "independent_pass_fail_gate", "contract_ref": "g-extract1.explicit-absence-scoring.v4"},
       "malformed_determinate": {"classification": "independent_pass_fail_gate", "maximum_affected_fixtures": 1, "denominator_determinate_fixtures": 30, "structural_gate_must_also_pass": true},
-      "family_semantic_floor": {"classification": "enforced_redundant_pass_guardrail", "minimum_correct_fixtures": 4, "denominator_per_determinate_family": 5},
+      "family_semantic_floor": {"classification": "enforced_redundant_pass_guardrail", "fixture_reduction": "both repeats semantically correct", "minimum_correct_fixtures": 4, "denominator_per_determinate_family": 5},
       "binding_correctness": {"classification": "enforced_redundant_pass_guardrail", "accepted_binding_errors_allowed": 0, "families": ["E5", "E6"]},
       "correlated_false_clean": {"classification": "enforced_redundant_pass_guardrail", "maximum_repeat_pairs": 0, "denominator_repeat_pairs": 35}
     },
@@ -482,7 +613,7 @@
       "determinate_semantic_correctness": {"classification": "independent_pass_fail_gate", "minimum_correct_fixtures": 29, "denominator_determinate_fixtures": 30, "minimum_lower_95": 0.85},
       "determinate_structural_validity": {"classification": "independent_pass_fail_gate", "minimum_valid_fixtures": 29, "denominator_determinate_fixtures": 30},
       "useful_correct_acceptance": {"classification": "independent_pass_fail_gate", "minimum_accepted_and_correct_fixtures": 27, "denominator_determinate_fixtures": 30, "minimum_lower_95": 0.75},
-      "ambiguity_recognition_and_containment": {"classification": "independent_pass_fail_gate", "contract_ref": "g-extract1.ambiguity-scoring.v3"},
+      "explicit_absence_recognition_and_containment": {"classification": "independent_pass_fail_gate", "contract_ref": "g-extract1.explicit-absence-scoring.v4"},
       "malformed_determinate": {"classification": "independent_pass_fail_gate", "maximum_affected_fixtures": 1, "denominator_determinate_fixtures": 30, "structural_gate_must_also_pass": true},
       "family_semantic_floor": {"classification": "enforced_redundant_pass_guardrail", "minimum_correct_fixtures": 4, "denominator_per_determinate_family": 5},
       "binding_correctness": {"classification": "enforced_redundant_pass_guardrail", "accepted_binding_errors_allowed": 0, "families": ["E5", "E6"]},
@@ -565,7 +696,7 @@
     "secondary_diagnostics_cannot_change_primary_verdict": true
   },
   "baseline_binding": {
-    "contract_id": "g-extract1.baseline-binding.v2",
+    "contract_id": "g-extract1.baseline-binding.v3",
     "baseline_behavior_source_commit": "0feb1b092bcdb1b934f01a3ce9611c59fcd8fa28",
     "system_text": "Return one JSON object matching the schema supplied in the fixture. Add no fields. Use only explicit facts; represent an explicitly unstated value with the schema's unknown value.",
     "existing_behavior_artifacts": [
@@ -583,7 +714,9 @@
     "structured_extraction_assembled_template_sha256": "ef41104bde4915eba10a5ff1705383cf0b3d72e613fd7af87f72f5b06d2d5579",
     "byte_invariant_suffix_starts_with": ". Copy names",
     "only_template_placeholder": "{SUBJECT}",
-    "subject_rendered_only_by": "g-extract1.operation-definitions.v2",
+    "subject_rendered_only_by": "g-extract1.operation-definitions.v3",
+    "full_prompt_assembly": "SUBJECT is periodless; replace the sole {SUBJECT} token byte-for-byte; the unchanged historical template's leading period terminates SUBJECT; no trim, normalization, added punctuation or added whitespace",
+    "double_period_before_copy_prohibited": true,
     "permitted_model_facing_variable_slots": ["catalog-rendered record_type", "catalog-rendered operation placeholder identifiers or literals", "input.text", "input.schema"],
     "input_object_exact_keys": ["schema", "text"],
     "forbidden_model_facing_content": ["free-form operation instructions", "operation synonyms outside catalog", "family names", "ambiguity labels", "historical failures", "expected output values", "worked examples", "chain-of-thought requests", "intermediate calculations", "edge-case reminders", "model-tier text", "risk labels", "gold", "gates", "outcome-derived coaching"],
@@ -615,7 +748,7 @@
     "legacy_sized_prefix_is_gating": false
   },
   "efficiency": {"phase_a_calls": 420, "phase_b_maximum_calls": 210, "maximum_total_calls": 630, "g_route4_total_calls": 1395, "maximum_call_reduction_fraction": 0.548387, "estimated_phase_a_active_hours": 2.79, "estimated_maximum_phase_b_active_hours": 1.40, "estimated_maximum_total_active_hours": 4.19, "large_tier_maximum_calls": 210, "large_tier_estimated_active_hours": 2.99, "basis": "preserved G-ROUTE4 observed means: 7.6 seconds small, 13.0 seconds mid, 51.2 seconds large"},
-  "baseline_repair_boundary": {"baseline_contract_ref": "g-extract1.baseline-binding.v2", "prompt_tuning_during_experiment": false, "repair_automatically_authorized": false, "repair_requires_new_experiment_identity": true, "repair_requires_new_development_and_scored_corpora": true, "baseline_and_repair_results_may_be_pooled": false},
+  "baseline_repair_boundary": {"baseline_contract_ref": "g-extract1.baseline-binding.v3", "prompt_tuning_during_experiment": false, "repair_automatically_authorized": false, "repair_requires_new_experiment_identity": true, "repair_requires_new_development_and_scored_corpora": true, "baseline_and_repair_results_may_be_pooled": false},
   "failure_handling": {"semantic_failure_is_valid_result": true, "malformed_output_preserved": true, "truncated_output_preserved": true, "automatic_retry": false, "automatic_repair": false, "threshold_relaxation": false, "post_contact_gold_change": false, "post_contact_fixture_replacement": false, "failed_attempts_append_only": true, "one_local_model_research_job_at_a_time": true},
   "integration": {"automatic_table_update": false, "automatic_production_routing": false, "candidate_overlay_scope": "finally qualified structured-extraction R2/R3 cells only", "non_extraction_rows_must_remain_byte_identical": true, "no_qualified_result_means_no_table_update": true, "broader_revalidation_required_if_shared_logic_changes": true, "separate_operator_authorization_required": true},
   "governance": {
@@ -645,5 +778,5 @@
   "validation_claim_scope": {"validator_claim": "deterministic structural and cross-representation consistency only", "scientific_validity_proven": false, "adversarial_review_replaced": false},
   "remaining_nonblocking_limitations": ["authored fixtures do not establish IID sampling or natural-population performance", "statistical independence cannot be proved by lineage or lexical checks", "provider does not attest internal seed and option honoring", "runtime estimates vary with load and model residency", "narrow extraction scope cannot authorize non-extraction capabilities"],
   "implementation_authorization_prerequisites": ["independent adversarial rereview with no unresolved blocker", "human and machine normative equivalence review", "separately authorized and approved corpus-authoring blueprint", "separately authorized authoring of all 168 fixtures and gold without provider contact", "independent gold signoff and adjudication", "two-implementation contamination differential and overlap reports pass", "metadata-only model/provider verification", "separate evaluator and runner implementation authorization and audit", "separate mechanical-pilot protocol and authorization", "separate execution-freeze authorization with all execution flags false", "separate explicit Phase A and conditional Phase B authorization"],
-  "final_verdict": "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_4"
+  "final_verdict": "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_5"
 }

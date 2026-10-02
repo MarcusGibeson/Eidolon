@@ -1,34 +1,58 @@
-# G-EXTRACT1 Human/Machine Equivalence Checklist v4
+# G-EXTRACT1 v5 Human/Machine Equivalence Checklist
 
-This checklist indexes normative Markdown sections to machine paths. It supports direct review; it is not a substitute for comparison or scientific/adversarial review.
+This checklist records reviewer-facing equivalence claims. `validate_design.py` checks many of them behaviorally, but the checklist and PASS report do not prove scientific validity.
 
-| Normative subject | Markdown | JSON path | Equivalence obligation |
-|---|---:|---|---|
-| Identity/status/authority | 1, 17 | `schema_version`, `experiment`, `final_verdict` | v4 identity, design-only state, all execution flags false. |
-| Historical boundary | 1 | `historical_binding` | Same closure/diagnostic/commit and immutable failed status. |
-| Scope/counts | 2, 3 | `research_question`, `scope`, `corpus`, `phases`, `efficiency` | Extraction-only R2/R3; 35 per round; A 420, B <=210. |
-| Placeholder serialization | 4 | `operation_definition_contract.placeholder_type_system`, `.operand_object`, `.operation_node_object` | Same kinds, regexes, canonical literal/string bytes, and exact object shapes. |
-| Operation rendering | 4 | `operation_definition_contract.catalog`, `.sum_operands`, `.rendering_test_vectors` | Same templates, kinds, graph/order rules, SUM bounds, and nine expected SUBJECT strings. |
-| Historical absence | 4, 7 | operation/ambiguity historical fields | Exact schema, sentinel, sentence, and conditional inclusion. |
-| Fixture/fact representation | 5 | `family_assignment_contract.fixture_representation`, `.fact_record_contract` | Same typed records, source rendering, segmentation, and entity indexing. |
-| Family metadata/predicates | 5 | `family_assignment_contract.metadata_schema`, `.priority_first_match` | Same derivations and E7->E5->E4->E1->E2->E3->E6 precedence. |
-| Secondary features/C3 | 5, 6 | `.secondary_feature_derivations`, `composed_feature_requirements` | Same mechanical tags and wrapped numeric-to-copy C3 graph. |
-| Ambiguity parser/classifier | 7 | `ambiguity_contract` | Same operational/semantic split, duplicate rule, ten outcomes, vectors, and A/B gates. |
-| Exact values | 8 | `exact_value_contract` | Same type, JSON, date/time, duplicate, and false-clean bridge rules. |
-| Similarity/tokenizer | 9 | `contamination_contract.text_normalization`, `.tokenizer`, `.ngram` | Same normalization, precedence, regex, vectors, 5-grams, and Jaccard. |
-| Fingerprint/layout | 9 | `.fingerprint`, `.source_fact_layout_algorithm` | Same six components, exact derivations/serialization, six layouts, and rejection vectors. |
-| Contamination independence | 9 | `.independent_implementation_contract`, pairwise/collision fields | Same all-pairs scope, no shared normative code, byte differential, and replay limits. |
-| Gold/adjudication | 10 | `gold_adjudication_contract` | Same independent review, precontact resolution/freeze, and post-contact invalidation. |
-| Reserve activation | 10 | `reserve_activation_contract` | Same 28 slots, IDs, ordered primaries, profiles, single-claim algorithm, and rechecks. |
-| Gates/confidence | 11 | `cell_gates`, `confidence_contract` | Same denominators, thresholds, guardrails, and benchmark-only interpretation. |
-| Cell transitions | 12 | `cell_state_machine` | Same machine-selected B entrants, no pooling/reentry. |
-| Integrity events | 13 | `integrity_event_contract` | Same finite blocker/invalid/incomplete/abort catalogs and event vectors. |
-| Primary verdict | 13 | `result_state_machine` | Same first-match predicates and evaluated structured fact vectors. |
-| Baseline artifacts | 14 | `baseline_binding` | Same exact text/template, paths, SHA-256, blobs, and v2 operation renderer. |
-| Models/seeds | 15 | `model_provider`, `sampling` | Same provider/models/hashes/configuration and seed formula. |
-| Governance | 16, 17 | `failure_handling`, `governance`, prerequisites | Same preservation and separate-authority boundaries. |
-| Validation claim | 17 | `validation_claim_scope` | Structural/cross-representation consistency only; no scientific-validity claim. |
+| Normative area | Markdown | JSON | Deterministic check |
+|---|---:|---:|---:|
+| Design identity and authority flags | yes | yes | yes |
+| Historical G-ROUTE4 bindings | yes | yes | digest checked |
+| Scope, models, phases, and call counts | yes | yes | yes |
+| Periodless SUBJECT and full prompt substitution | yes | yes | full bytes + SHA |
+| Placeholder types and canonical literals | yes | yes | render/reject vectors |
+| Two-node dependency and operation ordering | yes | yes | render vectors |
+| SUM 2/3/4 operands | yes | yes | behavioral vectors |
+| COUNT removal | yes | yes | catalog assertion |
+| Historical absence instruction | yes | yes | source artifact checked |
+| Canonical output-field schema | yes | yes | exact key/role vectors |
+| SOURCE_COPY and EXACT_COPY distinction | yes | yes | role derivation vectors |
+| Typed source facts and sentence rendering | yes | yes | behavioral vectors |
+| String/distractor coaching exclusion | yes | yes | positive/negative vectors |
+| Metadata-derived family precedence | yes | yes | adversarial family vectors |
+| Derived secondary features | yes | yes | adversarial feature vectors |
+| C1-C4 composed rows | yes | yes | shape/count checks |
+| E7 zero-node graph restrictions | yes | yes | valid/invalid vectors |
+| Explicit-partial-absence outcome precedence | yes | yes | classifier vectors |
+| Duplicate-aware evaluator vs historical parser | yes | yes | duplicate vectors |
+| Accepted truncation false-clean rule | yes | yes | accepted/rejected vectors |
+| Exact-value comparator semantics | yes | yes | contract assertions |
+| Similarity normalization/tokenizer/Jaccard | yes | yes | token vectors and constants |
+| End-to-end canonical fingerprints | yes | yes | four fixture vectors |
+| Exact whole-answer reuse | yes | yes | canonical comparison vectors |
+| Entity/identifier reuse | yes | yes | atom intersection vectors |
+| Date-number tuple extraction/reuse | yes | yes | fixture extraction + order vectors |
+| Six pairwise contamination scopes | yes | yes | exact set check |
+| Independent contamination implementations | yes | yes | contract checks |
+| 28 family-slot reserves | yes | yes | count/mapping vectors |
+| Phase A repeat reduction | yes | yes | complete Boolean truth table |
+| Phase A/B gates and confidence values | yes | yes | arithmetic checks |
+| Cell carry-forward and no pooling | yes | yes | state assertions |
+| Integrity event catalog | yes | yes | catalog/vector checks |
+| Primary verdict precedence | yes | yes | terminal vectors |
+| Baseline artifacts, paths, hashes, blobs | yes | yes | live file verification |
+| Model blobs and generation configuration | yes | yes | identity checks |
+| Seed formula | yes | yes | exact string check |
+| Gold/adjudication freeze | yes | yes | governance assertions |
+| Separate future authorization boundaries | yes | yes | all flags checked |
+| Zero provider calls/fixtures/reserves | yes | yes | checked |
+| Belief effects none | yes | yes | checked |
 
-## Mechanical boundary
+## Deliberate representation choices
 
-`validate_design.py` executes the frozen vectors and verifies exact structured constants and historical bindings. It does not establish corpus representativeness, future implementation correctness, provider behavior, or scientific validity. Those remain separately governed review, authoring, implementation, pilot, and freeze obligations.
+- `ambiguity_contract` remains the JSON container name for compatibility; its normative ID and construct are `g-extract1.explicit-absence-scoring.v4` and explicit partial absence.
+- Machine-only vector payloads are executable examples of prose rules, not extra scientific rules.
+- SHA-256 and Git blob bindings are enumerated in JSON and described as normative in Markdown; duplicating every digest in prose is unnecessary and risks transcription drift.
+- The validation report is generated evidence and is not co-normative.
+
+## Blueprint boundary
+
+A later blueprint may allocate IDs, instantiate already-frozen templates and quotas, define files, create schedules, and prepare implementation checklists. It may not invent prompt wording, output bindings, family tags, equivalence semantics, contamination rules, reserve choice, gate reduction, integrity events, or governance authority.

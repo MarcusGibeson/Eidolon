@@ -1,363 +1,196 @@
-# G-EXTRACT1 Design Candidate v4
+# G-EXTRACT1 Design Candidate v5
 
-Status: `READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_4`
+Status: `READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_5`
 
-This is a design candidate only. It authorizes no blueprint, fixture or reserve authoring, implementation, provider contact, pilot, freeze, Phase A, Phase B, routing update, or belief change.
+This document and `DESIGN_CANDIDATE.json` are co-normative. The machine contract is `g-extract1.design-candidate.v5`. This checkpoint authorizes design rereview only. It authorizes no blueprint, fixture, implementation, pilot, freeze, or execution work.
 
-## 1. Identity and historical boundary
+## 1. Historical boundary and question
 
-- Experiment: `G-EXTRACT1`, Prospective Structured-Extraction Requalification and Generalization Test.
-- Design contract: `g-extract1.design-candidate.v4`.
-- G-ROUTE4 remains closed `FAILED`; this design neither reopens nor rescales it.
-- Closure SHA-256: `d992a169a2be293909f0fe0f1b39720656f40a09dc4f6b4e9c53449110cef8be`.
-- Unsafe-stop diagnostic SHA-256: `461a85368a6cbbd39429bebbae883c0b17be614db52e343150b23051041b4868`.
-- Historical evidence commit: `c95d2d1a4177c0f6a33bb8ffb772dfc19c272646`.
-- Historical findings define prospective failure classes only. Historical prompts, answers, fixtures, and gold are prohibited as scored or reserve items.
-- Belief effects are `none`.
+G-ROUTE4 remains CLOSED FAILED. Its closure and unsafe-stop diagnostic are immutable and are used only to define failure families. G-EXTRACT1 asks whether a larger, prospectively stratified structured-extraction qualification test can identify R2/R3 model-tier cells that remain safe and useful on separately authored validation fixtures under the byte-bound historical prompt behavior.
 
-## 2. Research question and causal limit
+The design does not identify prompt wording, model weights, provider internals, or sampling as a unique cause. It first measures the existing baseline. Prompt repair requires a different experiment identity and fresh corpora.
 
-Under the byte-bound G-ROUTE4 extraction system prompt, renderer, normalization, and operational validator, can a larger family-stratified qualification test identify R2/R3 model-tier cells that retain safe and useful behavior on separately authored validation fixtures without false-clean extraction errors?
+Scope is structured extraction only, R2 and R3, for `qwen2.5:7b`, `qwen3:14b`, and `qwen3.8:27b`. Grounded research, conversation, planning, synthesis, coding, timezone conversion, production routing, and prompt repair are excluded.
 
-This tests whether stronger prospective sampling and coverage would have exposed observed failure classes. It does not separately identify prompt wording, model weights, provider internals, or stochastic sampling as the cause.
+## 2. Corpus and phases
 
-Hypotheses are descriptive and prospective:
+Each phase and risk round contains seven primary families with five fixtures each: 35 fixtures, comprising 30 determinate fixtures and five E7 explicit-partial-absence fixtures. Phase A has 70 fixtures, two repeats, and three models: 420 calls. Phase B has a separately authored 70 fixtures and one observation per eligible cell: zero to 210 calls. The maximum is 630 calls, a 54.8387% reduction from 1,395 G-ROUTE4 calls.
 
-1. At least one previously qualified extraction cell will fail the larger Phase A gate.
-2. Date/time and numeric/threshold families will produce more errors than entity/binding families.
-3. Some wrong answers will recur across both Phase A repeats.
-4. Qualification need not be monotonic with parameter count.
-5. A Phase A-qualified cell must independently pass Phase B.
+All 140 scored fixtures, 28 reserves, all gold, gates, schedules, and Phase B material must freeze before the first provider call. A and B never pool. Only an A-qualified cell may enter B.
 
-## 3. Scope and phases
+## 3. Canonical operation and prompt contract
 
-Only structured extraction is in scope. Candidate cells are `R2` and `R3` crossed with small, mid, and large tiers: six cells total. Grounded research, ordinary conversation, planning, synthesis, coding, R1 promotion, R4 routing, timezone conversion, production routing, and prompt repair are excluded.
+The operation contract is `g-extract1.operation-definitions.v3`. SUBJECT contains no terminal period. Its opening fragment is exactly `Extract the {record_type} record`; operation and absence fragments are joined by exactly `. `. The unchanged historical template begins its invariant suffix with `. Copy names`, so replacing its sole `{SUBJECT}` token terminates SUBJECT exactly once. No trimming, normalization, punctuation insertion, or whitespace insertion occurs during substitution.
 
-Each phase contains 35 distinct fixtures per round: five in each of seven primary families. Each round has 30 determinate fixtures and five E7 ambiguity fixtures.
+Zero operation nodes are legal only for E7. Otherwise there is one node or one connected two-node chain. In a two-node chain, node two consumes node one's target and is the unique sink. Stable topological order applies, then unsigned UTF-8 target order. SUM has two through four operands in immutable array order. Two operands render `A and B`; three or four use comma-space and `, and ` before the last operand.
 
-| Phase | Purpose | Fixtures | Repeats | Models | Maximum calls |
-|---|---|---:|---:|---:|---:|
-| A | Prospective requalification | 70 | 2 | 3 | 420 |
-| B | Independent fresh-fixture validation | 70 | 1 | only Phase A entrants | 210 |
+### 3.1 Placeholder serialization
 
-All 140 scored fixtures and 28 family-slot reserves, all gold, both schedules, and all gates must be frozen before first provider contact. Phase A and Phase B evidence is never pooled. Phase B is zero calls when no Phase A cell qualifies.
+- `field_identifier`, `derived_field_identifier`, and `collection_identifier`: `^[a-z][a-z0-9_]{0,47}$`, exact unquoted ASCII.
+- `integer_literal`: `^(?:0|-[1-9][0-9]*|[1-9][0-9]*)$`; no plus sign, leading zero, or negative zero.
+- `decimal_literal`: metadata must already be canonical. Parse exact decimal, render fixed point, remove trailing fractional zeros while retaining one fractional digit, and render every signed zero as `0.0`. Thus `5.0`, `0.5`, and `-0.5` are valid metadata; `5.00`, `0.50`, `-0.50`, `-0.0`, and exponent notation are authoring errors. This metadata rule is distinct from semantic equivalence of provider JSON numbers.
+- `date_literal`: a valid proleptic-Gregorian `YYYY-MM-DD`.
+- `time_literal`: valid 24-hour `HH:MM`.
+- `string_literal` and `entity_selector_literal`: printable ASCII, rendered with Python `json.dumps(value, ensure_ascii=True, separators=(',', ':'))`.
+- `enum_literal`: `^[a-z][a-z0-9_]{0,47}$`, exact unquoted ASCII.
 
-## 4. Canonical operation-definition catalog
+COUNT is not authorable. No collection source model is needed by the diagnosed scope.
 
-Contract: `g-extract1.operation-definitions.v2`.
+### 3.2 Finite operation catalog
 
-Every scored or reserve fixture renders the model-facing subject from this finite catalog. Authors may vary source facts, field identifiers, literals, record type, and schema, but not instructional wording or helpfulness.
+The exact templates are:
 
-Field, derived-field, and collection identifiers match `^[a-z][a-z0-9_]{0,47}$`, remain lowercase ASCII, and render unquoted without normalization. Enum literals use the same form. Record types match `^[a-z]+(?: [a-z]+){0,3}$`. The opening sentence is exactly:
+- ADD: `{target} is {left} plus {right}`
+- SUBTRACT: `{target} is {minuend} minus {subtrahend}`
+- MULTIPLY: `{target} is {left} times {right}`
+- DIVIDE: `{target} is {dividend} divided by {divisor}`
+- SUM: `{target} is the sum of {operands}`
+- ELAPSED_MINUTES: `{target} is the elapsed minutes from {start} to {end}`
+- CALENDAR_DAY_OFFSET: `{target} is {date} plus {days} calendar days`
+- CLOCK_MINUTE_OFFSET: `{target} is {time} plus {minutes} minutes`
+- GT: `{target} is true when {left} is greater than {right}`
+- GTE: `{target} is true when {left} is greater than or equal to {right}`
+- LT: `{target} is true when {left} is less than {right}`
+- LTE: `{target} is true when {left} is less than or equal to {right}`
+- EQ: `{target} is true when {left} is equal to {right}`
+- ENTITY_FIELD_BIND: `{target} is {source_field} for the entity whose {selector_field} equals {selector_value}`
+- EXACT_COPY: `{target} is copied exactly from {source_field}`
 
-`Extract the {record_type} record.`
+UNIT_CONVERSION uses only the six cataloged conversions and their exact templates. Its source is a `field_identifier`. Authors cannot add synonyms, hints, intermediate calculations, worked examples, edge reminders, or outcome-derived coaching. The same operation ID has byte-identical wording in A and B.
 
-A fixture has one operation node or one connected two-node chain. In a two-node graph, the second node consumes the first target and is the unique sink; independent nodes are prohibited. Each node renders one sentence in stable topological order, then unsigned UTF-8 target-field order.
+The historical absence fragment is exactly `Use 'not_provided' when the text says a value has not been provided`, inserted once iff a schema field has type `provided|not_provided`. E7 introduces no new sentinel or instruction.
 
-Every non-target placeholder is an exact `{kind,value}` object. Ordinary nodes have exact keys `id,target,arguments`; `UNIT_CONVERSION` alone also requires `conversion_id`. Canonical kinds and bytes are:
+Five full-prompt vectors in the machine contract bind SUBJECT bytes, final prompt bytes, and SHA-256 for a one-node prompt, a two-node prompt, E7, a quoted selector, and SUM. `validate_design.py` reconstructs all five and rejects `.. Copy names`.
 
-| Kind | Canonical UTF-8 rendering |
-|---|---|
-| `field_identifier`, `derived_field_identifier`, `collection_identifier` | exact matching identifier, unquoted |
-| `integer_literal` | `0`, positive digits without a leading zero, or `-` plus a nonzero digit sequence; plus signs, leading zeroes, and negative zero are prohibited |
-| `decimal_literal` | plain non-exponent decimal; no leading integer zero except `0`; trailing fractional zeroes removed while retaining one fractional digit; negative zero becomes `0.0` |
-| `date_literal` | exact valid proleptic-Gregorian `YYYY-MM-DD` |
-| `time_literal` | exact valid 24-hour `HH:MM` |
-| `string_literal`, `entity_selector_literal` | printable ASCII source value rendered exactly by Python `json.dumps(value, ensure_ascii=True, separators=(',', ':'))`; double quotes are mandatory and quote/backslash use JSON escaping |
-| `enum_literal` | exact lowercase identifier, unquoted |
+## 4. Canonical fixture and output binding
 
-`SUM` accepts two through four operands of identifier, derived-identifier, integer, or decimal kind. Two render `A and B`; three or four use comma-space and `, and ` before the final item. Array order is immutable. `UNIT_CONVERSION.source` is exactly a source `field_identifier`. `ENTITY_FIELD_BIND.selector_value` is exactly an `entity_selector_literal`.
+Every output field has exactly these keys:
 
-Allowed argument kinds are also finite: arithmetic binary operands use field, derived-field, integer, or decimal; elapsed endpoints use field, derived-field, or time; calendar date uses field, derived-field, or date while days uses field, derived-field, or integer; clock time uses field, derived-field, or time while minutes uses field, derived-field, or integer; ordering comparisons use field, derived-field, integer, decimal, date, or time; equality additionally permits enum; count uses collection; entity binding uses source/selector field identifiers plus one quoted selector; exact copy uses source or derived field.
+`name`, `schema_type`, `required`, `binding_kind`, `source_field`, `producer_target`, `label_removal`, `absence_capable`.
 
-| Operation ID | Exact model-facing sentence |
-|---|---|
-| `ADD` | `{target} is {left} plus {right}.` |
-| `SUBTRACT` | `{target} is {minuend} minus {subtrahend}.` |
-| `MULTIPLY` | `{target} is {left} times {right}.` |
-| `DIVIDE` | `{target} is {dividend} divided by {divisor}.` |
-| `SUM` | `{target} is the sum of {operands}.` |
-| `COUNT` | `{target} is the number of entries in {collection}.` |
-| `ELAPSED_MINUTES` | `{target} is the elapsed minutes from {start} to {end}.` |
-| `CALENDAR_DAY_OFFSET` | `{target} is {date} plus {days} calendar days.` |
-| `CLOCK_MINUTE_OFFSET` | `{target} is {time} plus {minutes} minutes.` |
-| `GT` | `{target} is true when {left} is greater than {right}.` |
-| `GTE` | `{target} is true when {left} is greater than or equal to {right}.` |
-| `LT` | `{target} is true when {left} is less than {right}.` |
-| `LTE` | `{target} is true when {left} is less than or equal to {right}.` |
-| `EQ` | `{target} is true when {left} is equal to {right}.` |
-| `ENTITY_FIELD_BIND` | `{target} is {source_field} for the entity whose {selector_field} equals {selector_value}.` |
-| `EXACT_COPY` | `{target} is copied exactly from {source_field}.` |
+`binding_kind` is exactly one of `SOURCE_COPY`, `OPERATION_TARGET`, or `EXPLICIT_ABSENCE`.
 
-`UNIT_CONVERSION` selects exactly one of these frozen sentences:
+- `SOURCE_COPY`: `source_field` names exactly one non-entity VALUE fact; `producer_target` is null; `absence_capable` is false.
+- `OPERATION_TARGET`: `source_field` is null; `producer_target` names exactly one operation target; `absence_capable` is false.
+- `EXPLICIT_ABSENCE`: `source_field` equals the output name and exactly one EXPLICIT_ABSENCE fact; `producer_target` is null; schema is `provided|not_provided`; gold is `not_provided`; `absence_capable` is true.
 
-| Conversion ID | Formula | Exact model-facing sentence |
-|---|---|---|
-| `HOURS_TO_MINUTES` | `source * 60` | `{target} is {source} multiplied by 60, expressed in minutes.` |
-| `MINUTES_TO_HOURS` | `source / 60` | `{target} is {source} divided by 60, expressed in hours.` |
-| `KILOGRAMS_TO_GRAMS` | `source * 1000` | `{target} is {source} multiplied by 1000, expressed in grams.` |
-| `GRAMS_TO_KILOGRAMS` | `source / 1000` | `{target} is {source} divided by 1000, expressed in kilograms.` |
-| `DOLLARS_TO_CENTS` | `source * 100` | `{target} is {source} multiplied by 100, expressed in cents.` |
-| `CENTS_TO_DOLLARS` | `source / 100` | `{target} is {source} divided by 100, expressed in dollars.` |
+Output roles are exactly `source_copy`, `derived_number`, `derived_boolean`, `derived_date`, `derived_time`, `entity_bound_value`, and `absence_sentinel`. EXACT_COPY is a producer and secondary feature, not an output-role synonym. An EXACT_COPY from a source field has role `source_copy`; an EXACT_COPY of a derived target inherits its upstream role.
 
-The historical absence sentence is exactly `Use 'not_provided' when the text says a value has not been provided.` It appears exactly once if and only if a schema field has type `provided|not_provided`. The only absence sentinel is `not_provided`; no new sentinel is introduced.
+E7 therefore needs no fake operations: it contains exactly one EXPLICIT_ABSENCE output plus at least two supported SOURCE_COPY outputs.
 
-Assembly order is opening, operation sentences, historical absence sentence when required, then the frozen common suffix. Phase A and B use byte-identical wording for the same operation ID. Free-form operation instructions, synonyms outside this catalog, explanatory sentences, intermediate calculations, edge-case reminders, examples, expected values, family names, historical-failure references, and outcome-derived coaching are prohibited.
+## 5. Typed source facts and coaching exclusion
 
-The machine contract freezes nine rendering vectors: negative integer, decimal, date, time, two-operand SUM, three-operand SUM, a quoted selector containing a space, a selector containing escaped quotes, and a reversed-input two-node dependency. A metadata object is valid only if the deterministic renderer yields the exact frozen SUBJECT bytes.
+Each source fact has exactly `template_id`, `field_identifier`, `value`, and `entity_selector_value`. VALUE renders `{field_identifier} is {value}.` or `For {entity_selector_literal}, {field_identifier} is {value}.`; EXPLICIT_ABSENCE renders `{field_identifier} was not provided.` or its entity-prefixed form. One record is one sentence, sentence index is record index, sentences join with one ASCII space, and no heuristic sentence segmentation is used.
 
-## 5. Metadata-derived primary families
+String and entity values are facts, not a back door for instructions. After ASCII lowercase and maximal non-`[a-z0-9_]` replacement, the frozen forbidden token and phrase lists reject operation language, calculation instructions, output/JSON/schema guidance, threshold language, expected answers, gold, gates, families, and risk labels. Violations are `AUTHORING_ERROR`.
 
-Contract: `g-extract1.family-assignment.v2`.
+## 6. Families and composed rows
 
-The canonical fixture representation contains typed operation nodes; output fields sorted by unsigned UTF-8 field name; canonical gold values; entities sorted by canonical selector-literal bytes; ordered typed source-fact records; and sorted required-output names. No family or feature tag is author-selected.
+The family contract is `g-extract1.family-assignment.v3`. All metadata are derived from the canonical fixture; authors do not select tags. First-match precedence is E7, E5, E4, E1, E2, E3, E6:
 
-Each source-fact record has exactly `template_id`, `field_identifier`, `value`, and `entity_selector_value`. `VALUE` renders either `{field} is {value}.` or `For {quoted entity}, {field} is {value}.`; `EXPLICIT_ABSENCE` renders the corresponding `was not provided.` sentence. One record is one sentence, records join with one ASCII space, and rendered source text contains no CR/LF/TAB. Sentence index is record index; no NLP segmentation occurs. Entities receive zero-based indices after unsigned-UTF-8 sorting of unique selector literals.
+- E7: one unresolved required `not_provided` field and sentinel available; its zero-node graph contract must also pass.
+- E5: mechanically required multi-entity disambiguation.
+- E4: terminal GT/GTE/LT/LTE/EQ.
+- E1: terminal CALENDAR_DAY_OFFSET.
+- E2: terminal CLOCK_MINUTE_OFFSET or ELAPSED_MINUTES.
+- E3: terminal numeric operation, or numeric operation followed by EXACT_COPY.
+- E6: terminal ENTITY_FIELD_BIND or EXACT_COPY.
 
-Derived metadata is exact:
+Derived metadata include terminal/source operations, output roles, comparison/temporal/numeric operation, entity count and selector role, source-fact sequence, and exact-copy-only. Secondary features are derived for calendar date, clock time, elapsed time, aggregation, unit conversion, threshold, equality boundary, entity binding, field binding, exact copy, multistep, and explicit partial absence.
 
-- unresolved count is the count of required `provided|not_provided` fields whose gold is `not_provided` and which have a matching explicit-absence record; a partial match is an authoring error;
-- sentinel availability follows required schema types; entity count is sorted entity-list length; entity disambiguation is true exactly when at least two entities have source facts for the bound source field and `ENTITY_FIELD_BIND` selects one unique selector;
-- terminal operation is the unique graph sink; source operations are sorted unique non-sink IDs;
-- threshold, temporal, and aggregation values are the unique operation of their respective finite sets or `NONE`; more than one is an authoring error;
-- selector role comes from the selected entity's frozen `IDENTIFIER`, `ATTRIBUTE`, or `EVENT_ROLE` field;
-- source-fact role is explicit absence first, then direct binding/copy target, then any operation-referenced support, otherwise distractor;
-- direct-copy-only means every node is `EXACT_COPY`.
+E7 permits zero operation nodes only. It prohibits temporal, comparison, numeric, entity-binding, and downstream operations, so no unresolved operand or invented gold can enter a boundary or temporal fingerprint.
 
-Output role is mechanically mapped: comparison to Boolean; calendar to date; clock to time; arithmetic, unit conversion, count, sum, and elapsed minutes to number; entity bind to entity-bound; source-field exact copy to direct copy; and explicit missing gold to absence sentinel. An `EXACT_COPY` wrapping the sole upstream derived target retains the upstream derived role.
+Every phase/round has eight distinct composed fixtures: two C1 numeric-to-comparison, two C2 temporal-to-comparison, two C3 numeric-to-EXACT_COPY, and two C4 entity-to-field binding. One fixture cannot satisfy multiple rows. C3 is exactly a numeric node followed by an EXACT_COPY sink consuming the first target.
 
-The primary family is the first matching predicate:
+## 7. E7 explicit partial absence
 
-| Priority | Family | Mechanical predicate |
-|---:|---|---|
-| 1 | E7 | `unresolved_required_field_count == 1` and `unknown_sentinel_available == true` |
-| 2 | E5 | `entity_disambiguation_required == true` |
-| 3 | E4 | terminal operation in `GT,GTE,LT,LTE,EQ` |
-| 4 | E1 | terminal operation is `CALENDAR_DAY_OFFSET` |
-| 5 | E2 | terminal operation in `CLOCK_MINUTE_OFFSET,ELAPSED_MINUTES` |
-| 6 | E3 | terminal numeric operation, or terminal `EXACT_COPY` whose sole source operation is numeric |
-| 7 | E6 | terminal operation in `ENTITY_FIELD_BIND,EXACT_COPY` |
+The scoring contract is `g-extract1.explicit-absence-scoring.v4`. E7 tests explicit partial absence / not-provided handling, not broad ambiguity. It separately reports semantic recognition and operational containment.
 
-No match is an authoring error. Multiple matches use first-match priority. Difficulty, importance, author intent, and a supposed principal challenge are not inputs. Secondary tags are computed only as follows: calendar/clock/elapsed from their operation IDs; aggregation from a numeric operation; unit conversion, threshold, entity binding, and exact copy from presence of their operation IDs; equality boundary from `EQ` or exact gold boundary `EQUAL`; field binding from sink `ENTITY_FIELD_BIND` or `EXACT_COPY`; multi-step from two nodes; and ambiguity from unresolved-count one plus sentinel availability. Five adversarial derivation vectors freeze entity+threshold, temporal+threshold, aggregation+copy, ambiguity+entity, and copy+entity-selector precedence.
+The first-match outcomes are infrastructure missing, provider truncated, empty, JSON parse failure, non-object, operational-schema invalid, semantic-schema invalid, exact valid not-provided, exact valid unsupported value, and exact valid supported-field error. Prose-only output is JSON parse failure; no refusal or evasion intent is inferred.
 
-## 6. Composed-feature coverage
+The historical operational parser remains ordinary `json.loads`. The evaluator separately uses `object_pairs_hook` plus lexical number callbacks. Duplicate keys make semantic schema invalid. If operationally accepted, any semantic-schema invalidity is false-clean. A duplicate-key object can never receive exact-valid-not-provided credit.
 
-Per phase and round, eight distinct fixtures are reserved for four non-overlapping quota rows, two fixtures each:
+Truncation keeps primary outcome `provider_truncated` and earns no semantic credit. Truncated plus operationally accepted is false-clean and not safely contained. Truncated plus rejected is not false-clean and is safely contained. Malformed containment never qualifies E7.
 
-1. C1: E4 terminal comparison fed by `ADD,SUBTRACT,MULTIPLY,DIVIDE,SUM,COUNT`, or `UNIT_CONVERSION`.
-2. C2: E4 terminal comparison fed by calendar or clock/elapsed operation, with at least one calendar and one clock/elapsed fixture.
-3. C3: exactly two nodes: a numeric operation followed by sink `EXACT_COPY`, whose derived-field source equals the first target; this yields E3 through the wrapped-numeric predicate and mechanically supplies aggregation, field-binding, exact-copy, and multi-step tags.
-4. C4: E5 with terminal `ENTITY_FIELD_BIND` and field-binding tag.
+Phase A requires five distinct E7 fixtures and 10/10 semantically correct, safely contained observations. Phase B requires five fixtures and 5/5. Guessed unsupported values, supported-field errors, malformed output, omissions, nulls, extras, wrong types, and duplicate keys fail recognition.
 
-These fixtures count toward their primary-family quotas. One fixture cannot satisfy multiple composed rows. The requirement is compatible with 35 fixtures because E4 supplies four of its five fixtures, E3 supplies two of five, E5 supplies two of five, and the rows are distinct.
+## 8. Exact-value semantics
 
-## 7. Ambiguity and nonacceptance
+The evaluator contract is `g-extract1.exact-value-comparator.v1`; it does not alter the model-facing baseline.
 
-Contract: `g-extract1.ambiguity-scoring.v3`.
+- Integer output requires a lexical JSON integer. `5.0` and `5e0` fail an integer schema; `-0` equals zero semantically.
+- Number output uses exact decimals, so `5`, `5.0`, `5.00`, and `5e0` are semantically equal.
+- Unit conversion is limited to the finite operation catalog; unit-bearing strings remain exact and omitted units fail.
+- Strings/entities are exact in case, whitespace, punctuation, and Unicode scalar sequence except a field explicitly frozen with label removal may remove one leading `the`, `Order`, or `Vendor` plus one space.
+- Object key order and insignificant JSON whitespace are ignored. Duplicate, extra, omitted, or null fields fail. Arrays and nested values are out of scope.
+- Dates are exact valid zero-padded Gregorian `YYYY-MM-DD`; calendar offset uses source date as day zero.
+- Times are exact `HH:MM`, with forward elapsed interpretation and explicit midnight rollover.
+- Threshold operators have literal mathematical meaning, including equality boundaries.
 
-E7 measures semantic ambiguity recognition and operational containment separately. Each E7 fixture has exactly one unresolved required field, at least two supported fields, exact unresolved schema type `provided|not_provided`, and source text explicitly saying the value was not provided. No family-specific instruction is permitted.
+Operational acceptance plus any semantic invalidity is false-clean.
 
-Operational parsing remains the historical ordinary `json.loads` path. Evaluation separately uses `json.loads` with an `object_pairs_hook` that retains ordered pairs and records a repeated decoded key at every object scope; lexical integer/float callbacks preserve numeric tokens. The classifier uses only observable infrastructure/truncation/byte, operational parse/schema/acceptance, semantic parse/schema/value, duplicate-key, sentinel, and supported-field fields. First match wins:
+## 9. Contamination and exact reuse
 
-| Priority | Outcome | Mechanical condition | Semantic credit | Safe containment |
-|---:|---|---|---|---|
-| 1 | `infrastructure_missing` | infrastructure event | no | unknown; observation is insufficient |
-| 2 | `provider_truncated` | provider marks truncation | no | exactly when not operationally accepted |
-| 3 | `empty_output` | zero raw bytes | no | yes |
-| 4 | `json_parse_failure` | JSON parse fails | no | yes |
-| 5 | `non_object_root` | parsed root is not object | no | yes |
-| 6 | `operational_schema_invalid` | operational schema invalid | no | yes |
-| 7 | `semantic_schema_invalid` | operational schema passed but duplicate-aware semantic schema failed | no | yes only if not operationally accepted; operational acceptance is false-clean |
-| 8 | `exact_valid_not_provided` | semantic schema/value valid, sentinel exact, and every supported field exact | yes | yes |
-| 9 | `exact_valid_unsupported_value` | unresolved value is not exact sentinel | no | no; false-clean |
-| 10 | `exact_valid_supported_field_error` | semantic value invalid or supported field differs from gold | no | no; false-clean |
+The contamination contract is `g-extract1.contamination.v3`. Similarity payload is input text, LF, then schema lines sorted by unsigned UTF-8 field name. Historical system/prompt boilerplate is excluded by construction. Normalize NFC, default casefold, CRLF/CR to LF, collapse Unicode whitespace, and preserve punctuation for tokenization.
 
-Priority 9 precedes 10 when both value defects exist. After priorities 1-7, Boolean semantic-value, sentinel, and supported-field tests make priorities 8-10 exhaustive. Prose-only output is `json_parse_failure`; no refusal intent is inferred. Omission, null, wrong operational type, wrong sentinel, or extra field is operationally invalid. Any duplicate key is semantically invalid even when the unchanged operational parser accepts its last value; such operational acceptance is false-clean and can never receive `exact_valid_not_provided`. Omitting only the ambiguous field or returning only supported fields gets no semantic credit. Five frozen vectors cover duplicate unresolved/supported keys and the exact nonduplicate object.
+Tokenizer precedence is whole date, whole time, context-valid signed number, identifier. The exact Python ASCII regex is frozen in the machine contract. It intentionally keeps `2026-10-01`, `23:45`, `-5`, and `5e-3` whole; `5-3` becomes `5`, `3`. Five-token contiguous n-grams are deduplicated sets. Jaccard must be strictly below 0.20; empty/empty is 1.0 and one-empty is 0.0.
 
-Phase A requires five distinct E7 fixtures and all 10 repeat observations to be `exact_valid_not_provided` and safely contained. Phase B requires five distinct E7 fixtures and all 5 observations. Malformed, truncated, empty, prose, or schema-invalid output never earns recognition credit.
+Fingerprint is a compact JSON array of operation graph, output schema roles, entity role graph, boundary relation, temporal pattern, and source fact layout. Every component is derived from the canonical fixture; end-to-end vectors include numeric, entity, temporal-comparison, and E7 fixtures.
 
-## 8. Exact-value and representation semantics
+Exact whole-answer reuse uses sorted `[field_name,schema_type,[value_tag,canonical_value]]` rows and prohibits only whole-answer equality. Entity atoms are entity selector values. Identifier atoms are VALUE facts whose field name is exactly `id` or ends `_id`, `_code`, `_identifier`, or `_reference`; ordinary field names and generic labels are excluded. Any entity/identifier atom overlap is prohibited.
 
-Contract: `g-extract1.exact-value-comparator.v1`. The operational validator stays unchanged; operational acceptance plus semantic failure is false-clean.
+The date-number tuple preserves duplicates and ordered typed atoms from source facts, then operation arguments, then gold fields. It is compared only when at least one temporal and one numeric atom occur. Exact eligible tuple equality is prohibited.
 
-- Integer fields require a lexical JSON integer: `5` passes; `5.0` and `5e0` fail; `-0` equals `0`.
-- Number fields compare exact decimal value: `5`, `5.0`, `5.00`, and `5e0` are equivalent. No binary-float tolerance is used.
-- Only cataloged unit conversions are allowed. Unit-bearing strings are exact; omission fails.
-- Strings/entities compare exact Unicode scalars including case, spacing, and punctuation. There is no trimming, aliasing, abbreviation, or case fold.
-- Only exact leading labels `the`, `Order`, or `Vendor`, followed by one space, may be removed when the frozen schema calls for label removal.
-- JSON object key order and insignificant JSON whitespace are ignored recursively. Duplicate, extra, omitted, or null fields are invalid.
-- Arrays and nested values are prohibited in scored baseline schemas.
-- Dates are exact zero-padded `YYYY-MM-DD`, valid in the proleptic Gregorian calendar; start date is day zero for plus-N-days.
-- Times are exact zero-padded 24-hour `HH:MM`, with forward elapsed-time interpretation and explicit midnight rollover.
-- Timezones are out of scope. Thresholds mean literal `>`, `>=`, `<`, `<=`, and equality.
-- Semantic parsing uses duplicate-preserving `object_pairs_hook`, exact lexical numeric callbacks, and treats invalid JSON leading zeroes as malformed. A duplicate makes semantic schema validity false without changing historical operational parsing.
+Each exact-reuse rule applies explicitly to historical/new, A/A, A/B, B/B, scored/reserve, and reserve/reserve comparisons. All historical/new and A/B fingerprint collisions are prohibited. Near replay is five of six fingerprint components plus Jaccard at least 0.12. Same operation classes remain allowed. Within one phase/round/family, a fingerprint may occur at most twice only below 0.12 Jaccard with fresh values and entities.
 
-## 9. Contamination and fingerprint algorithms
+Two separately authored contamination modules may share the frozen contract and standard library only. They cannot share normative derivation, tokenization, fingerprint, serialization code, or helpers. Byte disagreement blocks freeze.
 
-Contract: `g-extract1.contamination.v2`.
+## 10. Reserves
 
-Authored model-facing text is limited to printable ASCII plus CR, LF, and TAB. Every other code point is rejected before fixture freeze. Historical comparison covers all G-ROUTE4 extraction scored and reserve corpora.
+The reserve contract is `g-extract1.reserve-activation.v3`. There is one reserve per `RESERVE:{phase}:{round}:{primary_family}` slot: 2 phases x 2 rounds x 7 families = 28. There is no pool and no one-to-one reserve per primary fixture.
 
-Similarity payload is constructed only as `input.text + LF + canonical_schema_serialization`; no prompt substrings are removed afterward. Schema serialization sorts keys by unsigned UTF-8 bytes and emits `field=type` lines with LF separators and no terminal LF. The excluded request spans are the entire UTF-8 `request.system`, the entire UTF-8 `request.prompt` (opening, operations, absence sentence, and common suffix), and exact `request.input_marker` bytes `INPUT` followed by LF.
+All five primary IDs in a slot are frozen in unsigned UTF-8 order. Zero eligible defects means no activation; more than one defective primary stops authoring; exactly one may claim the single reserve only when every replacement-profile dimension matches. A reserve must preserve phase, round, family, composed row, secondary features, field types, operation/boundary, explicit-absence status, risk, and output schema roles. After activation, all balances, contamination comparisons, gold reviews, and digests rerun. No replacement is possible after provider contact or from observed outputs.
 
-Normalization is exact: Unicode NFC; default Unicode casefold; CRLF/CR to LF; every maximal Unicode whitespace run to one ASCII space; trim ends; entities receive no anonymization; canonical schema is appended before normalization. Punctuation is not rewritten. Token alternatives consume date, time, context-valid number, then identifier. A leading sign belongs to a number only when not immediately preceded by ASCII letter, digit, or underscore; therefore subtraction-like `5-3` becomes `5`,`3`, while `-5` remains one token.
+## 11. Phase A repeat reduction and gates
 
-Tokenization uses Python `re` in ASCII mode with:
+The reduction contract is `g-extract1.phase-a-fixture-reduction.v1`. Positive fixture properties (semantic correctness, structural validity, useful correct acceptance) require both repeats. Adverse properties (malformed, binding error, false-clean) affect a fixture if either repeat is affected. A correlated false-clean pair requires both repeats, but the zero-false-clean observation gate is stricter.
 
-`[0-9]{4}-[0-9]{2}-[0-9]{2}|[0-9]{2}:[0-9]{2}|(?<![a-z0-9_])[+-]?(?:[0-9]+(?:\.[0-9]+)?|\.[0-9]+)(?:e[+-]?[0-9]+)?|[a-z][a-z0-9]*(?:_[a-z0-9]+)*`
+Thus the Phase A family floor means at least four of five distinct determinate fixtures in every family have both repeats semantically correct. Truth tables for pass/pass, pass/fail, fail/pass, and fail/fail are frozen.
 
-Matches are left-to-right non-overlapping `finditer`; an empty sequence is invalid. Frozen vectors cover `2026-10-01`, `23:45`, `-5`, `5-3`, `5e-3`, `$12.50`, `entity_name`, and `field-name`. Token 5-grams are contiguous tuples at each offset, deduplicated into sets. Jaccard is intersection size divided by union size; both empty is 1.0 and only one empty is 0.0. Every compared pair must be strictly below 0.20.
+Per cell, A requires 70 observations, 35 fixtures, and 35 repeat pairs; B requires 35 observations and fixtures. Both independently require 29/30 determinate semantic, 29/30 structural, 27/30 useful correct acceptance, zero false-clean, at most one malformed determinate fixture, family floor 4/5, zero accepted E5/E6 binding errors, and the E7 gate. B has no repeat-pair guardrail.
 
-The fingerprint is a UTF-8 JSON array in this component order, compact separators, no whitespace or terminal LF:
+One-sided exact 95% Clopper-Pearson values are benchmark decision statistics only: 0/35 upper 0.082031636; 0/30 upper 0.095033853; 29/30 lower 0.851403931; 27/30 lower 0.761402143. They are not claims about an IID natural population.
 
-1. `operation_graph`: stable-topologically sort nodes. Emit `[operation_id, operand_kind_array, dependency_index_array]`; typed placeholder kinds map mechanically to source field, derived field, literal, collection, or entity selector, following catalog/SUM order. Names and literal values are excluded.
-2. `output_schema_roles`: derive each role through section 5's finite operation/schema map, emit one `[schema_type, role]` pair per output field retaining duplicates, and sort compact pair bytes unsigned.
-3. `entity_role_graph`: `NONE` for zero records; `SINGLE_ENTITY` for one; `MULTI_ENTITY_NO_DISAMBIGUATION` for multiple records without disambiguation; otherwise map `entity_selector_role` to `MULTI_ENTITY_SELECT_BY_IDENTIFIER`, `_ATTRIBUTE`, or `_EVENT_ROLE`.
-4. `boundary_relation`: `NONE` without terminal comparison; otherwise evaluate exact left/right gold operands and emit `BELOW`, `EQUAL`, or `ABOVE` from left compared with right.
-5. `temporal_pattern`: `NONE` without temporal operation. Clock/elapsed emits `MIDNIGHT_ROLLOVER` exactly when the forward result crosses midnight, else `SAME_DAY_FORWARD`. Calendar offset emits `LEAP_DAY_BOUNDARY` when inclusive traversal contains February 29, else `YEAR_BOUNDARY` when years differ, else `MONTH_BOUNDARY` when months differ, else `DATE_WITHIN_MONTH`.
-6. `source_fact_layout`: first-match over mechanically generated records. Explicit absence wins. Interleaving requires at least four target/support records, at least two entities, adjacent entity indices different, and each entity twice. Before/after distractor requires every distractor strictly before/after every target/support. Target-before-support requires first target before every support. Contiguous-single requires at least one target/support, at most one entity, and an unbroken target/support index interval. Anything else is `AUTHORING_ERROR`. Frozen vectors cover all six layouts and two rejection forms.
+## 12. Gold, state, and integrity
 
-Three full fingerprint vectors freeze exact bytes for a single-entity sum, multi-entity binding, and calendar-to-threshold graph. They jointly exercise operand kinds/dependencies, output roles, entity roles, boundary/temporal values, and source layout.
+Gold includes typed values, independent derivation, binding map, determinacy proof, family/features, operation metadata, and rationale. Two independent reviewers solve/audit before an operator-approved adjudication. Gold, fixtures, reserves, equivalence rules, and adjudication freeze together before contact. A defect discovered after contact invalidates the affected run and is not repaired in place.
 
-Pairwise comparison includes every historical G-ROUTE4 extraction fixture against every G-EXTRACT1 scored/reserve fixture, A/A, A/B, B/B, every scored/reserve pair, and reserve/reserve. Exact normalized payload, answer, entity/identifier, or date-number tuple reuse is prohibited. Historical versus new, A versus B, primary versus mapped reserve, and reserve versus reserve exact fingerprint collisions are prohibited. Within one phase/round/family, an exact fingerprint may occur at most twice only below Jaccard 0.12 with all entities and values different. A pair matching at least five of six fingerprint components at Jaccard at least 0.12 is a prohibited near replay. Recurrence of the same abstract failure class or operation ID is permitted.
+The integrity catalog is `g-extract1.integrity-events.v2`; the verdict contract is `g-extract1.result-state-machine.v3`.
 
-Before freeze, two separately authored source modules must independently implement normalization, tokenization, derivation, serialization, and fingerprinting. They may share the frozen contract/data and generic standard-library primitives, but no normative implementation or helper code. Their normalized payload, token sequence, and fingerprint bytes must agree for every fixture; disagreement blocks freeze. An automated all-pairs report and blind human contamination review must also pass. Lineage labels alone prove nothing.
+Cells transition deterministically from A scheduled to blocked, qualified, failed, or incomplete. Only the exact sorted A-qualified set may schedule B. B ends finally qualified, failed validation, or incomplete. A/B pooling and failed-cell reentry are prohibited.
 
-## 10. Gold, adjudication, and reserves
+Invalid events are exhaustive and include:
 
-Determinate gold freezes typed canonical values, independent derivation, binding map, determinacy proof, primary family, secondary features, operation metadata, and rationale. E7 gold freezes the one unresolved field, exact `not_provided` sentinel, supported values, and explicit-absence proof.
+`PROTECTED_ARTIFACT_DIGEST_MISMATCH`, `GOLD_DIGEST_MISMATCH`, `SCORER_DIGEST_MISMATCH`, `COMPARATOR_DIGEST_MISMATCH`, `MODEL_IDENTITY_MISMATCH_AFTER_CONTACT`, `PROVIDER_VERSION_MISMATCH_AFTER_CONTACT`, `GENERATION_CONFIGURATION_MISMATCH`, `SEED_MISMATCH`, `SCHEDULE_POSITION_MISMATCH`, `DUPLICATE_CALL`, `SCHEDULED_CALL_OMITTED_WITHOUT_FAILURE_RECEIPT`, `PROVIDER_FAILURE_WITHOUT_RECEIPT`, `UNAUTHORIZED_RETRY`, `UNAUTHORIZED_FALLBACK`, `UNAUTHORIZED_PROMPT_MUTATION`, `CONTAMINATION_CONTRACT_VIOLATION`, `POST_CONTACT_GOLD_MUTATION`, `POST_CONTACT_GOLD_DEFECT_DISCOVERED`, `POST_CONTACT_FIXTURE_MUTATION`, `POST_CONTACT_THRESHOLD_MUTATION`, `CORRUPTED_CHECKPOINT`, `MISSING_CHECKPOINT_AFTER_INTERRUPTION`, `UNVERIFIABLE_INTERRUPTION_CHECKPOINT`, `UNVERIFIABLE_JOURNAL_PREFIX`, `CORRUPTED_OR_UNPARSEABLE_JOURNAL`, and `PROVENANCE_MISMATCH`.
 
-Reviewer A solves without proposed gold. Reviewer B audits arithmetic, calendar semantics, bindings, family assignment, and exact-value compliance. Preserved disagreements are resolved by an operator-approved adjudicator before provider contact. Fixture, gold, reserve, equivalence, and adjudication freeze together. A gold defect after contact invalidates the affected run; it is not repaired in place.
+Receipted provider timeout/error/missing response and a verifiable sealed interruption are INCOMPLETE. Explicit authorized operator abort is ABORTED. Before contact, pinned mismatches are PRE_CONTACT_BLOCKED. Primary verdict precedence is INVALID, PRE_CONTACT_BLOCKED, ABORTED, INCOMPLETE, NO_PHASE_A_CELL_QUALIFIED, QUALIFICATION_METHOD_FAILED_VALIDATION, MIXED_TARGETED_REQUALIFICATION_SUPPORTED, then TARGETED_REQUALIFICATION_SUPPORTED.
 
-Contract `g-extract1.reserve-activation.v3` provides one family-slot reserve, not one reserve per primary fixture. Slot ID is exactly `RESERVE:{phase}:{round}:{primary_family}`; 2 phases x 2 rounds x 7 families gives 28 slots. Each slot freezes its reserve ID, all five primary IDs in unsigned-UTF-8 order, and one replacement profile. No selection pool exists. Activation is allowed only before provider contact for a mechanical schema defect, unresolved gold/adjudication defect, contamination/fingerprint failure, duplicate entity/date/number tuple, quota/signature violation, or corpus-level similarity failure. Style preference, anticipated or observed model behavior, and gate improvement are ineligible.
+## 13. Frozen baseline and provider
 
-All five primaries are evaluated before selection. Zero defects means no activation; more than one defect in a slot stops authoring. Exactly one defective primary may consume the reserve only when phase, round, family, composed row, secondary features, field types, operator/boundary, ambiguity, risk, and output-schema roles exactly match its frozen profile. No match stops. Activation is write-once, invalidates the candidate freeze, and reruns family/composed/risk/schema-role balance, every contamination comparison, gold/adjudication, and all digests. Ad hoc and post-contact replacement are prohibited.
+The baseline contract is `g-extract1.baseline-binding.v3`. The historical system text, request builder, normalization, operational wrapper, extraction validator, semantic references, model binding, and blueprint template are bound by path, SHA-256, and Git blob in the machine contract. The common extraction suffix is byte-identical to G-ROUTE4. Only record type, catalog operands, source text, and schema vary.
 
-## 11. Gates and benchmark statistics
+Provider is Ollama 0.34.3. Models and blob SHA-256 values are:
 
-These are decision statistics for this frozen authored benchmark, not estimates of performance in an IID natural population.
+- `qwen2.5:7b`: `2bada8a7450677000f678be90653b85d364de7db25eb5ea54136ada5f3933730`
+- `qwen3:14b`: `a8cc1361f3145dc01f6d77c6c82c9116b9ffe3c97b34716fe20418455876c40e`
+- `qwen3.8:27b`: `f5f1dd8920d417aac2718b0bda3403da274301efdd6760b4f0f4b864ff2ad57d`
 
-Per Phase A cell: 35 fixtures, 70 observations, 35 repeat pairs, five fixtures per family, and all composed quotas. Per Phase B entrant: 35 fixtures, 35 observations, five per family, and all composed quotas.
+Generation remains context 8192, output 350, temperature 0.45, top_p 0.9, top_k 40, repeat penalty 1.1, thinking off, stream off, fresh session, zero retry/repair/fallback. Seeds are `base + zero_based_fixture_index * 10 + one_based_repeat`, with candidate bases 610000 and 620000.
 
-Independent pass/fail gates in each phase:
+## 14. Governance and readiness boundary
 
-- denominator and family/composed coverage exact;
-- false-clean: zero affected fixtures and observations; one-sided 95% upper bound at 0/35 is `0.082031636`, below 0.10;
-- determinate semantic correctness: at least 29/30; lower bound `0.851403931`, at least 0.85;
-- determinate structural validity: at least 29/30;
-- useful correct acceptance: at least 27/30; lower bound `0.761402143`, at least 0.75;
-- E7 recognition and containment: Phase A 10/10 observations across 5/5 fixtures; Phase B 5/5;
-- malformed determinate fixtures: at most one, while structural 29/30 must also pass.
+G-ROUTE4 remains failed and immutable. There is no historical rewrite, prompt tuning, threshold loosening, post-contact gold/fixture change, autonomy, or belief effect. Failed attempts are append-only. One local-model research job may run at a time. Reviewer output is non-authoritative.
 
-Enforced redundant guardrails are 4/5 semantic correctness in each determinate family and zero accepted E5/E6 binding errors. Phase A also requires zero correlated false-clean repeat pairs out of 35. The correlated-repeat guardrail is not applicable in single-observation Phase B and is not claimed there.
+Separate authorization remains required for blueprint authoring, fixture/gold authoring, implementation, mechanical pilot, execution freeze, Phase A, and conditional Phase B. This candidate contains zero scored fixtures, zero reserves, zero provider calls, and no runtime implementation.
 
-## 12. Cell transitions
-
-Only the sorted exact set of `A_QUALIFIED_FOR_B` cell IDs may enter Phase B; operator selection is prohibited.
-
-- `A_SCHEDULED` -> `A_BLOCKED` for a precontact blocker.
-- `A_SCHEDULED` -> `A_QUALIFIED_FOR_B` only with complete denominator and every A gate passing.
-- `A_SCHEDULED` -> `A_FAILED` with complete denominator and any A gate failure.
-- `A_SCHEDULED` -> `A_INCOMPLETE` for a frozen incomplete event.
-- `A_QUALIFIED_FOR_B` -> `B_SCHEDULED` only through the machine-built conditional schedule.
-- `A_FAILED` -> `B_NOT_ELIGIBLE` unconditionally.
-- `B_SCHEDULED` -> `FINALLY_QUALIFIED` only with complete denominator and every B gate passing.
-- `B_SCHEDULED` -> `B_FAILED_VALIDATION` with complete denominator and any B gate failure.
-- `B_SCHEDULED` -> `B_INCOMPLETE` for a frozen incomplete event.
-
-No pooling and no failed-cell reentry are allowed.
-
-## 13. Integrity events and primary verdict
-
-Contract: `g-extract1.integrity-events.v2`.
-
-Precontact blockers are exactly: `PRE_MODEL_IDENTITY_MISMATCH`, `PRE_PROVIDER_VERSION_MISMATCH`, `PRE_GENERATION_CONFIG_MISMATCH`, `PRE_ARTIFACT_DIGEST_MISMATCH`, `PRE_GOLD_DIGEST_MISMATCH`, `PRE_SCORER_DIGEST_MISMATCH`, `PRE_COMPARATOR_DIGEST_MISMATCH`, `PRE_SCHEDULE_DIGEST_MISMATCH`, `PRE_CONTAMINATION_AUDIT_FAILURE`, and `PRE_EXISTING_RUN_COLLISION`.
-
-`INVALID` events are exactly: `PROTECTED_ARTIFACT_DIGEST_MISMATCH`, `GOLD_DIGEST_MISMATCH`, `SCORER_DIGEST_MISMATCH`, `COMPARATOR_DIGEST_MISMATCH`, `MODEL_IDENTITY_MISMATCH_AFTER_CONTACT`, `PROVIDER_VERSION_MISMATCH_AFTER_CONTACT`, `GENERATION_CONFIGURATION_MISMATCH`, `SEED_MISMATCH`, `SCHEDULE_POSITION_MISMATCH`, `DUPLICATE_CALL`, `SCHEDULED_CALL_OMITTED_WITHOUT_FAILURE_RECEIPT`, `PROVIDER_FAILURE_WITHOUT_RECEIPT`, `UNAUTHORIZED_RETRY`, `UNAUTHORIZED_FALLBACK`, `UNAUTHORIZED_PROMPT_MUTATION`, `CONTAMINATION_CONTRACT_VIOLATION`, `POST_CONTACT_GOLD_MUTATION`, `POST_CONTACT_GOLD_DEFECT_DISCOVERED`, `POST_CONTACT_FIXTURE_MUTATION`, `POST_CONTACT_THRESHOLD_MUTATION`, `CORRUPTED_CHECKPOINT`, `MISSING_CHECKPOINT_AFTER_INTERRUPTION`, `UNVERIFIABLE_INTERRUPTION_CHECKPOINT`, `UNVERIFIABLE_JOURNAL_PREFIX`, `CORRUPTED_OR_UNPARSEABLE_JOURNAL`, and `PROVENANCE_MISMATCH`.
-
-`INCOMPLETE` events are exactly `PROVIDER_TIMEOUT_WITH_FAILURE_RECEIPT`, `PROVIDER_ERROR_WITH_FAILURE_RECEIPT`, `MISSING_RESPONSE_WITH_FAILURE_RECEIPT`, and `MACHINE_INTERRUPTION_WITH_SEALED_CHECKPOINT`. A sealed interruption requires a present digest-valid checkpoint, reconstructable journal prefix, and exact next schedule position. Missing, corrupt, or unverifiable checkpoints and journal prefixes are their named invalid events. Provider failure without a bound append-only receipt is invalid. Gold mutation and discovery of a pre-existing post-contact gold defect are distinct invalid events. A malformed semantic output is a cell-gate result, not an integrity event. `ABORTED` requires `EXPLICIT_AUTHORIZED_OPERATOR_ABORT`.
-
-Contract `g-extract1.result-state-machine.v3` applies first match and emits exactly one primary verdict:
-
-| Priority | Verdict | Exact predicate |
-|---:|---|---|
-| 1 | `INVALID` | any enumerated invalid event |
-| 2 | `PRE_CONTACT_BLOCKED` | zero provider calls and any enumerated precontact blocker |
-| 3 | `ABORTED` | exact authorized abort event |
-| 4 | `INCOMPLETE` | any enumerated incomplete event or A/B incomplete cell |
-| 5 | `NO_PHASE_A_CELL_QUALIFIED` | Phase A terminal and zero B entrants |
-| 6 | `QUALIFICATION_METHOD_FAILED_VALIDATION` | at least one B entrant, zero final qualifiers, B terminal |
-| 7 | `MIXED_TARGETED_REQUALIFICATION_SUPPORTED` | at least one final qualifier, at least one B validation failure, B terminal |
-| 8 | `TARGETED_REQUALIFICATION_SUPPORTED` | at least one final qualifier, all B entrants qualify, B terminal |
-
-Frozen structured state tests cover precontact mismatch, zero A qualifiers, all/mixed/all-passing B entrants, receipted missing/provider failures, invalid-plus-abort precedence, plain abort, malformed-only cell failure, post-contact gold defect discovery, gold mutation, unreceipted provider failure, unverifiable checkpoint, and incomplete-plus-semantic-failure. The validator evaluates predicates against the fact objects rather than trusting stored expected labels.
-
-Events are emitted only in their defined lifecycle stage. The finite lifecycle must not request a verdict before a terminal predicate exists. A malformed-limit failure is an ordinary semantic cell failure. Secondary diagnostics cannot change the primary verdict.
-
-## 14. Frozen baseline binding
-
-Contract: `g-extract1.baseline-binding.v2`.
-
-The historical behavior source is the frozen G-ROUTE4 execution commit `0feb1b092bcdb1b934f01a3ce9611c59fcd8fa28`.
-
-Exact system text:
-
-`Return one JSON object matching the schema supplied in the fixture. Add no fields. Use only explicit facts; represent an explicitly unstated value with the schema's unknown value.`
-
-The frozen common template is:
-
-`{SUBJECT}. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off.`
-
-Template SHA-256: `ef41104bde4915eba10a5ff1705383cf0b3d72e613fd7af87f72f5b06d2d5579`. The only template placeholder is `{SUBJECT}` and the invariant suffix begins `. Copy names`.
-
-`SUBJECT` is rendered only by the canonical operation catalog. Other variable model-facing data is limited to catalog placeholder identifiers/literals and input object keys exactly `schema` and `text`. Free-form instructions and every prohibited feature in section 4 are forbidden.
-
-Behavioral artifacts are bound by path, SHA-256, and Git blob:
-
-| Role | Path | SHA-256 | Git blob |
-|---|---|---|---|
-| system profiles | `experiments/G-ROUTE1-candidate/prompt_profiles.json` | `d4a683f1e2f0175006d41c34154e3d4a0e79b22fb70e52b68d93ac2587ae3354` | `365a4a499fd61203ae1bef3cf7d0c65490db529a` |
-| request builder | `tools/g_route4_contract.py` | `a1d1de6c77abb9d8240c521b1afda891dbf9b32641df7d84b4f44a442767b45e` | `b86d836d45517d012ad07d417e488e7dc7c3f94d` |
-| transport normalization | `tools/g_route2_normalization.py` | `2cca70e0843e90967a33baaf2b7b9a3313de21a6e18c3644c7eb083143398f7d` | `3c73a3856cc1b1ddab9e175486c866a22a380da3` |
-| operational wrapper | `tools/g_route3_operational.py` | `4ab2c035b38b5bca5f243ec8aa0c5389e73cfc71cbbedcace3dd2b64f7193df3` | `dbf45f536ef2149d643837593a5fa8251256b5d2` |
-| extraction validator | `tools/g_route1_operational.py` | `68abc639c2399a7cd19168c6176d03aa7c3fa81a02b0e85fac2d4fdcf4c7ed70` | `bb5dbcdc9d2817bd7a7a6525aec6b0f5999237c2` |
-| semantic reference | `tools/g_route3_semantics.py` | `6e80f13b326d25743778e37635192809e8f5a53de2a98fd973c033075ea90a3e` | `3786140bf04481eb85fe5793013bd4ad923895c9` |
-| evaluator reference | `tools/g_route1_validators.py` | `3661ffa5a43c2ea89d7f0d3dd6a7d3d3620f2d4a3a2c0ef943e70de53d4ddf2f` | `a42d5046485530ab59b5c0b478e132b638fb7ab6` |
-| model binding | `experiments/G-ROUTE4-candidate/model_bindings.json` | `e87e26c40f014a8d58e242082384db382b0b4942902e6d9bd387f24d68859e36` | `43996490276df5c7e89da0a62a1a0c14fbb8c3da` |
-| blueprint source | `experiments/G-ROUTE4-candidate/blueprint/BLUEPRINT.json` | `f005056f967a43af9a821849c63544dd1165fca083ecd1f394a3e19656fee815` | `c0db2bf9eb09dc8a0be518efe67766486df63bbb` |
-
-The G-EXTRACT1 semantic scorer and exact-value comparator remain evaluator-only unimplemented identities. They must be separately implemented, audited, and digest-bound before contact.
-
-## 15. Model, provider, sampling, and efficiency
-
-Provider is Ollama `0.34.3`.
-
-| Tier | Model | Manifest digest | Blob SHA-256 |
-|---|---|---|---|
-| small | `qwen2.5:7b` | `845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e` | `2bada8a7450677000f678be90653b85d364de7db25eb5ea54136ada5f3933730` |
-| mid | `qwen3:14b` | `bdbd181c33f2ed1b31c972991882db3cf4d192569092138a7d29e973cd9debe8` | `a8cc1361f3145dc01f6d77c6c82c9116b9ffe3c97b34716fe20418455876c40e` |
-| large | `qwen3.8:27b` | `22130167c4c20e20c7b71454612966ca8e8171e9b3cc8ab6ce8aa6cbfec79643` | `f5f1dd8920d417aac2718b0bda3403da274301efdd6760b4f0f4b864ff2ad57d` |
-
-Generation: context 8192, output cap 350, temperature 0.45, top-p 0.9, top-k 40, repeat penalty 1.1, thinking off, streaming off, fresh session each call, zero retry, zero repair, zero fallback. Ollama does not attest internal option honoring.
-
-Phase A seed base is 610000; Phase B is 620000. Seed is `base + zero_based_fixture_index * 10 + one_based_repeat`. Global collision audit and balanced model order are required. The legacy-sized first eight observations per cell are reported only and never gate.
-
-Maximum calls are 420 + 210 = 630, a 54.8387% reduction from 1,395. Estimated active time is 2.79 hours A, 1.40 hours B, 4.19 maximum; large-tier maximum 210 calls and about 2.99 hours. These estimates use preserved means of 7.6, 13.0, and 51.2 seconds and are not guarantees.
-
-## 16. Repair boundary, integration, and governance
-
-G-EXTRACT1 measures the unchanged baseline first. Prompt tuning is prohibited. Any prompt repair requires a new experiment identity and fresh development/scored corpora; repaired and baseline results cannot be pooled.
-
-No result automatically edits a table or enables production routing. A later operator-authorized candidate overlay may contain only finally qualified structured-extraction R2/R3 cells; non-extraction rows remain byte-identical. No qualifier means no update. A shared-logic change requires broader revalidation.
-
-Before any provider contact, fixture, reserve, gold, gate, prompt, scorer/comparator, schedule, contamination report, and adjudication artifacts must be frozen. Failed attempts are append-only. There is no post-contact gold edit, fixture replacement, threshold relaxation, retry, repair, fallback, historical rewrite, autonomy, or belief effect. One local-model research job may run at a time.
-
-Separate explicit authorization is required for blueprint work, fixture/gold authoring, implementation, mechanical pilot, execution freeze, Phase A, and conditional Phase B.
-
-## 17. Validation claim and next boundary
-
-`validate_design.py` may establish only deterministic document structure, bound constants, artifact identities, and human/machine cross-representation checks. It does not prove scientific validity and does not replace adversarial review.
-
-Before implementation authorization: an independent rereview must find no blocker; human/machine normative equivalence must be reviewed; a separately authorized blueprint must pass; separately authorized authoring must complete all 168 fixtures and gold without provider contact; independent gold/adjudication and two-implementation contamination audits must pass; and implementation, pilot, freeze, Phase A, and Phase B each retain separate authorization boundaries.
-
-Design-candidate verdict: `READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_4`.
+`validate_design.py` performs deterministic structural and cross-representation consistency only; it does not prove scientific validity and does not replace adversarial review.

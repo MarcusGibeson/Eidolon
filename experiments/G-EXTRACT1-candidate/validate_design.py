@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import argparse
-from datetime import date, time
+from datetime import date, time, timedelta
 from decimal import Decimal
 import hashlib
 import json
@@ -120,8 +120,14 @@ def render_subject(vector: dict[str, Any], operation: dict[str, Any]) -> str:
     conversions = {row["id"]: row for row in operation["unit_conversion_catalog"]}
     types = operation["placeholder_type_system"]
     nodes = vector["nodes"]
-    if not 1 <= len(nodes) <= 2:
+    if not 0 <= len(nodes) <= 2:
         raise ValueError("node_count")
+    if not nodes and not vector.get("include_absence_sentence", False):
+        raise ValueError("zero_node_non_e7")
+    if nodes and vector.get("include_absence_sentence", False):
+        raise ValueError("e7_operation_node")
+    if re.fullmatch(operation["record_type_regex"], vector["record_type"], re.ASCII) is None:
+        raise ValueError("record_type")
     targets = {node["target"] for node in nodes}
     if len(targets) != len(nodes):
         raise ValueError("duplicate_target")
@@ -171,6 +177,8 @@ def render_subject(vector: dict[str, Any], operation: dict[str, Any]) -> str:
             if set(node) != {"id", "target", "arguments"}:
                 raise ValueError("ordinary_node_keys")
             template = op["template"]
+        if re.fullmatch(operation["field_identifier_regex"], node["target"], re.ASCII) is None:
+            raise ValueError("target_identifier")
         rendered: dict[str, str] = {"target": node["target"]}
         expected_arguments = set(op["placeholders"]) - {"target"}
         if set(node["arguments"]) != expected_arguments:
@@ -190,15 +198,29 @@ def render_subject(vector: dict[str, Any], operation: dict[str, Any]) -> str:
                     raise ValueError("argument_kind")
                 rendered[name] = render_operand(raw, types)
         sentences.append(template.format(**rendered))
-    return " ".join(sentences)
+    if vector.get("include_absence_sentence", False):
+        sentences.append(operation["historical_absence_subject_fragment"])
+    subject = operation["subject_fragment_join"].join(sentences)
+    if subject.endswith("."):
+        raise ValueError("subject_terminal_period")
+    return subject
 
 
-NUMERIC = {"ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "SUM", "COUNT", "UNIT_CONVERSION"}
+def assemble_prompt(subject: str, baseline: dict[str, Any]) -> str:
+    template = baseline["structured_extraction_assembled_template"]
+    if template.count("{SUBJECT}") != 1 or subject.endswith("."):
+        raise ValueError("prompt_assembly")
+    return template.replace("{SUBJECT}", subject)
+
+
+NUMERIC = {"ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "SUM", "UNIT_CONVERSION"}
 COMPARISON = {"GT", "GTE", "LT", "LTE", "EQ"}
 
 
 def derive_family(vector: dict[str, Any]) -> str:
     if vector["unresolved_required_field_count"] == 1 and vector["unknown_sentinel_available"]:
+        if vector["operation_ids"]:
+            raise ValueError("e7_operations_prohibited")
         return "E7"
     if vector["entity_disambiguation_required"]:
         return "E5"
@@ -239,11 +261,11 @@ def derive_features(vector: dict[str, Any]) -> list[str]:
     if len(vector["operation_ids"]) == 2:
         features.add("multi_step")
     if vector["unresolved_required_field_count"] == 1 and vector["unknown_sentinel_available"]:
-        features.add("ambiguity")
+        features.add("explicit_partial_absence")
     order = [
         "calendar_date", "clock_time", "elapsed_time", "aggregation", "unit_conversion",
         "threshold", "equality_boundary", "entity_binding", "field_binding", "exact_copy",
-        "multi_step", "ambiguity",
+        "multi_step", "explicit_partial_absence",
     ]
     return [item for item in order if item in features]
 
@@ -251,11 +273,64 @@ def derive_features(vector: dict[str, Any]) -> list[str]:
 def derive_fact_role(vector: dict[str, Any]) -> str:
     if vector["template_id"] == "EXPLICIT_ABSENCE":
         return "EXPLICIT_ABSENCE"
+    if vector["field_identifier"] in vector.get("source_copy_fields", []):
+        return "TARGET"
     if vector["sink_operation"] in {"ENTITY_FIELD_BIND", "EXACT_COPY"} and vector["field_identifier"] == vector["sink_source_field"]:
         return "TARGET"
     if vector["field_identifier"] in vector["referenced_fields"]:
         return "SUPPORT"
     return "DISTRACTOR"
+
+
+def content_is_safe(value: str, contract: dict[str, Any]) -> bool:
+    normalized = re.sub(r"[^a-z0-9_]+", " ", value.lower()).strip()
+    if not normalized:
+        return False
+    tokens = normalized.split()
+    padded = f" {' '.join(tokens)} "
+    if set(tokens) & set(contract["forbidden_tokens"]):
+        return False
+    return not any(f" {phrase} " in padded for phrase in contract["forbidden_phrases"])
+
+
+def effective_producer(field: dict[str, Any], nodes: list[dict[str, Any]]) -> str:
+    if field["binding_kind"] == "SOURCE_COPY":
+        return "SOURCE_COPY"
+    if field["binding_kind"] == "EXPLICIT_ABSENCE":
+        return "EXPLICIT_ABSENCE"
+    by_target = {node["target"]: node for node in nodes}
+    target = field["producer_target"]
+    visited: set[str] = set()
+    while True:
+        if target in visited or target not in by_target:
+            raise ValueError("producer_target")
+        visited.add(target)
+        node = by_target[target]
+        if node["id"] != "EXACT_COPY":
+            return node["id"]
+        source = node["arguments"]["source_field"]
+        if source["kind"] == "field_identifier":
+            return "SOURCE_COPY"
+        target = source["value"]
+
+
+def derive_output_role(field: dict[str, Any], nodes: list[dict[str, Any]]) -> str:
+    producer = effective_producer(field, nodes)
+    if producer == "EXPLICIT_ABSENCE":
+        return "absence_sentinel"
+    if producer == "SOURCE_COPY":
+        return "source_copy"
+    if producer == "ENTITY_FIELD_BIND":
+        return "entity_bound_value"
+    if producer in COMPARISON:
+        return "derived_boolean"
+    if producer == "CALENDAR_DAY_OFFSET":
+        return "derived_date"
+    if producer == "CLOCK_MINUTE_OFFSET":
+        return "derived_time"
+    if producer in NUMERIC | {"ELAPSED_MINUTES"}:
+        return "derived_number"
+    raise ValueError("unmapped_output_role")
 
 
 def render_fact(record: dict[str, Any], types: dict[str, Any]) -> str:
@@ -301,10 +376,24 @@ def operational_ambiguity_valid(value: Any) -> bool:
     )
 
 
-def classify_ambiguity(raw: str) -> tuple[bool, bool, str, bool]:
-    value = json.loads(raw)
+def classify_ambiguity(
+    raw: str,
+    *,
+    provider_truncated: bool = False,
+    accepted_override: bool | None = None,
+) -> tuple[bool, bool, str, bool]:
+    try:
+        value = json.loads(raw)
+        duplicate = duplicate_keys(raw)
+    except json.JSONDecodeError:
+        value = None
+        duplicate = False
     operational_valid = operational_ambiguity_valid(value)
-    duplicate = duplicate_keys(raw)
+    accepted = operational_valid if accepted_override is None else accepted_override
+    if provider_truncated:
+        return duplicate, operational_valid, "provider_truncated", bool(accepted)
+    if value is None:
+        return False, False, "json_parse_failure", False
     if operational_valid and duplicate:
         return duplicate, True, "semantic_schema_invalid", True
     if not operational_valid:
@@ -314,6 +403,17 @@ def classify_ambiguity(raw: str) -> tuple[bool, bool, str, bool]:
     if value["status"] != "not_provided":
         return duplicate, True, "exact_valid_unsupported_value", True
     return duplicate, True, "exact_valid_supported_field_error", True
+
+
+def validate_e7_graph(vector: dict[str, Any]) -> str:
+    if vector["operation_ids"]:
+        return "AUTHORING_ERROR"
+    kinds = vector["output_binding_kinds"]
+    if kinds.count("EXPLICIT_ABSENCE") != 1 or kinds.count("SOURCE_COPY") < 2:
+        return "AUTHORING_ERROR"
+    if vector["unresolved_operand"]:
+        return "AUTHORING_ERROR"
+    return "VALID_E7"
 
 
 def source_fact_layout(sequence: list[list[Any]]) -> str:
@@ -345,9 +445,82 @@ def source_fact_layout(sequence: list[list[Any]]) -> str:
     return "AUTHORING_ERROR"
 
 
+def evaluate_fixture(fixture: dict[str, Any]) -> tuple[dict[str, Any], str, str]:
+    values: dict[str, Any] = {}
+    for fact in fixture["source_fact_records"]:
+        if fact["template_id"] != "VALUE" or fact["entity_selector_value"] is not None:
+            continue
+        raw = fact["value"]
+        if raw["kind"] == "integer_literal":
+            value: Any = int(raw["value"])
+        elif raw["kind"] == "decimal_literal":
+            value = Decimal(raw["value"])
+        elif raw["kind"] == "date_literal":
+            value = date.fromisoformat(raw["value"])
+        else:
+            value = raw["value"]
+        values[fact["field_identifier"]] = value
+    temporal_pattern = "NONE"
+    boundary = "NONE"
+
+    def operand(raw: dict[str, Any]) -> Any:
+        kind, token = raw["kind"], raw["value"]
+        if kind in {"field_identifier", "derived_field_identifier"}:
+            return values[token]
+        if kind == "integer_literal":
+            return int(token)
+        if kind == "decimal_literal":
+            return Decimal(token)
+        if kind == "date_literal":
+            return date.fromisoformat(token)
+        if kind == "time_literal":
+            return time.fromisoformat(token)
+        return token
+
+    for node in fixture["operation_nodes"]:
+        op = node["id"]
+        args = node["arguments"]
+        if op == "SUM":
+            values[node["target"]] = sum((operand(item) for item in args["operands"]), 0)
+        elif op == "CALENDAR_DAY_OFFSET":
+            start = operand(args["date"])
+            result = start + timedelta(days=operand(args["days"]))
+            values[node["target"]] = result
+            traversed = [start + timedelta(days=i) for i in range(abs(operand(args["days"])) + 1)]
+            if any(item.month == 2 and item.day == 29 for item in traversed):
+                temporal_pattern = "LEAP_DAY_BOUNDARY"
+            elif start.year != result.year:
+                temporal_pattern = "YEAR_BOUNDARY"
+            elif start.month != result.month:
+                temporal_pattern = "MONTH_BOUNDARY"
+            else:
+                temporal_pattern = "DATE_WITHIN_MONTH"
+        elif op in COMPARISON:
+            left, right = operand(args["left"]), operand(args["right"])
+            boundary = "EQUAL" if left == right else ("BELOW" if left < right else "ABOVE")
+            values[node["target"]] = {
+                "GT": left > right, "GTE": left >= right, "LT": left < right,
+                "LTE": left <= right, "EQ": left == right,
+            }[op]
+        elif op == "EXACT_COPY":
+            values[node["target"]] = operand(args["source_field"])
+        elif op == "ENTITY_FIELD_BIND":
+            selector = args["selector_value"]["value"]
+            source = args["source_field"]["value"]
+            matches = [fact for fact in fixture["source_fact_records"] if fact["entity_selector_value"] == selector and fact["field_identifier"] == source]
+            if len(matches) != 1:
+                raise ValueError("entity_binding")
+            raw = matches[0]["value"]
+            values[node["target"]] = Decimal(raw["value"]) if raw["kind"] == "decimal_literal" else raw["value"]
+        else:
+            raise ValueError(f"unsupported_test_operation:{op}")
+    return values, boundary, temporal_pattern
+
+
 def fingerprint_bytes(vector: dict[str, Any], operation: dict[str, Any]) -> str:
     catalog = {row["id"]: row for row in operation["catalog"]}
-    nodes = vector["operation_nodes"]
+    fixture = vector["fixture"]
+    nodes = fixture["operation_nodes"]
     target_index = {node["target"]: index for index, node in enumerate(nodes)}
     kind_map = {
         "field_identifier": "source_field", "derived_field_identifier": "derived_field",
@@ -367,42 +540,114 @@ def fingerprint_bytes(vector: dict[str, Any], operation: dict[str, Any]) -> str:
         dependencies = sorted({target_index[item["value"]] for item in operands if item["kind"] == "derived_field_identifier"})
         graph.append([node["id"], [kind_map[item["kind"]] for item in operands], dependencies])
 
-    roles = []
-    numeric = NUMERIC | {"ELAPSED_MINUTES"}
-    for field in vector["output_fields"]:
-        producer = field["producer"]
-        effective = field["upstream_producer"] or producer
-        if field["absence"]:
-            role = "absence_sentinel"
-        elif producer == "ENTITY_FIELD_BIND":
-            role = "entity_bound_value"
-        elif effective in COMPARISON:
-            role = "derived_boolean"
-        elif effective == "CALENDAR_DAY_OFFSET":
-            role = "derived_date"
-        elif effective == "CLOCK_MINUTE_OFFSET":
-            role = "derived_time"
-        elif effective in numeric:
-            role = "derived_number"
-        else:
-            role = "source_copy"
-        roles.append([field["schema_type"], role])
+    roles = [[field["schema_type"], derive_output_role(field, nodes)] for field in fixture["output_fields"]]
     roles.sort(key=lambda item: json.dumps(item, ensure_ascii=False, separators=(",", ":")).encode("utf-8"))
 
-    count = vector["entity_record_count"]
+    entities = sorted(fixture["entities"], key=lambda item: item["selector_value"].encode("utf-8"))
+    count = len(entities)
+    entity_nodes = [node for node in nodes if node["id"] == "ENTITY_FIELD_BIND"]
+    disambiguation = count >= 2 and bool(entity_nodes)
     if count == 0:
         entity_role = "NONE"
     elif count == 1:
         entity_role = "SINGLE_ENTITY"
-    elif not vector["entity_disambiguation_required"]:
+    elif not disambiguation:
         entity_role = "MULTI_ENTITY_NO_DISAMBIGUATION"
     else:
-        entity_role = f"MULTI_ENTITY_SELECT_BY_{vector['entity_selector_role']}"
+        selector = entity_nodes[0]["arguments"]["selector_value"]["value"]
+        selected = [item for item in entities if item["selector_value"] == selector]
+        if len(selected) != 1:
+            raise ValueError("entity_selector_role")
+        entity_role = f"MULTI_ENTITY_SELECT_BY_{selected[0]['selector_role']}"
+
+    source_copy_fields = {field["source_field"] for field in fixture["output_fields"] if field["binding_kind"] == "SOURCE_COPY"}
+    referenced = {
+        item["value"]
+        for node in nodes
+        for raw in node["arguments"].values()
+        for item in (raw if isinstance(raw, list) else [raw])
+        if item["kind"] == "field_identifier"
+    }
+    sink = nodes[-1] if nodes else None
+    sink_source = None
+    if sink and sink["id"] in {"ENTITY_FIELD_BIND", "EXACT_COPY"}:
+        sink_source = sink["arguments"]["source_field"]["value"]
+    entity_index = {item["selector_value"]: index for index, item in enumerate(entities)}
+    sequence = []
+    for index, fact in enumerate(fixture["source_fact_records"]):
+        role = derive_fact_role({
+            "template_id": fact["template_id"], "field_identifier": fact["field_identifier"],
+            "source_copy_fields": list(source_copy_fields), "sink_operation": sink["id"] if sink else "NONE",
+            "sink_source_field": sink_source, "referenced_fields": list(referenced),
+        })
+        sequence.append([index, role, -1 if fact["entity_selector_value"] is None else entity_index[fact["entity_selector_value"]]])
+    _, boundary, temporal = evaluate_fixture(fixture)
     fingerprint = [
-        graph, roles, entity_role, vector["boundary_relation"], vector["temporal_pattern"],
-        source_fact_layout(vector["source_fact_sequence"]),
+        graph, roles, entity_role, boundary, temporal, source_fact_layout(sequence),
     ]
     return json.dumps(fingerprint, ensure_ascii=False, separators=(",", ":"))
+
+
+def canonical_answer_bytes(answer: dict[str, list[str]]) -> bytes:
+    rows = []
+    for name in sorted(answer, key=lambda item: item.encode("utf-8")):
+        value_type, raw = answer[name]
+        if value_type == "number":
+            canonical = canonical_decimal(raw)
+        elif value_type == "integer":
+            canonical = str(int(raw))
+        elif value_type == "boolean":
+            canonical = raw.lower()
+        else:
+            canonical = raw
+        rows.append([name, value_type, [value_type, canonical]])
+    return json.dumps(rows, ensure_ascii=True, separators=(",", ":")).encode("utf-8")
+
+
+def identity_reuse(left: list[list[str]], right: list[list[str]]) -> bool:
+    encode = lambda atom: json.dumps(atom, ensure_ascii=True, separators=(",", ":"))
+    return bool({encode(item) for item in left} & {encode(item) for item in right})
+
+
+def date_number_tuple_bytes(atoms: list[list[str]]) -> bytes:
+    return json.dumps(atoms, ensure_ascii=True, separators=(",", ":")).encode("utf-8")
+
+
+def extract_date_number_atoms(fixture: dict[str, Any], operation: dict[str, Any]) -> list[list[str]]:
+    tags = {
+        "date_literal": "date", "time_literal": "time",
+        "integer_literal": "integer", "decimal_literal": "number",
+    }
+    atoms: list[list[str]] = []
+    for fact in fixture["source_fact_records"]:
+        raw = fact["value"]
+        if raw is not None and raw["kind"] in tags:
+            value = canonical_decimal(raw["value"]) if raw["kind"] == "decimal_literal" else raw["value"]
+            atoms.append(["SOURCE_FACT", tags[raw["kind"]], value])
+    catalog = {row["id"]: row for row in operation["catalog"]}
+    for node in fixture["operation_nodes"]:
+        for name in catalog[node["id"]]["placeholders"]:
+            if name == "target":
+                continue
+            raw = node["arguments"][name]
+            for item in (raw if isinstance(raw, list) else [raw]):
+                if item["kind"] in tags:
+                    value = canonical_decimal(item["value"]) if item["kind"] == "decimal_literal" else item["value"]
+                    atoms.append(["OPERATION_ARGUMENT", tags[item["kind"]], value])
+    by_name = {field["name"]: field for field in fixture["output_fields"]}
+    for name in sorted(fixture["gold_values"], key=lambda item: item.encode("utf-8")):
+        schema = by_name[name]["schema_type"]
+        if schema in {"date", "time", "integer", "number"}:
+            raw = fixture["gold_values"][name]
+            value = canonical_decimal(str(raw)) if schema == "number" else str(raw)
+            atoms.append(["GOLD", schema, value])
+    return atoms
+
+
+def reduce_repeats(observations: list[bool]) -> tuple[bool, bool]:
+    if len(observations) != 2:
+        raise ValueError("repeat_count")
+    return all(observations), any(observations)
 
 
 def reserve_decision(vector: dict[str, Any]) -> str:
@@ -453,8 +698,8 @@ def result_verdict(facts: dict[str, Any], events: dict[str, Any]) -> str:
 
 def validate(contract: dict[str, Any], human: str) -> list[str]:
     checks: list[str] = []
-    require(contract["schema_version"] == "g-extract1.design-candidate.v4", "schema_v4", checks)
-    require(contract["experiment"]["status"] == "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_4", "status_v4", checks)
+    require(contract["schema_version"] == "g-extract1.design-candidate.v5", "schema_v5", checks)
+    require(contract["experiment"]["status"] == "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_5", "status_v5", checks)
     for field in ("implemented", "blueprint_authorized", "fixture_authoring_authorized", "execution_authorized"):
         require(contract["experiment"][field] is False, f"authority_false:{field}", checks)
     require(contract["experiment"]["provider_generation_calls"] == 0, "provider_calls_zero", checks)
@@ -478,8 +723,8 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     require(abs(contract["efficiency"]["maximum_call_reduction_fraction"] - (1 - 630 / 1395)) < 1e-6, "call_reduction", checks)
 
     operation = contract["operation_definition_contract"]
-    require(operation["contract_id"] == "g-extract1.operation-definitions.v2", "operation_contract_v2", checks)
-    require(operation["minimum_operation_nodes_per_fixture"] == 1, "operation_min_nodes", checks)
+    require(operation["contract_id"] == "g-extract1.operation-definitions.v3", "operation_contract_v3", checks)
+    require(operation["minimum_operation_nodes_per_fixture"] == 0, "operation_min_nodes", checks)
     require(operation["maximum_operation_nodes_per_fixture"] == 2, "operation_max_nodes", checks)
     require(operation["sum_operands"] == {
         "minimum": 2, "maximum": 4,
@@ -493,19 +738,24 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
         "entity_selector_literal", "enum_literal",
     }
     require(set(operation["placeholder_type_system"]) == required_kinds, "placeholder_kind_catalog", checks)
-    require(operation["catalog"][14]["id"] == "UNIT_CONVERSION", "unit_operation_position", checks)
-    require(operation["catalog"][14]["argument_kinds"]["source"] == ["field_identifier"], "unit_source_kind", checks)
-    require(operation["catalog"][15]["argument_kinds"]["selector_value"] == ["entity_selector_literal"], "selector_kind", checks)
+    catalog = {row["id"]: row for row in operation["catalog"]}
+    require("COUNT" not in catalog, "count_removed", checks)
+    require(catalog["UNIT_CONVERSION"]["argument_kinds"]["source"] == ["field_identifier"], "unit_source_kind", checks)
+    require(catalog["ENTITY_FIELD_BIND"]["argument_kinds"]["selector_value"] == ["entity_selector_literal"], "selector_kind", checks)
     for row in operation["catalog"]:
         expected_arguments = set(row["placeholders"]) - {"target"}
         require(set(row["argument_kinds"]) == expected_arguments, f"argument_kind_keys:{row['id']}", checks)
     for vector in operation["rendering_test_vectors"]:
         require(render_subject(vector, operation) == vector["expected_subject"], f"render:{vector['id']}", checks)
     require(ids(operation["rendering_test_vectors"]) == [
-        "negative_integer", "decimal", "date", "time", "sum_two", "sum_three",
-        "quoted_selector", "escaped_entity_selector", "two_node_dependency",
+        "negative_integer", "decimal", "date", "time", "e7_absence", "sum_two", "sum_three",
+        "sum_four", "quoted_selector", "escaped_entity_selector", "two_node_dependency",
     ], "render_vector_ids", checks)
-    for kind, rejected in (("integer_literal", "-0"), ("integer_literal", "+5"), ("decimal_literal", "5.00")):
+    for kind, rejected in (
+        ("integer_literal", "-0"), ("integer_literal", "+5"), ("integer_literal", "05"),
+        ("decimal_literal", "5.00"), ("decimal_literal", "0.50"),
+        ("decimal_literal", "-0.50"), ("decimal_literal", "-0.0"),
+    ):
         try:
             render_operand({"kind": kind, "value": rejected}, operation["placeholder_type_system"])
         except ValueError:
@@ -524,15 +774,23 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
         raise AssertionError("accepted_sum_below_minimum")
     require(operation["historical_absence_sentinel"] == "not_provided", "historical_sentinel", checks)
     require(operation["historical_absence_schema"] == "provided|not_provided", "historical_absence_schema", checks)
+    baseline = contract["baseline_binding"]
+    rendered_subjects = {vector["id"]: render_subject(vector, operation) for vector in operation["rendering_test_vectors"]}
+    for vector in operation["full_prompt_test_vectors"]:
+        require(rendered_subjects[vector["render_vector_id"]] == vector["subject"], f"full_prompt_subject:{vector['id']}", checks)
+        prompt = assemble_prompt(vector["subject"], baseline)
+        require(prompt == vector["expected_prompt"], f"full_prompt:{vector['id']}", checks)
+        require(hashlib.sha256(prompt.encode("utf-8")).hexdigest() == vector["sha256"], f"full_prompt_sha:{vector['id']}", checks)
+        require(".. Copy names" not in prompt, f"no_double_period:{vector['id']}", checks)
     require(not operation["free_form_operation_instruction_allowed"], "no_free_form_operations", checks)
 
     families = contract["family_assignment_contract"]
-    require(families["contract_id"] == "g-extract1.family-assignment.v2", "family_contract_v2", checks)
+    require(families["contract_id"] == "g-extract1.family-assignment.v3", "family_contract_v3", checks)
     require(families["metadata_derived_not_author_selected"], "metadata_not_author_selected", checks)
     expected_fields = {
         "unresolved_required_field_count", "unknown_sentinel_available", "entity_record_count",
         "entity_disambiguation_required", "terminal_operation", "source_operation_types",
-        "output_role_type", "threshold_operator", "temporal_operation", "aggregation_operation",
+        "output_role_types", "threshold_operator", "temporal_operation", "aggregation_operation",
         "entity_selector_role", "source_fact_sequence", "direct_copy_only",
     }
     require(set(families["metadata_schema"]) == expected_fields, "family_metadata_fields", checks)
@@ -540,14 +798,24 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     require(set(families["secondary_feature_derivations"]) == set(families["allowed_secondary_features"]), "all_secondary_derivations", checks)
     require([row["family"] for row in families["priority_first_match"]] == ["E7", "E5", "E4", "E1", "E2", "E3", "E6"], "family_precedence", checks)
     for vector in families["derivation_test_vectors"]:
-        require(vector["terminal_operation"] == vector["operation_ids"][-1], f"terminal_derivation:{vector['id']}", checks)
-        require(vector["source_operation_types"] == sorted(set(vector["operation_ids"][:-1]), key=lambda item: item.encode("utf-8")), f"source_operation_derivation:{vector['id']}", checks)
+        expected_terminal = vector["operation_ids"][-1] if vector["operation_ids"] else "NONE"
+        require(vector["terminal_operation"] == expected_terminal, f"terminal_derivation:{vector['id']}", checks)
+        expected_sources = sorted(set(vector["operation_ids"][:-1]), key=lambda item: item.encode("utf-8")) if vector["operation_ids"] else []
+        require(vector["source_operation_types"] == expected_sources, f"source_operation_derivation:{vector['id']}", checks)
         require(derive_family(vector) == vector["expected_family"], f"family_vector:{vector['id']}", checks)
         require(derive_features(vector) == vector["expected_features"], f"feature_vector:{vector['id']}", checks)
+    for vector in families["e7_graph_contract"]["test_vectors"]:
+        require(validate_e7_graph(vector) == vector["expected"], f"e7_graph:{vector['id']}", checks)
     for vector in families["fact_role_test_vectors"]:
         require(derive_fact_role(vector) == vector["expected"], f"fact_role:{vector['id']}", checks)
+    for vector in families["output_role_test_vectors"]:
+        require(derive_output_role(vector["field"], vector["nodes"]) == vector["expected"], f"output_role:{vector['id']}", checks)
     for vector in families["fact_rendering_test_vectors"]:
         require(render_fact(vector["record"], operation["placeholder_type_system"]) == vector["expected"], f"fact_render:{vector['id']}", checks)
+    safety = families["fact_record_contract"]["content_safety_contract"]
+    for vector in safety["test_vectors"]:
+        actual = "VALID" if content_is_safe(vector["value"], safety) else "AUTHORING_ERROR"
+        require(actual == vector["expected"], f"content_safety:{vector['value']}", checks)
 
     composed = contract["composed_feature_requirements"]
     require(ids(composed["requirements"]) == ["C1", "C2", "C3", "C4"], "composed_ids", checks)
@@ -557,7 +825,7 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     require(c3["sink_source_must_equal_first_target"], "c3_dependency", checks)
 
     ambiguity = contract["ambiguity_contract"]
-    require(ambiguity["contract_id"] == "g-extract1.ambiguity-scoring.v3", "ambiguity_contract_v3", checks)
+    require(ambiguity["contract_id"] == "g-extract1.explicit-absence-scoring.v4", "explicit_absence_contract_v4", checks)
     require("duplicate_key_present" in ambiguity["observable_classifier_inputs"], "ambiguity_duplicate_input", checks)
     require("semantic_schema_valid" in ambiguity["observable_classifier_inputs"], "ambiguity_semantic_schema_input", checks)
     expected_outcomes = [
@@ -569,9 +837,14 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     require(ids(ambiguity["primary_outcome_precedence"], "outcome") == expected_outcomes, "ambiguity_outcomes", checks)
     require([row["priority"] for row in ambiguity["primary_outcome_precedence"]] == list(range(1, 11)), "ambiguity_precedence", checks)
     for vector in ambiguity["classifier_test_vectors"]:
-        duplicate, operational_valid, outcome, false_clean = classify_ambiguity(vector["raw_output"])
+        duplicate, operational_valid, outcome, false_clean = classify_ambiguity(
+            vector["raw_output"], provider_truncated=vector.get("provider_truncated", False),
+            accepted_override=vector.get("operationally_accepted_override"),
+        )
+        accepted = vector.get("operationally_accepted_override", operational_valid)
         require(duplicate == vector["expected_duplicate_key_present"], f"duplicate:{vector['id']}", checks)
         require(operational_valid == vector["expected_operational_schema_valid"], f"operational_schema:{vector['id']}", checks)
+        require(accepted == vector["expected_operationally_accepted"], f"operational_acceptance:{vector['id']}", checks)
         require(outcome == vector["expected_outcome"], f"ambiguity_outcome:{vector['id']}", checks)
         require(false_clean == vector["expected_false_clean"], f"ambiguity_false_clean:{vector['id']}", checks)
     require(ambiguity["phase_a_gate"]["required_observations"] == 10, "ambiguity_a_10", checks)
@@ -583,7 +856,7 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     require(exact["operational_semantic_disagreement_rule"] == "operationally accepted plus semantically invalid is false-clean", "false_clean_bridge", checks)
 
     contamination = contract["contamination_contract"]
-    require(contamination["contract_id"] == "g-extract1.contamination.v2", "contamination_contract_v2", checks)
+    require(contamination["contract_id"] == "g-extract1.contamination.v3", "contamination_contract_v3", checks)
     tokenizer = contamination["tokenizer"]
     require(tokenizer["alternative_precedence"] == ["date", "time", "number", "identifier"], "token_precedence", checks)
     compiled = re.compile(tokenizer["pattern"], re.ASCII)
@@ -610,6 +883,18 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
         "every scored fixture versus every reserve", "reserve versus reserve",
     }
     require(set(contamination["pairwise_scope"]) == required_scopes, "pairwise_scope", checks)
+    reuse = contamination["exact_reuse_contract"]
+    require(reuse["all_rules_apply_to_every_scope"], "reuse_all_scopes", checks)
+    require(set(reuse["scope_names"]) == {"historical_new", "phase_a_phase_a", "phase_a_phase_b", "phase_b_phase_b", "scored_reserve", "reserve_reserve"}, "reuse_scope_names", checks)
+    for vector in reuse["test_vectors"]:
+        if "expected_answer_match" in vector:
+            require((canonical_answer_bytes(vector["left"]) == canonical_answer_bytes(vector["right"])) == vector["expected_answer_match"], f"reuse_answer:{vector['id']}", checks)
+        if "expected_identity_reuse" in vector:
+            require(identity_reuse(vector["left_atoms"], vector["right_atoms"]) == vector["expected_identity_reuse"], f"reuse_identity:{vector['id']}", checks)
+        if "expected_tuple_match" in vector:
+            require((date_number_tuple_bytes(vector["left_atoms"]) == date_number_tuple_bytes(vector["right_atoms"])) == vector["expected_tuple_match"], f"reuse_tuple:{vector['id']}", checks)
+    for vector in reuse["fixture_tuple_extraction_vectors"]:
+        require(extract_date_number_atoms(vector["fixture"], operation) == vector["expected_atoms"], f"reuse_tuple_extract:{vector['id']}", checks)
 
     reserve = contract["reserve_activation_contract"]
     require(reserve["contract_id"] == "g-extract1.reserve-activation.v3", "reserve_contract_v3", checks)
@@ -636,6 +921,12 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
         require(gates["malformed_determinate"]["maximum_affected_fixtures"] == 1, f"gate_{label}_malformed", checks)
     require(gates_a["correlated_false_clean"]["maximum_repeat_pairs"] == 0, "gate_a_correlated", checks)
     require(gates_b["correlated_false_clean"]["classification"] == "not_applicable_single_observation_phase", "gate_b_no_repeat_guardrail", checks)
+    reductions = contract["phase_a_fixture_reduction_contract"]
+    for vector in reductions["truth_vectors"]:
+        all_value, any_value = reduce_repeats(vector["observations"])
+        require(all_value == vector["all_repeats"], f"repeat_all:{vector['observations']}", checks)
+        require(any_value == vector["any_repeat"], f"repeat_any:{vector['observations']}", checks)
+    require(gates_a["family_semantic_floor"]["fixture_reduction"] == "both repeats semantically correct", "family_floor_repeat_reduction", checks)
 
     confidence = contract["confidence_contract"]
     require(abs(confidence["zero_failures_of_35_upper_95"] - cp_zero_upper(35)) < 5e-10, "cp_0_35", checks)
@@ -673,9 +964,10 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     for vector in result["deterministic_test_vectors"]:
         require(result_verdict(vector["facts"], events) == vector["expected"], f"verdict:{vector['id']}", checks)
 
-    baseline = contract["baseline_binding"]
     require(baseline["baseline_behavior_source_commit"] == "0feb1b092bcdb1b934f01a3ce9611c59fcd8fa28", "baseline_source_commit", checks)
-    require(baseline["subject_rendered_only_by"] == "g-extract1.operation-definitions.v2", "catalog_only_subject", checks)
+    require(baseline["contract_id"] == "g-extract1.baseline-binding.v3", "baseline_contract_v3", checks)
+    require(baseline["subject_rendered_only_by"] == "g-extract1.operation-definitions.v3", "catalog_only_subject", checks)
+    require(baseline["double_period_before_copy_prohibited"], "double_period_prohibited", checks)
     for artifact in baseline["existing_behavior_artifacts"]:
         path = ROOT / artifact["path"]
         require(path.is_file(), f"baseline_exists:{artifact['role']}", checks)
@@ -715,13 +1007,14 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     require(sha256(ROOT / "experiments/G-ROUTE4-candidate/closure/PHASE_B_UNSAFE_STOP_DIAGNOSTIC.json") == history["diagnostic_sha256"], "diagnostic_unchanged", checks)
 
     human_literals = [
-        "g-extract1.design-candidate.v4", "g-extract1.operation-definitions.v2",
-        "g-extract1.family-assignment.v2", "g-extract1.contamination.v2",
-        "g-extract1.ambiguity-scoring.v3", "g-extract1.reserve-activation.v3",
+        "g-extract1.design-candidate.v5", "g-extract1.operation-definitions.v3",
+        "g-extract1.family-assignment.v3", "g-extract1.contamination.v3",
+        "g-extract1.explicit-absence-scoring.v4", "g-extract1.reserve-activation.v3",
         "g-extract1.integrity-events.v2", "g-extract1.result-state-machine.v3",
         "POST_CONTACT_GOLD_DEFECT_DISCOVERED", "UNVERIFIABLE_INTERRUPTION_CHECKPOINT",
         "RESERVE:{phase}:{round}:{primary_family}", "2026-10-01", "5-3",
-        "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_4", "does not prove scientific validity",
+        "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_5", "does not prove scientific validity",
+        "SOURCE_COPY", "explicit partial absence", "both repeats semantically correct",
     ]
     for literal in human_literals:
         require(literal in human, f"human_literal:{literal}", checks)
@@ -752,7 +1045,7 @@ def main() -> int:
     human = HUMAN.read_text(encoding="utf-8")
     checks = validate(contract, human)
     report = {
-        "schema_version": "g-extract1.design-validation-report.v3",
+        "schema_version": "g-extract1.design-validation-report.v5",
         "verdict": "PASS",
         "validation_scope": "deterministic structural and cross-representation consistency only",
         "scientific_validity_assessed": False,
