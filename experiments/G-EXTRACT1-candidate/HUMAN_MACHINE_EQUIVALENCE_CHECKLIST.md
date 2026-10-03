@@ -1,5 +1,28 @@
 # G-EXTRACT1 v10 Human/Machine Equivalence Checklist
 
+## Contamination-Feasibility Amendment
+
+- Exact `declared_scaffold_overlap_contract` is parsed from the human normative annex.
+- Machine-only allowed paths: new contract, `experiment.status`, `final_verdict`.
+  Projecting these away reproduces parent 28fb6bbd exactly; all science/governance preserved.
+- Full 168-position/192-variant scope, 14,028 logical/18,312 rendered comparisons,
+  24 separate E5 same-base scopes, all minima/views and 14 impossible classes checked.
+- Exact 234 eligible logical pair memberships, fingerprint class IDs, forced five-grams
+  and strict residual <3/25 match the generated value-free proposal without author discretion.
+- Both actual slot/value/lexical/type/gold/output/fingerprint checks remain required.
+- Cross-subtype identity retained; two same-subtype E1 fixed-boundary corrections explicitly separate.
+- Existing ordinary/near-replay thresholds and all historical/exact reuse objects unchanged.
+- Residual removal affects only frozen windows, never token joins or freely chosen literals;
+  either residual empty is authoring error; finite empty old content is not independence evidence.
+- Raw sequence, identity, answer, tuple, payload and generated-identity freshness unchanged;
+  copied content/undeclared/unrelated/replay mutations rejected in deterministic checks.
+- Historical adapter106/106, blueprint five-file byte preservation and recurrence membership rechecked.
+- Post repair no planned pair has a forced violation; this is not proof of concrete acceptance
+  or scientific validity, and does not grant corpus, blueprint, provider or execution authority.
+- Blueprint contamination bindings need a separate future reviewed/authorized update; not done here.
+
+The earlier amendment checklists below are retained as checkpoint history.
+
 Both design files are co-normative. The v10 human annex embeds exact structured normative objects; the validator parses them and compares them with the machine contract. This checklist is an index of checks and reviewer obligations, not a proof of complete prose equivalence or scientific validity.
 
 ## Prospective output-field amendment

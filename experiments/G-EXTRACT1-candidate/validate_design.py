@@ -23,6 +23,7 @@ HUMAN = HERE / "DESIGN_CANDIDATE.md"
 MACHINE = HERE / "DESIGN_CANDIDATE.json"
 REPORT = HERE / "DESIGN_VALIDATION_REPORT.json"
 OUTPUT_FIELD_AMENDMENT_SUMMARY: dict[str, Any] = {}
+SCAFFOLD_AUDIT: dict[str, Any] = {}
 
 
 class DuplicateKeyError(ValueError):
@@ -1666,6 +1667,23 @@ def checking_pair_decision(left: str, right: str, actual_left: list[Any], actual
     expected=lambda pos:rules["fingerprint_classes"][positions[pos]["fingerprint_class"]]["fingerprint"]
     if not facts["slot_value_semantics_valid"] or actual_left!=expected(left) or actual_right!=expected(right):return "AUTHORING_ERROR_STRUCTURE"
     if not facts["exact_reuse_pass"] or not facts["raw_value_sequence_fresh"] or facts["raw_payload_equal"]:return "REJECT_CONTAMINATION"
+    amendment = contract.get("declared_scaffold_overlap_contract")
+    if amendment:
+        pair = frozenset((left, right))
+        group = next((g for g in amendment["eligible_groups"]
+                      if any(frozenset(p) == pair for p in g["position_pairs"])), None)
+        if group is not None:
+            # Flags are derived checks in a future audit, never author assertions.
+            if not facts.get("all_freshness_checks_pass", False):
+                return "REJECT_CONTAMINATION"
+            if "ordinary_grams_left" not in facts or "ordinary_grams_right" not in facts:
+                return "AUTHORING_ERROR_MISSING_SCAFFOLD_EVIDENCE"
+            removed = {tuple(g.split(" ")) for g in group["forced_overlapping_five_grams"]}
+            a = facts["ordinary_grams_left"] - removed
+            b = facts["ordinary_grams_right"] - removed
+            if not a or not b:
+                return "AUTHORING_ERROR_EMPTY_RESIDUAL"
+            return "PERMITTED_DECLARED_SCAFFOLD" if Fraction(len(a & b),len(a | b)) < Fraction(3,25) else "REJECT_CONTAMINATION"
     if declared_template_pair(left,right,contract):
         content=facts["content_jaccard"]
         if content is None:
@@ -1675,6 +1693,233 @@ def checking_pair_decision(left: str, right: str, actual_left: list[Any], actual
         return "PERMITTED_DECLARED_RECURRENCE" if content<0.12 else "REJECT_CONTAMINATION"
     matched=sum(a==b for a,b in zip(actual_left,actual_right))
     return "REJECT_CONTAMINATION" if facts["ordinary_jaccard"]>=0.20 or matched==6 or matched>=5 and facts["ordinary_jaccard"]>=0.12 else "PERMITTED_DISTINCT_SUBTYPE"
+
+
+def symbolic_position_tokens(position: dict[str, Any], contract: dict[str, Any]) -> list[Any]:
+    """Value-free token algebra; no source text, numeric literals or gold authored."""
+    base = position["logical_base_id"]
+    slot = position["subtype_slot"]
+    context = position["phase"] + ":" + position["risk_round"]
+    sequence = position["schema_plan"]["source_fact_role_schema_entity_sequence"]
+    tokens, string_index = [], 0
+    for i, (role, schema, entity) in enumerate(sequence):
+        field_index = (1 if i < len(sequence)//2 else 2) if entity >= 0 else i + 1
+        if entity >= 0:
+            tokens.extend(["for", "entity", chr(97 + entity)])
+        tokens.append(f"f_{field_index:02d}")
+        if role == "EXPLICIT_ABSENCE":
+            tokens.extend(["was", "not", "provided"])
+            continue
+        tokens.append("is")
+        if slot.startswith("E5") and role == "SUPPORT":
+            tokens.extend(["entity", chr(97 + entity)])
+        elif schema == "string":
+            string_index += 1
+            tokens.append(f"{('label','code','id')[(string_index-1)%3]}_{string_index:02d}")
+        elif schema == "boolean":
+            tokens.append(str(contract["value_allocation_contract"]["e7_boolean_source_allocation"][context]).lower())
+        elif "|" in schema:
+            options = schema.split("|")
+            gold_index = contract["subtype_allocation_contract"]["enum_answer_positions"][context][slot]
+            if slot == "E5-03":
+                selected = contract["entity_selection_allocation_contract"]["selected_index_matrix"][context][2]
+                value = options[(gold_index + entity - selected) % len(options)]
+            else:
+                value = options[gold_index]
+            tokens.append(value)
+        elif slot == "E1-05" and schema == "integer":
+            tokens.append("0" if position["risk_round"] == "R2" else "366")
+        else:
+            # One token for every legal numeric/date/time value. Disjoint atoms
+            # attain the pairwise lower bound; fixed catalog atoms stay above.
+            tokens.append(("FRESH", base, i, schema))
+    pattern = contract["contamination_contract"]["tokenizer"]["pattern"]
+    for output in position["schema_plan"]["output_fields"]:
+        name = re.sub(r"([fd])\d{3}_", r"\1_", output["name"], flags=re.ASCII)
+        tokens.extend(re.findall(pattern, name + "=" + output["schema_type"].casefold(), re.ASCII))
+    return tokens
+
+
+def symbolic_grams(tokens: list[Any], contract: dict[str, Any], view: str) -> set[tuple[Any, ...]]:
+    pattern = contract["ordinal_neutral_similarity_contract"]["declared_template_content_view"]["content_value_regex"]
+    def content(token: Any) -> bool:
+        return isinstance(token, tuple) or bool(re.fullmatch(pattern, token, re.ASCII))
+    if view == "shape":
+        value_pattern = contract["ordinal_neutral_similarity_contract"]["shape_view"]["value_token_regex"]
+        tokens = ["value" if isinstance(t, tuple) or re.fullmatch(value_pattern, t, re.ASCII) else t for t in tokens]
+    return {tuple(tokens[i:i+5]) for i in range(max(0, len(tokens)-4))
+            if view != "content" or any(content(t) for t in tokens[i:i+5])}
+
+
+def scaffold_feasibility_audit(contract: dict[str, Any]) -> dict[str, Any]:
+    blueprint = load_json_unique(HERE / "blueprint" / "BLUEPRINT.json")
+    positions = blueprint["logical_positions"]
+    classes, all_pairs = {}, []
+    for left, right in itertools.combinations(positions, 2):
+        lp, rp = left["logical_base_id"], right["logical_base_id"]
+        lt, rt = symbolic_position_tokens(left, contract), symbolic_position_tokens(right, contract)
+        a, b = symbolic_grams(lt, contract, "ordinary"), symbolic_grams(rt, contract, "ordinary")
+        sa, sb = symbolic_grams(lt, contract, "shape"), symbolic_grams(rt, contract, "shape")
+        ca, cb = symbolic_grams(lt, contract, "content"), symbolic_grams(rt, contract, "content")
+        fp, fq = left["recurrence"]["planned_six_components"], right["recurrence"]["planned_six_components"]
+        matches = sum(x == y for x, y in zip(fp, fq))
+        same = left["subtype_slot"] == right["subtype_slot"]
+        ordinary = Fraction(len(a & b), len(a | b)) if a | b else Fraction(1)
+        content = Fraction(len(ca & cb), len(ca | cb)) if ca | cb else None
+        limit = Fraction(3, 25) if same or matches >= 5 else Fraction(1, 5)
+        infeasible = (content is not None and content >= limit) if same else ordinary >= limit or matches == 6
+        weight = (2 if left["family"] == "E5" else 1) * (2 if right["family"] == "E5" else 1)
+        record = dict(left=lp, right=rp, same_subtype=same, fingerprint_matches=matches,
+                      ordinary_minimum=str(ordinary), ordinary_minimum_decimal=float(ordinary),
+                      shape_jaccard=str(Fraction(len(sa & sb), len(sa | sb))),
+                      content_minimum=None if content is None else str(content),
+                      threshold_exclusive=str(limit), rendered_pair_count=weight,
+                      classification="STRUCTURALLY_INFEASIBLE_WITH_EXISTING_RULES" if infeasible else "FEASIBLE_WITH_EXISTING_RULES")
+        all_pairs.append(record)
+        if infeasible:
+            forced = sorted(" ".join(g) for g in a & b)
+            key_data = [sorted([left["subtype_slot"],right["subtype_slot"]]), matches,
+                        sorted([left["recurrence"]["fingerprint_class"],right["recurrence"]["fingerprint_class"]]),
+                        str(ordinary), record["shape_jaccard"], record["content_minimum"], str(limit), forced]
+            key = hashlib.sha256(json.dumps(key_data,separators=(",",":")).encode()).hexdigest()
+            group = classes.setdefault(key, dict(group_id=key, subtype_pair=key_data[0],
+                fingerprint_classes=key_data[2], fingerprint_matches=matches,
+                ordinary_minimum=str(ordinary), ordinary_minimum_decimal=float(ordinary),
+                shape_jaccard=record["shape_jaccard"], content_minimum=record["content_minimum"],
+                threshold_exclusive=str(limit), forced_overlapping_five_grams=forced, position_pairs=[],
+                rendered_pair_count=0, root_cause="mandatory source/schema/finite-catalog scaffold; no variable-value gram in forced intersection"))
+            group["position_pairs"].append([lp,rp]); group["rendered_pair_count"] += weight
+    return dict(logical_positions=len(positions), rendered_variants=len(blueprint["rendered_variants"]),
+        logical_cross_base_pairs=len(all_pairs), rendered_cross_base_pairs=sum(x["rendered_pair_count"] for x in all_pairs),
+        same_base_counterfactual_pairs=24, infeasible_classes=list(classes.values()),
+        infeasible_logical_pairs=sum(len(x["position_pairs"]) for x in classes.values()),
+        infeasible_rendered_pairs=sum(x["rendered_pair_count"] for x in classes.values()), all_pair_classifications=all_pairs)
+
+
+def scaffold_contract_proposal(contract: dict[str, Any]) -> dict[str, Any]:
+    """Construct the prospective value-free amendment, never corpus content."""
+    audit = scaffold_feasibility_audit(contract)
+    return dict(
+        contract_id="g-extract1.declared-scaffold-overlap.v1",
+        parent_commit="28fb6bbd3fb668265e4cc50cda0da0f9afdf3ce5",
+        precedence="Only exact listed cross-base position pairs override the old ordinary/content veto. All other rules and pair-local E5 exception remain unchanged.",
+        blueprint_status="Unchanged accepted 28fb6bbd blueprint; contamination rebinding requires independent amendment rereview and separate future authorization. No corpus authority granted.",
+        scope=dict(logical_positions=168,rendered_variants=192,logical_pairs=14028,
+                   rendered_cross_base_pairs=18312,same_base_e5_pairs_separate=24),
+        old_rule=dict(ordinary_exclusive="1/5",near_replay_inclusive="3/25",unchanged_globally=True),
+        eligibility=[
+            "Both are different logical base IDs in exactly one listed position_pair; rendered variant multiplicity never broadens base membership.",
+            "Each actual fixture independently passes lexical, typed schema/operation/gold, subtype, value-shape, output amendment and exact planned six-component fingerprint validation; E5 full pair/request audit also required.",
+            "Actual position and complete fingerprint equal the bound unchanged blueprint and frozen recurrence ledger; no author-selected group or output-derived eligibility.",
+            "Cross-subtype pairs retain different subtype IDs AND different full fingerprints; schema/operation/entity-role/fact-sequence differences are validated, not inferred from IDs.",
+            "The two E1-05 same-subtype pairs are separately named fixed-boundary recurrence corrections, not distinct-subtype independence claims.",
+        ],
+        view=dict(
+            input="same ordinal-neutral input.text plus canonical schema payload as existing ordinary view",
+            normalization="existing NFC/CRLF/casefold/whitespace and NEW-only ordinal masking, unchanged",
+            tokenizer="existing contamination.v5 tokenizer, unchanged",
+            ngram_size=5,construction="ordinary set minus exactly group.forced_overlapping_five_grams on EACH side; no token deletion, no new adjacency or re-tokenization",
+            removed="Only the exact listed invariant five-grams proven from frozen source/schema syntax, generated ordinal-neutral catalog atoms, or required fixed E1-05 boundary offset. No arbitrary shared gram or mutable literal may be removed.",
+            retained="Every other ordinary five-gram, including all grams bearing freely chosen numeric/date/time values. Exact raw typed values including generated labels, finite enums/Booleans and fixed offsets remain in all existing freshness/semantic checks.",
+            metric="set Jaccard with exact integer cross-multiplication: 25*intersection < 3*union",
+            limit_exclusive="3/25",one_or_both_empty="AUTHORING_ERROR_EMPTY_RESIDUAL; never automatic independence credit",
+            reporting="ordinary, shape, existing content (or NOT_APPLICABLE), residual, removed grams, exact membership, actual validations and all freshness results; shape alone never permits a pair",
+            finite_catalog="generated labels/enum/Boolean and fixed boundary offsets are not scalable freshness evidence; nonempty residual alone is not independence evidence; all structural and raw freshness requirements mandatory",
+        ),
+        freshness_required=["raw typed VALUE sequence inequality","whole-answer exact-reuse pass","identity atom disjointness","eligible date-number tuple exact-reuse pass","raw payload inequality","generated identities bound to distinct base ordinals","independent A/B authorship/review and no A content reuse in B"],
+        empty_content="Old content sets may be empty for finite/generated catalogs. Eligibility and nonempty residual plus all freshness/structural requirements still mandatory; report NOT_APPLICABLE, not proof of independence.",
+        historical="106/106 adapter unchanged; reject ordinary>=0.20, projection3/3, or projection>=2/3 and ordinary>=0.12; amendment never applies to historical/new",
+        audit_algorithm=dict(
+            source="unchanged blueprint schema_plan source role/schema/entity sequence and canonical outputs; frozen value/enum/Boolean/lexical allocations; no concrete source text/gold",
+            token_algebra="symbolic_position_tokens: one unique FRESH(base,record,schema) per freely variable single-token value; fixed 0/366, generated label/code/id order, E5 selector entity letters, opaque enum allocation and Boolean context atoms remain exact; source renderer/schema tokenizer unchanged",
+            minimum_proof="Legal fresh numeric/date/time literals each occupy one token. All value-bearing window intersections can be avoided pairwise by disjoint legal literals; fixed grammar windows remain. Denominators use maximum distinct five-gram sets. Additional literal equality cannot reduce intersection or increase union. Thus recorded rational ordinary/content minima are attained pairwise, not mere sample estimates.",
+            domain_support="Each variable occurrence has at least two alternatives under its accepted magnitude/precision/arithmetic/date/time/gap profile; entity values preserve frozen gaps/permutation. Select disjoint anchors across a pair; fixed equality/offset/enum/Boolean cases explicitly retained. No concrete value is selected or corpus authored by this algebra.",
+            shape="all scalable symbolic values and existing numeric/date/time/enum/Boolean tokens replaced by value exactly as old shape algorithm",
+            content="old content filter retains five-grams with scalable symbolic values or fixed numeric/date/time tokens; no other catalog atom",
+            classification="old decision table per pair: same-subtype content<0.12 or allowed empty; different subtype ordinary<0.20, or <0.12 for >=5/6; exact6 different-subtype forbidden",
+            quantifier="No planned pair has a forced contamination violation. Pairwise lower-bound feasibility does NOT prove a simultaneous concrete assignment, future corpus acceptance, independence or scientific validity; all concrete audits still mandatory.",
+            inventory="Validation report includes all14028 logical pair classifications/minima and all14 impossible classes, exact234 position pairs, weighted906 rendered pairs; 24 same-base E5 scopes separate.",
+        ),
+        eligible_groups=audit["infeasible_classes"],
+        pre_repair_summary={k:audit[k] for k in ("infeasible_logical_pairs","infeasible_rendered_pairs")},
+        preservation="All prior machine sections byte-equivalent as JSON objects except experiment.status/final_verdict; schedules/seeds/gates/call budget/authority, profiles/positions/recurrence classes, E4/E7/E5 science, exact reuse and history unchanged.",
+        authority=dict(blueprint_update=False,corpus_gold_authoring=False,implementation=False,execution=False,provider_calls=0,belief_effects="none"),
+        review_required=True,
+    )
+
+
+def validate_scaffold_amendment(contract: dict[str, Any], human: str, checks: list[str]) -> dict[str, Any]:
+    amendment = contract["declared_scaffold_overlap_contract"]
+    require(amendment == scaffold_contract_proposal(contract), "scaffold_exact_preregistered_contract_and_groups",checks)
+    match = re.search(r"<!-- SCAFFOLD_AMENDMENT_NORMATIVE_BEGIN -->\s*```json\s*(.*?)\s*```\s*<!-- SCAFFOLD_AMENDMENT_NORMATIVE_END -->",human,re.DOTALL)
+    require(match is not None and json.loads(match.group(1)) == amendment,"scaffold_human_machine_complete_equivalence",checks)
+    parent = json.loads(subprocess.check_output(["git","-c","safe.directory="+ROOT.as_posix(),"show",amendment["parent_commit"]+":experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.json"],cwd=ROOT))
+    projected=copy.deepcopy(contract); projected.pop("declared_scaffold_overlap_contract")
+    for key in ("experiment","final_verdict"):
+        if key == "experiment": projected[key]["status"] = parent[key]["status"]
+        else: projected[key] = parent[key]
+    require(projected==parent,"scaffold_only_authorized_machine_paths_changed",checks)
+    audit=scaffold_feasibility_audit(contract)
+    require((audit["logical_cross_base_pairs"],audit["rendered_cross_base_pairs"],audit["infeasible_logical_pairs"],audit["infeasible_rendered_pairs"],len(audit["infeasible_classes"]))==(14028,18312,234,906,14),"scaffold_full_pre_repair_inventory",checks)
+    positions={p["logical_base_id"]:p for p in load_json_unique(HERE/"blueprint"/"BLUEPRINT.json")["logical_positions"]}
+    covered={frozenset(pair):g for g in amendment["eligible_groups"] for pair in g["position_pairs"]}
+    post=[]
+    for row in audit["all_pair_classifications"]:
+        pair=frozenset((row["left"],row["right"]))
+        if pair in covered:
+            left,right=(positions[row[k]] for k in ("left","right"))
+            a=symbolic_grams(symbolic_position_tokens(left,contract),contract,"ordinary")
+            b=symbolic_grams(symbolic_position_tokens(right,contract),contract,"ordinary")
+            fixed={tuple(g.split(" ")) for g in covered[pair]["forced_overlapping_five_grams"]}
+            require(fixed==a&b and bool(a-fixed) and bool(b-fixed),"scaffold_fixed_intersection_proof:"+row["left"]+":"+row["right"],checks)
+            facts=dict(slot_value_semantics_valid=True,exact_reuse_pass=True,raw_value_sequence_fresh=True,
+                       raw_payload_equal=False,all_freshness_checks_pass=True,ordinary_grams_left=a,
+                       ordinary_grams_right=b,ordinary_jaccard=float(Fraction(row["ordinary_minimum"])),content_jaccard=0)
+            result=checking_pair_decision(row["left"],row["right"],left["recurrence"]["planned_six_components"],right["recurrence"]["planned_six_components"],facts,contract)
+            require(result=="PERMITTED_DECLARED_SCAFFOLD","scaffold_pair_lower_bound_pass:"+row["left"]+":"+row["right"],checks)
+            post.append(dict(left=row["left"],right=row["right"],residual_minimum="0",classification="NO_FORCED_VIOLATION"))
+        else:
+            require(row["classification"]=="FEASIBLE_WITH_EXISTING_RULES","scaffold_unrelated_pair_unchanged_feasible:"+row["left"]+":"+row["right"],checks)
+    # Isolated gram-algebra mutations, not concrete fixtures or corpus authoring.
+    group=next(g for g in amendment["eligible_groups"] if g["subtype_pair"]==["E5-01","E5-02"])
+    lp,rp=group["position_pairs"][0];left,right=positions[lp],positions[rp]
+    a=symbolic_grams(symbolic_position_tokens(left,contract),contract,"ordinary")
+    b=symbolic_grams(symbolic_position_tokens(right,contract),contract,"ordinary")
+    fpl,fpr=left["recurrence"]["planned_six_components"],right["recurrence"]["planned_six_components"]
+    facts=dict(slot_value_semantics_valid=True,exact_reuse_pass=True,raw_value_sequence_fresh=True,
+               raw_payload_equal=False,all_freshness_checks_pass=True,ordinary_grams_left=a,
+               ordinary_grams_right=b,ordinary_jaccard=0.5,content_jaccard=0)
+    for label,changes in (
+        ("copied_non_scaffold_content",dict(ordinary_grams_right=a)),
+        ("raw_value_replay",dict(raw_value_sequence_fresh=False)),
+        ("raw_payload_replay",dict(raw_payload_equal=True)),
+        ("identity_replay",dict(all_freshness_checks_pass=False)),
+        ("whole_answer_replay",dict(exact_reuse_pass=False)),
+        ("undeclared_structure",dict(slot_value_semantics_valid=False)),
+    ):
+        changed=dict(facts,**changes)
+        require(checking_pair_decision(lp,rp,fpl,fpr,changed,contract) in {"REJECT_CONTAMINATION","AUTHORING_ERROR_STRUCTURE"},"scaffold_adversarial_reject:"+label,checks)
+    u="A:R2:E3-01:PRIMARY";w="A:R2:E3-02:PRIMARY"
+    require(checking_pair_decision(u,w,positions[u]["recurrence"]["planned_six_components"],positions[w]["recurrence"]["planned_six_components"],dict(facts,ordinary_jaccard=0.5),contract)=="REJECT_CONTAMINATION","scaffold_unrelated_high_overlap_rejected",checks)
+    require(all(x[0]!=x[1] for g in amendment["eligible_groups"] for x in g["position_pairs"]),"scaffold_no_same_base_cf_scope",checks)
+    require(within_counterfactual_exception(dict(base_position=lp,variant_id="CF1"),dict(base_position=lp,variant_id="CF2"),{lp}),"scaffold_old_same_base_exception_retained",checks)
+    require(not within_counterfactual_exception(dict(base_position=lp,variant_id="CF1"),dict(base_position=rp,variant_id="CF2"),{lp,rp}),"scaffold_cross_base_not_pair_local_exception",checks)
+    changed_fp=copy.deepcopy(fpr);changed_fp[2]="UNDECLARED"
+    require(checking_pair_decision(lp,rp,fpl,changed_fp,facts,contract)=="AUTHORING_ERROR_STRUCTURE","scaffold_wrong_fingerprint_denied",checks)
+    fixed={tuple(g.split(" ")) for g in group["forced_overlapping_five_grams"]}
+    require(checking_pair_decision(lp,rp,fpl,fpr,dict(facts,ordinary_grams_right=fixed),contract)=="AUTHORING_ERROR_EMPTY_RESIDUAL","scaffold_empty_residual_not_independence",checks)
+    # Exactly three shared residual windows out of 25 union windows is a reject.
+    pool=[("ISOLATED_WINDOW",i) for i in range(25)]
+    exact_limit=dict(facts,ordinary_grams_left=set(pool[:14]),ordinary_grams_right=set(pool[:3]+pool[14:]))
+    require(checking_pair_decision(lp,rp,fpl,fpr,exact_limit,contract)=="REJECT_CONTAMINATION","scaffold_residual_strict_three_of_25_reject",checks)
+    for score,expected in ((0.119,False),(0.12,True)):
+        require(historical_structural_replay(b'[1,2,3]',b'[1,2,4]',score)==expected,"scaffold_historical_near_boundary:"+str(score),checks)
+    require(historical_structural_replay(b'[1,2,3]',b'[1,2,3]',0),"scaffold_historical_exact_collision_reject",checks)
+    require(historical_adaptation_summary(contract)["rejected"]==0,"scaffold_historical_adapter_unchanged",checks)
+    audit["post_repair"]=dict(planned_pairs_without_forced_violation=14028,rendered_pairs_without_forced_violation=18312,
+        remaining_forced_violations=0,bounded_pairs=post,concrete_corpus_acceptance_proven=False,
+        scope="symbolic pairwise feasibility only; future actual values/freshness/independent audits remain required")
+    return audit
 
 
 def similarity_diagnostics(contract: dict[str, Any]) -> dict[str, Any]:
@@ -2696,7 +2941,12 @@ def validate_output_field_amendment(
     field_contract.update(required=True, label_removal=False, construction_contract_ref="output_field_amendment_contract")
     rules = expected["exact_value_contract"]["semantic_rules"]
     rules.update(g_extract1_output_field_contract_ref="output_field_amendment_contract", g_extract1_leading_label_normalization_permitted=False)
-    require(contract == expected, "output_amendment_only_authorized_machine_paths_changed", checks)
+    projection = copy.deepcopy(contract)
+    if "declared_scaffold_overlap_contract" in projection:
+        projection.pop("declared_scaffold_overlap_contract")
+        projection["experiment"]["status"] = expected["experiment"]["status"]
+        projection["final_verdict"] = expected["final_verdict"]
+    require(projection == expected, "output_amendment_only_authorized_machine_paths_changed", checks)
     unchanged = sorted(key for key in before_keys if accepted[key] == contract[key])
     for key in unchanged:
         require(accepted[key] == contract[key], "output_amendment_preserved_section:" + key, checks)
@@ -2794,7 +3044,7 @@ def validate_existing_blueprint_inventory(checks: list[str]) -> None:
         path = directory / name
         old = subprocess.check_output([
             "git", "-c", "safe.directory=" + ROOT.as_posix(), "show",
-            "99707b4f13abd6533f1d09313bdb066793996be9:experiments/G-EXTRACT1-candidate/blueprint/" + name,
+            "28fb6bbd3fb668265e4cc50cda0da0f9afdf3ce5:experiments/G-EXTRACT1-candidate/blueprint/" + name,
         ], cwd=ROOT)
         require(path.is_file() and path.read_bytes() == old, "existing_blueprint_unchanged:" + name, checks)
 
@@ -2804,7 +3054,7 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     OUTPUT_FIELD_AMENDMENT_SUMMARY.clear()
     checks: list[str] = []
     require(contract["schema_version"] == "g-extract1.design-candidate.v10", "schema_v10", checks)
-    require(contract["experiment"]["status"] == "READY_FOR_G_EXTRACT1_OUTPUT_FIELD_AMENDMENT_REREVIEW", "status_output_field_amendment", checks)
+    require(contract["experiment"]["status"] == "READY_FOR_G_EXTRACT1_CONTAMINATION_REPAIR_REREVIEW", "status_contamination_repair", checks)
     require(contract["experiment"]["design_revision"] == 10, "design_revision_v10", checks)
     for field in ("implemented", "blueprint_authorized", "fixture_authoring_authorized", "execution_authorized"):
         require(contract["experiment"][field] is False, f"authority_false:{field}", checks)
@@ -2815,6 +3065,8 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     validate_v8(contract, checks)
     validate_v9(contract, checks)
     validate_v10(contract, checks)
+    SCAFFOLD_AUDIT.clear()
+    SCAFFOLD_AUDIT.update(validate_scaffold_amendment(contract,human,checks))
 
     corpus, phases = contract["corpus"], contract["phases"]
     expected_counts = {
@@ -3286,6 +3538,7 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--write-report", action="store_true")
+    parser.add_argument("--summary", action="store_true", help="Print compact deterministic report summary")
     args = parser.parse_args()
     contract = load_json_unique(MACHINE)
     human = HUMAN.read_text(encoding="utf-8")
@@ -3298,6 +3551,7 @@ def main() -> int:
         "adversarial_review_replaced": False,
         "check_count": len(checks),
         "output_field_amendment": OUTPUT_FIELD_AMENDMENT_SUMMARY,
+        "declared_scaffold_feasibility_audit": SCAFFOLD_AUDIT,
         "historical_adapter": historical_adaptation_summary(contract),
         "preserved_v8_sections":preserved_v8_sections(contract),
         "template_ledger_summary": {
@@ -3330,7 +3584,13 @@ def main() -> int:
     rendered = json.dumps(report, ensure_ascii=True, indent=2, sort_keys=True) + "\n"
     if args.write_report:
         REPORT.write_text(rendered, encoding="utf-8", newline="\n")
-    print(rendered, end="")
+    if args.summary:
+        print(json.dumps(dict(verdict=report["verdict"],check_count=report["check_count"],
+            audit_scope=report["validation_scope"],historical_adapter=report["historical_adapter"],
+            pre_repair=SCAFFOLD_AUDIT["infeasible_logical_pairs"],
+            remaining_forced_violations=SCAFFOLD_AUDIT["post_repair"]["remaining_forced_violations"]),sort_keys=True))
+    else:
+        print(rendered, end="")
     return 0
 
 

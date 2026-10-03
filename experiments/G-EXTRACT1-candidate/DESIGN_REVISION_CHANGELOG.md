@@ -1,5 +1,30 @@
 # G-EXTRACT1 Design Revision Changelog
 
+## Prospective Contamination-Feasibility Repair
+
+Parent: `28fb6bbd3fb668265e4cc50cda0da0f9afdf3ce5`. Design/checking only;
+no source values, gold, scored/reserve content or blueprint files authored.
+
+| Requested finding/control | Resolution |
+|---|---|
+| Do not repair only E5-01/E5-02 | Complete symbolic 14,028 logical / 18,312 rendered cross-base audit; all ten E5 pairs, all families/cross-family pairs and 24 separate same-base scopes covered. |
+| Impossible-class inventory/minima/forced grams | 14 exact classes, 234 logical / 906 rendered comparisons; exact contexts, scopes, fingerprint agreement, rational minima, shape/content and grams frozen in co-normative annex and report. |
+| Distinguish mandatory scaffold from genuine replay | Per-class fixed-window proof; all mutable literals excluded from the removable set. E1 fixed zero/366 boundary issue separately named, not cross-subtype identity. |
+| Smallest prospective bounded repair | Only the 234 enumerated position pairs; ordinary five-gram set minus exact class invariant intersection, strict residual <0.12, nonempty residuals. No family-wide or author-selectable waiver. |
+| Ledger and actual eligibility | Actual subtype/value/lexical/schema/operation/gold/output and exact planned fingerprints mandatory; E5 pair audit; distinct full fingerprints for different subtypes. |
+| Preserve freshness / detect copying | All raw sequence/answer/identity/tuple/payload/generated-identity/A-B protections unchanged; adversarial replay and copied-residual tests reject. |
+| No shape-only exception / empty content | Report all views; shape is not permission; old empty finite content is NOT_APPLICABLE, residual empty is authoring error, all other requirements still mandatory. |
+| Global/historical protection | Original threshold and historical section objects unchanged; 106/106 adaptation rechecked; no historical edits. |
+| Pair-local E5 versus cross-base | Same-base exception unchanged; new groups contain only distinct logical bases and never use pair-local sharing to admit cross-base data. |
+| Recurrence membership | All 168 positions /192 variants, 51 classes,35 subtype groups, profiles/gates/seeds/budget/authority remain unchanged; scaffold groups are separate. |
+| Full post-repair proof | All old infeasible pairs covered and nonempty residual lower bound zero; every other pair passes its unchanged lower-bound rule. Pairwise feasibility only, not concrete corpus success. |
+| Blueprint status | Five accepted blueprint files unchanged against 28fb6bbd; checker guard now pins that accepted checkpoint instead of older 99707b4f. Separate future blueprint rebind after rereview. |
+| Human/machine equivalence | Exact parsed scaffold contract annex; preservation projection back to parent catches any unrelated machine alteration. |
+| Governance | All authority false; model/provider calls0; corpus/gold/reserve content0; G-ROUTE4 CLOSED FAILED unchanged; belief effects none. |
+
+Earlier amendments below are preserved historical checkpoint records. Their
+checkpoint-specific status and blueprint references do not override this amendment.
+
 ## Narrow prospective output-field amendment to accepted V10
 
 Accepted design parent: `394d24121309ec9dce80e725b50dbe5eb60f6d2a`. Reviewed blueprint: `99707b4f13abd6533f1d09313bdb066793996be9`. Marcus authorized only this design/checking amendment; the blueprint remains byte-unchanged and still needs its separate repair/review.

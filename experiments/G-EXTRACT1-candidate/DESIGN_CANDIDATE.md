@@ -1,4 +1,1634 @@
-# G-EXTRACT1 Design Candidate v10: Prospective Output-Field Amendment
+# G-EXTRACT1 Design Candidate v10: Prospective Contamination-Feasibility Amendment
+
+Current status: `READY_FOR_G_EXTRACT1_CONTAMINATION_REPAIR_REREVIEW`.
+
+This amendment is design/checking only. The exact structured annex below is
+co-normative with `declared_scaffold_overlap_contract` in the machine document.
+It supersedes only the old comparison veto for its enumerated cross-base pairs.
+All later output-field/V10 text and annexes remain binding except that narrowly
+specified precedence; their earlier checkpoint status/blueprint statements are
+historical records, not current authorization. Parent: `28fb6bbd3fb668265e4cc50cda0da0f9afdf3ce5`.
+
+## Complete Feasibility Audit
+
+The value-free token algebra audits all 168 logical positions and 192 variants:
+14,028 logical cross-base pairs, weighted to 18,312 rendered cross-base pairs.
+The 24 same-base E5 counterfactual comparisons stay in their separate existing
+scope. Every pair's ordinary minimum, shape score, content minimum/applicability,
+fingerprint match count and old-rule classification is in the generated report.
+All within-family and cross-family pairs are included, not just high-overlap pairs.
+
+The old rule has 14 exact fingerprint/presentation classes spanning 234 logical
+pairs / 906 rendered comparisons. This table aggregates the complete inventory;
+the annex freezes every position pair, context, primary/reserve scope, exact
+forced overlapping five-gram and rational score for each class.
+
+| Subtype pair | Logical pairs | Minimum ordinary | Matching components | Old strict limit |
+|---|---:|---:|---:|---:|
+| E1-05 / E1-05 | 2 | 1/3 | 6 | content < 0.12 |
+| E5-01 / E5-02 | 32 | 1/2 | 3 | 0.20 |
+| E5-01 / E5-03 | 32 | 2/7 | 3 | 0.20 |
+| E5-01 / E5-04 | 32 | 8/17 | 4 | 0.20 |
+| E5-01 / E5-05 | 32 | 7/24 | 3 | 0.20 |
+| E5-02 / E5-03 | 16 | 2/7 | 3 | 0.20 |
+| E5-02 / E5-04 | 16 | 8/17 | 3 | 0.20 |
+| E5-02 / E5-05 | 16 | 7/24 | 4 | 0.20 |
+| E5-03 / E5-04 | 16 | 14/51 | 3 | 0.20 |
+| E5-03 / E5-05 | 16 | 24/53 | 3 | 0.20 |
+| E5-04 / E5-05 | 16 | 7/25 | 3 | 0.20 |
+| E7-02 / E7-04 | 8 | 5/22 | 4 | 0.20 |
+
+E1-05 splits into zero and 366-day boundary classes. E7 splits into A-first and
+B-last absence presentations. All other listed rows each have one exact class.
+There are no forced different-subtype violations in E1-E4/E6, or cross-family
+pairs. All E5 context combinations and primary/slot01-reserve scopes are audited.
+E7 conflicts affect only same-phase primary pairs across the two rounds.
+
+## Proof and Interpretation
+
+Overlap provenance is separated as follows: (A) freely chosen value windows have
+zero attainable forced overlap; (B) ordinal masking removes fixture ordinals but
+retains positional f/d identifiers and entity letters; (C) required schema wrappers
+remain tokenized; (D) entity introductions/selectors are fixed; (E) source-fact
+syntax is fixed and operation instructions never enter this payload; (F) exact
+fact and schema presentation/order are fixed. Every reported shared window can be
+checked against these sources. Enum/Boolean/generated catalogs and required zero/
+366 offset are additionally explicit finite allocation atoms, not mutable literals.
+
+Each legal freely chosen number/date/time source value occupies one token under
+the frozen tokenizer. Symbolic distinct atoms maximize the union and remove
+value-dependent intersections; fixed syntax/catalog/boundary atoms remain.
+Pairwise disjoint legal value choices respecting each frozen profile attain the
+reported minima. Matching more values can only introduce common five-grams or
+reduce the union. This is an exact pairwise lower-bound argument, not sampled
+literal trials. Shape is fixed by the token classes; old content uses only windows
+bearing numeric/date/time atoms. Finite generated/enum/Boolean atoms are not
+scalable freshness evidence. All underlying raw values still receive exact checks.
+
+The E5 root cause is fixed selector introductions, field names, entity letters,
+fact order and schema wrappers, not evidence of copied chosen content. E7 shares
+required absence/schema/generated-label windows. E1-05 separately has three
+content windows containing the prospectively required constant zero or 366; those
+are fixed boundary obligations, not freshly selectable values. Neither E1 pair is
+claimed to have different semantic structure: it is declared subtype recurrence.
+
+## Bounded Decision Rule
+
+Only an exact annex position pair may enter the new branch, after both actual
+fixtures independently satisfy every existing lexical/schema/operation/gold,
+subtype, value-shape, output-field and exact planned fingerprint rule. E5 also
+requires its complete pair/request audit. A group cannot be declared by an author.
+For cross-subtype groups, subtype IDs and full fingerprints must differ, with
+actual schema/entity-role/fact-sequence distinctions verified. The E1 fixed-boundary
+recurrence correction is separately and exactly limited to its two A/B primary pairs.
+
+Let G_L and G_R be ordinary ordinal-neutral five-gram sets, and S be exactly the
+group's frozen forced overlapping five-gram set. Compare G_L minus S and G_R minus S.
+This removes windows, not tokens: no new adjacency or retokenization is introduced.
+Reject unless residual Jaccard is strictly below 3/25 (0.12). Either residual empty
+is an authoring error. Report original ordinary/shape/content scores, removed set
+and residual score. Shape difference never grants acceptance. No freely chosen
+literal window can be removed. The fixed E1 boundary windows and generated catalog
+windows remain fully represented in semantic, fingerprint and raw freshness checks.
+
+Raw typed VALUE sequence freshness, whole-answer, identity and eligible date-number
+tuple reuse prohibitions, raw payload inequality, generated identity freshness and
+independent A/B content obligations apply before the residual check. Empty old
+content sets never establish independence. Copied residual content, replayed raw
+values/identities/answers, undeclared structure and unrelated high similarity reject.
+
+Global ordinary <0.20 / near-replay 0.12 remain unchanged. Historical/new still
+rejects ordinary >=0.20, projection 3/3, or >=2/3 with ordinary >=0.12. The historical
+adapter remains 106/106 with zero rejected. Exact recurrence classes remain 51 and
+subtype groups 35: declared scaffold overlap does not merge template classes.
+
+## Post-Repair Boundary
+
+All 14,028 logical / 18,312 rendered cross-base comparisons have no mathematically
+forced violation after this bounded amendment; all eligible residual lower bounds
+are zero, with nonempty residuals. This does NOT prove a simultaneous concrete
+assignment or future concrete corpus acceptance. Actual content, gold, exact reuse,
+contamination differential and independent review remain mandatory before freeze.
+
+The accepted blueprint's five files are checked byte-for-byte against `28fb6bbd`;
+none is changed here. The checker pin previously referring to the original `99707b4f`
+blueprint is updated only to the accepted blueprint now under audit. After independent
+design rereview a separately authorized mechanical blueprint rebind/update is needed.
+There is no current corpus/gold, provider, runtime or execution authorization.
+Corpus/gold/reserve content authored = 0; provider/model calls = 0; G-ROUTE4 stays
+CLOSED FAILED with immutable history; belief effects none.
+
+<!-- SCAFFOLD_AMENDMENT_NORMATIVE_BEGIN -->
+```json
+{
+  "contract_id": "g-extract1.declared-scaffold-overlap.v1",
+  "parent_commit": "28fb6bbd3fb668265e4cc50cda0da0f9afdf3ce5",
+  "precedence": "Only exact listed cross-base position pairs override the old ordinary/content veto. All other rules and pair-local E5 exception remain unchanged.",
+  "blueprint_status": "Unchanged accepted 28fb6bbd blueprint; contamination rebinding requires independent amendment rereview and separate future authorization. No corpus authority granted.",
+  "scope": {
+    "logical_positions": 168,
+    "rendered_variants": 192,
+    "logical_pairs": 14028,
+    "rendered_cross_base_pairs": 18312,
+    "same_base_e5_pairs_separate": 24
+  },
+  "old_rule": {
+    "ordinary_exclusive": "1/5",
+    "near_replay_inclusive": "3/25",
+    "unchanged_globally": true
+  },
+  "eligibility": [
+    "Both are different logical base IDs in exactly one listed position_pair; rendered variant multiplicity never broadens base membership.",
+    "Each actual fixture independently passes lexical, typed schema/operation/gold, subtype, value-shape, output amendment and exact planned six-component fingerprint validation; E5 full pair/request audit also required.",
+    "Actual position and complete fingerprint equal the bound unchanged blueprint and frozen recurrence ledger; no author-selected group or output-derived eligibility.",
+    "Cross-subtype pairs retain different subtype IDs AND different full fingerprints; schema/operation/entity-role/fact-sequence differences are validated, not inferred from IDs.",
+    "The two E1-05 same-subtype pairs are separately named fixed-boundary recurrence corrections, not distinct-subtype independence claims."
+  ],
+  "view": {
+    "input": "same ordinal-neutral input.text plus canonical schema payload as existing ordinary view",
+    "normalization": "existing NFC/CRLF/casefold/whitespace and NEW-only ordinal masking, unchanged",
+    "tokenizer": "existing contamination.v5 tokenizer, unchanged",
+    "ngram_size": 5,
+    "construction": "ordinary set minus exactly group.forced_overlapping_five_grams on EACH side; no token deletion, no new adjacency or re-tokenization",
+    "removed": "Only the exact listed invariant five-grams proven from frozen source/schema syntax, generated ordinal-neutral catalog atoms, or required fixed E1-05 boundary offset. No arbitrary shared gram or mutable literal may be removed.",
+    "retained": "Every other ordinary five-gram, including all grams bearing freely chosen numeric/date/time values. Exact raw typed values including generated labels, finite enums/Booleans and fixed offsets remain in all existing freshness/semantic checks.",
+    "metric": "set Jaccard with exact integer cross-multiplication: 25*intersection < 3*union",
+    "limit_exclusive": "3/25",
+    "one_or_both_empty": "AUTHORING_ERROR_EMPTY_RESIDUAL; never automatic independence credit",
+    "reporting": "ordinary, shape, existing content (or NOT_APPLICABLE), residual, removed grams, exact membership, actual validations and all freshness results; shape alone never permits a pair",
+    "finite_catalog": "generated labels/enum/Boolean and fixed boundary offsets are not scalable freshness evidence; nonempty residual alone is not independence evidence; all structural and raw freshness requirements mandatory"
+  },
+  "freshness_required": [
+    "raw typed VALUE sequence inequality",
+    "whole-answer exact-reuse pass",
+    "identity atom disjointness",
+    "eligible date-number tuple exact-reuse pass",
+    "raw payload inequality",
+    "generated identities bound to distinct base ordinals",
+    "independent A/B authorship/review and no A content reuse in B"
+  ],
+  "empty_content": "Old content sets may be empty for finite/generated catalogs. Eligibility and nonempty residual plus all freshness/structural requirements still mandatory; report NOT_APPLICABLE, not proof of independence.",
+  "historical": "106/106 adapter unchanged; reject ordinary>=0.20, projection3/3, or projection>=2/3 and ordinary>=0.12; amendment never applies to historical/new",
+  "audit_algorithm": {
+    "source": "unchanged blueprint schema_plan source role/schema/entity sequence and canonical outputs; frozen value/enum/Boolean/lexical allocations; no concrete source text/gold",
+    "token_algebra": "symbolic_position_tokens: one unique FRESH(base,record,schema) per freely variable single-token value; fixed 0/366, generated label/code/id order, E5 selector entity letters, opaque enum allocation and Boolean context atoms remain exact; source renderer/schema tokenizer unchanged",
+    "minimum_proof": "Legal fresh numeric/date/time literals each occupy one token. All value-bearing window intersections can be avoided pairwise by disjoint legal literals; fixed grammar windows remain. Denominators use maximum distinct five-gram sets. Additional literal equality cannot reduce intersection or increase union. Thus recorded rational ordinary/content minima are attained pairwise, not mere sample estimates.",
+    "domain_support": "Each variable occurrence has at least two alternatives under its accepted magnitude/precision/arithmetic/date/time/gap profile; entity values preserve frozen gaps/permutation. Select disjoint anchors across a pair; fixed equality/offset/enum/Boolean cases explicitly retained. No concrete value is selected or corpus authored by this algebra.",
+    "shape": "all scalable symbolic values and existing numeric/date/time/enum/Boolean tokens replaced by value exactly as old shape algorithm",
+    "content": "old content filter retains five-grams with scalable symbolic values or fixed numeric/date/time tokens; no other catalog atom",
+    "classification": "old decision table per pair: same-subtype content<0.12 or allowed empty; different subtype ordinary<0.20, or <0.12 for >=5/6; exact6 different-subtype forbidden",
+    "quantifier": "No planned pair has a forced contamination violation. Pairwise lower-bound feasibility does NOT prove a simultaneous concrete assignment, future corpus acceptance, independence or scientific validity; all concrete audits still mandatory.",
+    "inventory": "Validation report includes all14028 logical pair classifications/minima and all14 impossible classes, exact234 position pairs, weighted906 rendered pairs; 24 same-base E5 scopes separate."
+  },
+  "eligible_groups": [
+    {
+      "group_id": "42a73611bf4015e5e6660a484163279be47e669a9142e29a5f9c45a953215d8a",
+      "subtype_pair": [
+        "E1-05",
+        "E1-05"
+      ],
+      "fingerprint_classes": [
+        "a35d90134fc6e9e13db34b16e47cc1a055a4c176162bb9932c0e58261b3f99a6",
+        "a35d90134fc6e9e13db34b16e47cc1a055a4c176162bb9932c0e58261b3f99a6"
+      ],
+      "fingerprint_matches": 6,
+      "ordinary_minimum": "1/3",
+      "ordinary_minimum_decimal": 0.3333333333333333,
+      "shape_jaccard": "1",
+      "content_minimum": "1/3",
+      "threshold_exclusive": "3/25",
+      "forced_overlapping_five_grams": [
+        "0 d_01 yyyy mm dd",
+        "f_02 is 0 d_01 yyyy",
+        "is 0 d_01 yyyy mm"
+      ],
+      "position_pairs": [
+        [
+          "A:R2:E1-05:PRIMARY",
+          "B:R2:E1-05:PRIMARY"
+        ]
+      ],
+      "rendered_pair_count": 1,
+      "root_cause": "mandatory source/schema/finite-catalog scaffold; no variable-value gram in forced intersection"
+    },
+    {
+      "group_id": "839f9b8efab9396637b185050b5adb5d461c76ae5f86eafdc209553f3b29d301",
+      "subtype_pair": [
+        "E5-01",
+        "E5-02"
+      ],
+      "fingerprint_classes": [
+        "ce5455c2eb3c4dcd5ecee7928fca41c9a85ade8d875f433fb43bed7b270cb383",
+        "fd8d25e0cd0fb74f1c01b4604d78eed4b009b4b809f6d62a65075e4afa5fe9c2"
+      ],
+      "fingerprint_matches": 3,
+      "ordinary_minimum": "1/2",
+      "ordinary_minimum_decimal": 0.5,
+      "shape_jaccard": "1/2",
+      "content_minimum": "0",
+      "threshold_exclusive": "1/5",
+      "forced_overlapping_five_grams": [
+        "a f_01 is entity a",
+        "a for entity b f_01",
+        "b f_01 is entity b",
+        "b for entity a f_02",
+        "entity a f_01 is entity",
+        "entity a for entity b",
+        "entity b f_01 is entity",
+        "entity b for entity a",
+        "f_01 is entity a for",
+        "f_01 is entity b for",
+        "for entity a f_01 is",
+        "for entity a f_02 is",
+        "for entity b f_01 is",
+        "for entity b f_02 is",
+        "is entity a for entity",
+        "is entity b for entity"
+      ],
+      "position_pairs": [
+        [
+          "A:R2:E5-01:PRIMARY",
+          "A:R2:E5-02:PRIMARY"
+        ],
+        [
+          "A:R2:E5-01:PRIMARY",
+          "A:R3:E5-02:PRIMARY"
+        ],
+        [
+          "A:R2:E5-01:PRIMARY",
+          "B:R2:E5-02:PRIMARY"
+        ],
+        [
+          "A:R2:E5-01:PRIMARY",
+          "B:R3:E5-02:PRIMARY"
+        ],
+        [
+          "A:R2:E5-02:PRIMARY",
+          "A:R3:E5-01:PRIMARY"
+        ],
+        [
+          "A:R2:E5-02:PRIMARY",
+          "A:R2:E5-01:RESERVE"
+        ],
+        [
+          "A:R2:E5-02:PRIMARY",
+          "A:R3:E5-01:RESERVE"
+        ],
+        [
+          "A:R2:E5-02:PRIMARY",
+          "B:R2:E5-01:PRIMARY"
+        ],
+        [
+          "A:R2:E5-02:PRIMARY",
+          "B:R3:E5-01:PRIMARY"
+        ],
+        [
+          "A:R2:E5-02:PRIMARY",
+          "B:R2:E5-01:RESERVE"
+        ],
+        [
+          "A:R2:E5-02:PRIMARY",
+          "B:R3:E5-01:RESERVE"
+        ],
+        [
+          "A:R3:E5-01:PRIMARY",
+          "A:R3:E5-02:PRIMARY"
+        ],
+        [
+          "A:R3:E5-01:PRIMARY",
+          "B:R2:E5-02:PRIMARY"
+        ],
+        [
+          "A:R3:E5-01:PRIMARY",
+          "B:R3:E5-02:PRIMARY"
+        ],
+        [
+          "A:R3:E5-02:PRIMARY",
+          "A:R2:E5-01:RESERVE"
+        ],
+        [
+          "A:R3:E5-02:PRIMARY",
+          "A:R3:E5-01:RESERVE"
+        ],
+        [
+          "A:R3:E5-02:PRIMARY",
+          "B:R2:E5-01:PRIMARY"
+        ],
+        [
+          "A:R3:E5-02:PRIMARY",
+          "B:R3:E5-01:PRIMARY"
+        ],
+        [
+          "A:R3:E5-02:PRIMARY",
+          "B:R2:E5-01:RESERVE"
+        ],
+        [
+          "A:R3:E5-02:PRIMARY",
+          "B:R3:E5-01:RESERVE"
+        ],
+        [
+          "A:R2:E5-01:RESERVE",
+          "B:R2:E5-02:PRIMARY"
+        ],
+        [
+          "A:R2:E5-01:RESERVE",
+          "B:R3:E5-02:PRIMARY"
+        ],
+        [
+          "A:R3:E5-01:RESERVE",
+          "B:R2:E5-02:PRIMARY"
+        ],
+        [
+          "A:R3:E5-01:RESERVE",
+          "B:R3:E5-02:PRIMARY"
+        ],
+        [
+          "B:R2:E5-01:PRIMARY",
+          "B:R2:E5-02:PRIMARY"
+        ],
+        [
+          "B:R2:E5-01:PRIMARY",
+          "B:R3:E5-02:PRIMARY"
+        ],
+        [
+          "B:R2:E5-02:PRIMARY",
+          "B:R3:E5-01:PRIMARY"
+        ],
+        [
+          "B:R2:E5-02:PRIMARY",
+          "B:R2:E5-01:RESERVE"
+        ],
+        [
+          "B:R2:E5-02:PRIMARY",
+          "B:R3:E5-01:RESERVE"
+        ],
+        [
+          "B:R3:E5-01:PRIMARY",
+          "B:R3:E5-02:PRIMARY"
+        ],
+        [
+          "B:R3:E5-02:PRIMARY",
+          "B:R2:E5-01:RESERVE"
+        ],
+        [
+          "B:R3:E5-02:PRIMARY",
+          "B:R3:E5-01:RESERVE"
+        ]
+      ],
+      "rendered_pair_count": 128,
+      "root_cause": "mandatory source/schema/finite-catalog scaffold; no variable-value gram in forced intersection"
+    },
+    {
+      "group_id": "000493591dc3359274ddce07832b9527b5df642873848b38c49ae38063a80099",
+      "subtype_pair": [
+        "E5-01",
+        "E5-03"
+      ],
+      "fingerprint_classes": [
+        "82bc5da8ff4ebf8587be1fdec410461f83b52929dc6615a0f588df473fa76bac",
+        "ce5455c2eb3c4dcd5ecee7928fca41c9a85ade8d875f433fb43bed7b270cb383"
+      ],
+      "fingerprint_matches": 3,
+      "ordinary_minimum": "2/7",
+      "ordinary_minimum_decimal": 0.2857142857142857,
+      "shape_jaccard": "10/21",
+      "content_minimum": "0",
+      "threshold_exclusive": "1/5",
+      "forced_overlapping_five_grams": [
+        "a f_01 is entity a",
+        "a for entity b f_01",
+        "b f_01 is entity b",
+        "entity a f_01 is entity",
+        "entity a for entity b",
+        "entity b f_01 is entity",
+        "f_01 is entity a for",
+        "f_01 is entity b for",
+        "for entity a f_01 is",
+        "for entity a f_02 is",
+        "for entity b f_01 is",
+        "for entity b f_02 is",
+        "is entity a for entity",
+        "is entity b for entity"
+      ],
+      "position_pairs": [
+        [
+          "A:R2:E5-01:PRIMARY",
+          "A:R2:E5-03:PRIMARY"
+        ],
+        [
+          "A:R2:E5-01:PRIMARY",
+          "A:R3:E5-03:PRIMARY"
+        ],
+        [
+          "A:R2:E5-01:PRIMARY",
+          "B:R2:E5-03:PRIMARY"
+        ],
+        [
+          "A:R2:E5-01:PRIMARY",
+          "B:R3:E5-03:PRIMARY"
+        ],
+        [
+          "A:R2:E5-03:PRIMARY",
+          "A:R3:E5-01:PRIMARY"
+        ],
+        [
+          "A:R2:E5-03:PRIMARY",
+          "A:R2:E5-01:RESERVE"
+        ],
+        [
+          "A:R2:E5-03:PRIMARY",
+          "A:R3:E5-01:RESERVE"
+        ],
+        [
+          "A:R2:E5-03:PRIMARY",
+          "B:R2:E5-01:PRIMARY"
+        ],
+        [
+          "A:R2:E5-03:PRIMARY",
+          "B:R3:E5-01:PRIMARY"
+        ],
+        [
+          "A:R2:E5-03:PRIMARY",
+          "B:R2:E5-01:RESERVE"
+        ],
+        [
+          "A:R2:E5-03:PRIMARY",
+          "B:R3:E5-01:RESERVE"
+        ],
+        [
+          "A:R3:E5-01:PRIMARY",
+          "A:R3:E5-03:PRIMARY"
+        ],
+        [
+          "A:R3:E5-01:PRIMARY",
+          "B:R2:E5-03:PRIMARY"
+        ],
+        [
+          "A:R3:E5-01:PRIMARY",
+          "B:R3:E5-03:PRIMARY"
+        ],
+        [
+          "A:R3:E5-03:PRIMARY",
+          "A:R2:E5-01:RESERVE"
+        ],
+        [
+          "A:R3:E5-03:PRIMARY",
+          "A:R3:E5-01:RESERVE"
+        ],
+        [
+          "A:R3:E5-03:PRIMARY",
+          "B:R2:E5-01:PRIMARY"
+        ],
+        [
+          "A:R3:E5-03:PRIMARY",
+          "B:R3:E5-01:PRIMARY"
+        ],
+        [
+          "A:R3:E5-03:PRIMARY",
+          "B:R2:E5-01:RESERVE"
+        ],
+        [
+          "A:R3:E5-03:PRIMARY",
+          "B:R3:E5-01:RESERVE"
+        ],
+        [
+          "A:R2:E5-01:RESERVE",
+          "B:R2:E5-03:PRIMARY"
+        ],
+        [
+          "A:R2:E5-01:RESERVE",
+          "B:R3:E5-03:PRIMARY"
+        ],
+        [
+          "A:R3:E5-01:RESERVE",
+          "B:R2:E5-03:PRIMARY"
+        ],
+        [
+          "A:R3:E5-01:RESERVE",
+          "B:R3:E5-03:PRIMARY"
+        ],
+        [
+          "B:R2:E5-01:PRIMARY",
+          "B:R2:E5-03:PRIMARY"
+        ],
+        [
+          "B:R2:E5-01:PRIMARY",
+          "B:R3:E5-03:PRIMARY"
+        ],
+        [
+          "B:R2:E5-03:PRIMARY",
+          "B:R3:E5-01:PRIMARY"
+        ],
+        [
+          "B:R2:E5-03:PRIMARY",
+          "B:R2:E5-01:RESERVE"
+        ],
+        [
+          "B:R2:E5-03:PRIMARY",
+          "B:R3:E5-01:RESERVE"
+        ],
+        [
+          "B:R3:E5-01:PRIMARY",
+          "B:R3:E5-03:PRIMARY"
+        ],
+        [
+          "B:R3:E5-03:PRIMARY",
+          "B:R2:E5-01:RESERVE"
+        ],
+        [
+          "B:R3:E5-03:PRIMARY",
+          "B:R3:E5-01:RESERVE"
+        ]
+      ],
+      "rendered_pair_count": 128,
+      "root_cause": "mandatory source/schema/finite-catalog scaffold; no variable-value gram in forced intersection"
+    },
+    {
+      "group_id": "8b4f0f34c6f47bb712ba5afb894caec7998e0637d5d278c37b46dc705ac86a9d",
+      "subtype_pair": [
+        "E5-01",
+        "E5-04"
+      ],
+      "fingerprint_classes": [
+        "ce5455c2eb3c4dcd5ecee7928fca41c9a85ade8d875f433fb43bed7b270cb383",
+        "cec902c93f23a39b90e9a1c7a688ae00af848164bc7d4e9c22bf562a2abd02d4"
+      ],
+      "fingerprint_matches": 4,
+      "ordinary_minimum": "8/17",
+      "ordinary_minimum_decimal": 0.47058823529411764,
+      "shape_jaccard": "23/27",
+      "content_minimum": "0",
+      "threshold_exclusive": "1/5",
+      "forced_overlapping_five_grams": [
+        "a f_01 is entity a",
+        "a for entity b f_01",
+        "b f_01 is entity b",
+        "b for entity a f_02",
+        "entity a f_01 is entity",
+        "entity a for entity b",
+        "entity b f_01 is entity",
+        "entity b for entity a",
+        "f_01 is entity a for",
+        "f_01 is entity b for",
+        "for entity a f_01 is",
+        "for entity a f_02 is",
+        "for entity b f_01 is",
+        "for entity b f_02 is",
+        "is entity a for entity",
+        "is entity b for entity"
+      ],
+      "position_pairs": [
+        [
+          "A:R2:E5-01:PRIMARY",
+          "A:R2:E5-04:PRIMARY"
+        ],
+        [
+          "A:R2:E5-01:PRIMARY",
+          "A:R3:E5-04:PRIMARY"
+        ],
+        [
+          "A:R2:E5-01:PRIMARY",
+          "B:R2:E5-04:PRIMARY"
+        ],
+        [
+          "A:R2:E5-01:PRIMARY",
+          "B:R3:E5-04:PRIMARY"
+        ],
+        [
+          "A:R2:E5-04:PRIMARY",
+          "A:R3:E5-01:PRIMARY"
+        ],
+        [
+          "A:R2:E5-04:PRIMARY",
+          "A:R2:E5-01:RESERVE"
+        ],
+        [
+          "A:R2:E5-04:PRIMARY",
+          "A:R3:E5-01:RESERVE"
+        ],
+        [
+          "A:R2:E5-04:PRIMARY",
+          "B:R2:E5-01:PRIMARY"
+        ],
+        [
+          "A:R2:E5-04:PRIMARY",
+          "B:R3:E5-01:PRIMARY"
+        ],
+        [
+          "A:R2:E5-04:PRIMARY",
+          "B:R2:E5-01:RESERVE"
+        ],
+        [
+          "A:R2:E5-04:PRIMARY",
+          "B:R3:E5-01:RESERVE"
+        ],
+        [
+          "A:R3:E5-01:PRIMARY",
+          "A:R3:E5-04:PRIMARY"
+        ],
+        [
+          "A:R3:E5-01:PRIMARY",
+          "B:R2:E5-04:PRIMARY"
+        ],
+        [
+          "A:R3:E5-01:PRIMARY",
+          "B:R3:E5-04:PRIMARY"
+        ],
+        [
+          "A:R3:E5-04:PRIMARY",
+          "A:R2:E5-01:RESERVE"
+        ],
+        [
+          "A:R3:E5-04:PRIMARY",
+          "A:R3:E5-01:RESERVE"
+        ],
+        [
+          "A:R3:E5-04:PRIMARY",
+          "B:R2:E5-01:PRIMARY"
+        ],
+        [
+          "A:R3:E5-04:PRIMARY",
+          "B:R3:E5-01:PRIMARY"
+        ],
+        [
+          "A:R3:E5-04:PRIMARY",
+          "B:R2:E5-01:RESERVE"
+        ],
+        [
+          "A:R3:E5-04:PRIMARY",
+          "B:R3:E5-01:RESERVE"
+        ],
+        [
+          "A:R2:E5-01:RESERVE",
+          "B:R2:E5-04:PRIMARY"
+        ],
+        [
+          "A:R2:E5-01:RESERVE",
+          "B:R3:E5-04:PRIMARY"
+        ],
+        [
+          "A:R3:E5-01:RESERVE",
+          "B:R2:E5-04:PRIMARY"
+        ],
+        [
+          "A:R3:E5-01:RESERVE",
+          "B:R3:E5-04:PRIMARY"
+        ],
+        [
+          "B:R2:E5-01:PRIMARY",
+          "B:R2:E5-04:PRIMARY"
+        ],
+        [
+          "B:R2:E5-01:PRIMARY",
+          "B:R3:E5-04:PRIMARY"
+        ],
+        [
+          "B:R2:E5-04:PRIMARY",
+          "B:R3:E5-01:PRIMARY"
+        ],
+        [
+          "B:R2:E5-04:PRIMARY",
+          "B:R2:E5-01:RESERVE"
+        ],
+        [
+          "B:R2:E5-04:PRIMARY",
+          "B:R3:E5-01:RESERVE"
+        ],
+        [
+          "B:R3:E5-01:PRIMARY",
+          "B:R3:E5-04:PRIMARY"
+        ],
+        [
+          "B:R3:E5-04:PRIMARY",
+          "B:R2:E5-01:RESERVE"
+        ],
+        [
+          "B:R3:E5-04:PRIMARY",
+          "B:R3:E5-01:RESERVE"
+        ]
+      ],
+      "rendered_pair_count": 128,
+      "root_cause": "mandatory source/schema/finite-catalog scaffold; no variable-value gram in forced intersection"
+    },
+    {
+      "group_id": "46bec20fffafd9a0b7a224c7bfe4c4175a3a17e3d2e2665ea4bbd96d065d32d1",
+      "subtype_pair": [
+        "E5-01",
+        "E5-05"
+      ],
+      "fingerprint_classes": [
+        "ce5455c2eb3c4dcd5ecee7928fca41c9a85ade8d875f433fb43bed7b270cb383",
+        "f259f7faf78a20d45692dd8512d09098c05827b74ca65a6da73192ea97116713"
+      ],
+      "fingerprint_matches": 3,
+      "ordinary_minimum": "7/24",
+      "ordinary_minimum_decimal": 0.2916666666666667,
+      "shape_jaccard": "20/41",
+      "content_minimum": "0",
+      "threshold_exclusive": "1/5",
+      "forced_overlapping_five_grams": [
+        "a f_01 is entity a",
+        "a for entity b f_01",
+        "b f_01 is entity b",
+        "entity a f_01 is entity",
+        "entity a for entity b",
+        "entity b f_01 is entity",
+        "f_01 is entity a for",
+        "f_01 is entity b for",
+        "for entity a f_01 is",
+        "for entity a f_02 is",
+        "for entity b f_01 is",
+        "for entity b f_02 is",
+        "is entity a for entity",
+        "is entity b for entity"
+      ],
+      "position_pairs": [
+        [
+          "A:R2:E5-01:PRIMARY",
+          "A:R2:E5-05:PRIMARY"
+        ],
+        [
+          "A:R2:E5-01:PRIMARY",
+          "A:R3:E5-05:PRIMARY"
+        ],
+        [
+          "A:R2:E5-01:PRIMARY",
+          "B:R2:E5-05:PRIMARY"
+        ],
+        [
+          "A:R2:E5-01:PRIMARY",
+          "B:R3:E5-05:PRIMARY"
+        ],
+        [
+          "A:R2:E5-05:PRIMARY",
+          "A:R3:E5-01:PRIMARY"
+        ],
+        [
+          "A:R2:E5-05:PRIMARY",
+          "A:R2:E5-01:RESERVE"
+        ],
+        [
+          "A:R2:E5-05:PRIMARY",
+          "A:R3:E5-01:RESERVE"
+        ],
+        [
+          "A:R2:E5-05:PRIMARY",
+          "B:R2:E5-01:PRIMARY"
+        ],
+        [
+          "A:R2:E5-05:PRIMARY",
+          "B:R3:E5-01:PRIMARY"
+        ],
+        [
+          "A:R2:E5-05:PRIMARY",
+          "B:R2:E5-01:RESERVE"
+        ],
+        [
+          "A:R2:E5-05:PRIMARY",
+          "B:R3:E5-01:RESERVE"
+        ],
+        [
+          "A:R3:E5-01:PRIMARY",
+          "A:R3:E5-05:PRIMARY"
+        ],
+        [
+          "A:R3:E5-01:PRIMARY",
+          "B:R2:E5-05:PRIMARY"
+        ],
+        [
+          "A:R3:E5-01:PRIMARY",
+          "B:R3:E5-05:PRIMARY"
+        ],
+        [
+          "A:R3:E5-05:PRIMARY",
+          "A:R2:E5-01:RESERVE"
+        ],
+        [
+          "A:R3:E5-05:PRIMARY",
+          "A:R3:E5-01:RESERVE"
+        ],
+        [
+          "A:R3:E5-05:PRIMARY",
+          "B:R2:E5-01:PRIMARY"
+        ],
+        [
+          "A:R3:E5-05:PRIMARY",
+          "B:R3:E5-01:PRIMARY"
+        ],
+        [
+          "A:R3:E5-05:PRIMARY",
+          "B:R2:E5-01:RESERVE"
+        ],
+        [
+          "A:R3:E5-05:PRIMARY",
+          "B:R3:E5-01:RESERVE"
+        ],
+        [
+          "A:R2:E5-01:RESERVE",
+          "B:R2:E5-05:PRIMARY"
+        ],
+        [
+          "A:R2:E5-01:RESERVE",
+          "B:R3:E5-05:PRIMARY"
+        ],
+        [
+          "A:R3:E5-01:RESERVE",
+          "B:R2:E5-05:PRIMARY"
+        ],
+        [
+          "A:R3:E5-01:RESERVE",
+          "B:R3:E5-05:PRIMARY"
+        ],
+        [
+          "B:R2:E5-01:PRIMARY",
+          "B:R2:E5-05:PRIMARY"
+        ],
+        [
+          "B:R2:E5-01:PRIMARY",
+          "B:R3:E5-05:PRIMARY"
+        ],
+        [
+          "B:R2:E5-05:PRIMARY",
+          "B:R3:E5-01:PRIMARY"
+        ],
+        [
+          "B:R2:E5-05:PRIMARY",
+          "B:R2:E5-01:RESERVE"
+        ],
+        [
+          "B:R2:E5-05:PRIMARY",
+          "B:R3:E5-01:RESERVE"
+        ],
+        [
+          "B:R3:E5-01:PRIMARY",
+          "B:R3:E5-05:PRIMARY"
+        ],
+        [
+          "B:R3:E5-05:PRIMARY",
+          "B:R2:E5-01:RESERVE"
+        ],
+        [
+          "B:R3:E5-05:PRIMARY",
+          "B:R3:E5-01:RESERVE"
+        ]
+      ],
+      "rendered_pair_count": 128,
+      "root_cause": "mandatory source/schema/finite-catalog scaffold; no variable-value gram in forced intersection"
+    },
+    {
+      "group_id": "3a0b2e80685aaebe1ec03bf465ffdfb3cde01d06ef5467fb03809af97bed8578",
+      "subtype_pair": [
+        "E5-02",
+        "E5-03"
+      ],
+      "fingerprint_classes": [
+        "82bc5da8ff4ebf8587be1fdec410461f83b52929dc6615a0f588df473fa76bac",
+        "fd8d25e0cd0fb74f1c01b4604d78eed4b009b4b809f6d62a65075e4afa5fe9c2"
+      ],
+      "fingerprint_matches": 3,
+      "ordinary_minimum": "2/7",
+      "ordinary_minimum_decimal": 0.2857142857142857,
+      "shape_jaccard": "7/24",
+      "content_minimum": null,
+      "threshold_exclusive": "1/5",
+      "forced_overlapping_five_grams": [
+        "a f_01 is entity a",
+        "a for entity b f_01",
+        "b f_01 is entity b",
+        "entity a f_01 is entity",
+        "entity a for entity b",
+        "entity b f_01 is entity",
+        "f_01 is entity a for",
+        "f_01 is entity b for",
+        "for entity a f_01 is",
+        "for entity a f_02 is",
+        "for entity b f_01 is",
+        "for entity b f_02 is",
+        "is entity a for entity",
+        "is entity b for entity"
+      ],
+      "position_pairs": [
+        [
+          "A:R2:E5-02:PRIMARY",
+          "A:R2:E5-03:PRIMARY"
+        ],
+        [
+          "A:R2:E5-02:PRIMARY",
+          "A:R3:E5-03:PRIMARY"
+        ],
+        [
+          "A:R2:E5-02:PRIMARY",
+          "B:R2:E5-03:PRIMARY"
+        ],
+        [
+          "A:R2:E5-02:PRIMARY",
+          "B:R3:E5-03:PRIMARY"
+        ],
+        [
+          "A:R2:E5-03:PRIMARY",
+          "A:R3:E5-02:PRIMARY"
+        ],
+        [
+          "A:R2:E5-03:PRIMARY",
+          "B:R2:E5-02:PRIMARY"
+        ],
+        [
+          "A:R2:E5-03:PRIMARY",
+          "B:R3:E5-02:PRIMARY"
+        ],
+        [
+          "A:R3:E5-02:PRIMARY",
+          "A:R3:E5-03:PRIMARY"
+        ],
+        [
+          "A:R3:E5-02:PRIMARY",
+          "B:R2:E5-03:PRIMARY"
+        ],
+        [
+          "A:R3:E5-02:PRIMARY",
+          "B:R3:E5-03:PRIMARY"
+        ],
+        [
+          "A:R3:E5-03:PRIMARY",
+          "B:R2:E5-02:PRIMARY"
+        ],
+        [
+          "A:R3:E5-03:PRIMARY",
+          "B:R3:E5-02:PRIMARY"
+        ],
+        [
+          "B:R2:E5-02:PRIMARY",
+          "B:R2:E5-03:PRIMARY"
+        ],
+        [
+          "B:R2:E5-02:PRIMARY",
+          "B:R3:E5-03:PRIMARY"
+        ],
+        [
+          "B:R2:E5-03:PRIMARY",
+          "B:R3:E5-02:PRIMARY"
+        ],
+        [
+          "B:R3:E5-02:PRIMARY",
+          "B:R3:E5-03:PRIMARY"
+        ]
+      ],
+      "rendered_pair_count": 64,
+      "root_cause": "mandatory source/schema/finite-catalog scaffold; no variable-value gram in forced intersection"
+    },
+    {
+      "group_id": "57fa1e57285b183452b784b072ed2c8a3dc4e72b9a396328226febfbc7ad6ba3",
+      "subtype_pair": [
+        "E5-02",
+        "E5-04"
+      ],
+      "fingerprint_classes": [
+        "cec902c93f23a39b90e9a1c7a688ae00af848164bc7d4e9c22bf562a2abd02d4",
+        "fd8d25e0cd0fb74f1c01b4604d78eed4b009b4b809f6d62a65075e4afa5fe9c2"
+      ],
+      "fingerprint_matches": 3,
+      "ordinary_minimum": "8/17",
+      "ordinary_minimum_decimal": 0.47058823529411764,
+      "shape_jaccard": "8/17",
+      "content_minimum": "0",
+      "threshold_exclusive": "1/5",
+      "forced_overlapping_five_grams": [
+        "a f_01 is entity a",
+        "a for entity b f_01",
+        "b f_01 is entity b",
+        "b for entity a f_02",
+        "entity a f_01 is entity",
+        "entity a for entity b",
+        "entity b f_01 is entity",
+        "entity b for entity a",
+        "f_01 is entity a for",
+        "f_01 is entity b for",
+        "for entity a f_01 is",
+        "for entity a f_02 is",
+        "for entity b f_01 is",
+        "for entity b f_02 is",
+        "is entity a for entity",
+        "is entity b for entity"
+      ],
+      "position_pairs": [
+        [
+          "A:R2:E5-02:PRIMARY",
+          "A:R2:E5-04:PRIMARY"
+        ],
+        [
+          "A:R2:E5-02:PRIMARY",
+          "A:R3:E5-04:PRIMARY"
+        ],
+        [
+          "A:R2:E5-02:PRIMARY",
+          "B:R2:E5-04:PRIMARY"
+        ],
+        [
+          "A:R2:E5-02:PRIMARY",
+          "B:R3:E5-04:PRIMARY"
+        ],
+        [
+          "A:R2:E5-04:PRIMARY",
+          "A:R3:E5-02:PRIMARY"
+        ],
+        [
+          "A:R2:E5-04:PRIMARY",
+          "B:R2:E5-02:PRIMARY"
+        ],
+        [
+          "A:R2:E5-04:PRIMARY",
+          "B:R3:E5-02:PRIMARY"
+        ],
+        [
+          "A:R3:E5-02:PRIMARY",
+          "A:R3:E5-04:PRIMARY"
+        ],
+        [
+          "A:R3:E5-02:PRIMARY",
+          "B:R2:E5-04:PRIMARY"
+        ],
+        [
+          "A:R3:E5-02:PRIMARY",
+          "B:R3:E5-04:PRIMARY"
+        ],
+        [
+          "A:R3:E5-04:PRIMARY",
+          "B:R2:E5-02:PRIMARY"
+        ],
+        [
+          "A:R3:E5-04:PRIMARY",
+          "B:R3:E5-02:PRIMARY"
+        ],
+        [
+          "B:R2:E5-02:PRIMARY",
+          "B:R2:E5-04:PRIMARY"
+        ],
+        [
+          "B:R2:E5-02:PRIMARY",
+          "B:R3:E5-04:PRIMARY"
+        ],
+        [
+          "B:R2:E5-04:PRIMARY",
+          "B:R3:E5-02:PRIMARY"
+        ],
+        [
+          "B:R3:E5-02:PRIMARY",
+          "B:R3:E5-04:PRIMARY"
+        ]
+      ],
+      "rendered_pair_count": 64,
+      "root_cause": "mandatory source/schema/finite-catalog scaffold; no variable-value gram in forced intersection"
+    },
+    {
+      "group_id": "787c48ccfca24e44d0a1544f1e8c5e49a892ee42da600f82c0a3a0591b2cb6e6",
+      "subtype_pair": [
+        "E5-02",
+        "E5-05"
+      ],
+      "fingerprint_classes": [
+        "f259f7faf78a20d45692dd8512d09098c05827b74ca65a6da73192ea97116713",
+        "fd8d25e0cd0fb74f1c01b4604d78eed4b009b4b809f6d62a65075e4afa5fe9c2"
+      ],
+      "fingerprint_matches": 4,
+      "ordinary_minimum": "7/24",
+      "ordinary_minimum_decimal": 0.2916666666666667,
+      "shape_jaccard": "14/47",
+      "content_minimum": "0",
+      "threshold_exclusive": "1/5",
+      "forced_overlapping_five_grams": [
+        "a f_01 is entity a",
+        "a for entity b f_01",
+        "b f_01 is entity b",
+        "entity a f_01 is entity",
+        "entity a for entity b",
+        "entity b f_01 is entity",
+        "f_01 is entity a for",
+        "f_01 is entity b for",
+        "for entity a f_01 is",
+        "for entity a f_02 is",
+        "for entity b f_01 is",
+        "for entity b f_02 is",
+        "is entity a for entity",
+        "is entity b for entity"
+      ],
+      "position_pairs": [
+        [
+          "A:R2:E5-02:PRIMARY",
+          "A:R2:E5-05:PRIMARY"
+        ],
+        [
+          "A:R2:E5-02:PRIMARY",
+          "A:R3:E5-05:PRIMARY"
+        ],
+        [
+          "A:R2:E5-02:PRIMARY",
+          "B:R2:E5-05:PRIMARY"
+        ],
+        [
+          "A:R2:E5-02:PRIMARY",
+          "B:R3:E5-05:PRIMARY"
+        ],
+        [
+          "A:R2:E5-05:PRIMARY",
+          "A:R3:E5-02:PRIMARY"
+        ],
+        [
+          "A:R2:E5-05:PRIMARY",
+          "B:R2:E5-02:PRIMARY"
+        ],
+        [
+          "A:R2:E5-05:PRIMARY",
+          "B:R3:E5-02:PRIMARY"
+        ],
+        [
+          "A:R3:E5-02:PRIMARY",
+          "A:R3:E5-05:PRIMARY"
+        ],
+        [
+          "A:R3:E5-02:PRIMARY",
+          "B:R2:E5-05:PRIMARY"
+        ],
+        [
+          "A:R3:E5-02:PRIMARY",
+          "B:R3:E5-05:PRIMARY"
+        ],
+        [
+          "A:R3:E5-05:PRIMARY",
+          "B:R2:E5-02:PRIMARY"
+        ],
+        [
+          "A:R3:E5-05:PRIMARY",
+          "B:R3:E5-02:PRIMARY"
+        ],
+        [
+          "B:R2:E5-02:PRIMARY",
+          "B:R2:E5-05:PRIMARY"
+        ],
+        [
+          "B:R2:E5-02:PRIMARY",
+          "B:R3:E5-05:PRIMARY"
+        ],
+        [
+          "B:R2:E5-05:PRIMARY",
+          "B:R3:E5-02:PRIMARY"
+        ],
+        [
+          "B:R3:E5-02:PRIMARY",
+          "B:R3:E5-05:PRIMARY"
+        ]
+      ],
+      "rendered_pair_count": 64,
+      "root_cause": "mandatory source/schema/finite-catalog scaffold; no variable-value gram in forced intersection"
+    },
+    {
+      "group_id": "533f0712dd6ad2a00754210b933849183df02c7ead279d8e62f096657aaabd0d",
+      "subtype_pair": [
+        "E5-03",
+        "E5-04"
+      ],
+      "fingerprint_classes": [
+        "82bc5da8ff4ebf8587be1fdec410461f83b52929dc6615a0f588df473fa76bac",
+        "cec902c93f23a39b90e9a1c7a688ae00af848164bc7d4e9c22bf562a2abd02d4"
+      ],
+      "fingerprint_matches": 3,
+      "ordinary_minimum": "14/51",
+      "ordinary_minimum_decimal": 0.27450980392156865,
+      "shape_jaccard": "5/11",
+      "content_minimum": "0",
+      "threshold_exclusive": "1/5",
+      "forced_overlapping_five_grams": [
+        "a f_01 is entity a",
+        "a for entity b f_01",
+        "b f_01 is entity b",
+        "entity a f_01 is entity",
+        "entity a for entity b",
+        "entity b f_01 is entity",
+        "f_01 is entity a for",
+        "f_01 is entity b for",
+        "for entity a f_01 is",
+        "for entity a f_02 is",
+        "for entity b f_01 is",
+        "for entity b f_02 is",
+        "is entity a for entity",
+        "is entity b for entity"
+      ],
+      "position_pairs": [
+        [
+          "A:R2:E5-03:PRIMARY",
+          "A:R2:E5-04:PRIMARY"
+        ],
+        [
+          "A:R2:E5-03:PRIMARY",
+          "A:R3:E5-04:PRIMARY"
+        ],
+        [
+          "A:R2:E5-03:PRIMARY",
+          "B:R2:E5-04:PRIMARY"
+        ],
+        [
+          "A:R2:E5-03:PRIMARY",
+          "B:R3:E5-04:PRIMARY"
+        ],
+        [
+          "A:R2:E5-04:PRIMARY",
+          "A:R3:E5-03:PRIMARY"
+        ],
+        [
+          "A:R2:E5-04:PRIMARY",
+          "B:R2:E5-03:PRIMARY"
+        ],
+        [
+          "A:R2:E5-04:PRIMARY",
+          "B:R3:E5-03:PRIMARY"
+        ],
+        [
+          "A:R3:E5-03:PRIMARY",
+          "A:R3:E5-04:PRIMARY"
+        ],
+        [
+          "A:R3:E5-03:PRIMARY",
+          "B:R2:E5-04:PRIMARY"
+        ],
+        [
+          "A:R3:E5-03:PRIMARY",
+          "B:R3:E5-04:PRIMARY"
+        ],
+        [
+          "A:R3:E5-04:PRIMARY",
+          "B:R2:E5-03:PRIMARY"
+        ],
+        [
+          "A:R3:E5-04:PRIMARY",
+          "B:R3:E5-03:PRIMARY"
+        ],
+        [
+          "B:R2:E5-03:PRIMARY",
+          "B:R2:E5-04:PRIMARY"
+        ],
+        [
+          "B:R2:E5-03:PRIMARY",
+          "B:R3:E5-04:PRIMARY"
+        ],
+        [
+          "B:R2:E5-04:PRIMARY",
+          "B:R3:E5-03:PRIMARY"
+        ],
+        [
+          "B:R3:E5-03:PRIMARY",
+          "B:R3:E5-04:PRIMARY"
+        ]
+      ],
+      "rendered_pair_count": 64,
+      "root_cause": "mandatory source/schema/finite-catalog scaffold; no variable-value gram in forced intersection"
+    },
+    {
+      "group_id": "20c578c99255e84bd743ffde88da47c6c8e1aa677f7cb77a779ec4c7512b2bc9",
+      "subtype_pair": [
+        "E5-03",
+        "E5-05"
+      ],
+      "fingerprint_classes": [
+        "82bc5da8ff4ebf8587be1fdec410461f83b52929dc6615a0f588df473fa76bac",
+        "f259f7faf78a20d45692dd8512d09098c05827b74ca65a6da73192ea97116713"
+      ],
+      "fingerprint_matches": 3,
+      "ordinary_minimum": "24/53",
+      "ordinary_minimum_decimal": 0.4528301886792453,
+      "shape_jaccard": "7/8",
+      "content_minimum": "0",
+      "threshold_exclusive": "1/5",
+      "forced_overlapping_five_grams": [
+        "a f_01 is entity a",
+        "a for entity b f_01",
+        "b f_01 is entity b",
+        "b for entity c f_01",
+        "c f_01 is entity c",
+        "c for entity a f_02",
+        "entity a f_01 is entity",
+        "entity a for entity b",
+        "entity b f_01 is entity",
+        "entity b for entity c",
+        "entity c f_01 is entity",
+        "entity c for entity a",
+        "f_01 is entity a for",
+        "f_01 is entity b for",
+        "f_01 is entity c for",
+        "for entity a f_01 is",
+        "for entity a f_02 is",
+        "for entity b f_01 is",
+        "for entity b f_02 is",
+        "for entity c f_01 is",
+        "for entity c f_02 is",
+        "is entity a for entity",
+        "is entity b for entity",
+        "is entity c for entity"
+      ],
+      "position_pairs": [
+        [
+          "A:R2:E5-03:PRIMARY",
+          "A:R2:E5-05:PRIMARY"
+        ],
+        [
+          "A:R2:E5-03:PRIMARY",
+          "A:R3:E5-05:PRIMARY"
+        ],
+        [
+          "A:R2:E5-03:PRIMARY",
+          "B:R2:E5-05:PRIMARY"
+        ],
+        [
+          "A:R2:E5-03:PRIMARY",
+          "B:R3:E5-05:PRIMARY"
+        ],
+        [
+          "A:R2:E5-05:PRIMARY",
+          "A:R3:E5-03:PRIMARY"
+        ],
+        [
+          "A:R2:E5-05:PRIMARY",
+          "B:R2:E5-03:PRIMARY"
+        ],
+        [
+          "A:R2:E5-05:PRIMARY",
+          "B:R3:E5-03:PRIMARY"
+        ],
+        [
+          "A:R3:E5-03:PRIMARY",
+          "A:R3:E5-05:PRIMARY"
+        ],
+        [
+          "A:R3:E5-03:PRIMARY",
+          "B:R2:E5-05:PRIMARY"
+        ],
+        [
+          "A:R3:E5-03:PRIMARY",
+          "B:R3:E5-05:PRIMARY"
+        ],
+        [
+          "A:R3:E5-05:PRIMARY",
+          "B:R2:E5-03:PRIMARY"
+        ],
+        [
+          "A:R3:E5-05:PRIMARY",
+          "B:R3:E5-03:PRIMARY"
+        ],
+        [
+          "B:R2:E5-03:PRIMARY",
+          "B:R2:E5-05:PRIMARY"
+        ],
+        [
+          "B:R2:E5-03:PRIMARY",
+          "B:R3:E5-05:PRIMARY"
+        ],
+        [
+          "B:R2:E5-05:PRIMARY",
+          "B:R3:E5-03:PRIMARY"
+        ],
+        [
+          "B:R3:E5-03:PRIMARY",
+          "B:R3:E5-05:PRIMARY"
+        ]
+      ],
+      "rendered_pair_count": 64,
+      "root_cause": "mandatory source/schema/finite-catalog scaffold; no variable-value gram in forced intersection"
+    },
+    {
+      "group_id": "6a4e7fd29c8ceb1ae492233135ff85baf094bbcc3f888a3a16faef7336cf4227",
+      "subtype_pair": [
+        "E5-04",
+        "E5-05"
+      ],
+      "fingerprint_classes": [
+        "cec902c93f23a39b90e9a1c7a688ae00af848164bc7d4e9c22bf562a2abd02d4",
+        "f259f7faf78a20d45692dd8512d09098c05827b74ca65a6da73192ea97116713"
+      ],
+      "fingerprint_matches": 3,
+      "ordinary_minimum": "7/25",
+      "ordinary_minimum_decimal": 0.28,
+      "shape_jaccard": "20/43",
+      "content_minimum": "0",
+      "threshold_exclusive": "1/5",
+      "forced_overlapping_five_grams": [
+        "a f_01 is entity a",
+        "a for entity b f_01",
+        "b f_01 is entity b",
+        "entity a f_01 is entity",
+        "entity a for entity b",
+        "entity b f_01 is entity",
+        "f_01 is entity a for",
+        "f_01 is entity b for",
+        "for entity a f_01 is",
+        "for entity a f_02 is",
+        "for entity b f_01 is",
+        "for entity b f_02 is",
+        "is entity a for entity",
+        "is entity b for entity"
+      ],
+      "position_pairs": [
+        [
+          "A:R2:E5-04:PRIMARY",
+          "A:R2:E5-05:PRIMARY"
+        ],
+        [
+          "A:R2:E5-04:PRIMARY",
+          "A:R3:E5-05:PRIMARY"
+        ],
+        [
+          "A:R2:E5-04:PRIMARY",
+          "B:R2:E5-05:PRIMARY"
+        ],
+        [
+          "A:R2:E5-04:PRIMARY",
+          "B:R3:E5-05:PRIMARY"
+        ],
+        [
+          "A:R2:E5-05:PRIMARY",
+          "A:R3:E5-04:PRIMARY"
+        ],
+        [
+          "A:R2:E5-05:PRIMARY",
+          "B:R2:E5-04:PRIMARY"
+        ],
+        [
+          "A:R2:E5-05:PRIMARY",
+          "B:R3:E5-04:PRIMARY"
+        ],
+        [
+          "A:R3:E5-04:PRIMARY",
+          "A:R3:E5-05:PRIMARY"
+        ],
+        [
+          "A:R3:E5-04:PRIMARY",
+          "B:R2:E5-05:PRIMARY"
+        ],
+        [
+          "A:R3:E5-04:PRIMARY",
+          "B:R3:E5-05:PRIMARY"
+        ],
+        [
+          "A:R3:E5-05:PRIMARY",
+          "B:R2:E5-04:PRIMARY"
+        ],
+        [
+          "A:R3:E5-05:PRIMARY",
+          "B:R3:E5-04:PRIMARY"
+        ],
+        [
+          "B:R2:E5-04:PRIMARY",
+          "B:R2:E5-05:PRIMARY"
+        ],
+        [
+          "B:R2:E5-04:PRIMARY",
+          "B:R3:E5-05:PRIMARY"
+        ],
+        [
+          "B:R2:E5-05:PRIMARY",
+          "B:R3:E5-04:PRIMARY"
+        ],
+        [
+          "B:R3:E5-04:PRIMARY",
+          "B:R3:E5-05:PRIMARY"
+        ]
+      ],
+      "rendered_pair_count": 64,
+      "root_cause": "mandatory source/schema/finite-catalog scaffold; no variable-value gram in forced intersection"
+    },
+    {
+      "group_id": "06622d78bd0b1b0df361c77e579c8b484a8f1d6b04bc0b30a67ae85920e1cbc7",
+      "subtype_pair": [
+        "E7-02",
+        "E7-04"
+      ],
+      "fingerprint_classes": [
+        "92951b86ec0e62d3672c598698daf5812da4cef89eb4845ec5604c6ba8937d13",
+        "c86ca571f35c5236cb2dc4f6b7b243b9a0911117c4a23b2699c4159c3b7c3ecc"
+      ],
+      "fingerprint_matches": 4,
+      "ordinary_minimum": "5/22",
+      "ordinary_minimum_decimal": 0.22727272727272727,
+      "shape_jaccard": "10/17",
+      "content_minimum": "0",
+      "threshold_exclusive": "1/5",
+      "forced_overlapping_five_grams": [
+        "f_01 was not provided f_02",
+        "f_03 is label_01 f_01 provided",
+        "is label_01 f_01 provided not_provided",
+        "label_01 f_01 provided not_provided f_02",
+        "was not provided f_02 is"
+      ],
+      "position_pairs": [
+        [
+          "A:R2:E7-02:PRIMARY",
+          "A:R2:E7-04:PRIMARY"
+        ],
+        [
+          "A:R2:E7-02:PRIMARY",
+          "A:R3:E7-04:PRIMARY"
+        ],
+        [
+          "A:R2:E7-04:PRIMARY",
+          "A:R3:E7-02:PRIMARY"
+        ],
+        [
+          "A:R3:E7-02:PRIMARY",
+          "A:R3:E7-04:PRIMARY"
+        ]
+      ],
+      "rendered_pair_count": 4,
+      "root_cause": "mandatory source/schema/finite-catalog scaffold; no variable-value gram in forced intersection"
+    },
+    {
+      "group_id": "b7b568f3bb31af95ff56f9c4ede78aa1e9370c9b410eae69dc750bcc07273c34",
+      "subtype_pair": [
+        "E1-05",
+        "E1-05"
+      ],
+      "fingerprint_classes": [
+        "9c0819c95cf68abc8abf05b1d4dfc4a8fb7cf8c0e33939a07e6ed4968d33fd2f",
+        "9c0819c95cf68abc8abf05b1d4dfc4a8fb7cf8c0e33939a07e6ed4968d33fd2f"
+      ],
+      "fingerprint_matches": 6,
+      "ordinary_minimum": "1/3",
+      "ordinary_minimum_decimal": 0.3333333333333333,
+      "shape_jaccard": "1",
+      "content_minimum": "1/3",
+      "threshold_exclusive": "3/25",
+      "forced_overlapping_five_grams": [
+        "366 d_01 yyyy mm dd",
+        "f_02 is 366 d_01 yyyy",
+        "is 366 d_01 yyyy mm"
+      ],
+      "position_pairs": [
+        [
+          "A:R3:E1-05:PRIMARY",
+          "B:R3:E1-05:PRIMARY"
+        ]
+      ],
+      "rendered_pair_count": 1,
+      "root_cause": "mandatory source/schema/finite-catalog scaffold; no variable-value gram in forced intersection"
+    },
+    {
+      "group_id": "2000cecb91fc194e961885dc681b22ab9cf460c1f30b44556a4b5f0e7f7f5903",
+      "subtype_pair": [
+        "E7-02",
+        "E7-04"
+      ],
+      "fingerprint_classes": [
+        "3b04f8ce70e40aa7200683fc3fd81f17ee7301d42709dc421e453cded7f23ad6",
+        "f908d84920aee765909fc9f4e0d7d38bffd79cf277bdc089a9e6cd18aa2efddf"
+      ],
+      "fingerprint_matches": 4,
+      "ordinary_minimum": "5/22",
+      "ordinary_minimum_decimal": 0.22727272727272727,
+      "shape_jaccard": "8/19",
+      "content_minimum": "0",
+      "threshold_exclusive": "1/5",
+      "forced_overlapping_five_grams": [
+        "f_02 is label_01 f_03 was",
+        "f_02 string f_03 provided not_provided",
+        "f_03 was not provided f_01",
+        "is label_01 f_03 was not",
+        "label_01 f_03 was not provided"
+      ],
+      "position_pairs": [
+        [
+          "B:R2:E7-02:PRIMARY",
+          "B:R2:E7-04:PRIMARY"
+        ],
+        [
+          "B:R2:E7-02:PRIMARY",
+          "B:R3:E7-04:PRIMARY"
+        ],
+        [
+          "B:R2:E7-04:PRIMARY",
+          "B:R3:E7-02:PRIMARY"
+        ],
+        [
+          "B:R3:E7-02:PRIMARY",
+          "B:R3:E7-04:PRIMARY"
+        ]
+      ],
+      "rendered_pair_count": 4,
+      "root_cause": "mandatory source/schema/finite-catalog scaffold; no variable-value gram in forced intersection"
+    }
+  ],
+  "pre_repair_summary": {
+    "infeasible_logical_pairs": 234,
+    "infeasible_rendered_pairs": 906
+  },
+  "preservation": "All prior machine sections byte-equivalent as JSON objects except experiment.status/final_verdict; schedules/seeds/gates/call budget/authority, profiles/positions/recurrence classes, E4/E7/E5 science, exact reuse and history unchanged.",
+  "authority": {
+    "blueprint_update": false,
+    "corpus_gold_authoring": false,
+    "implementation": false,
+    "execution": false,
+    "provider_calls": 0,
+    "belief_effects": "none"
+  },
+  "review_required": true
+}
+```
+<!-- SCAFFOLD_AMENDMENT_NORMATIVE_END -->
 
 Status: `READY_FOR_G_EXTRACT1_OUTPUT_FIELD_AMENDMENT_REREVIEW`
 
