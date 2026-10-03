@@ -1,5 +1,27 @@
 # G-EXTRACT1 Design Revision Changelog
 
+## Prospective Whole-Answer Canonicalization Amendment
+
+Accepted parent: `6fb3f2af5806760c034006a8561ce08e938c210a`.
+Encoding closure only; no checker or blueprint repair and no corpus rescoring.
+
+| Finding / Obligation | Disposition | Repair / Preservation |
+| --- | --- | --- |
+| Boolean text vs native scalar underdetermined | Resolved prospectively | All canonical values are JSON strings across all seven tags. |
+| NUMBER spelling and host types underdetermined | Resolved | Exact rational plain decimal, minimal fractional text, signed zero normalization, int/Decimal/Fraction/text equivalence; no floats or rounding. |
+| Schema/tag distinction and field sorting | Intentionally retained | Exact schema identity, uppercase derived tag, unsigned UTF-8 field-name sorting, duplicate-field rejection. |
+| Outer JSON contract | Intentionally retained | ensure_ascii=True, compact separators, UTF-8, no newline; non-ASCII and mutation vectors. |
+| Historical/new and sensitivity claims | Intentionally retained | Same completed projection on both validated answers; unchanged scopes/full-object byte equality and fixture-name limitation. Historical adapter 106/106 is not a whole-answer campaign. |
+| Other encodings / freshness | Intentionally retained | All prior contracts identical; freshness ensure_ascii=False and unrelated numeric conventions unchanged. |
+| Corpus, gold, failure evidence and checker preservation | Resolved | Ten-file current snapshot and gold hash; accepted blueprint digest checks; old shared helper AST unchanged. Guards updated to current checkpoint only. |
+| Blueprint and checker authority | Intentionally withheld | Independent amendment rereview, separate blueprint rebind/rereview and later checker repair required. |
+| Scientific effects / thresholds | None | No equality, threshold, allocation, gate, schedule, seed, model-facing byte or historical-result change. |
+
+Design tests add golden byte vectors, host equivalence, sorting and malformed-byte
+mutations. PASS denotes structural/cross-representation consistency only.
+Earlier entries retain their historical claims and checkpoint identities.
+
+
 ## Prospective Freshness Canonicalization Amendment
 
 Parent: `01aafde7410a44085999aa4aa39f883618e78799`. This is serialization

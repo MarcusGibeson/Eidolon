@@ -25,14 +25,19 @@ REPORT = HERE / "DESIGN_VALIDATION_REPORT.json"
 OUTPUT_FIELD_AMENDMENT_SUMMARY: dict[str, Any] = {}
 SCAFFOLD_AUDIT: dict[str, Any] = {}
 FRESHNESS_AMENDMENT_SUMMARY: dict[str, Any] = {}
+WHOLE_ANSWER_AMENDMENT_SUMMARY: dict[str, Any] = {}
+PROTECTED_BLUEPRINT_COMMIT = "3bf939ea3160596d89c64f1feef790477991cf8a"
 PRESERVED_CORPUS_DIGESTS = {
     "corpus/AUTHORING_ATTEMPTS.json": "b9860b6bd4f662c46935773463bf6caf78035a1c2aa01c0b6a55e5100b9aa8da",
     "corpus/AUTHORING_CANDIDATES.json": "f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068",
     "corpus/AUTHORING_FEASIBILITY_REPORT.json": "8767a025c1123541cc858873aff41b60ecc1f8b0186d72ccc738761a24771433",
     "corpus/FINALIZATION_FAILURE_REPORT.json": "588b6141e3c25b561dff49d7b004ca508468ed39f4dbef8a8e16c54f69918730",
     "corpus/FRESHNESS_CANONICALIZATION_DIAGNOSIS_REPORT.json": "7395408dcf283821d19ed81f6986d64c47b4d31f9dd76d1c72481f7dff48a442",
-    "corpus/independent_contamination.py": "8bc9d4eee55cbd91aebfb82f9d77bb74592db92e7ba0df9b62f111899d6533b4",
-    "corpus/validate_corpus.py": "8ff1a923c914e31c42121903b9763fd1e9b97a8b01f6b19b7f35a1de4ce2273d"
+    "corpus/FINALIZATION_CONTAMINATION_DISAGREEMENT_REPORT.json": "d9ff96223d36cd2c92d92361be028820d6955b82712f1ed2152178958c8765dc",
+    "corpus/FRESHNESS_CHECKER_REPAIR_REPORT.json": "3c57078b5ea88b5fc994252cec52307e5b213969797eaa222bb623ef989e262f",
+    "corpus/independent_contamination.py": "c2a8221a37057a3433e2314a7c63fd57aac1cafe3038ba67ec9952eaf9894ef7",
+    "corpus/validate_corpus.py": "27cda5efa4856b6fb3b33a46d1daa712cc019213632dfe789686330183f22114",
+    "corpus/validate_freshness_repair.py": "9d66678d1fa8b62e820b25cc50305ba91ed112d6add57d63f9f5dc734bea70ae"
 }
 
 
@@ -1866,6 +1871,7 @@ def validate_scaffold_amendment(contract: dict[str, Any], human: str, checks: li
     parent = json.loads(subprocess.check_output(["git","-c","safe.directory="+ROOT.as_posix(),"show",amendment["parent_commit"]+":experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.json"],cwd=ROOT))
     projected=copy.deepcopy(contract); projected.pop("declared_scaffold_overlap_contract")
     projected.pop("freshness_canonicalization_contract", None)
+    projected.pop("whole_answer_canonicalization_contract", None)
     for key in ("experiment","final_verdict"):
         if key == "experiment": projected[key]["status"] = parent[key]["status"]
         else: projected[key] = parent[key]
@@ -2954,6 +2960,7 @@ def validate_output_field_amendment(
     rules.update(g_extract1_output_field_contract_ref="output_field_amendment_contract", g_extract1_leading_label_normalization_permitted=False)
     projection = copy.deepcopy(contract)
     projection.pop("freshness_canonicalization_contract", None)
+    projection.pop("whole_answer_canonicalization_contract", None)
     if "declared_scaffold_overlap_contract" in projection:
         projection.pop("declared_scaffold_overlap_contract")
         projection["experiment"]["status"] = expected["experiment"]["status"]
@@ -3143,6 +3150,7 @@ def validate_freshness_amendment(contract: dict[str, Any], human: str, checks: l
     ], cwd=ROOT))
     projected = copy.deepcopy(contract)
     projected.pop("freshness_canonicalization_contract")
+    projected.pop("whole_answer_canonicalization_contract", None)
     projected["experiment"]["status"] = parent["experiment"]["status"]
     projected["final_verdict"] = parent["final_verdict"]
     require(projected == parent, "freshness_only_new_contract_and_review_status_paths", checks)
@@ -3291,7 +3299,7 @@ def validate_freshness_amendment(contract: dict[str, Any], human: str, checks: l
     for path in sorted((HERE / "blueprint").iterdir()):
         old = subprocess.check_output([
             "git", "-c", "safe.directory=" + ROOT.as_posix(), "show",
-            parent_id + ":experiments/G-EXTRACT1-candidate/blueprint/" + path.name,
+            PROTECTED_BLUEPRINT_COMMIT + ":experiments/G-EXTRACT1-candidate/blueprint/" + path.name,
         ], cwd=ROOT)
         before = hashlib.sha256(old).hexdigest()
         after = sha256(path)
@@ -3318,7 +3326,7 @@ def validate_freshness_amendment(contract: dict[str, Any], human: str, checks: l
         semantic_vector_count=len(vectors), numeric_equivalence_groups=len(amendment["equivalence_groups"]),
         mutation_count=len(mutations), mutations_rejected=len(mutations),
         invalid_semantic_inputs_rejected=len(invalid_inputs), canonical_case=amendment["original_failure_semantic_vector"]["expected_utf8"],
-        preserved_corpus_files=preserved, blueprint_unchanged_commit=parent_id,
+        preserved_corpus_files=preserved, blueprint_unchanged_commit=PROTECTED_BLUEPRINT_COMMIT,
         preserved_gold_projection=dict(before_sha256=gold_before, after_sha256=gold_hash, byte_identical=True),
         preserved_blueprint_files=blueprint_digests,
         comparison_partition=counts, corpus_content_used_for_rule_choice=False,
@@ -3326,6 +3334,319 @@ def validate_freshness_amendment(contract: dict[str, Any], human: str, checks: l
         gold_byte_identity_evidence="entire AUTHORING_CANDIDATES.json SHA-256 unchanged; embedded gold therefore unchanged; no gold rescoring",
         scope="isolated design vectors and byte preservation only; no concrete corpus contamination campaign",
     )
+
+
+def whole_answer_semantic_text(schema_type: str, value: Any, contract: dict[str, Any]) -> str:
+    """Isolated amended-encoding test path; not used by corpus tooling."""
+    tag = parse_schema_type(schema_type, contract["schema_type_contract"])["semantic_tag"]
+    if tag in {"INTEGER", "NUMBER"}:
+        if isinstance(value, (bool, float)):
+            raise ValueError("whole_answer_not_exact_numeric")
+        if isinstance(value, str):
+            pattern = r"-?(?:0|[1-9][0-9]*)"
+            if tag == "NUMBER":
+                pattern += r"(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?"
+            if re.fullmatch(pattern, value, re.ASCII) is None:
+                raise ValueError("whole_answer_numeric_lexeme")
+        elif not isinstance(value, (int, Decimal, Fraction)):
+            raise ValueError("whole_answer_numeric_type")
+        exact = Fraction(value)
+        if tag == "INTEGER":
+            if exact.denominator != 1:
+                raise ValueError("whole_answer_nonintegral_integer")
+            return str(exact.numerator)
+        denominator = exact.denominator
+        powers = []
+        for prime in (2, 5):
+            count = 0
+            while denominator % prime == 0:
+                denominator //= prime
+                count += 1
+            powers.append(count)
+        if denominator != 1:
+            raise ValueError("whole_answer_nonterminating_number")
+        # Scale by powers of ten using integers, never a Decimal context.
+        scale = max(powers)
+        digits = str(abs(exact.numerator) * 2 ** (scale - powers[0]) * 5 ** (scale - powers[1]))
+        if scale:
+            digits = digits.zfill(scale + 1)
+            text = (digits[:-scale] + "." + digits[-scale:]).rstrip("0").rstrip(".")
+        else:
+            text = digits
+        return ("-" if exact < 0 else "") + text
+    if tag == "BOOLEAN":
+        if type(value) is not bool:
+            raise ValueError("whole_answer_boolean_type")
+        return "true" if value else "false"
+    if tag == "DATE" and isinstance(value, date) and not isinstance(value, datetime):
+        value = value.isoformat()
+    if tag == "TIME" and isinstance(value, time):
+        if value.second or value.microsecond or value.tzinfo is not None:
+            raise ValueError("whole_answer_time_resolution")
+        value = f"{value.hour:02d}:{value.minute:02d}"
+    if not isinstance(value, str):
+        raise ValueError("whole_answer_string_type")
+    if tag == "DATE":
+        if re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", value, re.ASCII) is None:
+            raise ValueError("whole_answer_date_format")
+        date.fromisoformat(value)
+    elif tag == "TIME":
+        if re.fullmatch(r"(?:[01][0-9]|2[0-3]):[0-5][0-9]", value, re.ASCII) is None:
+            raise ValueError("whole_answer_time_format")
+    elif tag == "ENUM":
+        if value not in parse_schema_type(schema_type, contract["schema_type_contract"])["options"]:
+            raise ValueError("whole_answer_enum_value")
+    value.encode("utf-8", errors="strict")
+    return value
+
+
+def whole_answer_canonical_bytes(semantic_rows: list[list[Any]], contract: dict[str, Any]) -> bytes:
+    """Complete whole-answer bytes for design vectors only."""
+    if not isinstance(semantic_rows, list):
+        raise ValueError("whole_answer_rows_type")
+    rows, seen = [], set()
+    for row in semantic_rows:
+        if not isinstance(row, list) or len(row) != 3:
+            raise ValueError("whole_answer_row_shape")
+        field, schema, value = row
+        if not isinstance(field, str) or not isinstance(schema, str) or field in seen:
+            raise ValueError("whole_answer_field_schema_or_duplicate")
+        field.encode("utf-8", errors="strict")
+        seen.add(field)
+        tag = parse_schema_type(schema, contract["schema_type_contract"])["semantic_tag"]
+        rows.append([field, schema, [tag, whole_answer_semantic_text(schema, value, contract)]])
+    rows.sort(key=lambda row: row[0].encode("utf-8"))
+    return json.dumps(rows, ensure_ascii=True, separators=(",", ":")).encode("utf-8")
+
+
+def require_whole_answer_bytes(raw: bytes, semantic_rows: list[list[Any]], contract: dict[str, Any]) -> None:
+    if not isinstance(raw, bytes) or raw != whole_answer_canonical_bytes(semantic_rows, contract):
+        raise ValueError("whole_answer_noncanonical_bytes")
+
+
+
+def validate_whole_answer_amendment(contract: dict[str, Any], human: str, checks: list[str]) -> dict[str, Any]:
+    amendment = contract["whole_answer_canonicalization_contract"]
+    parent_id = "6fb3f2af5806760c034006a8561ce08e938c210a"
+    require(amendment["contract_id"] == "g-extract1.whole-answer-canonicalization.v1", "whole_answer_contract_id", checks)
+    require(amendment["accepted_parent_commit"] == parent_id, "whole_answer_parent_identity", checks)
+    require(amendment["accepted_blueprint"] == PROTECTED_BLUEPRINT_COMMIT, "whole_answer_blueprint_identity", checks)
+    parent = json.loads(subprocess.check_output([
+        "git", "-c", "safe.directory=" + ROOT.as_posix(), "show",
+        parent_id + ":experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.json",
+    ], cwd=ROOT))
+    projected = copy.deepcopy(contract)
+    projected.pop("whole_answer_canonicalization_contract")
+    projected["experiment"]["status"] = parent["experiment"]["status"]
+    projected["final_verdict"] = parent["final_verdict"]
+    require(projected == parent, "whole_answer_only_encoding_contract_and_review_status_paths", checks)
+    for name in sorted(parent):
+        if name not in {"experiment", "final_verdict"}:
+            require(contract[name] == parent[name], "whole_answer_preserved_section:" + name, checks)
+    match = re.search(r"<!-- WHOLE_ANSWER_AMENDMENT_NORMATIVE_BEGIN -->\s*\x60{3}json\s*(.*?)\s*\x60{3}\s*<!-- WHOLE_ANSWER_AMENDMENT_NORMATIVE_END -->", human, re.DOTALL)
+    require(match is not None and json.loads(match.group(1)) == amendment, "whole_answer_exact_human_machine_annex", checks)
+    require(amendment["binds"] == "contamination_contract.exact_reuse_contract.whole_answer.canonical_values", "whole_answer_binding_path", checks)
+    require(amendment["semantic_tags"] == ["STRING", "NUMBER", "INTEGER", "BOOLEAN", "DATE", "TIME", "ENUM"], "whole_answer_seven_exact_tags", checks)
+    shape = amendment["row_contract"]
+    require(shape["outer_length"] == 3 and shape["inner_length"] == 2 and shape["all_leaf_elements"] == "JSON strings only", "whole_answer_row_contract", checks)
+    byte = amendment["outer_serialization"]
+    require(byte["ensure_ascii"] is True and byte["separators"] == [",", ":"] and byte["terminal_newline"] is False and byte["encoding"] == "UTF-8", "whole_answer_outer_byte_constants", checks)
+    reuse = contract["contamination_contract"]["exact_reuse_contract"]
+    require(amendment["comparison"]["scope_ref"] == "contamination_contract.exact_reuse_contract.scope_names" and reuse["all_rules_apply_to_every_scope"] is True, "whole_answer_scope_path_and_preservation", checks)
+    require(amendment["comparison"]["match_rule"] == reuse["whole_answer"]["match_rule"] and amendment["comparison"]["per_field_or_subset_matching"] is False, "whole_answer_unchanged_match_unit", checks)
+    require(amendment["separation"]["freshness_ensure_ascii"] is False and amendment["separation"]["whole_answer_ensure_ascii"] is True, "whole_answer_freshness_serialization_separate", checks)
+    for key, value in amendment["authority"].items():
+        if key.endswith("_required"):
+            require(value is True, "whole_answer_separate_review_required:" + key, checks)
+        elif key == "belief_effects":
+            require(value == "none", "whole_answer_belief_none", checks)
+        elif key == "provider_calls":
+            require(value == 0, "whole_answer_provider_zero", checks)
+        else:
+            require(value is False, "whole_answer_no_authority:" + key, checks)
+
+    vectors = amendment["validation_vectors"]
+    require(len({v["id"] for v in vectors}) == len(vectors), "whole_answer_unique_vector_ids", checks)
+    tags, schemas = set(), set()
+    for vector in vectors:
+        raw = whole_answer_canonical_bytes(vector["semantic_rows"], contract)
+        require(raw == vector["expected_utf8"].encode("utf-8"), "whole_answer_golden_bytes:" + vector["id"], checks)
+        rows = json.loads(raw)
+        require(rows == vector["expected_rows"], "whole_answer_golden_rows:" + vector["id"], checks)
+        require(all(len(r) == 3 and isinstance(r[0], str) and isinstance(r[1], str) and len(r[2]) == 2 and all(isinstance(x, str) for x in r[2]) for r in rows), "whole_answer_only_string_leaves:" + vector["id"], checks)
+        require(whole_answer_canonical_bytes(list(reversed(vector["semantic_rows"])), contract) == raw, "whole_answer_input_order_not_field_binding:" + vector["id"], checks)
+        tags.update(row[2][0] for row in rows)
+        schemas.update(row[1] for row in rows)
+    require(tags == set(amendment["semantic_tags"]), "whole_answer_full_tag_surface", checks)
+    require(schemas == {"string", "number", "integer", "boolean", "YYYY-MM-DD", "HH:MM", "option_a|option_b", "option_a|option_b|option_c", "provided|not_provided"}, "whole_answer_full_active_schema_surface", checks)
+    for group in amendment["equivalence_groups"]:
+        require(all(whole_answer_canonical_bytes([["field", group["schema_type"], value]], contract) == group["expected_utf8"].encode() for value in group["values"]), "whole_answer_numeric_equivalence:" + group["id"], checks)
+    for schema in ("integer", "number"):
+        outputs = []
+        for value in (-1, 0, 1, 42, 10**70 + 1):
+            raw = whole_answer_canonical_bytes([["field", schema, value]], contract)
+            outputs.append(raw)
+            for equivalent in (str(value), Decimal(str(value)), Fraction(value)):
+                require(whole_answer_canonical_bytes([["field", schema, equivalent]], contract) == raw, "whole_answer_host_equivalence:" + schema + ":" + str(value) + ":" + type(equivalent).__name__, checks)
+        require(len(set(outputs)) == len(outputs), "whole_answer_distinct_numbers:" + schema, checks)
+    require(whole_answer_canonical_bytes([["field", "number", Fraction(1, 8)]], contract) == b'[["field","number",["NUMBER","0.125"]]]', "whole_answer_exact_rational", checks)
+    require(whole_answer_canonical_bytes([["field", "number", Decimal("123456789012345678901234567890.125000")]], contract) == b'[["field","number",["NUMBER","123456789012345678901234567890.125"]]]', "whole_answer_no_decimal_context_rounding", checks)
+    require(whole_answer_canonical_bytes([["field", "integer", 5]], contract) != whole_answer_canonical_bytes([["field", "number", 5]], contract), "whole_answer_typed_numeric_distinction", checks)
+    require(whole_answer_canonical_bytes([["field", "string", "\u00e9"]], contract) != whole_answer_canonical_bytes([["field", "string", "e\u0301"]], contract), "whole_answer_no_unicode_normalization", checks)
+    require(b"\\u00e9" in whole_answer_canonical_bytes([["field", "string", "\u00e9"]], contract), "whole_answer_ensure_ascii_true_non_ascii", checks)
+    require("\u00e9".encode() in freshness_sequence_bytes([["string", "\u00e9"]], contract), "whole_answer_does_not_change_freshness_ascii", checks)
+    require(whole_answer_semantic_text("YYYY-MM-DD", date(2039, 10, 5), contract) == "2039-10-05", "whole_answer_date_host_representation", checks)
+    require(whole_answer_semantic_text("HH:MM", time(0, 5), contract) == "00:05", "whole_answer_time_host_representation", checks)
+
+    def packed(rows: list[list[Any]], ascii_only: bool = True) -> bytes:
+        return json.dumps(rows, ensure_ascii=ascii_only, separators=(",", ":")).encode("utf-8")
+
+    mutations = []
+    cases = [
+        ("boolean_scalar_true", "boolean", True, True),
+        ("boolean_scalar_false", "boolean", False, False),
+        ("integer_numeric_scalar", "integer", "0", 0),
+        ("number_numeric_scalar", "number", "5", 5),
+        ("number_exponent", "number", "5e0", "5e0"),
+        ("number_trailing_zeroes", "number", "5.00", "5.00"),
+        ("number_negative_zero", "number", "-0.0", "-0"),
+        ("integer_negative_zero", "integer", "-0", "-0"),
+        ("date_reformatted", "YYYY-MM-DD", "2039-10-05", "10/05/2039"),
+        ("time_reformatted", "HH:MM", "23:45", "11:45 PM"),
+        ("string_trimmed", "string", " label_001_01 ", "label_001_01"),
+        ("enum_ordinal", "option_a|option_b", "option_b", 1),
+        ("not_provided_null", "provided|not_provided", "not_provided", None),
+        ("null_value", "integer", "0", None),
+        ("array_value", "integer", "0", []),
+        ("object_value", "integer", "0", {}),
+    ]
+    for label, schema, semantic, replacement in cases:
+        rows = [["field", schema, semantic]]
+        changed = json.loads(whole_answer_canonical_bytes(rows, contract))
+        changed[0][2][1] = replacement
+        mutations.append((label, rows, packed(changed)))
+    base = [["field", "integer", "0"]]
+    golden = json.loads(whole_answer_canonical_bytes(base, contract))
+    for label, location, replacement in [
+        ("tag_lowercase", "tag", "integer"),
+        ("tag_replaced_by_schema", "tag", "integer"),
+        ("schema_replaced_by_tag", "schema", "INTEGER"),
+        ("typed_numeric_collapse", "tag", "NUMBER"),
+    ]:
+        changed = copy.deepcopy(golden)
+        if location == "tag":
+            changed[0][2][0] = replacement
+        else:
+            changed[0][1] = replacement
+        mutations.append((label, base, packed(changed)))
+    for label, changed in [
+        ("inner_missing_element", [["field", "integer", ["INTEGER"]]]),
+        ("inner_extra_element", [["field", "integer", ["INTEGER", "0", "extra"]]]),
+        ("outer_missing_element", [["field", ["INTEGER", "0"]]]),
+        ("outer_extra_element", [["field", "integer", ["INTEGER", "0"], "extra"]]),
+    ]:
+        mutations.append((label, base, packed(changed)))
+    unicode_rows = [["field", "string", "\u00e9"]]
+    sort_rows = [["z", "integer", "0"], ["a", "integer", "1"]]
+    mutations.extend([
+        ("ensure_ascii_false", unicode_rows, packed(json.loads(whole_answer_canonical_bytes(unicode_rows, contract)), False)),
+        ("pretty_JSON", base, json.dumps(golden, ensure_ascii=True, indent=2).encode()),
+        ("terminal_newline", base, packed(golden) + b"\n"),
+        ("wrong_field_sorting", sort_rows, packed(list(reversed(json.loads(whole_answer_canonical_bytes(sort_rows, contract)))))),
+    ])
+    require({name for name, _, _ in mutations} == set(amendment["mutation_catalog"]), "whole_answer_mutation_catalog_exact_coverage", checks)
+    for name, rows, raw in mutations:
+        try:
+            require_whole_answer_bytes(raw, rows, contract)
+        except ValueError:
+            rejected = True
+        else:
+            rejected = False
+        require(rejected, "whole_answer_mutation_rejected:" + name, checks)
+
+    invalid = [
+        [["field", "integer", True]], [["field", "integer", 5.0]],
+        [["field", "integer", "5e0"]], [["field", "integer", "05"]],
+        [["field", "integer", "+5"]], [["field", "integer", Fraction(1, 2)]],
+        [["field", "number", 0.5]], [["field", "number", True]],
+        [["field", "number", "NaN"]], [["field", "number", Fraction(1, 3)]],
+        [["field", "number", object()]], [["field", "boolean", "true"]],
+        [["field", "boolean", 1]], [["field", "YYYY-MM-DD", "2039-02-29"]],
+        [["field", "YYYY-MM-DD", "2039-1-05"]], [["field", "HH:MM", "24:00"]],
+        [["field", "HH:MM", "3:45"]], [["field", "option_a|option_b", 0]],
+        [["field", "option_a|option_b", "option_c"]], [["field", "DATE", "2039-10-05"]],
+        [["field", "date", "2039-10-05"]], [["field", "TIME", "23:45"]],
+        [["field", "time", "23:45"]], [["field", "ENUM", "not_provided"]],
+        [["field", "string", None]], [["field", "string", "\ud800"]],
+        [["\ud800", "string", "value"]], [["field", "integer", "0"], ["field", "integer", "1"]],
+        [["field", "integer"]], [["field", "integer", "0", "extra"]],
+        [[1, "integer", "0"]], [["field", "integer", {"display": "0"}]],
+    ]
+    for i, rows in enumerate(invalid):
+        try:
+            whole_answer_canonical_bytes(rows, contract)
+        except (ValueError, TypeError, UnicodeEncodeError):
+            rejected = True
+        else:
+            rejected = False
+        require(rejected, "whole_answer_invalid_semantic_input:" + str(i), checks)
+
+    # Existing corpus imports must still see the unrepaired legacy helper.
+    previous_source = subprocess.check_output([
+        "git", "-c", "safe.directory=" + ROOT.as_posix(), "show",
+        parent_id + ":experiments/G-EXTRACT1-candidate/validate_design.py",
+    ], cwd=ROOT).decode("utf-8")
+    current_tree = ast.parse(Path(__file__).read_text(encoding="utf-8"))
+    previous_tree = ast.parse(previous_source)
+    isolated = {"whole_answer_semantic_text", "whole_answer_canonical_bytes", "require_whole_answer_bytes", "validate_whole_answer_amendment"}
+    protected = {"canonical_answer_bytes", "canonical_atom", "freshness_semantic_text", "freshness_sequence_bytes", "freshness_from_source_facts", "require_freshness_bytes"}
+    for name in sorted(protected):
+        current = next(node for node in current_tree.body if isinstance(node, ast.FunctionDef) and node.name == name)
+        old = next(node for node in previous_tree.body if isinstance(node, ast.FunctionDef) and node.name == name)
+        require(ast.dump(current, include_attributes=False) == ast.dump(old, include_attributes=False), "whole_answer_legacy_helper_unchanged:" + name, checks)
+    for node in current_tree.body:
+        if isinstance(node, ast.FunctionDef) and node.name not in isolated | {"validate"}:
+            called = {child.func.id for child in ast.walk(node) if isinstance(child, ast.Call) and isinstance(child.func, ast.Name)}
+            require(not called.intersection(isolated), "whole_answer_no_silent_old_helper_rewire:" + node.name, checks)
+    preserved = FRESHNESS_AMENDMENT_SUMMARY["preserved_corpus_files"]
+    require(len(preserved) == 10 and all(row["byte_identical"] for row in preserved.values()), "whole_answer_ten_corpus_tooling_files_unchanged", checks)
+    historical = historical_adaptation_summary(contract)
+    require((historical["examined"], historical["adapted"], historical["rejected"]) == (106, 106, 0), "whole_answer_historical_adapter_106", checks)
+    require(historical["projection_evidence_sha256"] == "a14935bf93e8932854b545cacd638daf869d67d8742826887f187956b75e0810", "whole_answer_historical_projection_digest_unchanged", checks)
+    historical_preserved = {}
+    for name, expected in (
+        ("G_ROUTE4_CLOSURE.json", "d992a169a2be293909f0fe0f1b39720656f40a09dc4f6b4e9c53449110cef8be"),
+        ("PHASE_B_UNSAFE_STOP_DIAGNOSTIC.json", "461a85368a6cbbd39429bebbae883c0b17be614db52e343150b23051041b4868"),
+    ):
+        actual = sha256(ROOT / "experiments/G-ROUTE4-candidate/closure" / name)
+        require(actual == expected, "whole_answer_historical_closure_preserved:" + name, checks)
+        historical_preserved[name] = dict(before_sha256=expected, after_sha256=actual, byte_identical=True)
+    counts = dict(
+        logical_bases=168, rendered_variants=192, scaffold_classes=14,
+        logical_scaffold_memberships=234, rendered_scaffold_memberships=906,
+        same_subtype_branch=518, ordinary_branch=16888, same_base_e5_scopes=24,
+        fingerprint_classes=len(contract["template_recurrence_contract"]["fingerprint_classes"]),
+        subtype_groups=len(contract["template_recurrence_contract"]["subtype_template_groups"]),
+        reserves=28, phase_a_calls=480, max_phase_b_calls=240, max_total_calls=720,
+    )
+    require(counts["fingerprint_classes"] == 51 and counts["subtype_groups"] == 35, "whole_answer_recurrence_counts_preserved", checks)
+    return dict(
+        contract_id=amendment["contract_id"], parent_commit=parent_id,
+        semantic_vector_count=len(vectors), numeric_equivalence_groups=len(amendment["equivalence_groups"]),
+        mutation_count=len(mutations), mutations_rejected=len(mutations),
+        invalid_semantic_inputs_rejected=len(invalid), original_failure_completed_bytes=vectors[-1]["expected_utf8"],
+        preserved_corpus_files=preserved,
+        preserved_gold_projection=FRESHNESS_AMENDMENT_SUMMARY["preserved_gold_projection"],
+        preserved_blueprint_files=FRESHNESS_AMENDMENT_SUMMARY["preserved_blueprint_files"],
+        protected_blueprint_commit=PROTECTED_BLUEPRINT_COMMIT,
+        preserved_historical_files=historical_preserved,
+        preservation_counts=counts, historical_adapter=historical,
+        corpus_content_used_to_choose_encoding=False, corpus_rescored=False,
+        existing_checker_helpers_unchanged=True, blueprint_modified=False,
+        checker_repair=False, corpus_finalized=False,
+        scope="isolated design vectors, read-only historical adaptation and preservation hashes only",
+    )
+
 
 
 def validate_existing_blueprint_inventory(checks: list[str]) -> None:
@@ -3338,7 +3659,7 @@ def validate_existing_blueprint_inventory(checks: list[str]) -> None:
         path = directory / name
         old = subprocess.check_output([
             "git", "-c", "safe.directory=" + ROOT.as_posix(), "show",
-            "01aafde7410a44085999aa4aa39f883618e78799:experiments/G-EXTRACT1-candidate/blueprint/" + name,
+            PROTECTED_BLUEPRINT_COMMIT + ":experiments/G-EXTRACT1-candidate/blueprint/" + name,
         ], cwd=ROOT)
         require(path.is_file() and path.read_bytes() == old, "existing_blueprint_unchanged:" + name, checks)
 
@@ -3348,8 +3669,8 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     OUTPUT_FIELD_AMENDMENT_SUMMARY.clear()
     checks: list[str] = []
     require(contract["schema_version"] == "g-extract1.design-candidate.v10", "schema_v10", checks)
-    require(contract["experiment"]["status"] == "READY_FOR_G_EXTRACT1_FRESHNESS_CANONICALIZATION_REREVIEW", "status_freshness_amendment", checks)
-    require(contract["final_verdict"] == contract["experiment"]["status"], "freshness_final_status", checks)
+    require(contract["experiment"]["status"] == "READY_FOR_G_EXTRACT1_WHOLE_ANSWER_CANONICALIZATION_REREVIEW", "status_whole_answer_amendment", checks)
+    require(contract["final_verdict"] == contract["experiment"]["status"], "whole_answer_final_status", checks)
     require(contract["experiment"]["design_revision"] == 10, "design_revision_v10", checks)
     for field in ("implemented", "blueprint_authorized", "fixture_authoring_authorized", "execution_authorized"):
         require(contract["experiment"][field] is False, f"authority_false:{field}", checks)
@@ -3364,6 +3685,8 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     SCAFFOLD_AUDIT.update(validate_scaffold_amendment(contract,human,checks))
     FRESHNESS_AMENDMENT_SUMMARY.clear()
     FRESHNESS_AMENDMENT_SUMMARY.update(validate_freshness_amendment(contract, human, checks))
+    WHOLE_ANSWER_AMENDMENT_SUMMARY.clear()
+    WHOLE_ANSWER_AMENDMENT_SUMMARY.update(validate_whole_answer_amendment(contract, human, checks))
 
     corpus, phases = contract["corpus"], contract["phases"]
     expected_counts = {
@@ -3850,6 +4173,7 @@ def main() -> int:
         "output_field_amendment": OUTPUT_FIELD_AMENDMENT_SUMMARY,
         "declared_scaffold_feasibility_audit": SCAFFOLD_AUDIT,
         "freshness_canonicalization_amendment": FRESHNESS_AMENDMENT_SUMMARY,
+        "whole_answer_canonicalization_amendment": WHOLE_ANSWER_AMENDMENT_SUMMARY,
         "historical_adapter": historical_adaptation_summary(contract),
         "preserved_v8_sections":preserved_v8_sections(contract),
         "template_ledger_summary": {

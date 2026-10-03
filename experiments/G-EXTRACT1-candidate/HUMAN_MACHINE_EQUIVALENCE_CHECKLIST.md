@@ -1,5 +1,25 @@
 # G-EXTRACT1 v10 Human/Machine Equivalence Checklist
 
+## Whole-Answer Canonicalization Amendment
+
+- Human normative whole-answer annex parses identically to `whole_answer_canonicalization_contract`.
+- Four leaf strings in each row; exact schema and derived uppercase tag, never exchanged.
+- Seven semantic texts have exact rules; scalar/array/object/null values reject.
+- INTEGER/NUMBER signed zero and NUMBER lexical equivalence normalize without floats or rounding.
+- Whole-answer byte contract retains ensure_ascii=True; freshness remains ensure_ascii=False.
+- Multi-field golden vectors exercise unsigned UTF-8 sorting, bindings and duplicate-field rejection.
+- Mutation catalog rejects native scalars, wrong tags/schemas, numeric spellings, altered strings/dates/times/enums, sorting and JSON formatting.
+- Full prior machine contract equality is checked after removing this additive contract and restoring review status.
+- Historical adaptation and its digest remain 106/106; no historical/new whole-answer campaign is claimed.
+- Ten corpus/tooling hashes, gold projection, five accepted blueprint files and legacy helper ASTs are unchanged.
+- No corpus checker imports or calls the new isolated whole-answer test helper.
+- No corpus/gold alteration, provider call, runtime/execution or finalization authority is granted.
+- Independent amendment review and separate blueprint rebind/rereview/checker repair remain required.
+
+This checklist is supporting evidence. Deterministic PASS does not prove scientific
+validity or substitute for independent adversarial review.
+
+
 ## Freshness Canonicalization Amendment
 
 - Parsed human normative freshness annex equals `freshness_canonicalization_contract` exactly.
