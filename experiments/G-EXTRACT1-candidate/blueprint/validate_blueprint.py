@@ -16,7 +16,9 @@ DESIGN = HERE.parent
 ROOT = DESIGN.parent.parent
 SCIENTIFIC_BASIS = "394d24121309ec9dce80e725b50dbe5eb60f6d2a"
 ORIGINAL_BLUEPRINT = "99707b4f13abd6533f1d09313bdb066793996be9"
-ACCEPTED = "aef3e0900cba41481904c8a451c4ca28b9d46c53"
+OUTPUT_AMENDMENT = "aef3e0900cba41481904c8a451c4ca28b9d46c53"
+PRIOR_BLUEPRINT = "28fb6bbd3fb668265e4cc50cda0da0f9afdf3ce5"
+ACCEPTED = "62c783bd8be708a86c82a9e00c80b0fa6fb5b459"
 SOURCE_NAMES = (
     "DESIGN_CANDIDATE.md", "DESIGN_CANDIDATE.json",
     "DESIGN_REVISION_CHANGELOG.md", "HUMAN_MACHINE_EQUIVALENCE_CHECKLIST.md",
@@ -80,6 +82,7 @@ def traceability():
         "schedule": [ref("/sampling"), ref("/e5_counterfactual_selector_contract/seeds")],
         "request_template": [ref("/baseline_binding"), ref("/e5_counterfactual_selector_contract/request_contract"), ref("/model_provider")],
         "comparison_scope": [ref("/contamination_contract"), ref("/ordinal_neutral_similarity_contract"), ref("/historical_fingerprint_adapter_contract"), ref("/e5_counterfactual_selector_contract/contamination")],
+        "scaffold_overlap": [ref("/declared_scaffold_overlap_contract")],
         "governance": [ref("/governance"), ref("/implementation_authorization_prerequisites")],
     }
 
@@ -305,6 +308,168 @@ def schedules(positions, variants, c, replacements=None):
     return result
 
 
+def pair_key(left, right):
+    return tuple(sorted((left, right), key=lambda x: x.encode('utf-8')))
+
+
+def materialize_scaffold(c, positions, variants):
+    source = c['declared_scaffold_overlap_contract']
+    view = dict(source['view'])
+    view['ordinary_payload_definition'] = view.pop('input')
+    by_base = {p['logical_base_id']: p for p in positions}
+    members = {base: [v['rendered_variant_id'] for v in variants if v['logical_base_id'] == base]
+               for base in by_base}
+    classes = []
+    for index, group in enumerate(source['eligible_groups']):
+        pairs = [list(pair_key(*pair)) for pair in group['position_pairs']]
+        bases = {base for pair in pairs for base in pair}
+        same_subtype = group['subtype_pair'][0] == group['subtype_pair'][1]
+        classes.append(dict(
+            class_id=group['group_id'], subtype_pair=group['subtype_pair'],
+            context_scope=sorted({by_base[b]['phase'] + ':' + by_base[b]['risk_round'] for b in bases}),
+            primary_reserve_scope=sorted({by_base[b]['primary_or_reserve'] for b in bases}),
+            logical_position_pairs=pairs,
+            rendered_position_pairs=[list(pair_key(a, b)) for left, right in pairs
+                                     for a in members[left] for b in members[right]],
+            invariant_five_grams=group['forced_overlapping_five_grams'],
+            old_applicable_branch='NEW_DECLARED_SAME_SUBTYPE' if same_subtype else 'NEW_DECLARED_DIFFERENT_SUBTYPE',
+            old_minimum_ordinary_jaccard=group['ordinary_minimum'],
+            old_minimum_content_jaccard=group['content_minimum'],
+            residual_rule='RA=A\\I; RB=B\\I; sets of ordinary normalized five-gram tuples; no rewriting or new adjacency',
+            residual_threshold_exclusive='3/25', residual_comparator='<',
+            residual_integer_test='25*intersection < 3*union',
+            empty_residual_behavior='AUTHORING_ERROR_EMPTY_RESIDUAL',
+            design_traceability=ref('/declared_scaffold_overlap_contract/eligible_groups/' + str(index)),
+        ))
+    scaffold_pairs = {tuple(pair) for group in classes for pair in group['rendered_position_pairs']}
+    branch_counts = {'DECLARED_SCAFFOLD': 0, 'DECLARED_SAME_SUBTYPE': 0, 'ORDINARY_NEW_NEW': 0}
+    for left, right in itertools.combinations(variants, 2):
+        a, b = left['logical_base_id'], right['logical_base_id']
+        if a == b: continue
+        if pair_key(left['rendered_variant_id'], right['rendered_variant_id']) in scaffold_pairs:
+            branch = 'DECLARED_SCAFFOLD'
+        elif by_base[a]['subtype_slot'] == by_base[b]['subtype_slot']:
+            branch = 'DECLARED_SAME_SUBTYPE'
+        else:
+            branch = 'ORDINARY_NEW_NEW'
+        branch_counts[branch] += 1
+    return dict(
+        contract_id=source['contract_id'], repair_commit=ACCEPTED,
+        classes=classes,
+        cross_base_branch_counts=branch_counts,
+        reconciliation=dict(subtype_pair_summaries=12, exact_classes=14,
+                            e1_split='E1-05 R2 zero and R3 366 separately',
+                            e7_split='E7-02/E7-04 A and B presentation separately', e5_classes=10),
+        logical_pair_count=234, rendered_pair_count=906, same_base_e5_excluded=True,
+        eligibility=source['eligibility'], freshness_required=source['freshness_required'],
+        view=view, historical_unchanged=source['historical'],
+        prerequisites_ref=ref('/declared_scaffold_overlap_contract/eligibility'),
+        freshness_ref=ref('/declared_scaffold_overlap_contract/freshness_required'),
+        residual_ref=ref('/declared_scaffold_overlap_contract/view'),
+        decision_precedence=[
+            dict(branch='HISTORICAL_NEW', predicate='historical/new domain; existing projection/ordinary rules only'),
+            dict(branch='AUTHORING_ERROR_STRUCTURE', predicate='either actual position/subtype/profile/lexical/schema/operation/value/output/fingerprint invalid'),
+            dict(branch='SAME_BASE_E5_PAIR_LOCAL', predicate='same base and validated complete CF1/CF2 request/gold pair; unchanged intentional sharing'),
+            dict(branch='REJECT_FRESHNESS', predicate='cross-base and any existing freshness or exact-reuse failure'),
+            dict(branch='DECLARED_SCAFFOLD', predicate='cross-base exact unordered rendered membership in exactly one listed class'),
+            dict(branch='DECLARED_SAME_SUBTYPE', predicate='remaining cross-base exact ledger positions with equal subtype_slot'),
+            dict(branch='ORDINARY_NEW_NEW', predicate='remaining validated cross-base pairs'),
+        ],
+        precedence_equivalence='Pair-local E5 sharing is checked before cross-base freshness; intentional same-base sharing is not rejected by cross-base reuse rules. All scaffold pairs require full freshness first.',
+        eligibility_requires_actual_content=True,
+        feasibility_limit='Frozen pairwise scaffold feasibility is not proof of simultaneous concrete corpus feasibility or acceptance.',
+    )
+
+
+def reconstructed_membership(positions):
+    """Reconstruct frozen scopes from allocations, not the class pair arrays."""
+    scopes = {}
+    for left, right in itertools.combinations(positions, 2):
+        a, b = sorted((left['subtype_slot'], right['subtype_slot']))
+        key = None
+        if a.startswith('E5-') and b.startswith('E5-') and a != b:
+            key = (a, b, 'ALL')
+        elif a == b == 'E1-05' and left['primary_or_reserve'] == right['primary_or_reserve'] == 'PRIMARY':
+            if left['phase'] != right['phase'] and left['risk_round'] == right['risk_round']:
+                key = (a, b, left['risk_round'])
+        elif (a, b) == ('E7-02', 'E7-04') and left['phase'] == right['phase']:
+            key = (a, b, left['phase'])
+        if key is not None:
+            scopes.setdefault(key, set()).add(pair_key(left['logical_base_id'], right['logical_base_id']))
+    return scopes
+
+
+def validate_scaffold(bp, c):
+    actual = bp['comparison_scope']['scaffold_overlap']
+    source = c['declared_scaffold_overlap_contract']
+    checks = []
+    def require(ok, label):
+        if not ok: raise ValueError(label)
+        checks.append(label)
+    ps, vs = bp['logical_positions'], bp['rendered_variants']
+    by_base = {p['logical_base_id']: p for p in ps}
+    scopes = reconstructed_membership(ps)
+    require(len(scopes) == 14, 'scaffold_independent_scope_reconstruction_14')
+    require(actual == materialize_scaffold(c, ps, vs), 'scaffold_exact_accepted_contract_materialization')
+    groups = actual['classes']
+    require([g['class_id'] for g in groups] == [g['group_id'] for g in source['eligible_groups']], 'scaffold_exact_14_class_ids')
+    logical, rendered, scoped = {}, {}, set()
+    for group in groups:
+        a, b = group['subtype_pair']
+        discriminator = 'ALL' if a.startswith('E5-') else group['context_scope'][0].split(':')[1] if a == b else group['context_scope'][0][0]
+        key = (a, b, discriminator)
+        require(key not in scoped, 'scaffold_unique_scope:' + group['class_id'])
+        scoped.add(key)
+        pairs = group['logical_position_pairs']
+        require(len(pairs) == len({pair_key(*p) for p in pairs}), 'scaffold_no_duplicate_logical:' + group['class_id'])
+        require({pair_key(*p) for p in pairs} == scopes[key], 'scaffold_reconstructed_membership:' + group['class_id'])
+        for pair in pairs:
+            pair = pair_key(*pair)
+            require(pair[0] != pair[1] and pair not in logical, 'scaffold_unique_cross_base_logical:' + str(pair))
+            logical[pair] = group['class_id']
+        members = set()
+        for left, right in itertools.combinations(vs, 2):
+            if left['logical_base_id'] != right['logical_base_id'] and pair_key(left['logical_base_id'], right['logical_base_id']) in scopes[key]:
+                members.add(pair_key(left['rendered_variant_id'], right['rendered_variant_id']))
+        require(len(group['rendered_position_pairs']) == len(members) and set(map(tuple, group['rendered_position_pairs'])) == members, 'scaffold_independent_rendered_expansion:' + group['class_id'])
+        for pair in sorted(members):
+            require(pair not in rendered, 'scaffold_unique_rendered:' + str(pair))
+            rendered[pair] = group['class_id']
+    require(len(logical) == 234 and len(rendered) == 906, 'scaffold_234_logical_906_rendered')
+    counts = {'DECLARED_SCAFFOLD': 0, 'DECLARED_SAME_SUBTYPE': 0, 'ORDINARY_NEW_NEW': 0}
+    pair_local = []
+    partition = []
+    for left, right in itertools.combinations(vs, 2):
+        lbase, rbase = left['logical_base_id'], right['logical_base_id']
+        pair = pair_key(left['rendered_variant_id'], right['rendered_variant_id'])
+        if lbase == rbase:
+            require(pair not in rendered and by_base[lbase]['family'] == 'E5', 'pair_local_not_scaffold:' + lbase)
+            pair_local.append(list(pair))
+            continue
+        scaffold = pair in rendered
+        same = not scaffold and by_base[lbase]['subtype_slot'] == by_base[rbase]['subtype_slot']
+        ordinary = not scaffold and not same
+        require(sum((scaffold, same, ordinary)) == 1, 'cross_base_unique_branch:' + str(pair))
+        branch = 'DECLARED_SCAFFOLD' if scaffold else 'DECLARED_SAME_SUBTYPE' if same else 'ORDINARY_NEW_NEW'
+        counts[branch] += 1
+        partition.append(dict(pair=list(pair), branch=branch, class_id=rendered.get(pair)))
+    require(sum(counts.values()) == 18312 and len(pair_local) == 24, 'scaffold_full_domain_partition')
+    require(actual['cross_base_branch_counts'] == counts, 'scaffold_blueprint_branch_counts_match_independent_partition')
+    return checks, dict(class_ids=[g['class_id'] for g in groups], logical_memberships=len(logical),
+                        rendered_memberships=len(rendered), branch_counts=counts, pair_local_scopes=pair_local,
+                        partition=partition, partition_sha256=digest(encoded(partition)),
+                        duplicate_logical_pairs=0, duplicate_rendered_pairs=0, extra_pairs=0,
+                        same_base_pairs_in_scaffold=0, actual_content_validated=False)
+
+
+def checking_residual(group, a, b):
+    """Design replay on synthetic gram sets, never a production corpus scorer."""
+    invariant = {tuple(g.split(' ')) for g in group['invariant_five_grams']}
+    ra, rb = a - invariant, b - invariant
+    if not ra or not rb: return 'AUTHORING_ERROR_EMPTY_RESIDUAL'
+    return 'PERMITTED_DECLARED_SCAFFOLD' if 25 * len(ra & rb) < 3 * len(ra | rb) else 'REJECT_CONTAMINATION'
+
+
 def build(c, helper, hashes):
     ledger = helper.template_ledger(c)
     if ledger["positions"] != c["template_recurrence_contract"]["positions"] or ledger["classes"] != c["template_recurrence_contract"]["fingerprint_classes"]:
@@ -372,13 +537,15 @@ def build(c, helper, hashes):
     schedule=schedules(positions,variants,c)
     all_cells=[m["tier"]+":"+r for m in c["model_provider"]["models"] for r in ("R2","R3")]
     return dict(
-        schema_version="g-extract1.blueprint.v1", status="READY_FOR_G_EXTRACT1_BLUEPRINT_REREVIEW_2",
+        schema_version="g-extract1.blueprint.v1", status="READY_FOR_G_EXTRACT1_BLUEPRINT_CONTAMINATION_REREVIEW",
         accepted_design=dict(commit=ACCEPTED, artifacts_sha256=hashes,
                              scientific_basis_commit=SCIENTIFIC_BASIS,
-                             output_field_amendment_commit=ACCEPTED,
+                             output_field_amendment_commit=OUTPUT_AMENDMENT,
+                             contamination_feasibility_repair_commit=ACCEPTED,
+                             prior_blueprint_commit=PRIOR_BLUEPRINT,
                              original_blueprint_commit=ORIGINAL_BLUEPRINT,
                              design_side_digest_rebinding_required=False,
-                             design_checker_inventory_scope="historical amendment checkpoint at original_blueprint_commit; not validation of updated blueprint bytes"),
+                             design_checker_inventory_scope="historical repair checkpoint at prior_blueprint_commit; not validation of rebound blueprint bytes"),
         authority=dict(blueprint_authoring=True, corpus_gold_authoring=False, implementation=False,
                        mechanical_pilot=False, execution_freeze=False, phase_a_execution=False, phase_b_execution=False),
         terminology=dict(logical_base="one scored/reserve position, regardless of pair expansion",
@@ -410,6 +577,7 @@ def build(c, helper, hashes):
                               declared_recurrence_content_and_shape_ref=ref("/ordinal_neutral_similarity_contract/decision_table"),
                               exact_reuse_ref=ref("/contamination_contract/exact_reuse_contract"),
                               new_new_fingerprint_ref=ref("/template_recurrence_contract"),
+                              scaffold_overlap=materialize_scaffold(c, positions, variants),
                               comparisons_require_future_content=True),
         schedule_plan=dict(model_order_algorithm="active logical ordinal ascending within phase; cyclic model list rotation by (zero-based active within-round rank + round_offset) modulo3, offsets R2=0/R3=35; within model repeats ascending, then CF1/CF2 or SINGLE",
                            model_order_is_operational_allocation_not_new_science=True,
@@ -445,14 +613,16 @@ def build(c, helper, hashes):
 def markdown(bp):
     return """# G-EXTRACT1 Authoring Blueprint
 
-Status: READY_FOR_G_EXTRACT1_BLUEPRINT_REREVIEW_2. Mechanical blueprint update only.
+Status: READY_FOR_G_EXTRACT1_BLUEPRINT_CONTAMINATION_REREVIEW. Mechanical rebind only.
 
 ## Authority And Scope
 
 Scientific basis: V10 commit `394d24121309ec9dce80e725b50dbe5eb60f6d2a`, plus the
-accepted output-field amendment `aef3e0900cba41481904c8a451c4ca28b9d46c53`.
-The six amended design artifacts are byte-bound to that amendment commit in
-BLUEPRINT.json and are unchanged by this update. Original blueprint lineage is
+accepted output-field amendment `aef3e0900cba41481904c8a451c4ca28b9d46c53`, and
+accepted contamination repair `62c783bd8be708a86c82a9e00c80b0fa6fb5b459`.
+The six design artifacts are byte-bound to the repair commit in BLUEPRINT.json
+and remain unchanged. Prior accepted blueprint `28fb6bbd3fb668265e4cc50cda0da0f9afdf3ce5`
+is lineage only: its allocations are preserved exactly. Original lineage is
 `99707b4f13abd6533f1d09313bdb066793996be9`.
 BLUEPRINT.json is the complete value-free enumeration; its scientific_traceability
 maps every scientific dimension to the accepted JSON contract. The machine artifact
@@ -574,21 +744,48 @@ ordinals, variants, gates, schedules, seeds, reserve mappings, comparison scopes
 all qualified-cell subsets and traceability; mutation probes reject mismatches.
 The report claims structural/design equivalence only, not scientific validity,
 future content feasibility, transport correctness or execution readiness.
-The accepted amendment's design checker pins the original blueprint as historical
-checkpoint evidence. That guard is not rebound: the amendment requires no mutable
-design-side digest of this later blueprint. All six design artifacts remain exact
+The accepted repair's design checker pins the prior accepted blueprint as historical
+checkpoint evidence. That guard is not rebound: no mutable design-side digest of
+this later blueprint is required. All six design artifacts remain exact
 accepted bytes. This checker loads only their value-free derivation helpers; it
 does not invoke the old checkpoint inventory guard on updated blueprint files.
-Instead it checks the amended design binding, canonical outputs, and preservation
-of the original blueprint's other allocations. No design-side artifact changes
+Instead it checks the repair binding, exact scaffold membership, canonical outputs,
+and exact preservation of both prior and original allocations. No design-side changes
 or circular design/blueprint digest binding are introduced.
 
 G-ROUTE4 remains CLOSED FAILED. Provider/model calls, scored/reserve content and
 gold answers authored are zero; belief effects none; no autonomy or runtime work.
 Separate authorization remains required for corpus/gold authoring, implementation,
 mechanical pilot, execution freeze, Phase A and conditional Phase B. Blueprint
-review must occur first. This status does not self-authorize any later stage.
-"""
+review must occur first; corpus authoring cannot resume before rebind rereview.
+This status does not self-authorize any later stage.
+""" + scaffold_markdown(bp)
+
+
+def scaffold_markdown(bp):
+    scaffold = bp['comparison_scope']['scaffold_overlap']
+    rows = ['\n## Accepted Bounded Scaffold Rebind\n',
+            'Mandatory grammar made specific old ordinary/content tests infeasible even with fresh values. The accepted repair, not this blueprint, defines the bounded remedy.',
+            'Exactly 14 classes cover 234 logical unordered pairs and 906 cross-base rendered pairs. Twelve subtype-pair summaries split into two E1-05 classes (R2 zero/R3 366), ten E5 classes, and two E7-02/E7-04 presentation classes (A/B).',
+            'BLUEPRINT.json comparison_scope.scaffold_overlap contains every exact logical/rendered pair, accepted class ID, invariant gram, old branch/minimum, context/reserve scope, and exact design path. There are no subtype wildcards.',
+            'Use existing ordinary normalized/tokenized five-gram sets A/B. Subtract the frozen invariant set I separately: RA=A\\I; RB=B\\I. Never rewrite tokens, create adjacency, recompute I from values, or apply subtraction historically. Require nonempty RA and RB and strict 25*intersection < 3*union (Jaccard <0.12). Either empty produces AUTHORING_ERROR_EMPTY_RESIDUAL.',
+            'Both actual fixtures must pass position, lexical, schema, operation/gold, subtype, value-shape, output and planned-fingerprint checks; E5 also requires its full request/pair audit. Raw typed VALUE freshness, whole-answer/identity/date-number reuse, raw payload inequality, generated identities and independent A/B checks remain mandatory. Residual success alone never permits a pair.',
+            'Precedence: historical rules first; actual structural/profile invalidity errors; validated same-base E5 pair-local sharing; cross-base freshness/reuse rejection; exact scaffold membership; remaining declared same-subtype content/shape rules; remaining ordinary rules. Pair-local sharing precedes cross-base freshness intentionally. The 24 same-base E5 scopes are separate and excluded from scaffold membership. All four cross-base E5 CF combinations inherit only their exact base-pair membership.',
+            'Historical/new remains unchanged: ordinary>=0.20, projection3/3, or projection>=2/3 and ordinary>=0.12 reject; 106/106 historical adaptations and 20,352 comparisons remain required. No historical scaffold handling.',
+            'Scaffold classes are not recurrence groups. Remaining same-subtype content rules, different-subtype ordinary rules, 51 fingerprint classes, 35 subtype groups, reserves, schedules, seeds and gates are unchanged. The report partitions all 18,312 cross-base rendered pairs; 906 are included within that domain, not additional comparisons.',
+            'This materializes frozen pairwise-feasibility rules only. Simultaneous concrete corpus feasibility, actual independence, corpus acceptance and scientific validity are not proven. No concrete content exists here.',
+            '\n| Accepted Class ID | Subtypes | Logical | Rendered | Old Branch / Minimum |',
+            '|---|---|---:|---:|---|']
+    for g in scaffold['classes']:
+        rows.append('| ' + g['class_id'] + ' | ' + '/'.join(g['subtype_pair']) + ' | ' +
+                    str(len(g['logical_position_pairs'])) + ' | ' + str(len(g['rendered_position_pairs'])) +
+                    ' | ' + g['old_applicable_branch'] + ' / ' + g['old_minimum_ordinary_jaccard'] + ' |')
+    counts = scaffold['cross_base_branch_counts']
+    table_start = next(i for i, row in enumerate(rows) if row.lstrip().startswith('| Accepted'))
+    summary = ('Cross-base partition: ' + str(counts['DECLARED_SCAFFOLD']) + ' scaffold + ' +
+               str(counts['DECLARED_SAME_SUBTYPE']) + ' remaining same-subtype + ' +
+               str(counts['ORDINARY_NEW_NEW']) + ' ordinary = 18,312. All 24 pair-local scopes remain separate.')
+    return '\n\n'.join(rows[:table_start] + [summary]) + '\n\n' + '\n'.join(rows[table_start:]) + '\n'
 
 
 def resolve_pointer(c, reference):
@@ -698,6 +895,8 @@ def validate_output_plans(bp, c):
 def validate_original_preservation(bp):
     original = json.loads(git("show",ORIGINAL_BLUEPRINT+":experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.json"))
     projected = copy.deepcopy(bp)
+    projected['comparison_scope'].pop('scaffold_overlap')
+    projected['scientific_traceability'].pop('scaffold_overlap')
     projected["status"] = original["status"]
     projected["accepted_design"] = original["accepted_design"]
     projected["scientific_traceability"]["schema_plan"].remove(ref("/output_field_amendment_contract"))
@@ -712,15 +911,29 @@ def validate_original_preservation(bp):
     return ["original_blueprint_all_other_allocations_unchanged"]
 
 
+def validate_prior_preservation(bp):
+    prior = json.loads(git('show', PRIOR_BLUEPRINT + ':experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.json'))
+    projected = copy.deepcopy(bp)
+    projected['status'] = prior['status']
+    projected['accepted_design'] = prior['accepted_design']
+    projected['comparison_scope'].pop('scaffold_overlap')
+    projected['scientific_traceability'].pop('scaffold_overlap')
+    if projected != prior: raise ValueError('prior_blueprint_allocation_changed')
+    return ['all_prior_blueprint_allocations_exactly_preserved']
+
+
 def validate(bp, expected, c):
     checks=[]
     def require(ok,label):
         if not ok:raise ValueError(label)
         checks.append(label)
     require(set(bp)==set(expected),"exact_blueprint_top_level_keys")
+    scaffold_checks, _ = validate_scaffold(bp, c)
+    checks.extend(scaffold_checks)
     output_checks,_ = validate_output_plans(bp,c)
     checks.extend(output_checks)
     checks.extend(validate_original_preservation(bp))
+    checks.extend(validate_prior_preservation(bp))
     for key in expected:require(bp[key]==expected[key],"accepted_derivation:"+key)
     ps=bp["logical_positions"];vs=bp["rendered_variants"]
     require(len(ps)==168,"168_logical_bases")
@@ -823,6 +1036,104 @@ def validate_reserve_schedules(bp,c,checks):
             checks.append('precontact_reserve_schedule:'+str(index)+':'+phase)
 
 
+def scaffold_mutations():
+    path = lambda x: x['comparison_scope']['scaffold_overlap']
+    first = lambda x: path(x)['classes'][0]
+    e5 = lambda x: next(g for g in path(x)['classes'] if g['subtype_pair'] == ['E5-01', 'E5-02'])
+    def merge(x, family):
+        groups = path(x)['classes']
+        selected = [g for g in groups if g['subtype_pair'][0].startswith(family)]
+        selected[0]['logical_position_pairs'].extend(selected[1]['logical_position_pairs'])
+        groups.remove(selected[1])
+    def same_base(x):
+        base = e5(x)['logical_position_pairs'][0][0]
+        e5(x)['rendered_position_pairs'].append([base + ':CF1', base + ':CF2'])
+    def altered_recurrence(x):
+        x['recurrence_ledger']['positions'][0]['fingerprint_class'] = 'UNAUTHORIZED'
+    return [
+        ('missing_scaffold_class', lambda x: path(x)['classes'].pop()),
+        ('extra_scaffold_class', lambda x: path(x)['classes'].append(copy.deepcopy(first(x)))),
+        ('wrong_class_id', lambda x: first(x).update(class_id='WRONG')),
+        ('missing_logical_pair', lambda x: first(x)['logical_position_pairs'].pop()),
+        ('extra_logical_pair', lambda x: first(x)['logical_position_pairs'].append(['A:R2:E2-01:PRIMARY', 'B:R2:E2-02:PRIMARY'])),
+        ('duplicate_logical_pair', lambda x: first(x)['logical_position_pairs'].append(first(x)['logical_position_pairs'][0][:])),
+        ('wrong_invariant_gram', lambda x: first(x)['invariant_five_grams'].__setitem__(0, 'wrong fixed invariant gram here')),
+        ('added_mutable_gram', lambda x: first(x)['invariant_five_grams'].append('mutable authored value gram here')),
+        ('removed_invariant_gram', lambda x: first(x)['invariant_five_grams'].pop()),
+        ('wrong_residual_threshold', lambda x: first(x).update(residual_threshold_exclusive='1/5')),
+        ('inclusive_residual_comparator', lambda x: first(x).update(residual_comparator='<=')),
+        ('allow_empty_residual', lambda x: first(x).update(empty_residual_behavior='PERMITTED')),
+        ('same_base_e5_in_scaffold', same_base),
+        ('unrelated_e5_pair', lambda x: e5(x)['logical_position_pairs'].append(['A:R2:E5-03:PRIMARY', 'B:R2:E5-04:PRIMARY'])),
+        ('merged_e7_ab_classes', lambda x: merge(x, 'E7')),
+        ('merged_e1_zero_366_classes', lambda x: merge(x, 'E1')),
+        ('historical_in_scaffold', lambda x: first(x)['logical_position_pairs'].append(['HISTORICAL:EXTRACTION', 'A:R2:E1-05:PRIMARY'])),
+        ('altered_recurrence_membership', altered_recurrence),
+        ('elevated_corpus_authority', lambda x: x['authority'].update(corpus_gold_authoring=True)),
+        ('missing_rendered_pair', lambda x: e5(x)['rendered_position_pairs'].pop()),
+        ('duplicate_rendered_pair', lambda x: e5(x)['rendered_position_pairs'].append(e5(x)['rendered_position_pairs'][0][:])),
+        ('wrong_precedence', lambda x: path(x)['decision_precedence'].reverse()),
+        ('missing_freshness_prerequisite', lambda x: path(x)['freshness_required'].pop()),
+    ]
+
+
+def checking_comparison_branch(bp, left, right, facts):
+    """Replay the structural branch table using explicit test facts, not fixtures."""
+    if facts['historical']:
+        return 'HISTORICAL_NEW'
+    if not facts['actual_structure_valid']:
+        return 'AUTHORING_ERROR_STRUCTURE'
+    variants = {v['rendered_variant_id']: v for v in bp['rendered_variants']}
+    a, b = variants[left], variants[right]
+    if a['logical_base_id'] == b['logical_base_id']:
+        return 'SAME_BASE_E5_PAIR_LOCAL' if facts['pair_local_valid'] else 'AUTHORING_ERROR_STRUCTURE'
+    if not facts['all_freshness_checks_pass']:
+        return 'REJECT_FRESHNESS'
+    pair = pair_key(left, right)
+    for g in bp['comparison_scope']['scaffold_overlap']['classes']:
+        if list(pair) in g['rendered_position_pairs']:
+            return checking_residual(g, facts['ordinary_grams_left'], facts['ordinary_grams_right'])
+    bases = {p['logical_base_id']: p for p in bp['logical_positions']}
+    return 'DECLARED_SAME_SUBTYPE' if bases[a['logical_base_id']]['subtype_slot'] == bases[b['logical_base_id']]['subtype_slot'] else 'ORDINARY_NEW_NEW'
+
+
+def validate_scaffold_replay(bp, checks):
+    groups = bp['comparison_scope']['scaffold_overlap']['classes']
+    def require(ok, label):
+        if not ok: raise ValueError(label)
+        checks.append(label)
+    # Synthetic five-gram tuples test exact set algebra without authoring content.
+    shared = {(str(i), 'test', 'gram', 'shared', 'only') for i in range(3)}
+    left_unique = {(str(i), 'test', 'gram', 'left', 'only') for i in range(11)}
+    right_unique = {(str(i), 'test', 'gram', 'right', 'only') for i in range(11)}
+    for group in groups:
+        invariant = {tuple(g.split(' ')) for g in group['invariant_five_grams']}
+        a, b = shared | left_unique, shared | right_unique
+        # intersection=3, union=25; exactly 0.12 must reject.
+        require(checking_residual(group, a | invariant, b | invariant) == 'REJECT_CONTAMINATION', 'residual_boundary_strict:' + group['class_id'])
+        b = b | {('extra', 'test', 'gram', 'right', 'only')}
+        require(checking_residual(group, a | invariant, b | invariant) == 'PERMITTED_DECLARED_SCAFFOLD', 'residual_below_boundary:' + group['class_id'])
+        require(checking_residual(group, a, b) == checking_residual(group, a | invariant, b | invariant), 'residual_exact_frozen_subtraction:' + group['class_id'])
+        for x, y, label in [(set(), set(), 'both'), (set(), a, 'left'), (a, set(), 'right')]:
+            require(checking_residual(group, x | invariant, y | invariant) == 'AUTHORING_ERROR_EMPTY_RESIDUAL', 'residual_empty_' + label + ':' + group['class_id'])
+        require(checking_residual(group, a | invariant, a | invariant) == 'REJECT_CONTAMINATION', 'residual_copy_rejected:' + group['class_id'])
+    left, right = groups[0]['rendered_position_pairs'][0]
+    facts = dict(historical=False, actual_structure_valid=True, pair_local_valid=True,
+                 all_freshness_checks_pass=True, ordinary_grams_left=left_unique, ordinary_grams_right=right_unique)
+    probes = [
+        ('scaffold_valid', left, right, {}, 'PERMITTED_DECLARED_SCAFFOLD'),
+        ('historical_never_subtract', left, right, {'historical': True, 'actual_structure_valid': False}, 'HISTORICAL_NEW'),
+        ('structure_before_permission', left, right, {'actual_structure_valid': False}, 'AUTHORING_ERROR_STRUCTURE'),
+        ('freshness_before_permission', left, right, {'all_freshness_checks_pass': False}, 'REJECT_FRESHNESS'),
+        ('pair_local_intentional_sharing', 'A:R2:E5-01:PRIMARY:CF1', 'A:R2:E5-01:PRIMARY:CF2', {'all_freshness_checks_pass': False}, 'SAME_BASE_E5_PAIR_LOCAL'),
+        ('invalid_pair_local', 'A:R2:E5-01:PRIMARY:CF1', 'A:R2:E5-01:PRIMARY:CF2', {'pair_local_valid': False}, 'AUTHORING_ERROR_STRUCTURE'),
+        ('same_subtype_preserved', 'A:R2:E2-01:PRIMARY:SINGLE', 'B:R2:E2-01:PRIMARY:SINGLE', {}, 'DECLARED_SAME_SUBTYPE'),
+        ('ordinary_preserved', 'A:R2:E2-01:PRIMARY:SINGLE', 'B:R2:E3-02:PRIMARY:SINGLE', {}, 'ORDINARY_NEW_NEW'),
+    ]
+    for label, a, b, changes, outcome in probes:
+        require(checking_comparison_branch(bp, a, b, dict(facts, **changes)) == outcome, 'scaffold_precedence_replay:' + label)
+
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--write',action='store_true');args=parser.parse_args()
     c,helper,hashes=load_authority();expected=build(c,helper,hashes)
@@ -831,6 +1142,7 @@ def main():
         (HERE/'BLUEPRINT.md').write_text(markdown(expected),encoding='utf-8',newline='\n')
     if (HERE/'BLUEPRINT.json').read_bytes()!=encoded(expected):raise ValueError('blueprint_canonical_bytes_or_derivation_mismatch')
     actual=json.loads((HERE/'BLUEPRINT.json').read_text());checks=validate(actual,expected,c)
+    validate_scaffold_replay(actual, checks)
     validate_reserve_schedules(actual,c,checks)
     if (HERE/'BLUEPRINT.md').read_bytes()!=markdown(expected).encode():raise ValueError('human_machine_blueprint_mismatch')
     mutations=[('extra_top_key',lambda x:x.update(unauthorized_rule=True)),
@@ -847,7 +1159,7 @@ def main():
                ('inserted_gold',lambda x:x['logical_positions'][0].update(gold_values={'x':1})),
                ('inserted_source',lambda x:x['logical_positions'][0].update(source_fact_records=[])),
                ('unauthorized_authority',lambda x:x['authority'].update(corpus_gold_authoring=True)),
-               ('reserve',lambda x:x['reserve_map'][0].update(covered_subtype_slot='03'))]
+               ('reserve',lambda x:x['reserve_map'][0].update(covered_subtype_slot='03'))] + scaffold_mutations()
     for label,change in mutations:
         bad=copy.deepcopy(actual);change(bad)
         try:validate(bad,expected,c)
@@ -907,12 +1219,26 @@ def main():
                               provider_observations=80 if phase=='A' else 40,e5_observations=20 if phase=='A' else 10,e7_observations=10 if phase=='A' else 5)
             gate_counts[phase][risk]=membership
     _,output_counts=validate_output_plans(actual,c)
+    prior_report=json.loads(git('show', PRIOR_BLUEPRINT + ':experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT_VALIDATION_REPORT.json'))
+    if counts != prior_report['counts'] or output_counts != prior_report['output_field_counts']:
+        raise ValueError('prior_blueprint_counts_changed')
+    checks.append('all_prior_blueprint_counts_unchanged')
+    _,scaffold_audit=validate_scaffold(actual,c)
+    historical_adapter=helper.historical_adaptation_summary(c)
+    accepted_adapter=json.loads((DESIGN/'DESIGN_VALIDATION_REPORT.json').read_bytes())['historical_adapter']
+    if historical_adapter != accepted_adapter or (historical_adapter['examined'], historical_adapter['adapted'], historical_adapter['rejected']) != (106,106,0):
+        raise ValueError('historical_adapter_changed')
+    checks.append('historical_adapter_106_unchanged')
     report=dict(schema_version='g-extract1.blueprint-validation.v1', verdict='PASS',check_count=len(checks),
                 validation_scope='deterministic structural/design-equivalence only; not scientific or corpus approval',
                 accepted_design_commit=ACCEPTED, scientific_validity_proven=False,
                 counts=counts,gate_membership_counts=gate_counts,output_field_counts=output_counts,
                 amendment_binding=actual['accepted_design'],
                 all_non_output_allocations_equal_original_blueprint=True,
+                all_prior_blueprint_allocations_preserved=True,
+                scaffold_comparison_audit=scaffold_audit,
+                historical_adapter=historical_adapter,
+                design_side_artifacts_changed=False,
                 blueprint_mutation_categories=[label for label,_ in mutations],
                 output_mutation_categories=[label for label,_ in output_mutations],
                 output_mutations_checked=output_counts['logical_output_definitions']*len(output_mutations),

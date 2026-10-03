@@ -1,13 +1,15 @@
 # G-EXTRACT1 Authoring Blueprint
 
-Status: READY_FOR_G_EXTRACT1_BLUEPRINT_REREVIEW_2. Mechanical blueprint update only.
+Status: READY_FOR_G_EXTRACT1_BLUEPRINT_CONTAMINATION_REREVIEW. Mechanical rebind only.
 
 ## Authority And Scope
 
 Scientific basis: V10 commit `394d24121309ec9dce80e725b50dbe5eb60f6d2a`, plus the
-accepted output-field amendment `aef3e0900cba41481904c8a451c4ca28b9d46c53`.
-The six amended design artifacts are byte-bound to that amendment commit in
-BLUEPRINT.json and are unchanged by this update. Original blueprint lineage is
+accepted output-field amendment `aef3e0900cba41481904c8a451c4ca28b9d46c53`, and
+accepted contamination repair `62c783bd8be708a86c82a9e00c80b0fa6fb5b459`.
+The six design artifacts are byte-bound to the repair commit in BLUEPRINT.json
+and remain unchanged. Prior accepted blueprint `28fb6bbd3fb668265e4cc50cda0da0f9afdf3ce5`
+is lineage only: its allocations are preserved exactly. Original lineage is
 `99707b4f13abd6533f1d09313bdb066793996be9`.
 BLUEPRINT.json is the complete value-free enumeration; its scientific_traceability
 maps every scientific dimension to the accepted JSON contract. The machine artifact
@@ -129,17 +131,59 @@ ordinals, variants, gates, schedules, seeds, reserve mappings, comparison scopes
 all qualified-cell subsets and traceability; mutation probes reject mismatches.
 The report claims structural/design equivalence only, not scientific validity,
 future content feasibility, transport correctness or execution readiness.
-The accepted amendment's design checker pins the original blueprint as historical
-checkpoint evidence. That guard is not rebound: the amendment requires no mutable
-design-side digest of this later blueprint. All six design artifacts remain exact
+The accepted repair's design checker pins the prior accepted blueprint as historical
+checkpoint evidence. That guard is not rebound: no mutable design-side digest of
+this later blueprint is required. All six design artifacts remain exact
 accepted bytes. This checker loads only their value-free derivation helpers; it
 does not invoke the old checkpoint inventory guard on updated blueprint files.
-Instead it checks the amended design binding, canonical outputs, and preservation
-of the original blueprint's other allocations. No design-side artifact changes
+Instead it checks the repair binding, exact scaffold membership, canonical outputs,
+and exact preservation of both prior and original allocations. No design-side changes
 or circular design/blueprint digest binding are introduced.
 
 G-ROUTE4 remains CLOSED FAILED. Provider/model calls, scored/reserve content and
 gold answers authored are zero; belief effects none; no autonomy or runtime work.
 Separate authorization remains required for corpus/gold authoring, implementation,
 mechanical pilot, execution freeze, Phase A and conditional Phase B. Blueprint
-review must occur first. This status does not self-authorize any later stage.
+review must occur first; corpus authoring cannot resume before rebind rereview.
+This status does not self-authorize any later stage.
+
+## Accepted Bounded Scaffold Rebind
+
+
+Mandatory grammar made specific old ordinary/content tests infeasible even with fresh values. The accepted repair, not this blueprint, defines the bounded remedy.
+
+Exactly 14 classes cover 234 logical unordered pairs and 906 cross-base rendered pairs. Twelve subtype-pair summaries split into two E1-05 classes (R2 zero/R3 366), ten E5 classes, and two E7-02/E7-04 presentation classes (A/B).
+
+BLUEPRINT.json comparison_scope.scaffold_overlap contains every exact logical/rendered pair, accepted class ID, invariant gram, old branch/minimum, context/reserve scope, and exact design path. There are no subtype wildcards.
+
+Use existing ordinary normalized/tokenized five-gram sets A/B. Subtract the frozen invariant set I separately: RA=A\I; RB=B\I. Never rewrite tokens, create adjacency, recompute I from values, or apply subtraction historically. Require nonempty RA and RB and strict 25*intersection < 3*union (Jaccard <0.12). Either empty produces AUTHORING_ERROR_EMPTY_RESIDUAL.
+
+Both actual fixtures must pass position, lexical, schema, operation/gold, subtype, value-shape, output and planned-fingerprint checks; E5 also requires its full request/pair audit. Raw typed VALUE freshness, whole-answer/identity/date-number reuse, raw payload inequality, generated identities and independent A/B checks remain mandatory. Residual success alone never permits a pair.
+
+Precedence: historical rules first; actual structural/profile invalidity errors; validated same-base E5 pair-local sharing; cross-base freshness/reuse rejection; exact scaffold membership; remaining declared same-subtype content/shape rules; remaining ordinary rules. Pair-local sharing precedes cross-base freshness intentionally. The 24 same-base E5 scopes are separate and excluded from scaffold membership. All four cross-base E5 CF combinations inherit only their exact base-pair membership.
+
+Historical/new remains unchanged: ordinary>=0.20, projection3/3, or projection>=2/3 and ordinary>=0.12 reject; 106/106 historical adaptations and 20,352 comparisons remain required. No historical scaffold handling.
+
+Scaffold classes are not recurrence groups. Remaining same-subtype content rules, different-subtype ordinary rules, 51 fingerprint classes, 35 subtype groups, reserves, schedules, seeds and gates are unchanged. The report partitions all 18,312 cross-base rendered pairs; 906 are included within that domain, not additional comparisons.
+
+This materializes frozen pairwise-feasibility rules only. Simultaneous concrete corpus feasibility, actual independence, corpus acceptance and scientific validity are not proven. No concrete content exists here.
+
+Cross-base partition: 906 scaffold + 518 remaining same-subtype + 16888 ordinary = 18,312. All 24 pair-local scopes remain separate.
+
+
+| Accepted Class ID | Subtypes | Logical | Rendered | Old Branch / Minimum |
+|---|---|---:|---:|---|
+| 42a73611bf4015e5e6660a484163279be47e669a9142e29a5f9c45a953215d8a | E1-05/E1-05 | 1 | 1 | NEW_DECLARED_SAME_SUBTYPE / 1/3 |
+| 839f9b8efab9396637b185050b5adb5d461c76ae5f86eafdc209553f3b29d301 | E5-01/E5-02 | 32 | 128 | NEW_DECLARED_DIFFERENT_SUBTYPE / 1/2 |
+| 000493591dc3359274ddce07832b9527b5df642873848b38c49ae38063a80099 | E5-01/E5-03 | 32 | 128 | NEW_DECLARED_DIFFERENT_SUBTYPE / 2/7 |
+| 8b4f0f34c6f47bb712ba5afb894caec7998e0637d5d278c37b46dc705ac86a9d | E5-01/E5-04 | 32 | 128 | NEW_DECLARED_DIFFERENT_SUBTYPE / 8/17 |
+| 46bec20fffafd9a0b7a224c7bfe4c4175a3a17e3d2e2665ea4bbd96d065d32d1 | E5-01/E5-05 | 32 | 128 | NEW_DECLARED_DIFFERENT_SUBTYPE / 7/24 |
+| 3a0b2e80685aaebe1ec03bf465ffdfb3cde01d06ef5467fb03809af97bed8578 | E5-02/E5-03 | 16 | 64 | NEW_DECLARED_DIFFERENT_SUBTYPE / 2/7 |
+| 57fa1e57285b183452b784b072ed2c8a3dc4e72b9a396328226febfbc7ad6ba3 | E5-02/E5-04 | 16 | 64 | NEW_DECLARED_DIFFERENT_SUBTYPE / 8/17 |
+| 787c48ccfca24e44d0a1544f1e8c5e49a892ee42da600f82c0a3a0591b2cb6e6 | E5-02/E5-05 | 16 | 64 | NEW_DECLARED_DIFFERENT_SUBTYPE / 7/24 |
+| 533f0712dd6ad2a00754210b933849183df02c7ead279d8e62f096657aaabd0d | E5-03/E5-04 | 16 | 64 | NEW_DECLARED_DIFFERENT_SUBTYPE / 14/51 |
+| 20c578c99255e84bd743ffde88da47c6c8e1aa677f7cb77a779ec4c7512b2bc9 | E5-03/E5-05 | 16 | 64 | NEW_DECLARED_DIFFERENT_SUBTYPE / 24/53 |
+| 6a4e7fd29c8ceb1ae492233135ff85baf094bbcc3f888a3a16faef7336cf4227 | E5-04/E5-05 | 16 | 64 | NEW_DECLARED_DIFFERENT_SUBTYPE / 7/25 |
+| 06622d78bd0b1b0df361c77e579c8b484a8f1d6b04bc0b30a67ae85920e1cbc7 | E7-02/E7-04 | 4 | 4 | NEW_DECLARED_DIFFERENT_SUBTYPE / 5/22 |
+| b7b568f3bb31af95ff56f9c4ede78aa1e9370c9b410eae69dc750bcc07273c34 | E1-05/E1-05 | 1 | 1 | NEW_DECLARED_SAME_SUBTYPE / 1/3 |
+| 2000cecb91fc194e961885dc681b22ab9cf460c1f30b44556a4b5f0e7f7f5903 | E7-02/E7-04 | 4 | 4 | NEW_DECLARED_DIFFERENT_SUBTYPE / 5/22 |
