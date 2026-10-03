@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import itertools
 import copy
 from datetime import date, datetime, time, timedelta
@@ -1810,9 +1811,9 @@ def validate_v9(contract: dict[str, Any], checks: list[str]) -> None:
 
 
 def preserved_v8_sections(contract: dict[str, Any]) -> dict[str, Any]:
-    parent="9ac3db265a1ae2ed6936ff4890b8eb001f0ab266"
+    parent="500f29dbfc157cd4a024976694da47e8f3e2e5b7"
     old=json.loads(subprocess.check_output(["git","show",parent+":experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.json"],cwd=ROOT,text=True,encoding="utf-8"))
-    names=("baseline_binding","operation_definition_contract","schema_type_contract","operation_semantics_contract","cell_gates","phase_a_fixture_reduction_contract","confidence_contract","integrity_event_contract","result_state_machine","model_provider","sampling","governance","historical_binding")
+    names=("baseline_binding","operation_definition_contract","schema_type_contract","operation_semantics_contract","confidence_contract","integrity_event_contract","result_state_machine","model_provider","governance","historical_binding","value_allocation_contract","subtype_allocation_contract","entity_population_contract","template_recurrence_contract","ordinal_neutral_similarity_contract","historical_fingerprint_adapter_contract")
     return dict(reviewed_parent=parent,sections={name:contract[name]==old[name] for name in names})
 
 
@@ -2266,6 +2267,11 @@ def validate_v8(contract: dict[str, Any], checks: list[str]) -> None:
             slot = dict(slot_id=slot_id, phase=phase, risk_round=risk); vector = slot_vector(base, slot)
             validate_subtype_fixture(vector, slot, contract)
             require(validate_v9_fixture(vector,slot,contract)==profile,f"v9_entity_separation_rank_actual:{context}:{slot_id}",checks)
+            validate_counterfactual_vector(vector, slot, contract, checks)
+            if slot_id == "E5-01":
+                reserve_vector = slot_vector(base, slot, reserve=True)
+                validate_counterfactual_vector(reserve_vector, slot, contract, checks)
+                require(counterfactual_reserve_profile(vector, slot, contract) == counterfactual_reserve_profile(reserve_vector, slot, contract), f"v10_whole_pair_reserve_equivalence:{context}", checks)
             atoms=extract_date_number_atoms(vector,operation,schema,semantics,contract["entity_population_contract"])
             expected_atom_count=count+2 if st in {"number","YYYY-MM-DD","HH:MM"} else 0
             require(len(atoms)==expected_atom_count,f"v9_entity_contamination_operand_resolution:{context}:{slot_id}",checks)
@@ -2404,11 +2410,215 @@ def result_verdict(facts: dict[str, Any], events: dict[str, Any]) -> str:
     raise ValueError("no_terminal_verdict")
 
 
+COUNTERFACTUAL_AUDITS: list[dict[str, Any]] = []
+
+
+def counterfactual_members(anchor: dict[str, Any], slot: dict[str, Any], contract: dict[str, Any]) -> list[dict[str, Any]]:
+    """Transform existing isolated design vectors in memory, never author corpus files."""
+    validate_v9_fixture(anchor, slot, contract)
+    context = slot['phase'] + ':' + slot['risk_round']
+    indices = contract['e5_counterfactual_selector_contract']['selector_pair_matrix'][context][int(slot['slot_id'][-2:])-1]
+    first, second = copy.deepcopy(anchor), copy.deepcopy(anchor)
+    node = second['operation_nodes'][0]
+    node['arguments']['selector_value']['value'] = second['entities'][indices[1]]['selector_value']
+    selected = next(x for x in second['source_fact_records'] if x['field_identifier'] == node['arguments']['source_field']['value'] and x['entity_selector_value'] == node['arguments']['selector_value']['value'])
+    second['gold_values'][second['output_fields'][0]['name']] = selected['value']['value']
+    return [first, second]
+
+
+def counterfactual_request(fixture: dict[str, Any], model: str, seed: int, contract: dict[str, Any]) -> tuple[bytes, int, int, bytes]:
+    operation = contract['operation_definition_contract']
+    record_type = contract['lexical_neutrality_contract']['record_type_catalog_by_phase'][fixture['lexical_context']['phase']][4]
+    subject = render_subject(dict(record_type=record_type, nodes=fixture['operation_nodes']), operation)
+    prompt = assemble_prompt(subject, contract['baseline_binding'])
+    source = ' '.join(render_fact(x, operation['placeholder_type_system'], contract['schema_type_contract']) for x in fixture['source_fact_records'])
+    input_object = dict(schema={x['name']:x['schema_type'] for x in fixture['output_fields']}, text=source)
+    user = prompt + '\n\nINPUT:\n' + json.dumps(input_object, ensure_ascii=False, sort_keys=True, separators=(',', ':'))
+    options = dict(load_json_unique(ROOT / 'experiments/G-ROUTE4-candidate/model_bindings.json')['generation_configuration']['options'])
+    options['seed'] = seed
+    body = dict(model=model, system=contract['baseline_binding']['system_text'], prompt=user, stream=False, think=False, options=options)
+    # Execute only the two read-only bound builder definitions, not a runtime module.
+    source_ast = ast.parse((ROOT / 'tools/g_route4_contract.py').read_text(encoding='utf-8'))
+    definitions = [x for x in source_ast.body if isinstance(x, ast.FunctionDef) and x.name in {'render_prompt','request_body'}]
+    namespace = dict(json=json, Mapping=dict, Any=Any, load_json=load_json_unique,
+                     PROMPT_PROFILES_PATH=ROOT / 'experiments/G-ROUTE1-candidate/prompt_profiles.json',
+                     load_model_bindings=lambda:load_json_unique(ROOT / 'experiments/G-ROUTE4-candidate/model_bindings.json'))
+    exec(compile(ast.Module(body=definitions,type_ignores=[]), '<bound read-only request builders>', 'exec'), namespace)
+    historical_body = namespace['request_body'](dict(prompt=prompt,input=input_object,validator_profile='extraction.v1'),dict(model=model,seed=seed))
+    if body != historical_body:
+        raise ValueError('counterfactual_historical_request_builder_mismatch')
+    encoded = json.dumps(body, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode('utf-8')
+    node = fixture['operation_nodes'][0]
+    # E5 is a single bind node with selector placeholder at the end of SUBJECT.
+    selector = render_operand(node['arguments']['selector_value'], operation['placeholder_type_system'])
+    if not subject.endswith(selector):
+        raise ValueError('selector_span_not_terminal_subject')
+    prefix = subject[:-len(selector)]
+    wire_prefix = json.dumps(prefix, ensure_ascii=False, separators=(',', ':'))[1:-1].encode('utf-8')
+    wire_selector = json.dumps(selector, ensure_ascii=False, separators=(',', ':'))[1:-1].encode('utf-8')
+    start = encoded.index(b'"prompt":') + len(b'"prompt":') + 1 + len(wire_prefix)
+    end = start + len(wire_selector)
+    if encoded[start:end] != wire_selector:
+        raise ValueError('selector_span_serialization')
+    return encoded, start, end, wire_selector
+
+
+def audit_counterfactual(first: dict[str, Any], second: dict[str, Any], slot: dict[str, Any], contract: dict[str, Any], model: str, repeat: int) -> dict[str, Any]:
+    validate_v9_fixture(first, slot, contract)
+    expected = counterfactual_members(first, slot, contract)[1]
+    if second != expected:
+        raise ValueError('counterfactual_unpermitted_fixture_difference')
+    validate_fixture_semantics(second, contract['schema_type_contract'], contract['operation_definition_contract'], contract['operation_semantics_contract'], contract['entity_population_contract'])
+    gold = [canonical_answer_bytes({x['name']:dict(schema_type=x['schema_type'], value=f['gold_values'][x['name']]) for x in f['output_fields']}, contract['schema_type_contract']) for f in (first, second)]
+    if gold[0] == gold[1]:
+        raise ValueError('counterfactual_identical_gold')
+    context = first['lexical_context']
+    seed = contract['sampling']['candidate_phase_' + slot['phase'].lower() + '_seed_base'] + (context['fixture_ordinal']-1)*10 + repeat
+    left = counterfactual_request(first, model, seed, contract)
+    right = counterfactual_request(second, model, seed, contract)
+    lb, ls, le, lv = left; rb, rs, re_, rv = right
+    mask = b'<SELECTOR_REQUEST>'
+    lm, rm = lb[:ls]+mask+lb[le:], rb[:rs]+mask+rb[re_:]
+    if lv == rv or lm != rm or lb[:ls] != rb[:rs] or lb[le:] != rb[re_:]:
+        raise ValueError('counterfactual_request_difference')
+    base_id = f"{slot['phase']}:{slot['risk_round']}:{slot['slot_id']}:{'RESERVE' if context['within_family_slot'] is None else 'PRIMARY'}"
+    return dict(base_position=base_id, base_fixture_id=base_id, variant_ids=['CF1','CF2'], model=model, repeat=repeat, seed=seed,
+                selector_spans=[[ls,le],[rs,re_]], selector_bytes=[lv.decode(),rv.decode()],
+                differing_byte_offsets=[i for i,(a,b) in enumerate(zip(lb,rb)) if a!=b],
+                request_sha256=[hashlib.sha256(x).hexdigest() for x in (lb,rb)], masked_sha256=hashlib.sha256(lm).hexdigest(),
+                masked_bytes_equal=True, gold_distinct=True, exact_diff_only_selector=True)
+
+
+def counterfactual_reserve_profile(anchor: dict[str, Any], slot: dict[str, Any], contract: dict[str, Any]) -> bytes:
+    members = counterfactual_members(anchor, slot, contract)
+    audit_counterfactual(*members, slot, contract, contract['model_provider']['models'][0]['model'], 1)
+    context = slot['phase'] + ':' + slot['risk_round']
+    indices = contract['e5_counterfactual_selector_contract']['selector_pair_matrix'][context][int(slot['slot_id'][-2:])-1]
+    base = json.loads(reserve_profile_bytes(anchor, slot, contract, True))
+    return json.dumps(dict(base_profile=base, selector_transition=indices, variants=['CF1','CF2'], invariant_request_required=True, distinct_gold_required=True), ensure_ascii=True, separators=(',', ':')).encode('utf-8')
+
+
+def reduce_counterfactual(values: list[bool], phase: str, adverse: bool = False) -> bool:
+    if phase not in {'A','B'} or len(values) != (4 if phase == 'A' else 2) or any(type(x) is not bool for x in values):
+        raise ValueError('counterfactual_denominator')
+    return any(values) if adverse else all(values)
+
+
+def within_counterfactual_exception(left: dict[str, str], right: dict[str, str], validated_pairs: set[str]) -> bool:
+    return (left['base_position'] in validated_pairs and left['base_position'] == right['base_position']
+            and {left['variant_id'], right['variant_id']} == {'CF1','CF2'} and ':E5-' in left['base_position'])
+
+
+def validate_counterfactual_vector(anchor: dict[str, Any], slot: dict[str, Any], contract: dict[str, Any], checks: list[str]) -> None:
+    members = counterfactual_members(anchor, slot, contract)
+    context = slot['phase'] + ':' + slot['risk_round']
+    reserve = anchor['lexical_context']['within_family_slot'] is None
+    tag = context + ':' + slot['slot_id'] + (':RESERVE' if reserve else ':PRIMARY')
+    for repeat in range(1, 3 if slot['phase']=='A' else 2):
+        for binding in contract['model_provider']['models']:
+            result = audit_counterfactual(*members, slot, contract, binding['model'], repeat)
+            require(result['masked_bytes_equal'] and result['gold_distinct'], 'v10_bytes_and_gold:' + tag + ':' + binding['tier'] + ':' + str(repeat), checks)
+            require(all(result['selector_spans'][0][0] <= i < result['selector_spans'][0][1] for i in result['differing_byte_offsets']), 'v10_exact_diff_offsets:' + tag + ':' + binding['tier'] + ':' + str(repeat), checks)
+            if binding['tier']=='small' and repeat==1:
+                COUNTERFACTUAL_AUDITS.append(result)
+    require(members[0]['lexical_context']==members[1]['lexical_context'] and members[0]['source_fact_records']==members[1]['source_fact_records'] and members[0]['output_fields']==members[1]['output_fields'], 'v10_identifiers_source_schema_identical:' + tag, checks)
+    require(fingerprint_bytes(dict(fixture=members[0]),contract['operation_definition_contract'])==fingerprint_bytes(dict(fixture=members[1]),contract['operation_definition_contract']), 'v10_fingerprint_ignores_selector_choice:' + tag, checks)
+    first_request = counterfactual_request(members[0], contract['model_provider']['models'][0]['model'], 1, contract)
+    second_request = counterfactual_request(members[1], contract['model_provider']['models'][0]['model'], 1, contract)
+    lbytes,ls,le,_ = first_request; rbytes,rs,re_,_ = second_request
+    masked = lbytes[:ls]+b'<SELECTOR_REQUEST>'+lbytes[le:]
+    for name, change in (
+        ('seed', lambda body:body['options'].update(seed=2)),
+        ('model', lambda body:body.update(model='unbound')),
+        ('system', lambda body:body.update(system=body['system']+' ')),
+        ('source_selector', lambda body:body.update(prompt=body['prompt'].replace('INPUT:', 'INPUT: '))),
+        ('metadata_header', lambda body:body.update(variant_id='CF2')),
+    ):
+        changed=json.loads(rbytes);change(changed)
+        changed_bytes=json.dumps(changed,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()
+        require(changed_bytes[:rs]+b'<SELECTOR_REQUEST>'+changed_bytes[re_:]!=masked, 'v10_nonselector_byte_mutation_denied:'+tag+':'+name, checks)
+    for name, mutate in (
+        ('schema', lambda x:x['output_fields'][0].update(schema_type='integer')),
+        ('source', lambda x:x['source_fact_records'][0]['value'].update(value='Entity 001 C')),
+        ('order', lambda x:x['source_fact_records'].reverse()),
+        ('ordinal', lambda x:x['lexical_context'].update(fixture_ordinal=169)),
+        ('gold', lambda x:x.update(gold_values=copy.deepcopy(members[0]['gold_values']))),
+    ):
+        broken=copy.deepcopy(members[1]);mutate(broken)
+        try:audit_counterfactual(members[0],broken,slot,contract,contract['model_provider']['models'][0]['model'],1)
+        except ValueError:checks.append('v10_pair_mutation_rejected:'+tag+':'+name)
+        else:raise AssertionError('counterfactual_mutation_accepted:'+name)
+    if reserve:
+        require(slot['slot_id']=='E5-01','v10_reserve_slot01_pair:'+context,checks)
+
+
+def expanded_variant_ledger(contract: dict[str, Any]) -> list[dict[str, str]]:
+    return [dict(base_position=x['position'], variant_id=v, fingerprint_class=x['fingerprint_class'])
+            for x in template_ledger(contract)['positions'] for v in (['CF1','CF2'] if x['subtype_slot'].startswith('E5-') else ['SINGLE'])]
+
+
+def validate_v10(contract: dict[str, Any], checks: list[str]) -> None:
+    pair=contract['e5_counterfactual_selector_contract']
+    require(pair['contract_id']=='g-extract1.e5-counterfactual-selector.v1','v10_counterfactual_contract',checks)
+    expected={c:[[i,(i+1)%(3 if j in (2,4) else 2)] for j,i in enumerate(row)] for c,row in contract['entity_selection_allocation_contract']['selected_index_matrix'].items()}
+    require(pair['selector_pair_matrix']==expected,'v10_frozen_ordered_selector_matrix',checks)
+    require(pair['qualification_unit']==['model','risk_round','phase'],'v10_actual_cell_unit_no_round_pooling',checks)
+    for phase in ('A','B'):
+        for truth in itertools.product((False,True),repeat=4 if phase=='A' else 2):
+            require(reduce_counterfactual(list(truth),phase)==all(truth),'v10_positive_truth:'+phase+str(truth),checks)
+            require(reduce_counterfactual(list(truth),phase,True)==any(truth),'v10_adverse_truth:'+phase+str(truth),checks)
+        gate=contract['cell_gates']['phase_'+phase.lower()]['e5_counterfactual_pairs']
+        require(gate['minimum_correct_pairs']==gate['denominator_logical_pairs']==5 and gate['required_observations_per_pair']==(4 if phase=='A' else 2),'v10_strict_pair_gate:'+phase,checks)
+        required = 4 if phase=='A' else 2
+        for missing in range(required):
+            obs=[True]*required;obs[missing]=False
+            require(not reduce_counterfactual(obs,phase),'v10_no_best_of_or_partial_credit:'+phase+str(missing),checks)
+    require(len(COUNTERFACTUAL_AUDITS)==24 and len({x['base_position'] for x in COUNTERFACTUAL_AUDITS})==24,'v10_20_scored_4_reserve_design_vectors_only',checks)
+    # An arbitrary deterministic answer for a shared masked key cannot equal both distinct golds.
+    for row in COUNTERFACTUAL_AUDITS:
+        require(row['masked_bytes_equal'] and row['gold_distinct'],'v10_lookup_incompatibility:'+row['base_position'],checks)
+    variants=expanded_variant_ledger(contract);validated={x['base_position'] for x in COUNTERFACTUAL_AUDITS}
+    exceptions=0; cross_pairs=0
+    for left,right in itertools.combinations(variants,2):
+        if within_counterfactual_exception(left,right,validated):exceptions+=1
+        else:
+            cross_pairs+=1
+            if left['fingerprint_class']==right['fingerprint_class']:
+                require(declared_template_pair(left['base_position'],right['base_position'],contract),'v10_cross_base_recurrence:'+left['base_position']+':'+right['base_position'],checks)
+    require((len(variants),exceptions,cross_pairs)==(192,24,18312),'v10_expanded_scope_accounting',checks)
+    require(contract['counterfactual_accounting']['structural_pairs']==18336 and contract['counterfactual_accounting']['cross_base_variant_pairs']==cross_pairs,'v10_machine_pair_counts',checks)
+    for name,left,right in (
+        ('same_variant',dict(base_position='A:R2:E5-01:PRIMARY',variant_id='CF1'),dict(base_position='A:R2:E5-01:PRIMARY',variant_id='CF1')),
+        ('other_base',dict(base_position='A:R2:E5-01:PRIMARY',variant_id='CF1'),dict(base_position='B:R2:E5-01:PRIMARY',variant_id='CF2')),
+        ('other_family',dict(base_position='A:R2:E4-01:PRIMARY',variant_id='CF1'),dict(base_position='A:R2:E4-01:PRIMARY',variant_id='CF2')),
+        ('primary_reserve',dict(base_position='A:R2:E5-01:PRIMARY',variant_id='CF1'),dict(base_position='A:R2:E5-01:RESERVE',variant_id='CF2')),
+    ):require(not within_counterfactual_exception(left,right,validated),'v10_no_exception_leak:'+name,checks)
+    require(contract['corpus']['rendered_scored_variants']==160 and contract['corpus']['rendered_reserve_variants']==32,'v10_logical_vs_rendered_counts',checks)
+    require(contract['efficiency']['phase_a_calls']==480 and contract['efficiency']['phase_b_maximum_calls']==240,'v10_efficiency_calls',checks)
+    for phase in ('A','B'):
+        scored=[x for x in variants if x['base_position'].startswith(phase+':') and x['base_position'].endswith(':PRIMARY')]
+        require(len(scored)==80,'v10_rendered_phase_scored:'+phase,checks)
+        for risk in ('R2','R3'):
+            cell=[x for x in scored if x['base_position'].startswith(phase+':'+risk+':')]
+            require(len(cell)==40 and len({x['base_position'] for x in cell})==35,'v10_actual_cell_denominators:'+phase+':'+risk,checks)
+        # Per model, only the two variants of one base/repeat may intentionally collide.
+        seeds={}
+        for row in scored:
+            _,risk,slot,kind=row['base_position'].split(':')
+            family,index=slot.split('-');ordinal=fixture_ordinal(phase,risk,family,int(index),False)
+            for repeat in range(1,3 if phase=='A' else 2):
+                seed=contract['sampling']['candidate_phase_'+phase.lower()+'_seed_base']+(ordinal-1)*10+repeat
+                seeds.setdefault(seed,[]).append((row['base_position'],row['variant_id'],repeat))
+        for seed,rows in seeds.items():
+            require(len(rows)==1 or len(rows)==2 and rows[0][0]==rows[1][0] and {x[1] for x in rows}=={'CF1','CF2'} and rows[0][2]==rows[1][2], 'v10_exact_seed_collision_scope:'+phase+str(seed),checks)
+
+
 def validate(contract: dict[str, Any], human: str) -> list[str]:
+    COUNTERFACTUAL_AUDITS.clear()
     checks: list[str] = []
-    require(contract["schema_version"] == "g-extract1.design-candidate.v9", "schema_v9", checks)
-    require(contract["experiment"]["status"] == "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_9", "status_v9", checks)
-    require(contract["experiment"]["design_revision"] == 9, "design_revision_v9", checks)
+    require(contract["schema_version"] == "g-extract1.design-candidate.v10", "schema_v10", checks)
+    require(contract["experiment"]["status"] == "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_10", "status_v10", checks)
+    require(contract["experiment"]["design_revision"] == 10, "design_revision_v10", checks)
     for field in ("implemented", "blueprint_authorized", "fixture_authoring_authorized", "execution_authorized"):
         require(contract["experiment"][field] is False, f"authority_false:{field}", checks)
     require(contract["experiment"]["provider_generation_calls"] == 0, "provider_calls_zero", checks)
@@ -2416,6 +2626,7 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     validate_v7(contract, checks)
     validate_v8(contract, checks)
     validate_v9(contract, checks)
+    validate_v10(contract, checks)
 
     corpus, phases = contract["corpus"], contract["phases"]
     expected_counts = {
@@ -2429,10 +2640,10 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
         require(corpus[field] == expected, f"corpus_count:{field}", checks)
     require(corpus["scored_fixtures_authored_at_this_checkpoint"] == 0, "zero_scored_fixtures", checks)
     require(corpus["reserve_fixtures_authored_at_this_checkpoint"] == 0, "zero_reserve_fixtures", checks)
-    require(phases["A"]["scheduled_calls"] == 420, "phase_a_calls", checks)
-    require(phases["B"]["maximum_scheduled_calls"] == 210, "phase_b_calls", checks)
-    require(contract["efficiency"]["maximum_total_calls"] == 630, "maximum_calls", checks)
-    require(abs(contract["efficiency"]["maximum_call_reduction_fraction"] - (1 - 630 / 1395)) < 1e-6, "call_reduction", checks)
+    require(phases["A"]["scheduled_calls"] == 480, "phase_a_calls", checks)
+    require(phases["B"]["maximum_scheduled_calls"] == 240, "phase_b_calls", checks)
+    require(contract["efficiency"]["maximum_total_calls"] == 720, "maximum_calls", checks)
+    require(abs(contract["efficiency"]["maximum_call_reduction_fraction"] - (1 - 720 / 1395)) < 1e-6, "call_reduction", checks)
 
     schema_contract = contract["schema_type_contract"]
     require(schema_contract["contract_id"] == "g-extract1.schema-types.v1", "schema_contract_v1", checks)
@@ -2728,9 +2939,9 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
         require(reserve_decision(vector) == vector["expected"], f"reserve:{vector['id']}", checks)
 
     gates_a, gates_b = contract["cell_gates"]["phase_a"], contract["cell_gates"]["phase_b"]
-    require(gates_a["denominator_integrity"]["required_observations"] == 70, "gate_a_observations", checks)
-    require(gates_a["denominator_integrity"]["required_repeat_pairs"] == 35, "gate_a_pairs", checks)
-    require(gates_b["denominator_integrity"]["required_observations"] == 35, "gate_b_observations", checks)
+    require(gates_a["denominator_integrity"]["required_observations"] == 80, "gate_a_observations", checks)
+    require(gates_a["denominator_integrity"]["required_repeat_pairs"] == 40, "gate_a_pairs", checks)
+    require(gates_b["denominator_integrity"]["required_observations"] == 40, "gate_b_observations", checks)
     for label, gates in (("a", gates_a), ("b", gates_b)):
         semantic = gates["determinate_semantic_correctness"]
         structural = gates["determinate_structural_validity"]
@@ -2805,7 +3016,7 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     require(models["provider"] == "ollama" and models["provider_version"] == "0.34.3", "provider_binding", checks)
     require([row["model"] for row in models["models"]] == ["qwen2.5:7b", "qwen3:14b", "qwen3.8:27b"], "model_names", checks)
     require(all(re.fullmatch(r"[0-9a-f]{64}", row["blob_sha256"]) for row in models["models"]), "model_hashes", checks)
-    require(contract["sampling"]["seed_formula"] == "base + zero_based_fixture_index * 10 + one_based_repeat", "seed_formula", checks)
+    require(contract["sampling"]["seed_formula"] == "phase_base + (logical_fixture_ordinal - 1)*10 + one_based_repeat", "seed_formula", checks)
 
     gold = contract["gold_adjudication_contract"]
     require(gold["post_contact_gold_defect_invalidates_affected_run"], "gold_defect_invalidates", checks)
@@ -2828,7 +3039,7 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     require(sha256(ROOT / "experiments/G-ROUTE4-candidate/closure/PHASE_B_UNSAFE_STOP_DIAGNOSTIC.json") == history["diagnostic_sha256"], "diagnostic_unchanged", checks)
 
     human_literals = [
-        "g-extract1.design-candidate.v9", "g-extract1.operation-definitions.v4",
+        "g-extract1.design-candidate.v10", "g-extract1.operation-definitions.v4",
         "g-extract1.schema-types.v1", "g-extract1.operation-semantics.v2",
         "g-extract1.family-assignment.v4", "g-extract1.contamination.v5",
         "g-extract1.explicit-absence-scoring.v4", "g-extract1.reserve-activation.v5",
@@ -2838,12 +3049,12 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
         "g-extract1.integrity-events.v2", "g-extract1.result-state-machine.v3",
         "POST_CONTACT_GOLD_DEFECT_DISCOVERED", "UNVERIFIABLE_INTERRUPTION_CHECKPOINT",
         "RESERVE:{phase}:{round}:{primary_family}", "2026-10-01", "5-3",
-        "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_9", "does not prove scientific validity",
+        "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_10", "does not prove scientific validity",
         "SOURCE_COPY", "explicit partial absence", "both repeats semantically correct",
     ]
     for literal in human_literals:
         require(literal in human, f"human_literal:{literal}", checks)
-    match = re.search(r"<!-- V9_NORMATIVE_BEGIN -->\s*```json\s*(.*?)\s*```\s*<!-- V9_NORMATIVE_END -->", human, re.DOTALL)
+    match = re.search(r"<!-- V10_NORMATIVE_BEGIN -->\s*```json\s*(.*?)\s*```\s*<!-- V10_NORMATIVE_END -->", human, re.DOTALL)
     require(match is not None,"human_v9_normative_annex_present",checks)
     annex = json.loads(match.group(1))
     expected_annex = {name:contract[name] for name in ("lexical_neutrality_contract","entity_population_contract","reserve_equivalence_contract","subtype_allocation_contract","historical_fingerprint_adapter_contract","subtype_content_validation_contract")}
@@ -2860,6 +3071,7 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
         canonical_identity_atom_shape=contract["contamination_contract"]["exact_reuse_contract"]["entity_identifier_atoms"]["canonical_atom_shape"],
     )
     expected_annex.update({name:contract[name] for name in ("template_recurrence_contract","ordinal_neutral_similarity_contract","entity_selection_allocation_contract","value_allocation_contract")})
+    expected_annex.update({name:contract[name] for name in ("e5_counterfactual_selector_contract","counterfactual_accounting","corpus","phases","cell_gates","sampling","efficiency","phase_a_fixture_reduction_contract","analysis_units")})
     require(set(annex)==set(expected_annex),"human_machine_v9_annex_exact_sections",checks)
     for name,value in expected_annex.items():
         require(annex[name]==value,f"human_machine_v9_normative_object:{name}",checks)
@@ -2890,7 +3102,7 @@ def main() -> int:
     human = HUMAN.read_text(encoding="utf-8")
     checks = validate(contract, human)
     report = {
-        "schema_version": "g-extract1.design-validation-report.v9",
+        "schema_version": "g-extract1.design-validation-report.v10",
         "verdict": "PASS",
         "validation_scope": "deterministic structural and cross-representation consistency only",
         "scientific_validity_assessed": False,
@@ -2908,6 +3120,10 @@ def main() -> int:
         },
         "similarity_diagnostics":similarity_diagnostics(contract),
         "selector_blind_baselines":selector_blind_summary(contract["entity_selection_allocation_contract"]["selected_index_matrix"]),
+        "selector_blind_baselines_scope":"secondary bounded CF1 anchor diagnostics only; not universal protection",
+        "counterfactual_accounting":contract["counterfactual_accounting"],
+        "counterfactual_request_audits":COUNTERFACTUAL_AUDITS,
+        "counterfactual_audit_scope":"in-memory isolated design checking vectors only; rendered bytes are not provider calls or authored scored/reserve corpus items",
         "checks": checks,
         "artifacts": {
             "DESIGN_CANDIDATE.md": sha256(HUMAN),

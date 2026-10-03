@@ -1,12 +1,31 @@
-# G-EXTRACT1 v9 Human/Machine Equivalence Checklist
+# G-EXTRACT1 v10 Human/Machine Equivalence Checklist
 
-Both design files are co-normative. The v9 human annex embeds exact structured normative objects; the validator parses them and compares them with the machine contract. This checklist is an index of checks and reviewer obligations, not a proof of complete prose equivalence or scientific validity.
+Both design files are co-normative. The v10 human annex embeds exact structured normative objects; the validator parses them and compares them with the machine contract. This checklist is an index of checks and reviewer obligations, not a proof of complete prose equivalence or scientific validity.
+
+## Counterfactual extension
+
+Section21 and the parsed exact annex co-normatively bind `e5_counterfactual_selector_contract`, `counterfactual_accounting`, corpus/phases, cell gates, seeds, efficiency, analysis units and repeat reductions. Only E5 scoped sharing/accounting is extended; all cross-base scientific/governance rules remain binding.
+
+| Rule | Behavioral checking |
+|---|---|
+| Same logical IDs/source/schema/record type | Both variants derived from one validated anchor, no other fixture difference allowed |
+| Complete request byte invariance | All models/repeats checked against read-only historical builder definitions; only escaped requested-selector span differs; complete masked bytes equal |
+| Gold and lookup incompatibility | Complete distinct populations and mechanically different gold; invariant key cannot yield both answers; no cognitive inference |
+| Ordered two-of-three transitions | Exact20 scored/four reserve context-slot transitions; no author choice |
+| Pair scoring | Exhaustive Boolean reductions for4 A /2 B observations;5/5 strict semantic pairs; general gates retained |
+| Seeds and journal identity | Shared pair/repeat seed only within model/phase; unique call/variant metadata never transmitted |
+| Pair-local contamination | Only validated CF1/CF2 same base; forged/other-family/cross-phase/primary-reserve membership denied; cross-base recurrence controls retained |
+| Whole reserve pair | Anchor actual semantics/subtype/difficulty profile plus fixed ordered transition; same profile primary/reserve;01-only activation retained |
+| Honest architecture |168 logical bases/192 variants;480/240/720 calls;24 exception scopes/18,312 cross-base variant comparisons |
+| Scientific limits |513 CF1 marginal policies secondary only; request-invariant deterministic incompatibility primary; no population/cognitive proof |
+
+Existing rows below index unchanged mechanics or v9 CF1 anchor diagnostics. Their single-fixture language means logical bases in v10, with section21 E5 reduction taking precedence. The fixed5/5 E5 pair gate is independently required in both phases.
 
 | Normative area | Human location | Machine location | Check |
 |---|---|---|---|
 | 168-position recurrence and scopes | section20 and annex | template_recurrence_contract | 51 exact classes, 35 subtype groups, all 14,028 structural pairs; four E7 reserves |
 | Ordinal-neutral and scoped comparison modes | section20 and annex | ordinal_neutral_similarity_contract | text/schema masking, historical unchanged, ordinary/shape/content probes and prospective exception |
-| Entity selected-index counterbalance | section20 and annex | entity_selection_allocation_contract | exact matrix, constants, exhaustive finite mappings, both-phase failure invariant |
+| Entity CF1 anchor counterbalance | sections20/21 and annex | entity_selection_allocation_contract/e5_counterfactual_selector_contract | bounded secondary mappings only; exact pair invariance is primary protection |
 | Value difficulty and zero distractors | section20 and annex | value_allocation_contract | all 140 primary context-profile expansions; actual magnitude/sign/carry mutations; exact arithmetic/precision |
 | Validated reserve difficulty | sections12/20 and annex | reserve_equivalence_contract.value_shape_profile | actual semantics/slot/profile/ledger validation precedes byte comparison |
 | E7 shifted-order interpretation | section20 | ambiguity_contract.phase_b_interpretation | not freshness-only or identically distributed |

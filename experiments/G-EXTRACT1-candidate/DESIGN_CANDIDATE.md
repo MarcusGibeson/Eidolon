@@ -1,8 +1,8 @@
-# G-EXTRACT1 Design Candidate v9
+# G-EXTRACT1 Design Candidate v10
 
-Status: `READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_9`
+Status: `READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_10`
 
-This document and `DESIGN_CANDIDATE.json` are co-normative. The machine contract is `g-extract1.design-candidate.v9`. This checkpoint authorizes design rereview only. It authorizes no blueprint, fixture, implementation, pilot, freeze, or execution work.
+This document and `DESIGN_CANDIDATE.json` are co-normative. The machine contract is `g-extract1.design-candidate.v10`. This checkpoint authorizes design rereview only. It authorizes no blueprint, fixture, implementation, pilot, freeze, or execution work.
 
 ## 1. Historical boundary and question
 
@@ -14,9 +14,9 @@ Scope is structured extraction only, R2 and R3, for `qwen2.5:7b`, `qwen3:14b`, a
 
 ## 2. Corpus and phases
 
-Each phase and risk round contains seven primary families with five fixtures each: 35 fixtures, comprising 30 determinate fixtures and five E7 explicit-partial-absence fixtures. Phase A has 70 fixtures, two repeats, and three models: 420 calls. Phase B has a separately authored 70 fixtures and one observation per eligible cell: zero to 210 calls. The maximum is 630 calls, a 54.8387% reduction from 1,395 G-ROUTE4 calls.
+Each phase and risk round contains seven primary families with five fixtures each: 35 logical base fixtures, comprising 30 determinate and five E7. Each of the five E5 bases has two counterfactual variants; other bases have one. Thus each phase/round has 40 rendered variants. Phase A: 70 logical bases, 80 variants, two repeats and three models = 480 calls. Phase B: 70 independent logical bases, 80 variants, one repeat per eligible cell = zero to 240 calls. Maximum 720 calls, 14.285714% above v9 and 48.387097% below G-ROUTE4 1,395.
 
-All 140 scored fixtures, 28 reserves, all gold, gates, schedules, and Phase B material must freeze before the first provider call. A and B never pool. Only an A-qualified cell may enter B.
+All 140 scored logical bases (160 variants), 28 logical reserves (32 variants), all gold, gates, schedules, and Phase B material must freeze before the first provider call. A and B never pool. Only an A-qualified cell may enter B.
 
 ## 3. Canonical operation and prompt contract
 
@@ -139,15 +139,15 @@ E7 therefore needs no fake operations: it contains exactly one EXPLICIT_ABSENCE 
 
 Each source fact has exactly `template_id`, `field_identifier`, `schema_type`, `value`, and `entity_selector_value`. `schema_type` must be accepted by `g-extract1.schema-types.v1`; a VALUE literal kind must be allowed by that schema, while EXPLICIT_ABSENCE must use `provided|not_provided` and a null value. The schema metadata is not rendered model-facing. VALUE renders `{field_identifier} is {value}.` or `For {entity_selector_literal}, {field_identifier} is {value}.`; EXPLICIT_ABSENCE renders `{field_identifier} was not provided.` or its entity-prefixed form. One record is one sentence, sentence index is record index, sentences join with one ASCII space, and no heuristic sentence segmentation is used.
 
-The normative content constraint is `g-extract1.lexical-neutrality.v1`, a positive generated vocabulary. Record types are exactly A: `record`, `entry`, `item`, `case`, `notice`, `account`, `order`; B: `permit`, `invoice`, `schedule`, `reading`, `event`, `profile`, `docket`. E1 through E7 use their phase catalog entries in that order. Each appears exactly five times per phase/round; its single family reserve uses that same record type.
+The normative content constraint is `g-extract1.lexical-neutrality.v1`, a positive generated vocabulary. Record types are exactly A: `record`, `entry`, `item`, `case`, `notice`, `account`, `order`; B: `permit`, `invoice`, `schedule`, `reading`, `event`, `profile`, `docket`. E1 through E7 use their phase catalog entries in that order. Each appears in exactly five logical bases per phase/round; E5 renders ten variants with the same type. Its single family reserve uses that same record type; an E5 reserve is a complete pair.
 
-Every primary and reserve receives an immutable authoring-position ordinal from 1 through 168 before content is written. Primaries: `1 + phase_offset + round_offset + slot`, where A/B offsets are 0/84, R2/R3 offsets 0/35, and primary slot 0..34 is family-major then within-family slot order. Reserves: `71 + phase_offset + reserve_round_offset + family_ordinal`, with R2/R3 reserve offsets 0/7 and E1..E7 ordinals 0..6. No answer, comparison direction, difficulty, risk wording or model output affects identifier bytes.
+Every primary and reserve logical base receives an immutable authoring-position ordinal from 1 through 168 before content is written. Primaries: `1 + phase_offset + round_offset + slot`, where A/B offsets are 0/84, R2/R3 offsets 0/35, and primary slot 0..34 is family-major then within-family slot order. Reserves: `71 + phase_offset + reserve_round_offset + family_ordinal`, with R2/R3 reserve offsets 0/7 and E1..E7 ordinals 0..6. No answer, comparison direction, difficulty, risk wording or model output affects identifier bytes.
 
-Source identifiers are `f{fixture_ordinal:03d}_{source_field_ordinal:02d}`, derived targets `d{fixture_ordinal:03d}_{topological_node_ordinal:02d}`. The first distinct source field gets 01; repeated entity fields retain it. Graph node positions supply 01/02. Output names equal their bindings, ensuring the unchanged extraction prompt requests the names actually defined in source facts or canonical operations. Generated names are unique across fixtures, avoiding collisions between otherwise unavoidable Boolean gold objects.
+Source identifiers are `f{fixture_ordinal:03d}_{source_field_ordinal:02d}`, derived targets `d{fixture_ordinal:03d}_{topological_node_ordinal:02d}`. The first distinct source field gets 01; repeated entity fields retain it. Graph node positions supply 01/02. Output names equal their bindings, ensuring the unchanged extraction prompt requests the names actually defined in source facts or canonical operations. Generated names are unique across logical bases; CF1/CF2 share one ordinal and all names within a validated E5 pair only, avoiding collisions between otherwise unavoidable Boolean gold objects.
 
 Entity labels are exactly `Entity {fixture_ordinal:03d} {A|B|C}` in entity index order. String facts are generated `label_NNN_MM`, `code_NNN_MM`, or `id_NNN_MM`; NNN is the fixture ordinal and MM first distinct string-value ordinal in source-fact order. Prefixes follow the fixed cycle label/code/id by value ordinal, so authors cannot choose their wording. Arbitrary Title Case labels, statuses, sentences, coaching identifiers, and synonyms are authoring errors. The ordinary enum schema is a contiguous prefix of `option_a`..`option_h`, with two through eight options in catalog order; E7 preserves `provided|not_provided`. The generic historical enum reader remains unchanged for historical contamination comparisons.
 
-Entity/string/identifier value pools are disjoint between A/B, rounds, primaries and reserves. Values may recur within the same fixture to express a reference, never across fixtures. Shared opaque enum options and repeated record types are intentional and balanced. All lexical atoms present in input.text or canonical schema serialization remain in similarity; fingerprint components remove names only where specified. The v7 typed fact-role refinement remains; v9 explicitly governs recurrence and comparison views. Historical/new uses the separate three-component projection in section 19. Prompt SUBJECT/record type remains excluded by the existing boilerplate-payload rule, with its allocation separately audited. Generated syntactic identifiers are not identity atoms; `id_` string values are. Historical identifier detection retains its field-name adapter, projected into the single two-string comparison shape. Fixed lexical choices remain structurally associated with family/phase; no statistical independence or causal lexical-effect claim is made.
+Entity/string/identifier value pools are disjoint between A/B, rounds, primaries and reserves. Values may recur within the same logical base to express a reference, including both E5 pair variants; never across independent bases. Shared opaque enum options and repeated record types are intentional and balanced. All lexical atoms present in input.text or canonical schema serialization remain in similarity; fingerprint components remove names only where specified. The v7 typed fact-role refinement remains; v9 explicitly governs recurrence and comparison views. Historical/new uses the separate three-component projection in section 19. Prompt SUBJECT/record type remains excluded by the existing boilerplate-payload rule, with its allocation separately audited. Generated syntactic identifiers are not identity atoms; `id_` string values are. Historical identifier detection retains its field-name adapter, projected into the single two-string comparison shape. Fixed lexical choices remain structurally associated with family/phase; no statistical independence or causal lexical-effect claim is made.
 
 ## 8. Families and composed rows
 
@@ -212,17 +212,17 @@ Two separately authored contamination modules may share the frozen contract and 
 
 ## 12. Reserves
 
-The reserve contract is `g-extract1.reserve-activation.v5`. There is one reserve per `RESERVE:{phase}:{round}:{primary_family}` slot: 2 phases x 2 rounds x 7 families = 28. There is no pool and no one-to-one reserve per primary fixture.
+The reserve contract is `g-extract1.reserve-activation.v5`. There is one logical reserve per `RESERVE:{phase}:{round}:{primary_family}` slot: 2 phases x 2 rounds x 7 families = 28. There is no pool and no one-to-one reserve per primary fixture.
 
 All five primary IDs in a slot are frozen in unsigned UTF-8 order. Zero eligible defects means no activation; more than one defective primary stops authoring; exactly one may claim the single reserve only when every replacement-profile dimension matches. A reserve must also preserve phase and round and have byte-identical `g-extract1.reserve-equivalence.v1` profile bytes. The exact ordered profile keys and derivations are co-normative in the annex; they include schema sequences, semantic result types, promotion classes, comparison operand pair, exact conversion ID, temporal/boundary classes, entity population/role, output roles, field/node counts, subtype slot and domain obligations. INTEGER/NUMBER, enum option order, conversion IDs, and any domain-profile difference prohibit replacement. Fixture ordinals and fresh literal/entity/gold values are excluded. Subtype and lexical balances, contamination, gold review and all freeze digests rerun after activation. No replacement is possible after provider contact or from observed outputs.
 
 ## 13. Phase A repeat reduction and gates
 
-The reduction contract is `g-extract1.phase-a-fixture-reduction.v1`. Positive fixture properties (semantic correctness, structural validity, useful correct acceptance) require both repeats. Adverse properties (malformed, binding error, false-clean) affect a fixture if either repeat is affected. A correlated false-clean pair requires both repeats, but the zero-false-clean observation gate is stricter.
+For non-E5, the reduction contract is `g-extract1.phase-a-fixture-reduction.v1`. Positive fixture properties (semantic correctness, structural validity, useful correct acceptance) require both repeats. Adverse properties (malformed, binding error, false-clean) affect a fixture if either repeat is affected. A correlated false-clean pair requires both repeats, but the zero-false-clean observation gate is stricter.
 
-Thus the Phase A family floor means at least four of five distinct determinate fixtures in every family have both repeats semantically correct. Truth tables for pass/pass, pass/fail, fail/pass, and fail/fail are frozen.
+Thus the Phase A family floor means at least four of five distinct determinate logical fixtures in every family have both repeats semantically correct; E5 additionally requires both variants across both repeats. E5 has an independent stricter 5/5 pair gate in each phase. Truth tables for pass/pass, pass/fail, fail/pass, and fail/fail are frozen.
 
-Per cell, A requires 70 observations, 35 fixtures, and 35 repeat pairs; B requires 35 observations and fixtures. Both independently require 29/30 determinate semantic, 29/30 structural, 27/30 useful correct acceptance, zero false-clean, at most one malformed determinate fixture, family floor 4/5, zero accepted E5/E6 binding errors, and the E7 gate. B has no repeat-pair guardrail.
+Per cell, A requires 80 observations, 35 logical fixtures, 40 rendered variants and 40 within-variant repeat pairs; B requires 40 observations, 40 variants and 35 logical fixtures. Both independently require 29/30 determinate semantic, 29/30 structural, 27/30 useful correct acceptance, zero false-clean, at most one malformed determinate fixture, family floor 4/5, zero accepted E5/E6 binding errors, and the E7 gate. B has no repeat-pair guardrail.
 
 One-sided exact 95% Clopper-Pearson values are benchmark decision statistics only: 0/35 upper 0.082031636; 0/30 upper 0.095033853; 29/30 lower 0.851403931; 27/30 lower 0.761402143. They are not claims about an IID natural population.
 
@@ -250,7 +250,7 @@ Provider is Ollama 0.34.3. Models and blob SHA-256 values are:
 - `qwen3:14b`: `a8cc1361f3145dc01f6d77c6c82c9116b9ffe3c97b34716fe20418455876c40e`
 - `qwen3.8:27b`: `f5f1dd8920d417aac2718b0bda3403da274301efdd6760b4f0f4b864ff2ad57d`
 
-Generation remains context 8192, output 350, temperature 0.45, top_p 0.9, top_k 40, repeat penalty 1.1, thinking off, stream off, fresh session, zero retry/repair/fallback. Seeds are `base + zero_based_fixture_index * 10 + one_based_repeat`, with candidate bases 610000 and 620000.
+Generation remains context 8192, output 350, temperature 0.45, top_p 0.9, top_k 40, repeat penalty 1.1, thinking off, stream off, fresh session, zero retry/repair/fallback. Seeds are `phase_base + (logical_fixture_ordinal - 1)*10 + one_based_repeat`, with bases 610000 and 620000. CF1/CF2 of the same model/base/repeat intentionally share one seed; other collisions within a model/phase are prohibited. Distinct journal call IDs/schedule positions remain metadata-only.
 
 ## 16. Governance and readiness boundary
 
@@ -304,7 +304,7 @@ Identity comparison atoms are two strings [kind,canonical_value]; historical sel
 
 Similarity includes input.text identifiers/entities/string-code-id values and canonical schema field/type-option bytes. It excludes system, SUBJECT (record type and operation instructions), common suffix and INPUT marker. Record allocation is separately audited. Lexical forms are fixed/unavailable to authors but associated with family/phase; no statistical independence or causal lexical-effect estimate is claimed.
 
-Historical artifacts, provider/model bindings, prompt hashes, gates/reductions and separate authorizations stay unchanged. The v7 new/new layout refinement changed prospective structural discrimination; it is not applied to invented historical metadata.
+Historical artifacts, provider/model bindings, prompt hashes and separate authorizations stay unchanged. V10 only extends E5 reduction/strict gates and honest variant/call accounting. The v7 new/new layout refinement changed prospective structural discrimination; it is not applied to invented historical metadata.
 
 ## 20. Candidate v9 joint allocation and comparison rules
 
@@ -339,7 +339,7 @@ Report ordinary, shape, content, freshness and all exact-reuse results for every
 | B:R2 | 1 | 0 | 1 | 0 | 1 |
 | B:R3 | 0 | 1 | 0 | 1 | 0 |
 
-Always-A scores 3/2/2/3; always-B 2/1/3/2; always-C 0/2/0/0. Exhaustive schema/subtype mappings each contain 243 candidates and selector-role mappings 27. No fixed mapping reaches >=4/5 in both A and B of either round. Schema/subtype mappings can still score 5/5 in a single context; the design does not conceal that limit. All two-entity slots use both indices; three-entity slots use all three. Complete distinct populations and wrong-value substitution failure remain required. Enum gold positions are unchanged, but their permutation uses the new context-selected index.
+Always-A scores 3/2/2/3; always-B 2/1/3/2; always-C 0/2/0/0. Exhaustive schema/subtype mappings each contain 243 candidates and selector-role mappings 27. For these bounded diagnostic families only, no fixed mapping reaches >=4/5 in both A and B of either round. These CF1-only checks are not E5 qualification gates or universal selector-blind protection. Schema/subtype mappings can still score 5/5 in a single context; the design does not conceal that limit. All two-entity slots use both indices; three-entity slots use all three. Complete distinct populations and wrong-value substitution failure remain required. Enum gold positions are unchanged, but their permutation uses the new context-selected index.
 
 ### Value-shape allocation
 
@@ -357,9 +357,656 @@ For E7, Phase B is fresh-fixture validation under a prospectively shifted presen
 
 The ledger proves symbolic structural feasibility, not future content/gold/contamination acceptance. All106 historical fixtures must still adapt. Independent contamination implementations, gold review and separate future authorizations remain mandatory. No blueprint, scored/reserve corpus, provider/model contact, runtime implementation, belief change or historical rewrite is authorized. G-ROUTE4 remains unchanged CLOSED FAILED.
 
-<!-- V9_NORMATIVE_BEGIN -->
+
+## 21. V10 counterfactual selector controls
+
+The normative extension is `g-extract1.e5-counterfactual-selector.v1`; the structured annex below is co-normative. This E5-only extension has precedence over earlier single-variant counts, lexical/seed uniqueness, anchor selector/rank scoring and within-pair contamination statements. Everything outside that scope remains binding.
+
+### Pair representation and selector allocation
+
+Each E5 subtype slot is one logical base object with exactly `base_fixture_id` and `members`. Its two members each contain exactly `variant_id` and `fixture`; variant IDs are CF1 and CF2, in that order, never transmitted. Base IDs are `{phase}:{risk_round}:{slot_id}:{PRIMARY|RESERVE}`. The fixture shape is unchanged. CF1 retains the frozen v9 anchor. CF2 is cloned, changes only the requested ENTITY_FIELD_BIND selector value, and mechanically recomputes gold. Both share the same NNN ordinal, complete source facts, entity order, schema, output names, record type and population difficulty. Restore CF2 selector/gold to CF1 and require entire fixture equality.
+
+| Context | E5-01 | E5-02 | E5-03 | E5-04 | E5-05 |
+|---|---|---|---|---|---|
+| A:R2 | 0->1 | 1->0 | 0->1 | 1->0 | 0->1 |
+| A:R3 | 1->0 | 0->1 | 2->0 | 0->1 | 2->0 |
+| B:R2 | 1->0 | 0->1 | 1->2 | 0->1 | 1->2 |
+| B:R3 | 0->1 | 1->0 | 0->1 | 1->0 | 0->1 |
+
+A/B/C indices are 0/1/2. The slot01 reserve uses the same ordered transition in its context. Both selected entities exist and source values are pairwise semantically distinct; exact gold must differ. CF1 passes actual v9 subtype/value/rank/enum-anchor checks. CF2 passes typed semantics and population checks, inherits all invariant population facts and derives its different rank/enum answer; old anchor rank rules must not be reapplied to it. Record types remain A notice / B event, phase-associated but invariant within each pair. Precision, value rank patterns and identifiers cannot explain different answers from the same invariant request key.
+
+### Complete request bytes
+
+The historical system/common suffix and bound request-body values remain unchanged. Render user text as assembled historical prompt, two LF, INPUT:, one LF, then compact sorted-key ensure_ascii=false JSON of schema/text. Build exactly model/options/prompt/stream/system/think; options are bound historical options plus seed; stream/think false. Canonical transport/audit serialization is UTF-8 `json.dumps(body, ensure_ascii=False, sort_keys=True, separators=(',', ':'))`, without newline. Future transport must send exactly those bytes, not reserialize independently.
+
+Structurally locate the sole quoted requested selector at the end of the bind SUBJECT, then its escaped substring in the outer prompt string. Source selector occurrences are excluded. Record zero-based half-open offsets and old/new selector bytes. All request prefix and suffix bytes outside the respective spans must match; selector bytes must differ. Mask only that span with ASCII `<SELECTOR_REQUEST>`; complete masked request bytes must be identical. Report offsets, differing positions, both request SHA-256 values and masked hash for every model/repeat pair. A seed, header, identifier, source order, schema or unrelated byte difference is AUTHORING_ERROR.
+
+Seeds use the formula in section15 and are identical within a same-model/same-repeat pair. Schedule logical bases in ascending ordinal, repeats ascending, CF1 then CF2 (other families SINGLE), preserving balanced model order and fresh isolated sessions. Call IDs include variant/repeat and schedule position but never enter request bytes. No outputs may affect scheduling.
+
+### Scoring and inference
+
+Qualification is independently model x risk_round x phase, not pooled across rounds or phases. Five E5 logical cases contribute to the 30 determinate logical cases. A positive logical E5 property requires all four variant/repeat observations; B requires both variants. Any adverse observation affects the logical base. A correlated false-clean guardrail is both repeats of one variant; never correlation across selectors.
+
+Independent E5 semantic-pair gate: 5/5 pairs, each all-four correct in A or both correct in B (20 A or10 B E5 observations). The existing 4/5 family guardrail is not diluted; all general semantic29/30, structural29/30, useful27/30, zero-false-clean/binding and malformed<=1 gates also apply. Missing required evidence is INCOMPLETE subject to integrity/abort precedence, not synthetic failure or replacement.
+
+Report variant correctness, logical pair correctness, per-repeat correctness tuples, selector-invariant canonical parsed-answer equality (unparseable NOT_APPLICABLE separately), wrong-entity observations, binding errors and false-clean. Reusing either gold answer for both variants cannot pass. Equal masked bytes plus distinct exact gold mechanically exclude any deterministic answer function of pair-invariant model-facing content from getting both right. This does not identify internal cognitive processes or rule out selector-aware lookup; selector-varying information is intentionally the treatment. The old 513 marginal policies remain secondary CF1 diagnostics only, not universal protection.
+
+### Scoped sharing, reserves and accounting
+
+Only two members of the same frozen, byte/gold-validated E5 base pair may share input/schema/identities/value bytes and fingerprints or bypass within-pair Jaccard/exact-reuse prohibitions. Fingerprints intentionally ignore selected entity choice. This exception never applies to different bases, A/B, historical/new, primary/reserve or other families. Every cross-base variant comparison still applies unchanged v9 rules. Pair masks never alter contamination payloads.
+
+All28 logical reserve slots remain subtype01-only; the four E5 reserves are whole pairs, giving32 rendered reserve variants. Replace a pair only with a complete validated reserve pair, never one member. Its profile is compact ensure_ascii=true UTF-8 ordered JSON with keys `base_profile, selector_transition, variants, invariant_request_required, distinct_gold_required`; base_profile is the fully actual-validated v9 CF1 profile, the transition is the frozen ordered index pair, variants CF1/CF2, both requirement flags true. Profiles must be byte-identical. Rerun pair/gold/contamination/balance/seed/schedule checks and independent reviews and rebuild every digest precontact. Failed reserve pairs stop authoring.
+
+There are140 scored logical bases +28 reserve bases =168;20+4 are E5 pairs. Rendered counts:160 scored +32 reserve =192. Per phase80 scored variants; per phase/round40. The base ledger rederives168 positions,51 classes,35 subtype groups and14,028 pairs. Expanded rendered ledger has192 entries,51 classes,18,336 comparisons:24 within-pair exception scopes and18,312 cross-base comparisons;106 historical fixtures require20,352 historical/rendered comparisons. Base recurrence maxima count logical bases, not intentional variant multiplicity. Actual future content acceptance is not proven by symbolic ledger checks.
+
+A480/Bmax240/totalmax720; per tier A160/Bmax80. Against old630 this is+14.285714%; against1395 it is48.387097% fewer calls. Prior active-call means imply about3.19h A +1.60h B =4.79h max, with27B about3.41h; loading/overhead extra. No new provider timing is measured.
+
+No fixture/reserve or blueprint is authored here. Checking vectors are deterministic in-memory transformations of existing isolated design vectors, not scored content. G-ROUTE4 remains CLOSED FAILED; future authorization boundaries unchanged.
+
+<!-- V10_NORMATIVE_BEGIN -->
 ```json
 {
+  "e5_counterfactual_selector_contract": {
+    "contract_id": "g-extract1.e5-counterfactual-selector.v1",
+    "precedence": "E5-only extension supersedes v9 single-variant accounting, anchor selected-index/rank scoring, seed/lexical uniqueness and within-pair contamination. All cross-base and nonE5 rules unchanged.",
+    "qualification_unit": [
+      "model",
+      "risk_round",
+      "phase"
+    ],
+    "logical_cases_per_cell": 5,
+    "pair_object_keys": [
+      "base_fixture_id",
+      "members"
+    ],
+    "member_object_keys": [
+      "variant_id",
+      "fixture"
+    ],
+    "base_fixture_id_format": "{phase}:{risk_round}:{slot_id}:{PRIMARY|RESERVE}",
+    "variant_ids": [
+      "CF1",
+      "CF2"
+    ],
+    "variant_id_metadata_only": true,
+    "same_ordinal_for_variants": true,
+    "selector_pair_matrix": {
+      "A:R2": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "A:R3": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "B:R2": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "B:R3": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    "selector_index_order": "A/B/C=0/1/2; CF1 retains v9 anchor; CF2=(CF1+1) modulo entity_count; matching context slot01 reserve has identical transition.",
+    "anchor_and_variant_validation": [
+      "Validate CF1 actual semantics, lexical generation, subtype, v9 value_shape_profile, source presentation and ledger.",
+      "Clone entire CF1; replace only single ENTITY_FIELD_BIND arguments.selector_value.value with frozen CF2 entity label; recompute gold mechanically.",
+      "CF2 must pass typed source/operation/output/gold and complete distinct population rules. Restore its requested selector and gold to CF1; require entire fixture equality. Any other difference AUTHORING_ERROR.",
+      "CF2 selected rank/enum position derive from unchanged population, not CF1 anchor allocation; precision/gaps/magnitudes/source order preserved. No author-selected permutation.",
+      "Pair selectors differ and exact typed gold differs. Entity source values pairwise distinct; no Boolean entity source.",
+      "Freeze full pair metadata/members/gold/audits before provider contact; A/B independently authored bases; no A reuse in B."
+    ],
+    "request_contract": {
+      "builder": "bound tools/g_route4_contract.py render_prompt/request_body values unchanged",
+      "input": "exact schema/text; schema from output_fields; text from source records rendered and joined by one ASCII space",
+      "user_prompt": "assembled historical prompt + two LF + INPUT: + one LF + json.dumps(input,ensure_ascii=False,sort_keys=True,separators=(',',':'))",
+      "body_keys": [
+        "model",
+        "options",
+        "prompt",
+        "stream",
+        "system",
+        "think"
+      ],
+      "options": "bound model_bindings generation_configuration.options plus seed; fresh session; stream=false; think=false",
+      "serializer": {
+        "encoding": "UTF-8",
+        "ensure_ascii": false,
+        "sort_keys": true,
+        "separators": [
+          ",",
+          ":"
+        ],
+        "newline": false
+      },
+      "wire_rule": "future transport transmits exact canonical body bytes, not independent reserialization; historical request values unchanged",
+      "selector_span": "zero-based half-open UTF-8 span of escaped selector literal in body.prompt SUBJECT; derive from fixed opening/catalog prefix, never global search/replace in source facts",
+      "selector_literal": "json.dumps(selector_value,ensure_ascii=True,separators=(',',':')), escaped again inside outer JSON prompt string",
+      "audit": "require different exact requested selector bytes, identical prefixes/suffixes outside respective spans; no other differences",
+      "mask": "replace only each designated span with ASCII <SELECTOR_REQUEST>; complete masked bytes equal",
+      "report_fields": [
+        "base_fixture_id",
+        "variant_ids",
+        "model",
+        "repeat",
+        "seed",
+        "selector_spans",
+        "selector_bytes",
+        "differing_byte_offsets",
+        "request_sha256",
+        "masked_sha256",
+        "masked_bytes_equal",
+        "gold_distinct"
+      ],
+      "source_selector_facts_unchanged": true,
+      "metadata_never_transmitted": true,
+      "identical_generation": "same model/configuration/seed within same-repeat pair; no variant header/session history/continuation"
+    },
+    "seeds": {
+      "formula": "phase_base + (logical_fixture_ordinal - 1)*10 + one_based_repeat",
+      "same_seed_within_pair": true,
+      "collision_scope": "within each model/phase only CF1/CF2 of same validated base and repeat share seed; all other collisions forbidden",
+      "call_identity": "phase/model/round/base_fixture_id/variant_id/repeat; distinct schedule positions; metadata not transmitted",
+      "schedule": "logical ordinal ascending, repeat ascending, CF1 then CF2; nonE5 SINGLE; balanced model order, fresh sessions; no output-derived scheduling"
+    },
+    "scoring": {
+      "phase_a_observations_per_pair": 4,
+      "phase_b_observations_per_pair": 2,
+      "positive_properties": [
+        "semantic_correct",
+        "structural_valid",
+        "useful_correct_acceptance"
+      ],
+      "positive_reduction": "ALL required variants x repeats true",
+      "adverse_properties": [
+        "malformed",
+        "binding_error",
+        "false_clean"
+      ],
+      "adverse_reduction": "ANY required variants x repeats affected",
+      "strict_gate": {
+        "classification": "independent_pass_fail_gate",
+        "minimum_correct_pairs": 5,
+        "denominator_logical_pairs": 5,
+        "phase_a_observations": 20,
+        "phase_b_observations": 10
+      },
+      "family_floor": "4/5 logical all-observations-correct pairs plus independent strict5/5; no partial credit",
+      "general_gates": "E5 contributes five logical determinate fixtures to29/30 semantic,29/30 structural,27/30 useful; all remain required",
+      "false_clean": "operational acceptance plus semantic invalidity incl accepted truncation; any observation affects logical fixture;zero observations/fixtures",
+      "binding_error": "any accepted wrong entity/field remains error and false-clean; no cancellation",
+      "malformed": "any member/repeat affects one logical fixture; strict semantic pair gate also applies",
+      "correlated_false_clean": "both repeats within same rendered variant;40 A variant-repeat pairs;B N/A",
+      "missing_evidence": "missing member/repeat INCOMPLETE unless integrity/abort precedence; never synthetic pass/fail or member replacement"
+    },
+    "reporting": {
+      "variant_semantic": "A numerator/20 E5 observations; B numerator/10",
+      "logical_pair": "successes/5; A all4; B all2",
+      "disagreement": "per pair and repeat CF1correct/CF2correct Boolean tuple",
+      "selector_invariant_output": "canonical semantic-parsed answer bytes equal within same-repeat pair; unparseable comparison NOT_APPLICABLE separately, never credit",
+      "wrong_entity": "exact semantic match to any nonselected source value; otherwise generic semantic error",
+      "adverse": [
+        "binding_errors",
+        "false_clean_observations",
+        "malformed_observations"
+      ],
+      "cognitive_inference_prohibited": true
+    },
+    "contamination": {
+      "eligible_exception": "only CF1 vs CF2 of same frozen fully byte/gold-audited E5 base with frozen selectors",
+      "within_pair": "required identifier/source/schema/value/fingerprint/Jaccard/exact-reuse sharing exempt; distinct gold required",
+      "outside_pair": "every cross-base variant comparison retains v9 modes/reuse/thresholds including historical/new,A/B,scored/reserve,reserve/reserve",
+      "same_variant_exception": false,
+      "primary_reserve_exception": false,
+      "historical_exception": false,
+      "fingerprints_ignore_selector_choice": true,
+      "recurrence": "logical base ledger governs class maxima; rendered multiplicity separately reported; no collapsed-base waiver for cross-base variant audits",
+      "freeze": "pair audits/gold/exception membership/reserve pairs/schedules and independent contamination differential before contact"
+    },
+    "reserves": {
+      "logical_slots": 28,
+      "e5_pair_slots": 4,
+      "rendered_reserve_variants": 32,
+      "covered_subtype": "01 only",
+      "activation": "single slot01 defect with matching profile; whole pair replaces whole pair;02..05 or multiple bases stop; no member replacement",
+      "profile_serialization": "compact UTF-8 ensure_ascii=true ordered JSON keys [base_profile,selector_transition,variants,invariant_request_required,distinct_gold_required]; no newline",
+      "base_profile": "v9 reserve_profile_bytes of CF1 validated actual semantics/subtype/value_shape_profile",
+      "selector_transition": "ordered frozen CF1/CF2 indices",
+      "variants": [
+        "CF1",
+        "CF2"
+      ],
+      "invariant_request_required": true,
+      "distinct_gold_required": true,
+      "post_activation": "revalidate both members/gold/bytes/strict gate/ledger/full cross-base contamination/reuse/balances/seeds/schedule/independent gold review and refreeze all digests precontact",
+      "failed_pair": "stop authoring, preserve failure, no pool"
+    },
+    "secondary_audit": "243 schema +243 subtype +27 role policies on CF1 anchors only; bounded diagnostics, not universal protection",
+    "mathematical_claim": "same masked key and distinct exact gold exclude any deterministic function of invariant model-facing bytes from both correct answers; no infinite enumeration or internal cognitive-state inference",
+    "record_types": {
+      "A": "notice",
+      "B": "event",
+      "interpretation": "phase-associated and invariant within pair; not statistically independent"
+    },
+    "precision_rank": "v9 CF1 anchor precision/rank retained; both variants share population precision/value ordering; CF2 rank derived, not separately constrained to anchor rank"
+  },
+  "counterfactual_accounting": {
+    "unit": "logical base distinct from rendered variant/observation",
+    "logical_scored": 140,
+    "logical_reserves": 28,
+    "logical_total": 168,
+    "scored_E5_base_pairs": 20,
+    "reserve_E5_base_pairs": 4,
+    "rendered_scored_variants": 160,
+    "rendered_reserve_variants": 32,
+    "rendered_total": 192,
+    "per_phase_logical_scored": 70,
+    "per_phase_rendered_scored": 80,
+    "per_round_logical_scored": 35,
+    "per_round_rendered_scored": 40,
+    "base_fingerprint_classes": 51,
+    "base_subtype_groups": 35,
+    "logical_structural_pairs": 14028,
+    "rendered_fingerprint_classes": 51,
+    "structural_pairs": 18336,
+    "within_pair_exception_scopes": 24,
+    "cross_base_variant_pairs": 18312,
+    "hist_new_rendered_comparisons": 20352,
+    "old_maximum_calls": 630,
+    "new_maximum_calls": 720,
+    "increase_fraction": 0.1428571428571428,
+    "scope": "symbolic positions only, no authored corpus; future full audits required"
+  },
+  "corpus": {
+    "families_per_phase_round": 7,
+    "fixtures_per_family_phase_round": 5,
+    "fixtures_per_phase_round": 35,
+    "determinate_fixtures_per_phase_round": 30,
+    "ambiguity_fixtures_per_phase_round": 5,
+    "phase_a_scored_fixtures": 70,
+    "phase_b_scored_fixtures": 70,
+    "phase_a_reserves": 14,
+    "phase_b_reserves": 14,
+    "total_to_author_before_model_contact": 168,
+    "development_examples": 0,
+    "scored_fixtures_authored_at_this_checkpoint": 0,
+    "reserve_fixtures_authored_at_this_checkpoint": 0,
+    "phase_b_complete_before_phase_a_contact": true,
+    "all_gold_frozen_before_provider_contact": true,
+    "all_gates_frozen_before_provider_contact": true,
+    "lexical_neutrality_frozen": true,
+    "entity_population_contract_frozen": true,
+    "subtype_allocation_frozen": true,
+    "count_unit": "logical base fixture; E5 one pair",
+    "rendered_scored_variants": 160,
+    "rendered_reserve_variants": 32,
+    "rendered_variants_per_phase_round": 40,
+    "rendered_total_to_author_before_model_contact": 192
+  },
+  "phases": {
+    "A": {
+      "purpose": "prospective requalification under the byte-bound baseline",
+      "distinct_fixtures": 70,
+      "repeats": 2,
+      "models_per_fixture": 3,
+      "scheduled_calls": 480,
+      "calls_per_tier": 160,
+      "all_six_cells_run": true,
+      "authority_produced": "eligibility_for_phase_b_only",
+      "count_unit": "logical base",
+      "rendered_variants": 80
+    },
+    "B": {
+      "purpose": "independent fresh-fixture validation",
+      "distinct_fixtures": 70,
+      "repeats": 1,
+      "conditional_on_phase_a": true,
+      "maximum_scheduled_calls": 240,
+      "maximum_calls_per_tier": 80,
+      "phase_a_evidence_pooled": false,
+      "zero_calls_if_no_cell_qualifies": true,
+      "fixtures_and_gold_frozen_before_phase_a_contact": true,
+      "count_unit": "logical base",
+      "rendered_variants": 80
+    }
+  },
+  "cell_gates": {
+    "phase_a": {
+      "denominator_integrity": {
+        "classification": "independent_pass_fail_gate",
+        "required_observations": 80,
+        "required_distinct_fixtures": 35,
+        "required_repeat_pairs": 40,
+        "duplicates_allowed": 0,
+        "count_unit": "35 logical fixtures/40 rendered variants;80 observations A/40 B"
+      },
+      "family_and_composed_coverage": {
+        "classification": "independent_pass_fail_gate",
+        "required_distinct_fixtures_per_family": 5,
+        "family_count": 7,
+        "composed_contract_required": true
+      },
+      "false_clean": {
+        "classification": "independent_pass_fail_gate",
+        "maximum_affected_fixtures": 0,
+        "maximum_affected_observations": 0,
+        "denominator_fixtures": 35,
+        "denominator_observations": 80,
+        "maximum_upper_95": 0.1
+      },
+      "determinate_semantic_correctness": {
+        "classification": "independent_pass_fail_gate",
+        "minimum_fixtures_with_both_repeats_correct": 29,
+        "denominator_determinate_fixtures": 30,
+        "minimum_lower_95": 0.85,
+        "e5_reduction_contract_ref": "g-extract1.e5-counterfactual-selector.v1"
+      },
+      "determinate_structural_validity": {
+        "classification": "independent_pass_fail_gate",
+        "minimum_fixtures_with_both_repeats_valid": 29,
+        "denominator_determinate_fixtures": 30,
+        "e5_reduction_contract_ref": "g-extract1.e5-counterfactual-selector.v1"
+      },
+      "useful_correct_acceptance": {
+        "classification": "independent_pass_fail_gate",
+        "minimum_fixtures_with_both_repeats_accepted_and_correct": 27,
+        "denominator_determinate_fixtures": 30,
+        "minimum_lower_95": 0.75,
+        "e5_reduction_contract_ref": "g-extract1.e5-counterfactual-selector.v1"
+      },
+      "explicit_absence_recognition_and_containment": {
+        "classification": "independent_pass_fail_gate",
+        "contract_ref": "g-extract1.explicit-absence-scoring.v4"
+      },
+      "malformed_determinate": {
+        "classification": "independent_pass_fail_gate",
+        "maximum_affected_fixtures": 1,
+        "denominator_determinate_fixtures": 30,
+        "structural_gate_must_also_pass": true
+      },
+      "family_semantic_floor": {
+        "classification": "enforced_redundant_pass_guardrail",
+        "fixture_reduction": "both repeats semantically correct",
+        "minimum_correct_fixtures": 4,
+        "denominator_per_determinate_family": 5,
+        "e5_fixture_reduction": "all variants x repeats semantically correct"
+      },
+      "binding_correctness": {
+        "classification": "enforced_redundant_pass_guardrail",
+        "accepted_binding_errors_allowed": 0,
+        "families": [
+          "E5",
+          "E6"
+        ]
+      },
+      "correlated_false_clean": {
+        "classification": "enforced_redundant_pass_guardrail",
+        "maximum_repeat_pairs": 0,
+        "denominator_repeat_pairs": 40
+      },
+      "e5_counterfactual_pairs": {
+        "classification": "independent_pass_fail_gate",
+        "minimum_correct_pairs": 5,
+        "denominator_logical_pairs": 5,
+        "required_observations_per_pair": 4,
+        "contract_ref": "g-extract1.e5-counterfactual-selector.v1"
+      }
+    },
+    "phase_b": {
+      "denominator_integrity": {
+        "classification": "independent_pass_fail_gate",
+        "required_observations": 40,
+        "required_distinct_fixtures": 35,
+        "duplicates_allowed": 0,
+        "count_unit": "35 logical fixtures/40 rendered variants;80 observations A/40 B"
+      },
+      "family_and_composed_coverage": {
+        "classification": "independent_pass_fail_gate",
+        "required_distinct_fixtures_per_family": 5,
+        "family_count": 7,
+        "composed_contract_required": true
+      },
+      "false_clean": {
+        "classification": "independent_pass_fail_gate",
+        "maximum_affected_fixtures": 0,
+        "maximum_affected_observations": 0,
+        "denominator_fixtures": 35,
+        "denominator_observations": 40,
+        "maximum_upper_95": 0.1
+      },
+      "determinate_semantic_correctness": {
+        "classification": "independent_pass_fail_gate",
+        "minimum_correct_fixtures": 29,
+        "denominator_determinate_fixtures": 30,
+        "minimum_lower_95": 0.85,
+        "e5_reduction_contract_ref": "g-extract1.e5-counterfactual-selector.v1"
+      },
+      "determinate_structural_validity": {
+        "classification": "independent_pass_fail_gate",
+        "minimum_valid_fixtures": 29,
+        "denominator_determinate_fixtures": 30,
+        "e5_reduction_contract_ref": "g-extract1.e5-counterfactual-selector.v1"
+      },
+      "useful_correct_acceptance": {
+        "classification": "independent_pass_fail_gate",
+        "minimum_accepted_and_correct_fixtures": 27,
+        "denominator_determinate_fixtures": 30,
+        "minimum_lower_95": 0.75,
+        "e5_reduction_contract_ref": "g-extract1.e5-counterfactual-selector.v1"
+      },
+      "explicit_absence_recognition_and_containment": {
+        "classification": "independent_pass_fail_gate",
+        "contract_ref": "g-extract1.explicit-absence-scoring.v4"
+      },
+      "malformed_determinate": {
+        "classification": "independent_pass_fail_gate",
+        "maximum_affected_fixtures": 1,
+        "denominator_determinate_fixtures": 30,
+        "structural_gate_must_also_pass": true
+      },
+      "family_semantic_floor": {
+        "classification": "enforced_redundant_pass_guardrail",
+        "minimum_correct_fixtures": 4,
+        "denominator_per_determinate_family": 5,
+        "e5_fixture_reduction": "all variants x repeats semantically correct"
+      },
+      "binding_correctness": {
+        "classification": "enforced_redundant_pass_guardrail",
+        "accepted_binding_errors_allowed": 0,
+        "families": [
+          "E5",
+          "E6"
+        ]
+      },
+      "correlated_false_clean": {
+        "classification": "not_applicable_single_observation_phase",
+        "reason": "Phase B has no repeat pairs"
+      },
+      "e5_counterfactual_pairs": {
+        "classification": "independent_pass_fail_gate",
+        "minimum_correct_pairs": 5,
+        "denominator_logical_pairs": 5,
+        "required_observations_per_pair": 2,
+        "contract_ref": "g-extract1.e5-counterfactual-selector.v1"
+      }
+    }
+  },
+  "sampling": {
+    "phase_a_repeats": 2,
+    "phase_b_repeats": 1,
+    "candidate_phase_a_seed_base": 610000,
+    "candidate_phase_b_seed_base": 620000,
+    "seed_formula": "phase_base + (logical_fixture_ordinal - 1)*10 + one_based_repeat",
+    "global_seed_collision_audit_required": true,
+    "balanced_model_order_required": true,
+    "schedules_frozen_before_provider_contact": true,
+    "legacy_sized_prefix_observations_per_cell": 8,
+    "legacy_sized_prefix_is_gating": false,
+    "e5_seed_collision_exception": {
+      "formula": "phase_base + (logical_fixture_ordinal - 1)*10 + one_based_repeat",
+      "same_seed_within_pair": true,
+      "collision_scope": "within each model/phase only CF1/CF2 of same validated base and repeat share seed; all other collisions forbidden",
+      "call_identity": "phase/model/round/base_fixture_id/variant_id/repeat; distinct schedule positions; metadata not transmitted",
+      "schedule": "logical ordinal ascending, repeat ascending, CF1 then CF2; nonE5 SINGLE; balanced model order, fresh sessions; no output-derived scheduling"
+    },
+    "legacy_sized_prefix_interpretation": "eight observation diagnostic only, never gating/pair shortcut"
+  },
+  "efficiency": {
+    "phase_a_calls": 480,
+    "phase_b_maximum_calls": 240,
+    "maximum_total_calls": 720,
+    "g_route4_total_calls": 1395,
+    "maximum_call_reduction_fraction": 0.4838709677419355,
+    "estimated_phase_a_active_hours": 3.1911111111111112,
+    "estimated_maximum_phase_b_active_hours": 1.5955555555555556,
+    "estimated_maximum_total_active_hours": 4.786666666666667,
+    "large_tier_maximum_calls": 240,
+    "large_tier_estimated_active_hours": 3.4133333333333336,
+    "basis": "preserved G-ROUTE4 observed means: 7.6 seconds small, 13.0 seconds mid, 51.2 seconds large",
+    "v9_maximum_calls": 630,
+    "increase_from_v9_fraction": 0.1428571428571428,
+    "estimate_limit": "sequential active extrapolation; loading/overhead extra; no provider benchmarking"
+  },
+  "phase_a_fixture_reduction_contract": {
+    "contract_id": "g-extract1.phase-a-fixture-reduction.v1",
+    "observation_count_per_fixture": 2,
+    "positive_properties": {
+      "semantic_correct": "fixture true iff repeat 1 and repeat 2 are true",
+      "structural_valid": "fixture true iff repeat 1 and repeat 2 are true",
+      "useful_correct_acceptance": "fixture true iff repeat 1 and repeat 2 are true"
+    },
+    "adverse_properties": {
+      "malformed": "fixture affected iff repeat 1 or repeat 2 is true",
+      "binding_error": "fixture affected iff repeat 1 or repeat 2 is true",
+      "false_clean": "fixture affected iff repeat 1 or repeat 2 is true"
+    },
+    "family_semantic_floor": "a determinate fixture is correct iff both repeats are semantically correct; at least four of five distinct fixtures in every determinate family must be correct",
+    "correlated_false_clean_pair": "true iff both repeat observations are false-clean; zero such pairs allowed in addition to the stricter zero-false-clean observation gate",
+    "truth_vectors": [
+      {
+        "observations": [
+          true,
+          true
+        ],
+        "all_repeats": true,
+        "any_repeat": true
+      },
+      {
+        "observations": [
+          true,
+          false
+        ],
+        "all_repeats": false,
+        "any_repeat": true
+      },
+      {
+        "observations": [
+          false,
+          true
+        ],
+        "all_repeats": false,
+        "any_repeat": true
+      },
+      {
+        "observations": [
+          false,
+          false
+        ],
+        "all_repeats": false,
+        "any_repeat": false
+      }
+    ],
+    "default_scope": "nonE5 only; E5 extension overrides",
+    "e5_extension": {
+      "contract_ref": "g-extract1.e5-counterfactual-selector.v1",
+      "observation_count_per_logical_fixture": 4,
+      "positive": "ALL variants x repeats",
+      "adverse": "ANY variants x repeats",
+      "correlated": "both repeats within same variant"
+    }
+  },
+  "analysis_units": [
+    "observation",
+    "distinct_fixture",
+    "repeat_pair",
+    "family",
+    "model_tier_x_risk_round_cell",
+    "logical_counterfactual_pair",
+    "rendered_variant"
+  ],
   "lexical_neutrality_contract": {
     "contract_id": "g-extract1.lexical-neutrality.v1",
     "all_model_facing_atoms_are_generated": true,
@@ -598,7 +1245,12 @@ The ledger proves symbolic structural feasibility, not future content/gold/conta
       "meaning_independence": "ordinals depend only on frozen authoring position; expected value, operator direction, gold and observed performance never affect naming"
     },
     "non_scored_legacy_parser_vectors": "isolated raw-output classifier vectors may retain historical illustrative status/name/count strings solely to test parsing; they are not authorable fixture content",
-    "causal_limit": "fixed/unavailable to authors but structurally associated with family/phase; not statistical independence or causal lexical isolation"
+    "causal_limit": "fixed/unavailable to authors but structurally associated with family/phase; not statistical independence or causal lexical isolation",
+    "counterfactual_exception": {
+      "scope": "g-extract1.e5-counterfactual-selector.v1",
+      "sharing": "one ordinal/all atoms per logical E5 base, CF1/CF2 only",
+      "record_type_balance": "five logical/ten E5 variants per cell;other families five singles;catalogs phase-disjoint"
+    }
   },
   "entity_population_contract": {
     "contract_id": "g-extract1.entity-population.v2",
@@ -879,7 +1531,8 @@ The ledger proves symbolic structural feasibility, not future content/gold/conta
       "derive profile from proven actual type/domain/results",
       "compare bytes; never bypass contamination/gold review"
     ],
-    "value_shape_profile_binding": "g-extract1.value-allocation.v1"
+    "value_shape_profile_binding": "g-extract1.value-allocation.v1",
+    "e5_pair_profile_extension_contract_ref": "g-extract1.e5-counterfactual-selector.v1"
   },
   "subtype_allocation_contract": {
     "contract_id": "g-extract1.subtype-allocation.v2",
@@ -2094,7 +2747,8 @@ The ledger proves symbolic structural feasibility, not future content/gold/conta
     ],
     "replacement_rule": "byte-identical canonical reserve-equivalence profile",
     "covered_primary_slot": "the single family reserve is authored against within-family subtype slot 01; defects in slots 02..05 have no matching reserve and stop authoring; no choice is made after defect discovery",
-    "reserve_coverage_limit": "28 prospective subtype01 backups only: 2 phases x 2 rounds x 7 families; not generic family reserves; 02..05 and multiple defects stop"
+    "reserve_coverage_limit": "28 prospective subtype01 backups only: 2 phases x 2 rounds x 7 families; not generic family reserves; 02..05 and multiple defects stop",
+    "e5_counterfactual_extension_contract_ref": "g-extract1.e5-counterfactual-selector.v1"
   },
   "comparison_modes": {
     "historical_new": "three-component historical-fingerprint-adapter.v1",
@@ -2130,4 +2784,4 @@ The ledger proves symbolic structural feasibility, not future content/gold/conta
   "value_allocation_contract": {"contract_id":"g-extract1.value-allocation.v1","applies_to":"every primary and its slot01 reserve; no model-tier-specific content; all direct literals, source facts and evaluated results remain operation-domain valid","magnitude_bands":{"SMALL":[1,9],"MEDIUM":[10,99],"LARGE":[100,999]},"magnitude_algorithm":"floor(abs(exact rational numeric value)); band applies to source numeric operands in source/catalog order, not arbitrary derived results/thresholds; magnitude zero is allowed only frozen E1-05 offset or elapsed zero result","context_pattern":{"A:R2":0,"A:R3":1,"B:R2":1,"B:R3":0},"context_parameters":{"0":{"precision_places":1,"add_carry":true,"subtract_borrow":false,"divide_quotient_places":1,"divide_reduced_denominator":"POWER_OF_2_ONLY","numeric_gap":"1","date_gap_days":1,"time_gap_minutes":5,"numeric_entity_gap":"2","date_entity_gap_days":2,"time_entity_gap_minutes":13,"two_entity_selected_rank":0,"three_entity_selected_rank":1},"1":{"precision_places":2,"add_carry":false,"subtract_borrow":true,"divide_quotient_places":2,"divide_reduced_denominator":"BOTH_2_AND_5","numeric_gap":"1","date_gap_days":1,"time_gap_minutes":5,"numeric_entity_gap":"2","date_entity_gap_days":2,"time_entity_gap_minutes":13,"two_entity_selected_rank":1,"three_entity_selected_rank":0}},"three_entity_rank_override":{"A:R2":1,"A:R3":0,"B:R2":2,"B:R3":1},"slot_profiles":{"E1-01":{"magnitude_bands":[],"number_precision":"NOT_APPLICABLE","sign_class":"NOT_APPLICABLE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":[7,14],"entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E1-02":{"magnitude_bands":[],"number_precision":"NOT_APPLICABLE","sign_class":"NOT_APPLICABLE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":[7,14],"entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E1-03":{"magnitude_bands":[],"number_precision":"NOT_APPLICABLE","sign_class":"NOT_APPLICABLE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":[7,14],"entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E1-04":{"magnitude_bands":[],"number_precision":"NOT_APPLICABLE","sign_class":"NOT_APPLICABLE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":[1,7],"entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E1-05":{"magnitude_bands":[],"number_precision":"NOT_APPLICABLE","sign_class":"NOT_APPLICABLE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":"R2_0_R3_366","entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E2-01":{"magnitude_bands":[],"number_precision":"NOT_APPLICABLE","sign_class":"NOT_APPLICABLE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":[31,89],"entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"IRREGULAR_MINUTE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E2-02":{"magnitude_bands":[],"number_precision":"NOT_APPLICABLE","sign_class":"NOT_APPLICABLE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":[31,89],"entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"IRREGULAR_MINUTE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E2-03":{"magnitude_bands":[],"number_precision":"NOT_APPLICABLE","sign_class":"NOT_APPLICABLE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":[31,89],"entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"IRREGULAR_MINUTE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E2-04":{"magnitude_bands":[],"number_precision":"NOT_APPLICABLE","sign_class":"NOT_APPLICABLE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":[31,89],"entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"IRREGULAR_MINUTE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E2-05":{"magnitude_bands":[],"number_precision":"NOT_APPLICABLE","sign_class":"NOT_APPLICABLE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":[0,0],"entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"IRREGULAR_MINUTE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E3-01":{"magnitude_bands":["MEDIUM","MEDIUM"],"number_precision":"NOT_APPLICABLE","sign_class":"POSITIVE_OPERANDS_POSITIVE_RESULT","arithmetic_complexity":"CONTEXT_ADD_CARRY","comparison_distance":"NOT_APPLICABLE","temporal_distance":"NOT_APPLICABLE","entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E3-02":{"magnitude_bands":["MEDIUM","MEDIUM"],"number_precision":"CONTEXT_PRECISION","sign_class":"POSITIVE_OPERANDS_NEGATIVE_RESULT","arithmetic_complexity":"CONTEXT_SUBTRACT_BORROW","comparison_distance":"NOT_APPLICABLE","temporal_distance":"NOT_APPLICABLE","entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E3-03":{"magnitude_bands":["MEDIUM","MEDIUM","MEDIUM"],"number_precision":"CONTEXT_PRECISION","sign_class":"POSITIVE_OPERANDS_POSITIVE_RESULT","arithmetic_complexity":"THREE_OPERANDS_AT_LEAST_ONE_CARRY","comparison_distance":"NOT_APPLICABLE","temporal_distance":"NOT_APPLICABLE","entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E3-04":{"magnitude_bands":["LARGE","MEDIUM"],"number_precision":"NOT_APPLICABLE","sign_class":"POSITIVE_OPERANDS_POSITIVE_RESULT","arithmetic_complexity":"TERMINATING_NONINTEGRAL_QUOTIENT_CONTEXT_DECIMAL_LENGTH","comparison_distance":"NOT_APPLICABLE","temporal_distance":"NOT_APPLICABLE","entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E3-05":{"magnitude_bands":"R2_SMALL_R3_LARGE","number_precision":"CONTEXT_PRECISION","sign_class":"POSITIVE_OPERANDS_POSITIVE_RESULT","arithmetic_complexity":"FROZEN_CONVERSION_ID","comparison_distance":"NOT_APPLICABLE","temporal_distance":"NOT_APPLICABLE","entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E4-01":{"magnitude_bands":["MEDIUM","MEDIUM"],"number_precision":"NOT_APPLICABLE","sign_class":"POSITIVE_OPERANDS","arithmetic_complexity":"CONTEXT_ADD_CARRY","comparison_distance":"CONTEXT_NUMERIC_GAP","temporal_distance":"NOT_APPLICABLE","entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E4-02":{"magnitude_bands":["MEDIUM","MEDIUM"],"number_precision":"CONTEXT_PRECISION","sign_class":"POSITIVE_OPERANDS","arithmetic_complexity":{"operation":"SUBTRACT","borrow":true},"comparison_distance":"CONTEXT_NUMERIC_GAP","temporal_distance":"NOT_APPLICABLE","entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E4-03":{"magnitude_bands":[],"number_precision":"NOT_APPLICABLE","sign_class":"NOT_APPLICABLE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"CONTEXT_DATE_GAP","temporal_distance":[7,14],"entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E4-04":{"magnitude_bands":[],"number_precision":"NOT_APPLICABLE","sign_class":"NOT_APPLICABLE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"CONTEXT_TIME_GAP","temporal_distance":[31,89],"entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"IRREGULAR_MINUTE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E4-05":{"magnitude_bands":["MEDIUM","MEDIUM"],"number_precision":"CONTEXT_PRECISION","sign_class":"POSITIVE_OPERANDS","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"CONTEXT_NUMERIC_GAP","temporal_distance":"NOT_APPLICABLE","entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E5-01":{"magnitude_bands":["MEDIUM","MEDIUM"],"number_precision":"CONTEXT_PRECISION","sign_class":"POSITIVE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":"NOT_APPLICABLE","entity_separation":"CONTEXT_NUMERIC_ENTITY_GAP","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"CONTEXT_TWO_ENTITY_RANK"},"E5-02":{"magnitude_bands":[],"number_precision":"NOT_APPLICABLE","sign_class":"POSITIVE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":"NOT_APPLICABLE","entity_separation":"DISTINCT_GENERATED_STRINGS","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E5-03":{"magnitude_bands":[],"number_precision":"NOT_APPLICABLE","sign_class":"POSITIVE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":"NOT_APPLICABLE","entity_separation":"ALL_THREE_ENUM_OPTIONS","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E5-04":{"magnitude_bands":[],"number_precision":"NOT_APPLICABLE","sign_class":"POSITIVE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":"NOT_APPLICABLE","entity_separation":"CONTEXT_DATE_ENTITY_GAP","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"CONTEXT_TWO_ENTITY_RANK"},"E5-05":{"magnitude_bands":[],"number_precision":"NOT_APPLICABLE","sign_class":"POSITIVE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":"NOT_APPLICABLE","entity_separation":"CONTEXT_TIME_ENTITY_GAP","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"IRREGULAR_MINUTE","date_years":[2028,2043],"entity_selected_rank":"CONTEXT_THREE_ENTITY_RANK"},"E6-01":{"magnitude_bands":["MEDIUM"],"number_precision":"NOT_APPLICABLE","sign_class":"POSITIVE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":"NOT_APPLICABLE","entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E6-02":{"magnitude_bands":["MEDIUM"],"number_precision":"CONTEXT_PRECISION","sign_class":"POSITIVE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":"NOT_APPLICABLE","entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E6-03":{"magnitude_bands":[],"number_precision":"NOT_APPLICABLE","sign_class":"NOT_APPLICABLE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":"NOT_APPLICABLE","entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E6-04":{"magnitude_bands":[],"number_precision":"NOT_APPLICABLE","sign_class":"NOT_APPLICABLE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":[7,14],"entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E6-05":{"magnitude_bands":[],"number_precision":"NOT_APPLICABLE","sign_class":"NOT_APPLICABLE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":[31,89],"entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"IRREGULAR_MINUTE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E7-01":{"magnitude_bands":["SMALL","SMALL"],"number_precision":"NOT_APPLICABLE","sign_class":"POSITIVE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":"NOT_APPLICABLE","entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E7-02":{"magnitude_bands":["MEDIUM"],"number_precision":"CONTEXT_PRECISION","sign_class":"POSITIVE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":"NOT_APPLICABLE","entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E7-03":{"magnitude_bands":[],"number_precision":"NOT_APPLICABLE","sign_class":"POSITIVE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":"NOT_APPLICABLE","entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"IRREGULAR_MINUTE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E7-04":{"magnitude_bands":[],"number_precision":"NOT_APPLICABLE","sign_class":"POSITIVE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":"NOT_APPLICABLE","entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"},"E7-05":{"magnitude_bands":["MEDIUM","SMALL"],"number_precision":"CONTEXT_PRECISION","sign_class":"POSITIVE","arithmetic_complexity":"NOT_APPLICABLE","comparison_distance":"NOT_APPLICABLE","temporal_distance":"NOT_APPLICABLE","entity_separation":"NOT_APPLICABLE","distractor_count":0,"distractor_schema":"NOT_APPLICABLE","distractor_placement":"NOT_APPLICABLE","source_time_class":"NOT_APPLICABLE","date_years":[2028,2043],"entity_selected_rank":"NOT_APPLICABLE"}},"derivation":"copy slot profile, expand CONTEXT_* using context_pattern/context_parameters; E4 gap=0 iff frozen boundary EQUAL else frozen domain gap; R2_SMALL_R3_LARGE and temporal R2_0_R3_366 expand by round; entity rank override applies only E5-05","number_precision_algorithm":"logical fractional places of canonical exact decimal after removing trailing fractional zeros; INTEGER has 0; integral-valued NUMBER class=0 is defined but zero authored allocation; NUMBER sources must have exactly 1 or 2 places as allocated, not visually integral","carry_algorithm":"align numeric operands to maximum fractional places; use absolute scaled integers, sum per base-10 column including carry-in; carry=true iff any column sum>=10; exactly three SUM operands","borrow_algorithm":"align to maximum fractional places; subtract smaller absolute value from larger; borrow=true iff any column requires borrow-in from its next column; sign of operation separately frozen","division":"positive INTEGER numerator LARGE and divisor MEDIUM, reduced rational denominator >1; remove factors2/5; remainder must1. Pattern0 denominator has factors2 only, exact decimal one place; pattern1 contains both2 and5, exact decimal two places; no rounding; divisor is exactly two digits","conversion":"R2 HOURS_TO_MINUTES multiply60, source SMALL fractional NUMBER; R3 GRAMS_TO_KILOGRAMS divide1000, source LARGE fractional NUMBER; precision per context; exact rational calculation","temporal":"DATE source and date comparison literals/gold years 2028..2043 inclusive; exact subtype boundary plus profile offset interval; TIME source minute modulo30 not0 (excludes on-hour/half-hour); clock/elapsed duration31..89 except E2-05 zero","comparison":"non-equal numeric absolute operand gap exactly1, DATE exactly1 day, TIME exactly5 minutes; equal gap0; E4 truth/boundary matrix remains unchanged","entity":"pairwise distinct values; numeric/date/time sorted adjacent semantic values have exact gap2/2days/13minutes; selected rank fixed by context; date/time sorted on same-date-free civil representations, no TIME midnight wrap for separation; strings/enums use frozen generated/enum allocation","sign":"all source numeric values and numeric literals positive except E1-05 zero offset; only E3-02 has negative arithmetic result; no blueprint-selected negative input; arithmetic constants derived from profile cannot choose sign","source_representation_binding":"template_recurrence_contract.structural_wiring fixes references/fact order; exactly zero distractors in all168, no hidden unused facts; relevance/fact roles derived from actual typed graph","balancing_claim":"patterns [0,1,1,0] match marginal A/B and R2/R3 precision/carry/borrow difficulty; temporal edge and conversion IDs retain intentional round effects; E4 equality/unequal and E7 presentation remain structured confounds, not causal isolation or IID; every unequal E4 case has same domain distance regardless truth; E5 selected rank is counterbalanced, not always extreme","baseline_novelty_limitation":"broader hand-authored stratification, not proof of natural-population safety; concrete values must pass all historical/new and new/new contamination rules before contact","reserve_match":"value-shape profile is derived only after actual semantics/slot/profile validation and is appended to the canonical reserve equivalence profile; reserve presentation may differ exactly as already frozen","mixed_subtraction_correction":"E4-02 INTEGER minus fractional NUMBER positive result always borrows at fractional column; E3-02 negative-result absolute subtraction retains rotated borrow class.","e7_boolean_source_allocation":{"A:R2":true,"A:R3":false,"B:R2":false,"B:R3":true}}
 }
 ```
-<!-- V9_NORMATIVE_END -->
+<!-- V10_NORMATIVE_END -->

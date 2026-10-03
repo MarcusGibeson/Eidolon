@@ -1,9 +1,293 @@
 {
-  "schema_version": "g-extract1.design-candidate.v9",
+  "e5_counterfactual_selector_contract": {
+    "contract_id": "g-extract1.e5-counterfactual-selector.v1",
+    "precedence": "E5-only extension supersedes v9 single-variant accounting, anchor selected-index/rank scoring, seed/lexical uniqueness and within-pair contamination. All cross-base and nonE5 rules unchanged.",
+    "qualification_unit": [
+      "model",
+      "risk_round",
+      "phase"
+    ],
+    "logical_cases_per_cell": 5,
+    "pair_object_keys": [
+      "base_fixture_id",
+      "members"
+    ],
+    "member_object_keys": [
+      "variant_id",
+      "fixture"
+    ],
+    "base_fixture_id_format": "{phase}:{risk_round}:{slot_id}:{PRIMARY|RESERVE}",
+    "variant_ids": [
+      "CF1",
+      "CF2"
+    ],
+    "variant_id_metadata_only": true,
+    "same_ordinal_for_variants": true,
+    "selector_pair_matrix": {
+      "A:R2": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "A:R3": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "B:R2": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "B:R3": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    "selector_index_order": "A/B/C=0/1/2; CF1 retains v9 anchor; CF2=(CF1+1) modulo entity_count; matching context slot01 reserve has identical transition.",
+    "anchor_and_variant_validation": [
+      "Validate CF1 actual semantics, lexical generation, subtype, v9 value_shape_profile, source presentation and ledger.",
+      "Clone entire CF1; replace only single ENTITY_FIELD_BIND arguments.selector_value.value with frozen CF2 entity label; recompute gold mechanically.",
+      "CF2 must pass typed source/operation/output/gold and complete distinct population rules. Restore its requested selector and gold to CF1; require entire fixture equality. Any other difference AUTHORING_ERROR.",
+      "CF2 selected rank/enum position derive from unchanged population, not CF1 anchor allocation; precision/gaps/magnitudes/source order preserved. No author-selected permutation.",
+      "Pair selectors differ and exact typed gold differs. Entity source values pairwise distinct; no Boolean entity source.",
+      "Freeze full pair metadata/members/gold/audits before provider contact; A/B independently authored bases; no A reuse in B."
+    ],
+    "request_contract": {
+      "builder": "bound tools/g_route4_contract.py render_prompt/request_body values unchanged",
+      "input": "exact schema/text; schema from output_fields; text from source records rendered and joined by one ASCII space",
+      "user_prompt": "assembled historical prompt + two LF + INPUT: + one LF + json.dumps(input,ensure_ascii=False,sort_keys=True,separators=(',',':'))",
+      "body_keys": [
+        "model",
+        "options",
+        "prompt",
+        "stream",
+        "system",
+        "think"
+      ],
+      "options": "bound model_bindings generation_configuration.options plus seed; fresh session; stream=false; think=false",
+      "serializer": {
+        "encoding": "UTF-8",
+        "ensure_ascii": false,
+        "sort_keys": true,
+        "separators": [
+          ",",
+          ":"
+        ],
+        "newline": false
+      },
+      "wire_rule": "future transport transmits exact canonical body bytes, not independent reserialization; historical request values unchanged",
+      "selector_span": "zero-based half-open UTF-8 span of escaped selector literal in body.prompt SUBJECT; derive from fixed opening/catalog prefix, never global search/replace in source facts",
+      "selector_literal": "json.dumps(selector_value,ensure_ascii=True,separators=(',',':')), escaped again inside outer JSON prompt string",
+      "audit": "require different exact requested selector bytes, identical prefixes/suffixes outside respective spans; no other differences",
+      "mask": "replace only each designated span with ASCII <SELECTOR_REQUEST>; complete masked bytes equal",
+      "report_fields": [
+        "base_fixture_id",
+        "variant_ids",
+        "model",
+        "repeat",
+        "seed",
+        "selector_spans",
+        "selector_bytes",
+        "differing_byte_offsets",
+        "request_sha256",
+        "masked_sha256",
+        "masked_bytes_equal",
+        "gold_distinct"
+      ],
+      "source_selector_facts_unchanged": true,
+      "metadata_never_transmitted": true,
+      "identical_generation": "same model/configuration/seed within same-repeat pair; no variant header/session history/continuation"
+    },
+    "seeds": {
+      "formula": "phase_base + (logical_fixture_ordinal - 1)*10 + one_based_repeat",
+      "same_seed_within_pair": true,
+      "collision_scope": "within each model/phase only CF1/CF2 of same validated base and repeat share seed; all other collisions forbidden",
+      "call_identity": "phase/model/round/base_fixture_id/variant_id/repeat; distinct schedule positions; metadata not transmitted",
+      "schedule": "logical ordinal ascending, repeat ascending, CF1 then CF2; nonE5 SINGLE; balanced model order, fresh sessions; no output-derived scheduling"
+    },
+    "scoring": {
+      "phase_a_observations_per_pair": 4,
+      "phase_b_observations_per_pair": 2,
+      "positive_properties": [
+        "semantic_correct",
+        "structural_valid",
+        "useful_correct_acceptance"
+      ],
+      "positive_reduction": "ALL required variants x repeats true",
+      "adverse_properties": [
+        "malformed",
+        "binding_error",
+        "false_clean"
+      ],
+      "adverse_reduction": "ANY required variants x repeats affected",
+      "strict_gate": {
+        "classification": "independent_pass_fail_gate",
+        "minimum_correct_pairs": 5,
+        "denominator_logical_pairs": 5,
+        "phase_a_observations": 20,
+        "phase_b_observations": 10
+      },
+      "family_floor": "4/5 logical all-observations-correct pairs plus independent strict5/5; no partial credit",
+      "general_gates": "E5 contributes five logical determinate fixtures to29/30 semantic,29/30 structural,27/30 useful; all remain required",
+      "false_clean": "operational acceptance plus semantic invalidity incl accepted truncation; any observation affects logical fixture;zero observations/fixtures",
+      "binding_error": "any accepted wrong entity/field remains error and false-clean; no cancellation",
+      "malformed": "any member/repeat affects one logical fixture; strict semantic pair gate also applies",
+      "correlated_false_clean": "both repeats within same rendered variant;40 A variant-repeat pairs;B N/A",
+      "missing_evidence": "missing member/repeat INCOMPLETE unless integrity/abort precedence; never synthetic pass/fail or member replacement"
+    },
+    "reporting": {
+      "variant_semantic": "A numerator/20 E5 observations; B numerator/10",
+      "logical_pair": "successes/5; A all4; B all2",
+      "disagreement": "per pair and repeat CF1correct/CF2correct Boolean tuple",
+      "selector_invariant_output": "canonical semantic-parsed answer bytes equal within same-repeat pair; unparseable comparison NOT_APPLICABLE separately, never credit",
+      "wrong_entity": "exact semantic match to any nonselected source value; otherwise generic semantic error",
+      "adverse": [
+        "binding_errors",
+        "false_clean_observations",
+        "malformed_observations"
+      ],
+      "cognitive_inference_prohibited": true
+    },
+    "contamination": {
+      "eligible_exception": "only CF1 vs CF2 of same frozen fully byte/gold-audited E5 base with frozen selectors",
+      "within_pair": "required identifier/source/schema/value/fingerprint/Jaccard/exact-reuse sharing exempt; distinct gold required",
+      "outside_pair": "every cross-base variant comparison retains v9 modes/reuse/thresholds including historical/new,A/B,scored/reserve,reserve/reserve",
+      "same_variant_exception": false,
+      "primary_reserve_exception": false,
+      "historical_exception": false,
+      "fingerprints_ignore_selector_choice": true,
+      "recurrence": "logical base ledger governs class maxima; rendered multiplicity separately reported; no collapsed-base waiver for cross-base variant audits",
+      "freeze": "pair audits/gold/exception membership/reserve pairs/schedules and independent contamination differential before contact"
+    },
+    "reserves": {
+      "logical_slots": 28,
+      "e5_pair_slots": 4,
+      "rendered_reserve_variants": 32,
+      "covered_subtype": "01 only",
+      "activation": "single slot01 defect with matching profile; whole pair replaces whole pair;02..05 or multiple bases stop; no member replacement",
+      "profile_serialization": "compact UTF-8 ensure_ascii=true ordered JSON keys [base_profile,selector_transition,variants,invariant_request_required,distinct_gold_required]; no newline",
+      "base_profile": "v9 reserve_profile_bytes of CF1 validated actual semantics/subtype/value_shape_profile",
+      "selector_transition": "ordered frozen CF1/CF2 indices",
+      "variants": [
+        "CF1",
+        "CF2"
+      ],
+      "invariant_request_required": true,
+      "distinct_gold_required": true,
+      "post_activation": "revalidate both members/gold/bytes/strict gate/ledger/full cross-base contamination/reuse/balances/seeds/schedule/independent gold review and refreeze all digests precontact",
+      "failed_pair": "stop authoring, preserve failure, no pool"
+    },
+    "secondary_audit": "243 schema +243 subtype +27 role policies on CF1 anchors only; bounded diagnostics, not universal protection",
+    "mathematical_claim": "same masked key and distinct exact gold exclude any deterministic function of invariant model-facing bytes from both correct answers; no infinite enumeration or internal cognitive-state inference",
+    "record_types": {
+      "A": "notice",
+      "B": "event",
+      "interpretation": "phase-associated and invariant within pair; not statistically independent"
+    },
+    "precision_rank": "v9 CF1 anchor precision/rank retained; both variants share population precision/value ordering; CF2 rank derived, not separately constrained to anchor rank"
+  },
+  "counterfactual_accounting": {
+    "unit": "logical base distinct from rendered variant/observation",
+    "logical_scored": 140,
+    "logical_reserves": 28,
+    "logical_total": 168,
+    "scored_E5_base_pairs": 20,
+    "reserve_E5_base_pairs": 4,
+    "rendered_scored_variants": 160,
+    "rendered_reserve_variants": 32,
+    "rendered_total": 192,
+    "per_phase_logical_scored": 70,
+    "per_phase_rendered_scored": 80,
+    "per_round_logical_scored": 35,
+    "per_round_rendered_scored": 40,
+    "base_fingerprint_classes": 51,
+    "base_subtype_groups": 35,
+    "logical_structural_pairs": 14028,
+    "rendered_fingerprint_classes": 51,
+    "structural_pairs": 18336,
+    "within_pair_exception_scopes": 24,
+    "cross_base_variant_pairs": 18312,
+    "hist_new_rendered_comparisons": 20352,
+    "old_maximum_calls": 630,
+    "new_maximum_calls": 720,
+    "increase_fraction": 0.1428571428571428,
+    "scope": "symbolic positions only, no authored corpus; future full audits required"
+  },
+  "schema_version": "g-extract1.design-candidate.v10",
   "experiment": {
     "id": "G-EXTRACT1",
     "name": "Prospective Structured-Extraction Requalification and Generalization Test",
-    "status": "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_9",
+    "status": "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_10",
     "design_only": true,
     "implemented": false,
     "blueprint_authorized": false,
@@ -12,10 +296,10 @@
     "provider_generation_calls": 0,
     "experiment_launches": 0,
     "belief_effects": "none",
-    "design_revision": 9
+    "design_revision": 10
   },
   "contract_ids": {
-    "design": "g-extract1.design-candidate.v9",
+    "design": "g-extract1.design-candidate.v10",
     "operation_definitions": "g-extract1.operation-definitions.v4",
     "family_assignment": "g-extract1.family-assignment.v4",
     "contamination": "g-extract1.contamination.v5",
@@ -36,7 +320,8 @@
     "template_recurrence": "g-extract1.template-recurrence.v1",
     "ordinal_neutral_similarity": "g-extract1.ordinal-neutral-similarity.v1",
     "entity_selection_allocation": "g-extract1.entity-selection-allocation.v1",
-    "value_allocation": "g-extract1.value-allocation.v1"
+    "value_allocation": "g-extract1.value-allocation.v1",
+    "e5_counterfactual_selector": "g-extract1.e5-counterfactual-selector.v1"
   },
   "historical_binding": {
     "g_route4_status": "FAILED",
@@ -126,7 +411,12 @@
     "all_gates_frozen_before_provider_contact": true,
     "lexical_neutrality_frozen": true,
     "entity_population_contract_frozen": true,
-    "subtype_allocation_frozen": true
+    "subtype_allocation_frozen": true,
+    "count_unit": "logical base fixture; E5 one pair",
+    "rendered_scored_variants": 160,
+    "rendered_reserve_variants": 32,
+    "rendered_variants_per_phase_round": 40,
+    "rendered_total_to_author_before_model_contact": 192
   },
   "phases": {
     "A": {
@@ -134,21 +424,25 @@
       "distinct_fixtures": 70,
       "repeats": 2,
       "models_per_fixture": 3,
-      "scheduled_calls": 420,
-      "calls_per_tier": 140,
+      "scheduled_calls": 480,
+      "calls_per_tier": 160,
       "all_six_cells_run": true,
-      "authority_produced": "eligibility_for_phase_b_only"
+      "authority_produced": "eligibility_for_phase_b_only",
+      "count_unit": "logical base",
+      "rendered_variants": 80
     },
     "B": {
       "purpose": "independent fresh-fixture validation",
       "distinct_fixtures": 70,
       "repeats": 1,
       "conditional_on_phase_a": true,
-      "maximum_scheduled_calls": 210,
-      "maximum_calls_per_tier": 70,
+      "maximum_scheduled_calls": 240,
+      "maximum_calls_per_tier": 80,
       "phase_a_evidence_pooled": false,
       "zero_calls_if_no_cell_qualifies": true,
-      "fixtures_and_gold_frozen_before_phase_a_contact": true
+      "fixtures_and_gold_frozen_before_phase_a_contact": true,
+      "count_unit": "logical base",
+      "rendered_variants": 80
     }
   },
   "schema_type_contract": {
@@ -4900,7 +5194,8 @@
     },
     "ordinal_neutral_binding": "g-extract1.ordinal-neutral-similarity.v1",
     "template_recurrence_binding": "g-extract1.template-recurrence.v1",
-    "ordinary_jaccard_scope": "all pairs except exact-position preregistered NEW/NEW subtype groups; those require content Jaccard <0.12 plus freshness/reuse; ordinary Jaccard always reported"
+    "ordinary_jaccard_scope": "all pairs except exact-position preregistered NEW/NEW subtype groups; those require content Jaccard <0.12 plus freshness/reuse; ordinary Jaccard always reported",
+    "counterfactual_exception_contract_ref": "g-extract1.e5-counterfactual-selector.v1"
   },
   "reserve_activation_contract": {
     "contract_id": "g-extract1.reserve-activation.v5",
@@ -5086,14 +5381,17 @@
     ],
     "replacement_rule": "byte-identical canonical reserve-equivalence profile",
     "covered_primary_slot": "the single family reserve is authored against within-family subtype slot 01; defects in slots 02..05 have no matching reserve and stop authoring; no choice is made after defect discovery",
-    "reserve_coverage_limit": "28 prospective subtype01 backups only: 2 phases x 2 rounds x 7 families; not generic family reserves; 02..05 and multiple defects stop"
+    "reserve_coverage_limit": "28 prospective subtype01 backups only: 2 phases x 2 rounds x 7 families; not generic family reserves; 02..05 and multiple defects stop",
+    "e5_counterfactual_extension_contract_ref": "g-extract1.e5-counterfactual-selector.v1"
   },
   "analysis_units": [
     "observation",
     "distinct_fixture",
     "repeat_pair",
     "family",
-    "model_tier_x_risk_round_cell"
+    "model_tier_x_risk_round_cell",
+    "logical_counterfactual_pair",
+    "rendered_variant"
   ],
   "confidence_contract": {
     "method": "one-sided exact 95% Clopper-Pearson",
@@ -5155,16 +5453,25 @@
         "all_repeats": false,
         "any_repeat": false
       }
-    ]
+    ],
+    "default_scope": "nonE5 only; E5 extension overrides",
+    "e5_extension": {
+      "contract_ref": "g-extract1.e5-counterfactual-selector.v1",
+      "observation_count_per_logical_fixture": 4,
+      "positive": "ALL variants x repeats",
+      "adverse": "ANY variants x repeats",
+      "correlated": "both repeats within same variant"
+    }
   },
   "cell_gates": {
     "phase_a": {
       "denominator_integrity": {
         "classification": "independent_pass_fail_gate",
-        "required_observations": 70,
+        "required_observations": 80,
         "required_distinct_fixtures": 35,
-        "required_repeat_pairs": 35,
-        "duplicates_allowed": 0
+        "required_repeat_pairs": 40,
+        "duplicates_allowed": 0,
+        "count_unit": "35 logical fixtures/40 rendered variants;80 observations A/40 B"
       },
       "family_and_composed_coverage": {
         "classification": "independent_pass_fail_gate",
@@ -5177,25 +5484,28 @@
         "maximum_affected_fixtures": 0,
         "maximum_affected_observations": 0,
         "denominator_fixtures": 35,
-        "denominator_observations": 70,
+        "denominator_observations": 80,
         "maximum_upper_95": 0.1
       },
       "determinate_semantic_correctness": {
         "classification": "independent_pass_fail_gate",
         "minimum_fixtures_with_both_repeats_correct": 29,
         "denominator_determinate_fixtures": 30,
-        "minimum_lower_95": 0.85
+        "minimum_lower_95": 0.85,
+        "e5_reduction_contract_ref": "g-extract1.e5-counterfactual-selector.v1"
       },
       "determinate_structural_validity": {
         "classification": "independent_pass_fail_gate",
         "minimum_fixtures_with_both_repeats_valid": 29,
-        "denominator_determinate_fixtures": 30
+        "denominator_determinate_fixtures": 30,
+        "e5_reduction_contract_ref": "g-extract1.e5-counterfactual-selector.v1"
       },
       "useful_correct_acceptance": {
         "classification": "independent_pass_fail_gate",
         "minimum_fixtures_with_both_repeats_accepted_and_correct": 27,
         "denominator_determinate_fixtures": 30,
-        "minimum_lower_95": 0.75
+        "minimum_lower_95": 0.75,
+        "e5_reduction_contract_ref": "g-extract1.e5-counterfactual-selector.v1"
       },
       "explicit_absence_recognition_and_containment": {
         "classification": "independent_pass_fail_gate",
@@ -5211,7 +5521,8 @@
         "classification": "enforced_redundant_pass_guardrail",
         "fixture_reduction": "both repeats semantically correct",
         "minimum_correct_fixtures": 4,
-        "denominator_per_determinate_family": 5
+        "denominator_per_determinate_family": 5,
+        "e5_fixture_reduction": "all variants x repeats semantically correct"
       },
       "binding_correctness": {
         "classification": "enforced_redundant_pass_guardrail",
@@ -5224,15 +5535,23 @@
       "correlated_false_clean": {
         "classification": "enforced_redundant_pass_guardrail",
         "maximum_repeat_pairs": 0,
-        "denominator_repeat_pairs": 35
+        "denominator_repeat_pairs": 40
+      },
+      "e5_counterfactual_pairs": {
+        "classification": "independent_pass_fail_gate",
+        "minimum_correct_pairs": 5,
+        "denominator_logical_pairs": 5,
+        "required_observations_per_pair": 4,
+        "contract_ref": "g-extract1.e5-counterfactual-selector.v1"
       }
     },
     "phase_b": {
       "denominator_integrity": {
         "classification": "independent_pass_fail_gate",
-        "required_observations": 35,
+        "required_observations": 40,
         "required_distinct_fixtures": 35,
-        "duplicates_allowed": 0
+        "duplicates_allowed": 0,
+        "count_unit": "35 logical fixtures/40 rendered variants;80 observations A/40 B"
       },
       "family_and_composed_coverage": {
         "classification": "independent_pass_fail_gate",
@@ -5245,25 +5564,28 @@
         "maximum_affected_fixtures": 0,
         "maximum_affected_observations": 0,
         "denominator_fixtures": 35,
-        "denominator_observations": 35,
+        "denominator_observations": 40,
         "maximum_upper_95": 0.1
       },
       "determinate_semantic_correctness": {
         "classification": "independent_pass_fail_gate",
         "minimum_correct_fixtures": 29,
         "denominator_determinate_fixtures": 30,
-        "minimum_lower_95": 0.85
+        "minimum_lower_95": 0.85,
+        "e5_reduction_contract_ref": "g-extract1.e5-counterfactual-selector.v1"
       },
       "determinate_structural_validity": {
         "classification": "independent_pass_fail_gate",
         "minimum_valid_fixtures": 29,
-        "denominator_determinate_fixtures": 30
+        "denominator_determinate_fixtures": 30,
+        "e5_reduction_contract_ref": "g-extract1.e5-counterfactual-selector.v1"
       },
       "useful_correct_acceptance": {
         "classification": "independent_pass_fail_gate",
         "minimum_accepted_and_correct_fixtures": 27,
         "denominator_determinate_fixtures": 30,
-        "minimum_lower_95": 0.75
+        "minimum_lower_95": 0.75,
+        "e5_reduction_contract_ref": "g-extract1.e5-counterfactual-selector.v1"
       },
       "explicit_absence_recognition_and_containment": {
         "classification": "independent_pass_fail_gate",
@@ -5278,7 +5600,8 @@
       "family_semantic_floor": {
         "classification": "enforced_redundant_pass_guardrail",
         "minimum_correct_fixtures": 4,
-        "denominator_per_determinate_family": 5
+        "denominator_per_determinate_family": 5,
+        "e5_fixture_reduction": "all variants x repeats semantically correct"
       },
       "binding_correctness": {
         "classification": "enforced_redundant_pass_guardrail",
@@ -5291,6 +5614,13 @@
       "correlated_false_clean": {
         "classification": "not_applicable_single_observation_phase",
         "reason": "Phase B has no repeat pairs"
+      },
+      "e5_counterfactual_pairs": {
+        "classification": "independent_pass_fail_gate",
+        "minimum_correct_pairs": 5,
+        "denominator_logical_pairs": 5,
+        "required_observations_per_pair": 2,
+        "contract_ref": "g-extract1.e5-counterfactual-selector.v1"
       }
     }
   },
@@ -5893,25 +6223,36 @@
     "phase_b_repeats": 1,
     "candidate_phase_a_seed_base": 610000,
     "candidate_phase_b_seed_base": 620000,
-    "seed_formula": "base + zero_based_fixture_index * 10 + one_based_repeat",
+    "seed_formula": "phase_base + (logical_fixture_ordinal - 1)*10 + one_based_repeat",
     "global_seed_collision_audit_required": true,
     "balanced_model_order_required": true,
     "schedules_frozen_before_provider_contact": true,
     "legacy_sized_prefix_observations_per_cell": 8,
-    "legacy_sized_prefix_is_gating": false
+    "legacy_sized_prefix_is_gating": false,
+    "e5_seed_collision_exception": {
+      "formula": "phase_base + (logical_fixture_ordinal - 1)*10 + one_based_repeat",
+      "same_seed_within_pair": true,
+      "collision_scope": "within each model/phase only CF1/CF2 of same validated base and repeat share seed; all other collisions forbidden",
+      "call_identity": "phase/model/round/base_fixture_id/variant_id/repeat; distinct schedule positions; metadata not transmitted",
+      "schedule": "logical ordinal ascending, repeat ascending, CF1 then CF2; nonE5 SINGLE; balanced model order, fresh sessions; no output-derived scheduling"
+    },
+    "legacy_sized_prefix_interpretation": "eight observation diagnostic only, never gating/pair shortcut"
   },
   "efficiency": {
-    "phase_a_calls": 420,
-    "phase_b_maximum_calls": 210,
-    "maximum_total_calls": 630,
+    "phase_a_calls": 480,
+    "phase_b_maximum_calls": 240,
+    "maximum_total_calls": 720,
     "g_route4_total_calls": 1395,
-    "maximum_call_reduction_fraction": 0.548387,
-    "estimated_phase_a_active_hours": 2.79,
-    "estimated_maximum_phase_b_active_hours": 1.4,
-    "estimated_maximum_total_active_hours": 4.19,
-    "large_tier_maximum_calls": 210,
-    "large_tier_estimated_active_hours": 2.99,
-    "basis": "preserved G-ROUTE4 observed means: 7.6 seconds small, 13.0 seconds mid, 51.2 seconds large"
+    "maximum_call_reduction_fraction": 0.4838709677419355,
+    "estimated_phase_a_active_hours": 3.1911111111111112,
+    "estimated_maximum_phase_b_active_hours": 1.5955555555555556,
+    "estimated_maximum_total_active_hours": 4.786666666666667,
+    "large_tier_maximum_calls": 240,
+    "large_tier_estimated_active_hours": 3.4133333333333336,
+    "basis": "preserved G-ROUTE4 observed means: 7.6 seconds small, 13.0 seconds mid, 51.2 seconds large",
+    "v9_maximum_calls": 630,
+    "increase_from_v9_fraction": 0.1428571428571428,
+    "estimate_limit": "sequential active extrapolation; loading/overhead extra; no provider benchmarking"
   },
   "baseline_repair_boundary": {
     "baseline_contract_ref": "g-extract1.baseline-binding.v4",
@@ -5970,7 +6311,7 @@
     "validator_claim": "deterministic structural and cross-representation consistency only",
     "scientific_validity_proven": false,
     "adversarial_review_replaced": false,
-    "validator_version": "v8",
+    "validator_version": "v10",
     "new_rule_boundary": "behavioral vectors are disposable checking examples; none are scored fixtures or reserve records; no production code is implemented",
     "validator_coverage_notes": "behavioral v8 mechanics, all 106 historical projections, actual subtype/profile validation and parsed co-normative annex comparisons; neither complete human prose proof nor scientific validity is claimed"
   },
@@ -5999,7 +6340,7 @@
     "reserve-equivalence bytes and subtype allocation matrix are frozen",
     "schema-derived contamination atom typing passes independent differential checks"
   ],
-  "final_verdict": "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_8",
+  "final_verdict": "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_10",
   "lexical_neutrality_contract": {
     "contract_id": "g-extract1.lexical-neutrality.v1",
     "all_model_facing_atoms_are_generated": true,
@@ -6238,7 +6579,12 @@
       "meaning_independence": "ordinals depend only on frozen authoring position; expected value, operator direction, gold and observed performance never affect naming"
     },
     "non_scored_legacy_parser_vectors": "isolated raw-output classifier vectors may retain historical illustrative status/name/count strings solely to test parsing; they are not authorable fixture content",
-    "causal_limit": "fixed/unavailable to authors but structurally associated with family/phase; not statistical independence or causal lexical isolation"
+    "causal_limit": "fixed/unavailable to authors but structurally associated with family/phase; not statistical independence or causal lexical isolation",
+    "counterfactual_exception": {
+      "scope": "g-extract1.e5-counterfactual-selector.v1",
+      "sharing": "one ordinal/all atoms per logical E5 base, CF1/CF2 only",
+      "record_type_balance": "five logical/ten E5 variants per cell;other families five singles;catalogs phase-disjoint"
+    }
   },
   "entity_population_contract": {
     "contract_id": "g-extract1.entity-population.v2",
@@ -6519,7 +6865,8 @@
       "derive profile from proven actual type/domain/results",
       "compare bytes; never bypass contamination/gold review"
     ],
-    "value_shape_profile_binding": "g-extract1.value-allocation.v1"
+    "value_shape_profile_binding": "g-extract1.value-allocation.v1",
+    "e5_pair_profile_extension_contract_ref": "g-extract1.e5-counterfactual-selector.v1"
   },
   "subtype_allocation_contract": {
     "contract_id": "g-extract1.subtype-allocation.v2",

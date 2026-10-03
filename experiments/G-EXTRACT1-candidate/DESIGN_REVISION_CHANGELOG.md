@@ -1,5 +1,27 @@
 # G-EXTRACT1 Design Revision Changelog
 
+## Candidate v10: authorized counterfactual correction
+
+Reviewed parent: `500f29dbfc157cd4a024976694da47e8f3e2e5b7`. The original unrestricted selector-blind allocation request was blocked with no edits. Marcus explicitly authorized counterfactual selector controls instead. Design/checking only; no corpus, reserve or blueprint authoring.
+
+| Rereview-9 / blocked-V10 finding | Disposition and prospective repair |
+|---|---|
+| Schema x record-type can recover R2 anchor selection | Resolved by paired complete requests: only requested selector bytes differ; record type/schema identical within each pair. A notice/B event retained, not independent of phase. |
+| Precision/rank associations permit selector-blind answers | Resolved by invariant population/precision/value order within each pair and distinct gold. V9 anchor difficulty remains; CF2 rank derives from the other selector. |
+| Actual qualification is model x round, not pooled | Resolved: pair gates independently apply to each model x round x phase; both A and B must pass. |
+| 513 marginal policies omit conditional/identifier lookup | Intentionally retained as secondary bounded CF1 diagnostics only. No universal protection claim; exact pair-invariant keys require conflicting answers for any deterministic selector-blind function. |
+| Arbitrary unique-ID lookup defeats finite counterbalancing | Resolved: CF1/CF2 share one logical ordinal and every non-selector request byte, including seed. Variant identity is metadata-only. No cognitive inference. |
+| Provider settings could differ between variants | Resolved: same model/configuration/seed within each repeat; exact canonical full-request bytes and masked equality audited. Bound historical builder definitions cross-checked offline. |
+| Pair scoring / repeats / family floor unclear | Resolved: A all four, B both; adverse any observation; strict5/5 E5 pairs added without weakening general29/30,27/30 or4/5 gates. |
+| Contamination and exact reuse normally reject deliberate sharing | Resolved: exception confined to CF1/CF2 of one frozen validated E5 pair. Every cross-base variant retains all v9 controls. Fingerprints intentionally ignore selector choice. |
+| Reserve must not substitute one variant | Resolved: four E5 reserves are complete pairs, matching ordered transitions and v9 actual-validated anchor profiles. All28 logical slots remain01-only; no pools/member substitution. |
+| Old168 objects/630 calls no longer accurate | Resolved:168 logical bases,192 rendered variants,480 A +240 max B =720;14.285714% increase vs630,48.387097% reduction vs1395. |
+| Recurrence and comparison scope affected | Resolved: base ledger168/51/35/14,028 preserved and rederived; expanded192 entries/18,336 pairs,24 exact within-pair scopes,18,312 cross-base checks. |
+| Human/machine and validator scope | Resolved: exact co-normative pair/accounting/gate/seed objects compared; behavioral mutations, all pair reductions, shared seeds and bound full requests tested. PASS is structural/cross-representation consistency only. |
+| Historical adapter/governance | Retained unchanged:106/106 adaptations, historical digests, no providers/models, zero corpus/reserve items, no future authorization. |
+
+Prior candidate sections below record earlier dispositions, not renewed universal claims. The v10 pair extension supersedes their E5 single-variant interpretations only. No gate is loosened and no historical artifact is rewritten.
+
 ## Candidate v9
 
 Reviewed parent: `9ac3db265a1ae2ed6936ff4890b8eb001f0ab266`. Design/checking only; no blueprint or corpus authoring.
