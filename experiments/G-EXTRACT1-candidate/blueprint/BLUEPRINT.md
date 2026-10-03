@@ -1,14 +1,15 @@
 # G-EXTRACT1 Authoring Blueprint
 
-Status: READY_FOR_G_EXTRACT1_BLUEPRINT_CONTAMINATION_REREVIEW. Mechanical rebind only.
+Status: READY_FOR_G_EXTRACT1_BLUEPRINT_FRESHNESS_REREVIEW. Mechanical rebind only.
 
 ## Authority And Scope
 
 Scientific basis: V10 commit `394d24121309ec9dce80e725b50dbe5eb60f6d2a`, plus the
 accepted output-field amendment `aef3e0900cba41481904c8a451c4ca28b9d46c53`, and
-accepted contamination repair `62c783bd8be708a86c82a9e00c80b0fa6fb5b459`.
-The six design artifacts are byte-bound to the repair commit in BLUEPRINT.json
-and remain unchanged. Prior accepted blueprint `28fb6bbd3fb668265e4cc50cda0da0f9afdf3ce5`
+accepted contamination repair `62c783bd8be708a86c82a9e00c80b0fa6fb5b459`, and
+accepted freshness amendment `e12484224cd11cf9c84026eb7deadf8c4eb9bab8`.
+The six design artifacts are byte-bound to the freshness amendment in BLUEPRINT.json
+and remain unchanged. Prior accepted blueprint `01aafde7410a44085999aa4aa39f883618e78799`
 is lineage only: its allocations are preserved exactly. Original lineage is
 `99707b4f13abd6533f1d09313bdb066793996be9`.
 BLUEPRINT.json is the complete value-free enumeration; its scientific_traceability
@@ -100,7 +101,8 @@ The logical recurrence ledger has 51 fingerprint classes, 35 subtype groups and
 pairs: exactly 24 eligible same-base E5 sharing scopes and 18,312 cross-base pairs.
 Historical scope: 106 historical extraction entries times 192 variants = 20,352.
 The comparison iterators and source rule references are frozen, but content
-acceptance is deferred because no corpus exists. Ordinary ordinal-neutral,
+acceptance remains outstanding. The existing untracked 168-base candidate corpus
+is preserved incomplete input, not blueprint content or an accepted corpus. Ordinary ordinal-neutral,
 declared-template content/shape, fingerprints, projection and exact-reuse checks
 apply through the accepted comparison decision table, not a blanket similarity
 threshold. Pair masks never alter contamination inputs. Sharing exemptions
@@ -109,7 +111,8 @@ All 28 reserve mappings cover subtype01 only. Uncovered, multiple or mismatched
 defects stop authoring. E5 replacement unit is the entire CF1/CF2 pair.
 Profile fields retain the exact accepted key order and derivation references.
 Final profiles must derive from actual validated content, not merely blueprint
-declarations. Value-dependent dimensions remain unauthored until corpus work.
+declarations. This blueprint carries no concrete value-dependent dimensions;
+existing candidate content is not evaluated or finalized in this rebind.
 
 ## Request And Gold Boundary
 
@@ -131,20 +134,24 @@ ordinals, variants, gates, schedules, seeds, reserve mappings, comparison scopes
 all qualified-cell subsets and traceability; mutation probes reject mismatches.
 The report claims structural/design equivalence only, not scientific validity,
 future content feasibility, transport correctness or execution readiness.
-The accepted repair's design checker pins the prior accepted blueprint as historical
+The accepted freshness design checker pins the prior accepted blueprint as historical
 checkpoint evidence. That guard is not rebound: no mutable design-side digest of
 this later blueprint is required. All six design artifacts remain exact
 accepted bytes. This checker loads only their value-free derivation helpers; it
 does not invoke the old checkpoint inventory guard on updated blueprint files.
-Instead it checks the repair binding, exact scaffold membership, canonical outputs,
+Instead it checks both repair/amendment bindings, exact scaffold membership, canonical outputs,
+freshness serialization obligations and preserved candidate/gold/checker digests,
 and exact preservation of both prior and original allocations. No design-side changes
 or circular design/blueprint digest binding are introduced.
 
 G-ROUTE4 remains CLOSED FAILED. Provider/model calls, scored/reserve content and
-gold answers authored are zero; belief effects none; no autonomy or runtime work.
+gold answers authored in this blueprint task are zero; the existing untracked
+candidate corpus and both corpus checkers remain byte-identical. Belief effects
+none; no autonomy or runtime work.
 Separate authorization remains required for corpus/gold authoring, implementation,
 mechanical pilot, execution freeze, Phase A and conditional Phase B. Blueprint
 review must occur first; corpus authoring cannot resume before rebind rereview.
+Checker repair and corpus finalization also remain separately unauthorized.
 This status does not self-authorize any later stage.
 
 ## Accepted Bounded Scaffold Rebind
@@ -166,7 +173,7 @@ Historical/new remains unchanged: ordinary>=0.20, projection3/3, or projection>=
 
 Scaffold classes are not recurrence groups. Remaining same-subtype content rules, different-subtype ordinary rules, 51 fingerprint classes, 35 subtype groups, reserves, schedules, seeds and gates are unchanged. The report partitions all 18,312 cross-base rendered pairs; 906 are included within that domain, not additional comparisons.
 
-This materializes frozen pairwise-feasibility rules only. Simultaneous concrete corpus feasibility, actual independence, corpus acceptance and scientific validity are not proven. No concrete content exists here.
+This materializes frozen pairwise-feasibility rules only. Simultaneous concrete corpus feasibility, actual independence, corpus acceptance and scientific validity are not proven. This blueprint carries no concrete content; the preserved untracked candidate attempt remains incomplete.
 
 Cross-base partition: 906 scaffold + 518 remaining same-subtype + 16888 ordinary = 18,312. All 24 pair-local scopes remain separate.
 
@@ -187,3 +194,933 @@ Cross-base partition: 906 scaffold + 518 remaining same-subtype + 16888 ordinary
 | 06622d78bd0b1b0df361c77e579c8b484a8f1d6b04bc0b30a67ae85920e1cbc7 | E7-02/E7-04 | 4 | 4 | NEW_DECLARED_DIFFERENT_SUBTYPE / 5/22 |
 | b7b568f3bb31af95ff56f9c4ede78aa1e9370c9b410eae69dc750bcc07273c34 | E1-05/E1-05 | 1 | 1 | NEW_DECLARED_SAME_SUBTYPE / 1/3 |
 | 2000cecb91fc194e961885dc681b22ab9cf460c1f30b44556a4b5f0e7f7f5903 | E7-02/E7-04 | 4 | 4 | NEW_DECLARED_DIFFERENT_SUBTYPE / 5/22 |
+
+## Accepted Freshness Serialization Rebind
+
+This materializes g-extract1.freshness-canonicalization.v1 without selecting new
+semantics. The accepted contamination repair and every prior allocation remain
+unchanged. Canonical rows are [exact_schema_type, canonical_semantic_text], both
+JSON strings. Schema bytes are string, number, integer, boolean, YYYY-MM-DD,
+HH:MM or the exact full finite-enum schema, never generic semantic tags.
+
+INTEGER is minimal signed base-10 text with signed zero normalized to "0".
+NUMBER is exact terminating plain decimal with no plus/exponent/unnecessary
+leading or trailing fractional zeros, no empty decimal point and signed zero
+normalized to "0". Thus 5/5.0/5.00/5e0 all become "5". No binary floats or
+finite-context rounding; equivalent exact int/Decimal/Fraction/token semantics
+must yield identical bytes, while unsupported wrappers fail closed.
+The typed rows ["integer","5"] and ["number","5"] remain different.
+
+Boolean text is lowercase "true"/"false". DATE/TIME use exact validated
+zero-padded YYYY-MM-DD/HH:MM. STRING is exact, without trim, casefold, whitespace
+collapse, label removal or Unicode normalization. ENUM retains exact schema
+order and exact selected option, never its ordinal. Semantic test vectors do not
+relax the existing source literal or lexical authoring grammar.
+
+VALUE source facts only, in source-record order, with duplicates preserved.
+No field names, fixture IDs, metadata, operation arguments/targets/outputs or
+EXPLICIT_ABSENCE facts enter freshness bytes. The 168 source_row_plans bind each
+base's existing VALUE source indices and exact schema sequence. Their base IDs
+and indices are bookkeeping only, never parts of serialized freshness atoms.
+CF1/CF2 share the same base row plan; existing pair-local sharing is unchanged.
+
+Serialize with json.dumps(sequence, ensure_ascii=False, separators=(',', ':'))
+followed by UTF-8 encoding, without newline or external whitespace. This freezes
+literal UTF-8 rather than treating escaped ASCII as an interchangeable encoding.
+The original semantic case must yield exactly:
+`[["YYYY-MM-DD","2039-10-05"],["integer","0"]]`.
+This is a contract test, not authored corpus content or replay of a scored call.
+
+Only the already-required NEW freshness layer uses this encoding. Historical
+projection, all Jaccard views/residuals, fingerprints, whole-answer/identity and
+date-number representations keep their existing encodings and applicability.
+The separate NUMBER tuple convention of "5.0" is not replaced by freshness "5".
+Historical adaptation stays 106/106, rejected 0 with unchanged projection digest.
+
+All nine active source schema forms, all 39 contract vectors, three equivalence
+groups and isolated byte mutations are checked. Untracked corpus/checker and gold
+hashes are preservation evidence only, not contamination rescoring or gold review.
+No checker repair, corpus regeneration/finalization, runtime, pilot, freeze or
+Phase A/B execution is authorized here. Independent blueprint rereview and later
+separate authorizations remain required; belief effects none.
+
+The exact co-normative accepted encoding contract follows. Concrete values in
+this annex are isolated contract vectors only; they are not fixture allocations.
+
+<!-- BLUEPRINT_FRESHNESS_NORMATIVE_BEGIN -->
+```json
+{
+  "accepted_contamination_repair": "62c783bd8be708a86c82a9e00c80b0fa6fb5b459",
+  "accepted_parent_commit": "01aafde7410a44085999aa4aa39f883618e78799",
+  "authority": {
+    "belief_effects": "none",
+    "blueprint_update": false,
+    "checker_repair": false,
+    "contamination_rescoring": false,
+    "corpus_finalization": false,
+    "corpus_regeneration": false,
+    "execution": false,
+    "gold_change": false,
+    "independent_rereview_required": true,
+    "provider_calls": 0,
+    "runtime_implementation": false,
+    "separate_blueprint_rebind_required": true
+  },
+  "binding": "Closes only template_recurrence_contract.freshness_sequence encoding; this contract supplies its previously unspecified scalar and byte representation. All prior inclusion/order/equality/freshness obligations remain.",
+  "byte_serialization": {
+    "encoding": "UTF-8",
+    "ensure_ascii": false,
+    "exact_expression": "json.dumps(sequence, ensure_ascii=False, separators=(',', ':')).encode('utf-8')",
+    "host_numeric_scalar_storage": false,
+    "json_engine": "Python json.dumps",
+    "separators": [
+      ",",
+      ":"
+    ],
+    "trailing_newline": false,
+    "unpaired_surrogates": "not valid UTF-8 semantic strings; reject"
+  },
+  "canonical_semantic_text": {
+    "BOOLEAN": {
+      "semantic_value": "Boolean",
+      "text": "true or false, lowercase exactly"
+    },
+    "DATE": {
+      "schema": "YYYY-MM-DD",
+      "text": "exact validated zero-padded proleptic Gregorian YYYY-MM-DD"
+    },
+    "ENUM": {
+      "schema_identity": "first element is full exact enum schema, never ENUM or option index",
+      "text": "exact selected option string"
+    },
+    "INTEGER": {
+      "integer_lexical_input": "already accepted lexical JSON integer only: -?(0|[1-9][0-9]*); no expansion of fixture-authoring literal grammar",
+      "semantic_value": "exact integral value excluding Boolean",
+      "text": "minimal base-10; minus only for negative values; zero and signed zero -> 0; no plus, leading zeroes, exponent or decimal point"
+    },
+    "NUMBER": {
+      "equivalent_input_examples": [
+        "5",
+        "5.0",
+        "5.00",
+        "5e0"
+      ],
+      "equivalent_text": "5",
+      "evaluation": "integer arithmetic or exact Fraction/Decimal token interpretation; no finite-context rounding",
+      "nonterminating": "AUTHORING_ERROR; existing operation/fixture-domain restriction unchanged",
+      "semantic_value": "exact rational/decimal numeric value excluding Boolean; no binary floating point",
+      "text": "plain exact terminating decimal, no exponent/plus/unnecessary leading zeroes; remove trailing fractional zeroes and decimal point if fractional part is empty; all signed zero -> 0"
+    },
+    "STRING": {
+      "text": "exact semantic string value; no trimming, whitespace collapse, casefolding, label removal, Unicode normalization or tokenizer normalization"
+    },
+    "TIME": {
+      "schema": "HH:MM",
+      "text": "exact validated zero-padded 24-hour HH:MM"
+    }
+  },
+  "contract_id": "g-extract1.freshness-canonicalization.v1",
+  "equivalence_groups": [
+    {
+      "expected_utf8": "[[\"number\",\"5\"]]",
+      "id": "number_five",
+      "schema_type": "number",
+      "values": [
+        "5",
+        "5.0",
+        "5.00",
+        "5e0"
+      ]
+    },
+    {
+      "expected_utf8": "[[\"number\",\"0\"]]",
+      "id": "number_zero",
+      "schema_type": "number",
+      "values": [
+        "0",
+        "0.0",
+        "-0",
+        "-0.0"
+      ]
+    },
+    {
+      "expected_utf8": "[[\"integer\",\"0\"]]",
+      "id": "integer_zero",
+      "schema_type": "integer",
+      "values": [
+        "0",
+        "-0"
+      ]
+    }
+  ],
+  "mutation_catalog": [
+    "integer_numeric_scalar",
+    "number_numeric_scalar",
+    "semantic_tag_integer",
+    "semantic_tag_number",
+    "semantic_tag_date",
+    "semantic_tag_time",
+    "semantic_tag_string",
+    "semantic_tag_boolean",
+    "semantic_tag_enum",
+    "number_exponent_retained",
+    "number_trailing_zeroes_retained",
+    "number_empty_fraction_point_retained",
+    "negative_zero_retained",
+    "integer_leading_plus",
+    "integer_leading_zeroes",
+    "boolean_capitalized",
+    "date_reformatted",
+    "time_reformatted",
+    "string_trimmed",
+    "enum_ordinal",
+    "atoms_sorted",
+    "duplicate_removed",
+    "whitespace_formatted_json",
+    "ensure_ascii_true_non_ascii",
+    "trailing_newline",
+    "row_missing_element",
+    "row_extra_element",
+    "null_value",
+    "object_value",
+    "array_value",
+    "schema_enum_reordered",
+    "absence_included",
+    "derived_output_included"
+  ],
+  "original_failure_semantic_vector": {
+    "expected_sequence": [
+      [
+        "YYYY-MM-DD",
+        "2039-10-05"
+      ],
+      [
+        "integer",
+        "0"
+      ]
+    ],
+    "expected_utf8": "[[\"YYYY-MM-DD\",\"2039-10-05\"],[\"integer\",\"0\"]]",
+    "source_schemas": [
+      "YYYY-MM-DD",
+      "integer"
+    ],
+    "source_values": [
+      "2039-10-05",
+      "0"
+    ]
+  },
+  "schema_binding": {
+    "aliases_or_semantic_tags_prohibited": true,
+    "contract_ref": "schema_type_contract",
+    "finite_enum": "exact full validated schema bytes; membership/order restrictions from schema-types.v1 and lexical overlay unchanged",
+    "primitive_spellings": [
+      "string",
+      "number",
+      "integer",
+      "boolean",
+      "YYYY-MM-DD",
+      "HH:MM"
+    ]
+  },
+  "separation": {
+    "corpus_used_to_select_encoding": false,
+    "exceptions_added": false,
+    "historical": "NEW freshness sequence only as already required; no new historical value conversion/comparison rule",
+    "model_facing_bytes_unchanged": true,
+    "numeric_equivalence_unchanged": true,
+    "other_encodings_unchanged": [
+      "whole-answer atoms",
+      "identity atoms",
+      "date-number tuples",
+      "fingerprints",
+      "ordinary Jaccard",
+      "shape view",
+      "content view",
+      "scaffold residuals",
+      "historical projections"
+    ],
+    "semantic_equality_unchanged": true,
+    "thresholds_unchanged": true
+  },
+  "sequence": {
+    "duplicates": "preserved",
+    "excluded": [
+      "field names",
+      "fixture IDs",
+      "operation arguments",
+      "derived operation outputs",
+      "EXPLICIT_ABSENCE facts"
+    ],
+    "first": "exact validated schema_type bytes through schema_type_contract; never semantic_tag",
+    "included_template_ids": [
+      "VALUE"
+    ],
+    "row_elements": "JSON strings only",
+    "row_exact_length": 2,
+    "second": "canonical_semantic_text according to rules below",
+    "sorting": false,
+    "source": "source_fact_records in exact array order"
+  },
+  "validation_scope": "deterministic structural and cross-representation consistency only; no scientific validity approval",
+  "validation_vectors": [
+    {
+      "expected_sequence": [
+        [
+          "integer",
+          "0"
+        ]
+      ],
+      "expected_utf8": "[[\"integer\",\"0\"]]",
+      "id": "integer_0",
+      "semantic_rows": [
+        [
+          "integer",
+          "0"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "integer",
+          "1"
+        ]
+      ],
+      "expected_utf8": "[[\"integer\",\"1\"]]",
+      "id": "integer_1",
+      "semantic_rows": [
+        [
+          "integer",
+          "1"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "integer",
+          "-1"
+        ]
+      ],
+      "expected_utf8": "[[\"integer\",\"-1\"]]",
+      "id": "integer_-1",
+      "semantic_rows": [
+        [
+          "integer",
+          "-1"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "integer",
+          "42"
+        ]
+      ],
+      "expected_utf8": "[[\"integer\",\"42\"]]",
+      "id": "integer_42",
+      "semantic_rows": [
+        [
+          "integer",
+          "42"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "integer",
+          "100000000000000000000000000000000000000000000000000000000000000000000001"
+        ]
+      ],
+      "expected_utf8": "[[\"integer\",\"100000000000000000000000000000000000000000000000000000000000000000000001\"]]",
+      "id": "integer_100000000000000000000000000000000000000000000000000000000000000000000001",
+      "semantic_rows": [
+        [
+          "integer",
+          "100000000000000000000000000000000000000000000000000000000000000000000001"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "number",
+          "5"
+        ]
+      ],
+      "expected_utf8": "[[\"number\",\"5\"]]",
+      "id": "number_5",
+      "semantic_rows": [
+        [
+          "number",
+          "5"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "number",
+          "5"
+        ]
+      ],
+      "expected_utf8": "[[\"number\",\"5\"]]",
+      "id": "number_5.0",
+      "semantic_rows": [
+        [
+          "number",
+          "5.0"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "number",
+          "5"
+        ]
+      ],
+      "expected_utf8": "[[\"number\",\"5\"]]",
+      "id": "number_5.00",
+      "semantic_rows": [
+        [
+          "number",
+          "5.00"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "number",
+          "5"
+        ]
+      ],
+      "expected_utf8": "[[\"number\",\"5\"]]",
+      "id": "number_5e0",
+      "semantic_rows": [
+        [
+          "number",
+          "5e0"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "number",
+          "0"
+        ]
+      ],
+      "expected_utf8": "[[\"number\",\"0\"]]",
+      "id": "number_0",
+      "semantic_rows": [
+        [
+          "number",
+          "0"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "number",
+          "0"
+        ]
+      ],
+      "expected_utf8": "[[\"number\",\"0\"]]",
+      "id": "number_0.0",
+      "semantic_rows": [
+        [
+          "number",
+          "0.0"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "number",
+          "0"
+        ]
+      ],
+      "expected_utf8": "[[\"number\",\"0\"]]",
+      "id": "number_-0",
+      "semantic_rows": [
+        [
+          "number",
+          "-0"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "number",
+          "0"
+        ]
+      ],
+      "expected_utf8": "[[\"number\",\"0\"]]",
+      "id": "number_-0.0",
+      "semantic_rows": [
+        [
+          "number",
+          "-0.0"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "number",
+          "0.5"
+        ]
+      ],
+      "expected_utf8": "[[\"number\",\"0.5\"]]",
+      "id": "number_0.50",
+      "semantic_rows": [
+        [
+          "number",
+          "0.50"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "number",
+          "-12.34"
+        ]
+      ],
+      "expected_utf8": "[[\"number\",\"-12.34\"]]",
+      "id": "number_-12.3400",
+      "semantic_rows": [
+        [
+          "number",
+          "-12.3400"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "number",
+          "0.125"
+        ]
+      ],
+      "expected_utf8": "[[\"number\",\"0.125\"]]",
+      "id": "number_125e-3",
+      "semantic_rows": [
+        [
+          "number",
+          "125e-3"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "number",
+          "10000000000000000000000000000000000000000"
+        ]
+      ],
+      "expected_utf8": "[[\"number\",\"10000000000000000000000000000000000000000\"]]",
+      "id": "number_1e40",
+      "semantic_rows": [
+        [
+          "number",
+          "1e40"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "boolean",
+          "true"
+        ]
+      ],
+      "expected_utf8": "[[\"boolean\",\"true\"]]",
+      "id": "boolean_true",
+      "semantic_rows": [
+        [
+          "boolean",
+          true
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "boolean",
+          "false"
+        ]
+      ],
+      "expected_utf8": "[[\"boolean\",\"false\"]]",
+      "id": "boolean_false",
+      "semantic_rows": [
+        [
+          "boolean",
+          false
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "YYYY-MM-DD",
+          "2039-10-05"
+        ]
+      ],
+      "expected_utf8": "[[\"YYYY-MM-DD\",\"2039-10-05\"]]",
+      "id": "temporal_2039-10-05",
+      "semantic_rows": [
+        [
+          "YYYY-MM-DD",
+          "2039-10-05"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "YYYY-MM-DD",
+          "2032-02-29"
+        ]
+      ],
+      "expected_utf8": "[[\"YYYY-MM-DD\",\"2032-02-29\"]]",
+      "id": "temporal_2032-02-29",
+      "semantic_rows": [
+        [
+          "YYYY-MM-DD",
+          "2032-02-29"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "HH:MM",
+          "00:00"
+        ]
+      ],
+      "expected_utf8": "[[\"HH:MM\",\"00:00\"]]",
+      "id": "temporal_00:00",
+      "semantic_rows": [
+        [
+          "HH:MM",
+          "00:00"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "HH:MM",
+          "23:45"
+        ]
+      ],
+      "expected_utf8": "[[\"HH:MM\",\"23:45\"]]",
+      "id": "temporal_23:45",
+      "semantic_rows": [
+        [
+          "HH:MM",
+          "23:45"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "string",
+          "label_001_01"
+        ]
+      ],
+      "expected_utf8": "[[\"string\",\"label_001_01\"]]",
+      "id": "string_23",
+      "semantic_rows": [
+        [
+          "string",
+          "label_001_01"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "string",
+          "code_002_02"
+        ]
+      ],
+      "expected_utf8": "[[\"string\",\"code_002_02\"]]",
+      "id": "string_24",
+      "semantic_rows": [
+        [
+          "string",
+          "code_002_02"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "string",
+          "id_003_03"
+        ]
+      ],
+      "expected_utf8": "[[\"string\",\"id_003_03\"]]",
+      "id": "string_25",
+      "semantic_rows": [
+        [
+          "string",
+          "id_003_03"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "string",
+          "  Exact Value  "
+        ]
+      ],
+      "expected_utf8": "[[\"string\",\"  Exact Value  \"]]",
+      "id": "string_26",
+      "semantic_rows": [
+        [
+          "string",
+          "  Exact Value  "
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "string",
+          "Cafe\u0301"
+        ]
+      ],
+      "expected_utf8": "[[\"string\",\"Cafe\u0301\"]]",
+      "id": "string_27",
+      "semantic_rows": [
+        [
+          "string",
+          "Cafe\u0301"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "string",
+          "\u00e9"
+        ]
+      ],
+      "expected_utf8": "[[\"string\",\"\u00e9\"]]",
+      "id": "string_28",
+      "semantic_rows": [
+        [
+          "string",
+          "\u00e9"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "string",
+          "Line\nQuote\"\\End"
+        ]
+      ],
+      "expected_utf8": "[[\"string\",\"Line\\nQuote\\\"\\\\End\"]]",
+      "id": "string_29",
+      "semantic_rows": [
+        [
+          "string",
+          "Line\nQuote\"\\End"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "option_a|option_b",
+          "option_a"
+        ]
+      ],
+      "expected_utf8": "[[\"option_a|option_b\",\"option_a\"]]",
+      "id": "enum_option_a|option_b_option_a",
+      "semantic_rows": [
+        [
+          "option_a|option_b",
+          "option_a"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "option_a|option_b",
+          "option_b"
+        ]
+      ],
+      "expected_utf8": "[[\"option_a|option_b\",\"option_b\"]]",
+      "id": "enum_option_a|option_b_option_b",
+      "semantic_rows": [
+        [
+          "option_a|option_b",
+          "option_b"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "option_a|option_b|option_c",
+          "option_a"
+        ]
+      ],
+      "expected_utf8": "[[\"option_a|option_b|option_c\",\"option_a\"]]",
+      "id": "enum_option_a|option_b|option_c_option_a",
+      "semantic_rows": [
+        [
+          "option_a|option_b|option_c",
+          "option_a"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "option_a|option_b|option_c",
+          "option_b"
+        ]
+      ],
+      "expected_utf8": "[[\"option_a|option_b|option_c\",\"option_b\"]]",
+      "id": "enum_option_a|option_b|option_c_option_b",
+      "semantic_rows": [
+        [
+          "option_a|option_b|option_c",
+          "option_b"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "option_a|option_b|option_c",
+          "option_c"
+        ]
+      ],
+      "expected_utf8": "[[\"option_a|option_b|option_c\",\"option_c\"]]",
+      "id": "enum_option_a|option_b|option_c_option_c",
+      "semantic_rows": [
+        [
+          "option_a|option_b|option_c",
+          "option_c"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "provided|not_provided",
+          "provided"
+        ]
+      ],
+      "expected_utf8": "[[\"provided|not_provided\",\"provided\"]]",
+      "id": "enum_provided|not_provided_provided",
+      "semantic_rows": [
+        [
+          "provided|not_provided",
+          "provided"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "provided|not_provided",
+          "not_provided"
+        ]
+      ],
+      "expected_utf8": "[[\"provided|not_provided\",\"not_provided\"]]",
+      "id": "enum_provided|not_provided_not_provided",
+      "semantic_rows": [
+        [
+          "provided|not_provided",
+          "not_provided"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "integer",
+          "42"
+        ],
+        [
+          "string",
+          "label_001_01"
+        ],
+        [
+          "integer",
+          "42"
+        ],
+        [
+          "number",
+          "5"
+        ]
+      ],
+      "expected_utf8": "[[\"integer\",\"42\"],[\"string\",\"label_001_01\"],[\"integer\",\"42\"],[\"number\",\"5\"]]",
+      "id": "source_order_and_duplicates",
+      "semantic_rows": [
+        [
+          "integer",
+          "42"
+        ],
+        [
+          "string",
+          "label_001_01"
+        ],
+        [
+          "integer",
+          "42"
+        ],
+        [
+          "number",
+          "5.00"
+        ]
+      ]
+    },
+    {
+      "expected_sequence": [
+        [
+          "YYYY-MM-DD",
+          "2039-10-05"
+        ],
+        [
+          "integer",
+          "0"
+        ]
+      ],
+      "expected_utf8": "[[\"YYYY-MM-DD\",\"2039-10-05\"],[\"integer\",\"0\"]]",
+      "id": "original_failure",
+      "semantic_rows": [
+        [
+          "YYYY-MM-DD",
+          "2039-10-05"
+        ],
+        [
+          "integer",
+          "0"
+        ]
+      ]
+    }
+  ],
+  "vector_scope": "isolated semantic/serialization vectors, not authored fixtures or provider outputs; evaluator numeric equivalence tests do not loosen canonical authoring metadata"
+}
+```
+<!-- BLUEPRINT_FRESHNESS_NORMATIVE_END -->

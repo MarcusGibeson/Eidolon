@@ -8,6 +8,8 @@ import hashlib
 import importlib.util
 import itertools
 import json
+from decimal import Decimal
+from fractions import Fraction
 from pathlib import Path
 import subprocess
 
@@ -17,8 +19,10 @@ ROOT = DESIGN.parent.parent
 SCIENTIFIC_BASIS = "394d24121309ec9dce80e725b50dbe5eb60f6d2a"
 ORIGINAL_BLUEPRINT = "99707b4f13abd6533f1d09313bdb066793996be9"
 OUTPUT_AMENDMENT = "aef3e0900cba41481904c8a451c4ca28b9d46c53"
-PRIOR_BLUEPRINT = "28fb6bbd3fb668265e4cc50cda0da0f9afdf3ce5"
-ACCEPTED = "62c783bd8be708a86c82a9e00c80b0fa6fb5b459"
+OUTPUT_BLUEPRINT = "28fb6bbd3fb668265e4cc50cda0da0f9afdf3ce5"
+PRIOR_BLUEPRINT = "01aafde7410a44085999aa4aa39f883618e78799"
+CONTAMINATION_REPAIR = "62c783bd8be708a86c82a9e00c80b0fa6fb5b459"
+ACCEPTED = "e12484224cd11cf9c84026eb7deadf8c4eb9bab8"
 SOURCE_NAMES = (
     "DESIGN_CANDIDATE.md", "DESIGN_CANDIDATE.json",
     "DESIGN_REVISION_CHANGELOG.md", "HUMAN_MACHINE_EQUIVALENCE_CHECKLIST.md",
@@ -83,6 +87,7 @@ def traceability():
         "request_template": [ref("/baseline_binding"), ref("/e5_counterfactual_selector_contract/request_contract"), ref("/model_provider")],
         "comparison_scope": [ref("/contamination_contract"), ref("/ordinal_neutral_similarity_contract"), ref("/historical_fingerprint_adapter_contract"), ref("/e5_counterfactual_selector_contract/contamination")],
         "scaffold_overlap": [ref("/declared_scaffold_overlap_contract")],
+        "freshness_serialization": [ref("/freshness_canonicalization_contract"), ref("/template_recurrence_contract/freshness_sequence"), ref("/schema_type_contract")],
         "governance": [ref("/governance"), ref("/implementation_authorization_prerequisites")],
     }
 
@@ -354,7 +359,7 @@ def materialize_scaffold(c, positions, variants):
             branch = 'ORDINARY_NEW_NEW'
         branch_counts[branch] += 1
     return dict(
-        contract_id=source['contract_id'], repair_commit=ACCEPTED,
+        contract_id=source['contract_id'], repair_commit=CONTAMINATION_REPAIR,
         classes=classes,
         cross_base_branch_counts=branch_counts,
         reconciliation=dict(subtype_pair_summaries=12, exact_classes=14,
@@ -470,6 +475,29 @@ def checking_residual(group, a, b):
     return 'PERMITTED_DECLARED_SCAFFOLD' if 25 * len(ra & rb) < 3 * len(ra | rb) else 'REJECT_CONTAMINATION'
 
 
+def materialize_freshness(c, positions):
+    source = c['freshness_canonicalization_contract']
+    row_plans = []
+    schemas = set()
+    for position in positions:
+        sequence = position['schema_plan']['source_fact_role_schema_entity_sequence']
+        schemas.update(row[1] for row in sequence)
+        row_plans.append(dict(logical_base_id=position['logical_base_id'],
+                             source_record_indices=[i for i, row in enumerate(sequence) if row[0] != 'EXPLICIT_ABSENCE'],
+                             exact_schema_type_sequence=[row[1] for row in sequence if row[0] != 'EXPLICIT_ABSENCE']))
+    return dict(amendment_commit=ACCEPTED,
+                contract_ref=ref('/freshness_canonicalization_contract'),
+                existing_freshness_ref=ref('/template_recurrence_contract/freshness_sequence'),
+                materialized_contract=copy.deepcopy(source),
+                active_source_schema_types=sorted(schemas, key=lambda x: x.encode('utf-8')),
+                source_row_plans=row_plans,
+                row_plans_are_metadata_not_serialized_freshness_atoms=True,
+                historical_side_uses_new_freshness=False,
+                other_representations_unchanged=True,
+                same_base_e5_exception_unchanged=True,
+                scope='NEW VALUE sequence encoding only; existing comparison applicability remains unchanged; no candidate corpus evaluation')
+
+
 def build(c, helper, hashes):
     ledger = helper.template_ledger(c)
     if ledger["positions"] != c["template_recurrence_contract"]["positions"] or ledger["classes"] != c["template_recurrence_contract"]["fingerprint_classes"]:
@@ -537,15 +565,16 @@ def build(c, helper, hashes):
     schedule=schedules(positions,variants,c)
     all_cells=[m["tier"]+":"+r for m in c["model_provider"]["models"] for r in ("R2","R3")]
     return dict(
-        schema_version="g-extract1.blueprint.v1", status="READY_FOR_G_EXTRACT1_BLUEPRINT_CONTAMINATION_REREVIEW",
+        schema_version="g-extract1.blueprint.v1", status="READY_FOR_G_EXTRACT1_BLUEPRINT_FRESHNESS_REREVIEW",
         accepted_design=dict(commit=ACCEPTED, artifacts_sha256=hashes,
                              scientific_basis_commit=SCIENTIFIC_BASIS,
                              output_field_amendment_commit=OUTPUT_AMENDMENT,
-                             contamination_feasibility_repair_commit=ACCEPTED,
+                             contamination_feasibility_repair_commit=CONTAMINATION_REPAIR,
+                             freshness_canonicalization_amendment_commit=ACCEPTED,
                              prior_blueprint_commit=PRIOR_BLUEPRINT,
                              original_blueprint_commit=ORIGINAL_BLUEPRINT,
                              design_side_digest_rebinding_required=False,
-                             design_checker_inventory_scope="historical repair checkpoint at prior_blueprint_commit; not validation of rebound blueprint bytes"),
+                             design_checker_inventory_scope="accepted freshness design preserves prior blueprint 01aafde as historical checkpoint; standalone design inventory guard is not invoked on rebound blueprint bytes"),
         authority=dict(blueprint_authoring=True, corpus_gold_authoring=False, implementation=False,
                        mechanical_pilot=False, execution_freeze=False, phase_a_execution=False, phase_b_execution=False),
         terminology=dict(logical_base="one scored/reserve position, regardless of pair expansion",
@@ -553,6 +582,7 @@ def build(c, helper, hashes):
                          provider_observation="one model/variant/repeat request-response", repeat="one planned repeated observation per variant",
                          pair="exactly CF1 and CF2 of an E5 logical base", cell="model tier x risk round, assessed independently in each phase"),
         logical_positions=positions, rendered_variants=variants, reserve_map=reserve_map,
+        freshness_serialization_plan=materialize_freshness(c, positions),
         recurrence_ledger=dict(positions=ledger["positions"], fingerprint_classes=ledger["classes"],
                                subtype_template_groups=c["template_recurrence_contract"]["subtype_template_groups"],
                                permitted_scope_table=c["template_recurrence_contract"]["scope_table"],
@@ -613,15 +643,16 @@ def build(c, helper, hashes):
 def markdown(bp):
     return """# G-EXTRACT1 Authoring Blueprint
 
-Status: READY_FOR_G_EXTRACT1_BLUEPRINT_CONTAMINATION_REREVIEW. Mechanical rebind only.
+Status: READY_FOR_G_EXTRACT1_BLUEPRINT_FRESHNESS_REREVIEW. Mechanical rebind only.
 
 ## Authority And Scope
 
 Scientific basis: V10 commit `394d24121309ec9dce80e725b50dbe5eb60f6d2a`, plus the
 accepted output-field amendment `aef3e0900cba41481904c8a451c4ca28b9d46c53`, and
-accepted contamination repair `62c783bd8be708a86c82a9e00c80b0fa6fb5b459`.
-The six design artifacts are byte-bound to the repair commit in BLUEPRINT.json
-and remain unchanged. Prior accepted blueprint `28fb6bbd3fb668265e4cc50cda0da0f9afdf3ce5`
+accepted contamination repair `62c783bd8be708a86c82a9e00c80b0fa6fb5b459`, and
+accepted freshness amendment `e12484224cd11cf9c84026eb7deadf8c4eb9bab8`.
+The six design artifacts are byte-bound to the freshness amendment in BLUEPRINT.json
+and remain unchanged. Prior accepted blueprint `01aafde7410a44085999aa4aa39f883618e78799`
 is lineage only: its allocations are preserved exactly. Original lineage is
 `99707b4f13abd6533f1d09313bdb066793996be9`.
 BLUEPRINT.json is the complete value-free enumeration; its scientific_traceability
@@ -713,7 +744,8 @@ The logical recurrence ledger has 51 fingerprint classes, 35 subtype groups and
 pairs: exactly 24 eligible same-base E5 sharing scopes and 18,312 cross-base pairs.
 Historical scope: 106 historical extraction entries times 192 variants = 20,352.
 The comparison iterators and source rule references are frozen, but content
-acceptance is deferred because no corpus exists. Ordinary ordinal-neutral,
+acceptance remains outstanding. The existing untracked 168-base candidate corpus
+is preserved incomplete input, not blueprint content or an accepted corpus. Ordinary ordinal-neutral,
 declared-template content/shape, fingerprints, projection and exact-reuse checks
 apply through the accepted comparison decision table, not a blanket similarity
 threshold. Pair masks never alter contamination inputs. Sharing exemptions
@@ -722,7 +754,8 @@ All 28 reserve mappings cover subtype01 only. Uncovered, multiple or mismatched
 defects stop authoring. E5 replacement unit is the entire CF1/CF2 pair.
 Profile fields retain the exact accepted key order and derivation references.
 Final profiles must derive from actual validated content, not merely blueprint
-declarations. Value-dependent dimensions remain unauthored until corpus work.
+declarations. This blueprint carries no concrete value-dependent dimensions;
+existing candidate content is not evaluated or finalized in this rebind.
 
 ## Request And Gold Boundary
 
@@ -744,22 +777,89 @@ ordinals, variants, gates, schedules, seeds, reserve mappings, comparison scopes
 all qualified-cell subsets and traceability; mutation probes reject mismatches.
 The report claims structural/design equivalence only, not scientific validity,
 future content feasibility, transport correctness or execution readiness.
-The accepted repair's design checker pins the prior accepted blueprint as historical
+The accepted freshness design checker pins the prior accepted blueprint as historical
 checkpoint evidence. That guard is not rebound: no mutable design-side digest of
 this later blueprint is required. All six design artifacts remain exact
 accepted bytes. This checker loads only their value-free derivation helpers; it
 does not invoke the old checkpoint inventory guard on updated blueprint files.
-Instead it checks the repair binding, exact scaffold membership, canonical outputs,
+Instead it checks both repair/amendment bindings, exact scaffold membership, canonical outputs,
+freshness serialization obligations and preserved candidate/gold/checker digests,
 and exact preservation of both prior and original allocations. No design-side changes
 or circular design/blueprint digest binding are introduced.
 
 G-ROUTE4 remains CLOSED FAILED. Provider/model calls, scored/reserve content and
-gold answers authored are zero; belief effects none; no autonomy or runtime work.
+gold answers authored in this blueprint task are zero; the existing untracked
+candidate corpus and both corpus checkers remain byte-identical. Belief effects
+none; no autonomy or runtime work.
 Separate authorization remains required for corpus/gold authoring, implementation,
 mechanical pilot, execution freeze, Phase A and conditional Phase B. Blueprint
 review must occur first; corpus authoring cannot resume before rebind rereview.
+Checker repair and corpus finalization also remain separately unauthorized.
 This status does not self-authorize any later stage.
-""" + scaffold_markdown(bp)
+""" + scaffold_markdown(bp) + freshness_markdown(bp)
+
+
+def freshness_markdown(bp):
+    plan = bp['freshness_serialization_plan']
+    return '''
+## Accepted Freshness Serialization Rebind
+
+This materializes g-extract1.freshness-canonicalization.v1 without selecting new
+semantics. The accepted contamination repair and every prior allocation remain
+unchanged. Canonical rows are [exact_schema_type, canonical_semantic_text], both
+JSON strings. Schema bytes are string, number, integer, boolean, YYYY-MM-DD,
+HH:MM or the exact full finite-enum schema, never generic semantic tags.
+
+INTEGER is minimal signed base-10 text with signed zero normalized to "0".
+NUMBER is exact terminating plain decimal with no plus/exponent/unnecessary
+leading or trailing fractional zeros, no empty decimal point and signed zero
+normalized to "0". Thus 5/5.0/5.00/5e0 all become "5". No binary floats or
+finite-context rounding; equivalent exact int/Decimal/Fraction/token semantics
+must yield identical bytes, while unsupported wrappers fail closed.
+The typed rows ["integer","5"] and ["number","5"] remain different.
+
+Boolean text is lowercase "true"/"false". DATE/TIME use exact validated
+zero-padded YYYY-MM-DD/HH:MM. STRING is exact, without trim, casefold, whitespace
+collapse, label removal or Unicode normalization. ENUM retains exact schema
+order and exact selected option, never its ordinal. Semantic test vectors do not
+relax the existing source literal or lexical authoring grammar.
+
+VALUE source facts only, in source-record order, with duplicates preserved.
+No field names, fixture IDs, metadata, operation arguments/targets/outputs or
+EXPLICIT_ABSENCE facts enter freshness bytes. The 168 source_row_plans bind each
+base's existing VALUE source indices and exact schema sequence. Their base IDs
+and indices are bookkeeping only, never parts of serialized freshness atoms.
+CF1/CF2 share the same base row plan; existing pair-local sharing is unchanged.
+
+Serialize with json.dumps(sequence, ensure_ascii=False, separators=(',', ':'))
+followed by UTF-8 encoding, without newline or external whitespace. This freezes
+literal UTF-8 rather than treating escaped ASCII as an interchangeable encoding.
+The original semantic case must yield exactly:
+`[["YYYY-MM-DD","2039-10-05"],["integer","0"]]`.
+This is a contract test, not authored corpus content or replay of a scored call.
+
+Only the already-required NEW freshness layer uses this encoding. Historical
+projection, all Jaccard views/residuals, fingerprints, whole-answer/identity and
+date-number representations keep their existing encodings and applicability.
+The separate NUMBER tuple convention of "5.0" is not replaced by freshness "5".
+Historical adaptation stays 106/106, rejected 0 with unchanged projection digest.
+
+All nine active source schema forms, all 39 contract vectors, three equivalence
+groups and isolated byte mutations are checked. Untracked corpus/checker and gold
+hashes are preservation evidence only, not contamination rescoring or gold review.
+No checker repair, corpus regeneration/finalization, runtime, pilot, freeze or
+Phase A/B execution is authorized here. Independent blueprint rereview and later
+separate authorizations remain required; belief effects none.
+
+The exact co-normative accepted encoding contract follows. Concrete values in
+this annex are isolated contract vectors only; they are not fixture allocations.
+
+<!-- BLUEPRINT_FRESHNESS_NORMATIVE_BEGIN -->
+```json
+''' + json.dumps(plan['materialized_contract'], ensure_ascii=True, indent=2, sort_keys=True) + '''
+```
+<!-- BLUEPRINT_FRESHNESS_NORMATIVE_END -->
+'''
 
 
 def scaffold_markdown(bp):
@@ -773,7 +873,7 @@ def scaffold_markdown(bp):
             'Precedence: historical rules first; actual structural/profile invalidity errors; validated same-base E5 pair-local sharing; cross-base freshness/reuse rejection; exact scaffold membership; remaining declared same-subtype content/shape rules; remaining ordinary rules. Pair-local sharing precedes cross-base freshness intentionally. The 24 same-base E5 scopes are separate and excluded from scaffold membership. All four cross-base E5 CF combinations inherit only their exact base-pair membership.',
             'Historical/new remains unchanged: ordinary>=0.20, projection3/3, or projection>=2/3 and ordinary>=0.12 reject; 106/106 historical adaptations and 20,352 comparisons remain required. No historical scaffold handling.',
             'Scaffold classes are not recurrence groups. Remaining same-subtype content rules, different-subtype ordinary rules, 51 fingerprint classes, 35 subtype groups, reserves, schedules, seeds and gates are unchanged. The report partitions all 18,312 cross-base rendered pairs; 906 are included within that domain, not additional comparisons.',
-            'This materializes frozen pairwise-feasibility rules only. Simultaneous concrete corpus feasibility, actual independence, corpus acceptance and scientific validity are not proven. No concrete content exists here.',
+            'This materializes frozen pairwise-feasibility rules only. Simultaneous concrete corpus feasibility, actual independence, corpus acceptance and scientific validity are not proven. This blueprint carries no concrete content; the preserved untracked candidate attempt remains incomplete.',
             '\n| Accepted Class ID | Subtypes | Logical | Rendered | Old Branch / Minimum |',
             '|---|---|---:|---:|---|']
     for g in scaffold['classes']:
@@ -895,6 +995,8 @@ def validate_output_plans(bp, c):
 def validate_original_preservation(bp):
     original = json.loads(git("show",ORIGINAL_BLUEPRINT+":experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.json"))
     projected = copy.deepcopy(bp)
+    projected.pop('freshness_serialization_plan')
+    projected['scientific_traceability'].pop('freshness_serialization')
     projected['comparison_scope'].pop('scaffold_overlap')
     projected['scientific_traceability'].pop('scaffold_overlap')
     projected["status"] = original["status"]
@@ -911,9 +1013,11 @@ def validate_original_preservation(bp):
     return ["original_blueprint_all_other_allocations_unchanged"]
 
 
-def validate_prior_preservation(bp):
-    prior = json.loads(git('show', PRIOR_BLUEPRINT + ':experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.json'))
+def validate_output_blueprint_preservation(bp):
+    prior = json.loads(git('show', OUTPUT_BLUEPRINT + ':experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.json'))
     projected = copy.deepcopy(bp)
+    projected.pop('freshness_serialization_plan')
+    projected['scientific_traceability'].pop('freshness_serialization')
     projected['status'] = prior['status']
     projected['accepted_design'] = prior['accepted_design']
     projected['comparison_scope'].pop('scaffold_overlap')
@@ -922,17 +1026,210 @@ def validate_prior_preservation(bp):
     return ['all_prior_blueprint_allocations_exactly_preserved']
 
 
+def validate_prior_preservation(bp):
+    prior = json.loads(git('show', PRIOR_BLUEPRINT + ':experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.json'))
+    projected = copy.deepcopy(bp)
+    projected.pop('freshness_serialization_plan')
+    projected['scientific_traceability'].pop('freshness_serialization')
+    projected['status'] = prior['status']
+    projected['accepted_design'] = prior['accepted_design']
+    if projected != prior: raise ValueError('freshness_rebind_changed_prior_scientific_allocation')
+    return ['accepted_01aafde_blueprint_preserved_except_freshness_binding_status_and_plan']
+
+
+def validate_freshness_plan(bp, c):
+    checks = []
+    def require(ok, label):
+        if not ok: raise ValueError(label)
+        checks.append(label)
+    plan = bp['freshness_serialization_plan']
+    require(plan == materialize_freshness(c, bp['logical_positions']), 'freshness_exact_accepted_contract_and_row_plans')
+    require(plan['amendment_commit'] == ACCEPTED and plan['historical_side_uses_new_freshness'] is False,
+            'freshness_NEW_only_not_historical_reinterpretation')
+    require(plan['other_representations_unchanged'] is True and plan['same_base_e5_exception_unchanged'] is True,
+            'freshness_no_other_representation_or_pair_scope_change')
+    source = plan['materialized_contract']
+    require(source['sequence']['row_elements'] == 'JSON strings only' and source['sequence']['row_exact_length'] == 2,
+            'freshness_two_string_row_shape')
+    require(source['sequence']['included_template_ids'] == ['VALUE'] and source['sequence']['sorting'] is False,
+            'freshness_VALUE_only_unsorted')
+    require(source['schema_binding']['primitive_spellings'] == c['schema_type_contract']['primitive_schema_tokens'],
+            'freshness_exact_schema_spellings')
+    require(source['byte_serialization']['ensure_ascii'] is False and source['byte_serialization']['separators'] == [',', ':']
+            and source['byte_serialization']['trailing_newline'] is False, 'freshness_compact_UTF8_no_newline')
+    require(len(plan['source_row_plans']) == 168, 'freshness_168_metadata_row_plans')
+    for position, row in zip(bp['logical_positions'], plan['source_row_plans']):
+        require(row['logical_base_id'] == position['logical_base_id'], 'freshness_row_binding:' + row['logical_base_id'])
+        sequence = position['schema_plan']['source_fact_role_schema_entity_sequence']
+        indices = [i for i, item in enumerate(sequence) if item[0] != 'EXPLICIT_ABSENCE']
+        require(row['source_record_indices'] == indices and row['exact_schema_type_sequence'] == [sequence[i][1] for i in indices],
+                'freshness_source_order_VALUE_schema:' + row['logical_base_id'])
+    require(plan['active_source_schema_types'] == ['HH:MM', 'YYYY-MM-DD', 'boolean', 'integer', 'number',
+                                                 'option_a|option_b', 'option_a|option_b|option_c', 'provided|not_provided', 'string'],
+            'freshness_nine_active_source_schema_forms')
+    for key, value in source['authority'].items():
+        if key in {'independent_rereview_required', 'separate_blueprint_rebind_required'}:
+            require(value is True, 'freshness_review_boundary:' + key)
+        elif key == 'belief_effects': require(value == 'none', 'freshness_belief_none')
+        elif key == 'provider_calls': require(value == 0, 'freshness_zero_provider')
+        else: require(value is False, 'freshness_no_later_authority:' + key)
+    return checks
+
+
+def validate_freshness_vectors(bp, c, helper, checks):
+    """Accepted design helpers, isolated contract vectors; not corpus tooling."""
+    source = bp['freshness_serialization_plan']['materialized_contract']
+    encode = lambda rows: helper.freshness_sequence_bytes(rows, c)
+    def require(ok, label):
+        if not ok: raise ValueError(label)
+        checks.append(label)
+    schemas = set()
+    for vector in source['validation_vectors']:
+        actual = encode(vector['semantic_rows'])
+        require(actual == vector['expected_utf8'].encode('utf-8'), 'freshness_contract_vector:' + vector['id'])
+        require(json.loads(actual) == vector['expected_sequence'], 'freshness_contract_rows:' + vector['id'])
+        require(all(len(row) == 2 and all(type(x) is str for x in row) for row in json.loads(actual)),
+                'freshness_no_host_scalar:' + vector['id'])
+        schemas.update(row[0] for row in vector['semantic_rows'])
+    require(schemas == set(bp['freshness_serialization_plan']['active_source_schema_types']), 'freshness_all_active_schemas_tested')
+    for group in source['equivalence_groups']:
+        results = {encode([[group['schema_type'], value]]) for value in group['values']}
+        require(results == {group['expected_utf8'].encode('utf-8')}, 'freshness_semantic_equivalence:' + group['id'])
+    for schema in ('integer', 'number'):
+        for value in (0, 1, -1, 42, 10**70 + 1):
+            require(len({encode([[schema, x]]) for x in (value, str(value), Decimal(str(value)), Fraction(value))}) == 1,
+                    'freshness_host_independence:' + schema + ':' + str(value))
+    for left, right in (('5', '5.0001'), ('0.5', '0.05'), ('-1', '1')):
+        require(encode([['number', left]]) != encode([['number', right]]), 'freshness_distinct_values:' + left + ':' + right)
+    require(encode([['number', Fraction(1, 8)]]) == b'[["number","0.125"]]', 'freshness_exact_rational_no_float')
+    require(encode([['number', Decimal('123456789012345678901234567890.125000')]]) == b'[["number","123456789012345678901234567890.125"]]',
+            'freshness_no_Decimal_context_rounding')
+    require(encode([['integer', '5']]) != encode([['number', '5']]), 'freshness_typed_numeric_distinction')
+    original = source['original_failure_semantic_vector']
+    require(encode(list(map(list, zip(original['source_schemas'], original['source_values'])))) == original['expected_utf8'].encode('utf-8'),
+            'freshness_original_failure_reconstruction')
+    require(encode([['string', '\u00e9']]) != encode([['string', 'e\u0301']]), 'freshness_STRING_no_Unicode_normalization')
+    facts = [
+        dict(template_id='VALUE', field_identifier='f001_01', schema_type='integer', value=dict(kind='integer_literal', value='42'), entity_selector_value=None),
+        dict(template_id='EXPLICIT_ABSENCE', field_identifier='f001_02', schema_type='provided|not_provided', value=None, entity_selector_value=None),
+        dict(template_id='VALUE', field_identifier='f001_03', schema_type='integer', value=dict(kind='integer_literal', value='42'), entity_selector_value=None),
+        dict(template_id='VALUE', field_identifier='f001_04', schema_type='number', value=dict(kind='integer_literal', value='5'), entity_selector_value=None),
+    ]
+    require(helper.freshness_from_source_facts(facts, c) == b'[["integer","42"],["integer","42"],["number","5"]]',
+            'freshness_VALUE_scope_order_duplicates_and_schema_not_literal_tag')
+    packed = lambda rows: json.dumps(rows, ensure_ascii=False, separators=(',', ':')).encode('utf-8')
+    variants = [
+        ('integer_numeric_scalar', [['integer', '0']], [['integer', 0]]),
+        ('number_numeric_scalar', [['number', '5']], [['number', 5]]),
+        ('number_exponent_retained', [['number', '5e0']], [['number', '5e0']]),
+        ('number_trailing_zeroes_retained', [['number', '0.50']], [['number', '0.50']]),
+        ('number_empty_fraction_point_retained', [['number', '5.0']], [['number', '5.']]),
+        ('negative_zero_retained', [['number', '-0.0']], [['number', '-0']]),
+        ('integer_leading_plus', [['integer', '1']], [['integer', '+1']]),
+        ('integer_leading_zeroes', [['integer', '1']], [['integer', '01']]),
+        ('boolean_capitalized', [['boolean', True]], [['boolean', 'True']]),
+        ('date_reformatted', [['YYYY-MM-DD', '2039-10-05']], [['YYYY-MM-DD', '10/05/2039']]),
+        ('time_reformatted', [['HH:MM', '23:45']], [['HH:MM', '11:45 PM']]),
+        ('string_trimmed', [['string', ' label_001_01 ']], [['string', 'label_001_01']]),
+        ('enum_ordinal', [['option_a|option_b', 'option_b']], [['option_a|option_b', 1]]),
+        ('atoms_sorted', [['string', 'label_001_01'], ['integer', '42']], [['integer', '42'], ['string', 'label_001_01']]),
+        ('duplicate_removed', [['integer', '42'], ['integer', '42']], [['integer', '42']]),
+        ('row_missing_element', [['integer', '0']], [['integer']]),
+        ('row_extra_element', [['integer', '0']], [['integer', '0', 'extra']]),
+        ('null_value', [['integer', '0']], [['integer', None]]),
+        ('object_value', [['integer', '0']], [['integer', {}]]),
+        ('array_value', [['integer', '0']], [['integer', []]]),
+        ('schema_enum_reordered', [['option_a|option_b', 'option_b']], [['option_b|option_a', 'option_b']]),
+        ('absence_included', [['integer', '42']], [['integer', '42'], ['provided|not_provided', 'not_provided']]),
+        ('derived_output_included', [['integer', '42']], [['integer', '42'], ['integer', '84']]),
+        ('integer_number_schema_collapse', [['number', '5']], [['integer', '5']]),
+    ]
+    for schema, value, tag in (('integer', '0', 'INTEGER'), ('number', '5', 'NUMBER'), ('YYYY-MM-DD', '2039-10-05', 'DATE'),
+                               ('HH:MM', '23:45', 'TIME'), ('string', 'label_001_01', 'STRING'), ('boolean', True, 'BOOLEAN'),
+                               ('option_a|option_b', 'option_a', 'ENUM')):
+        variants.append(('semantic_tag_' + tag.lower(), [[schema, value]], [[tag, 'true' if value is True else value]]))
+    byte_mutations = [(label, rows, packed(mutated)) for label, rows, mutated in variants]
+    byte_mutations += [
+        ('whitespace_formatted_json', [['integer', '0']], b'[["integer", "0"]]'),
+        ('ensure_ascii_true_non_ascii', [['string', '\u00e9']], json.dumps([['string', '\u00e9']], ensure_ascii=True, separators=(',', ':')).encode()),
+        ('trailing_newline', [['integer', '0']], b'[["integer","0"]]\n'),
+    ]
+    require({name for name, _, _ in byte_mutations} == set(source['mutation_catalog']) | {'integer_number_schema_collapse'},
+            'freshness_all_accepted_mutations_plus_typed_collapse')
+    for label, rows, mutated in byte_mutations:
+        try: helper.require_freshness_bytes(mutated, rows, c)
+        except ValueError: checks.append('freshness_byte_mutation_rejected:' + label)
+        else: raise ValueError('freshness_byte_mutation_accepted:' + label)
+    for schema, value in (('number', 0.5), ('integer', True), ('number', Fraction(1, 3)), ('number', 'NaN')):
+        try: encode([[schema, value]])
+        except (ValueError, TypeError): checks.append('freshness_unsupported_semantic_input:' + schema + ':' + str(value))
+        else: raise ValueError('freshness_unsupported_input_accepted')
+    class DisplayOnlyNumber:
+        def __str__(self): return '5'
+    for schema in ('integer', 'number'):
+        try: encode([[schema, DisplayOnlyNumber()]])
+        except (ValueError, TypeError): checks.append('freshness_display_only_numeric_wrapper_rejected:' + schema)
+        else: raise ValueError('freshness_display_formatter_used_as_semantic_value')
+    return dict(contract_vectors=len(source['validation_vectors']), active_schema_forms=sorted(schemas),
+                equivalence_groups=len(source['equivalence_groups']), byte_mutations_rejected=len(byte_mutations),
+                byte_mutation_categories=[name for name, _, _ in byte_mutations],
+                original_failure_bytes=original['expected_utf8'], corpus_evaluated=False,
+                scope='accepted design helpers and isolated contract tests only; no corpus checker implementation or repair')
+
+
+def preservation_snapshot():
+    """Digest existing artifacts only; never evaluate corpus semantics or gold."""
+    accepted = json.loads(git('show', ACCEPTED + ':experiments/G-EXTRACT1-candidate/DESIGN_VALIDATION_REPORT.json'))
+    pinned = accepted['freshness_canonicalization_amendment']
+    directory = DESIGN / 'corpus'
+    names = pinned['preserved_corpus_files']
+    if {path.name for path in directory.iterdir()} != {Path(name).name for name in names}:
+        raise ValueError('preserved_corpus_inventory_changed')
+    hashes = {}
+    for name, item in names.items():
+        hashes[name] = digest((DESIGN / name).read_bytes())
+        if hashes[name] != item['after_sha256']: raise ValueError('preserved_corpus_digest_changed:' + name)
+    candidates = json.loads((directory / 'AUTHORING_CANDIDATES.json').read_bytes())
+    projection = [[row['logical_base_id'], row['fixture']['gold_values']] for row in candidates['accepted']]
+    gold = digest(json.dumps(projection, sort_keys=True, ensure_ascii=True, separators=(',', ':')).encode('utf-8'))
+    if gold != pinned['preserved_gold_projection']['after_sha256']: raise ValueError('preserved_gold_projection_changed')
+    designs = {}
+    for name in SOURCE_NAMES:
+        raw = (DESIGN / name).read_bytes()
+        if raw != git('show', ACCEPTED + ':' + (DESIGN / name).relative_to(ROOT).as_posix()):
+            raise ValueError('accepted_design_mutated_during_rebind:' + name)
+        designs[name] = digest(raw)
+    return dict(corpus_sha256=hashes, gold_projection_sha256=gold, design_sha256=designs)
+
+
+def freshness_plan_mutations():
+    plan = lambda bp: bp['freshness_serialization_plan']
+    source = lambda bp: plan(bp)['materialized_contract']
+    return [
+        ('freshness_historical_side_enabled', lambda bp: plan(bp).update(historical_side_uses_new_freshness=True)),
+        ('freshness_checker_authority_elevated', lambda bp: source(bp)['authority'].update(checker_repair=True)),
+        ('freshness_amendment_commit_wrong', lambda bp: plan(bp).update(amendment_commit=CONTAMINATION_REPAIR)),
+        ('freshness_other_representation_changed', lambda bp: plan(bp).update(other_representations_unchanged=False)),
+        ('freshness_source_rows_sorted', lambda bp: plan(bp)['source_row_plans'].reverse()),
+        ('freshness_absence_included_in_plan', lambda bp: next(x for x in plan(bp)['source_row_plans'] if ':E7-' in x['logical_base_id'])['source_record_indices'].append(0)),
+        ('freshness_schema_tag_in_plan', lambda bp: plan(bp)['source_row_plans'][0]['exact_schema_type_sequence'].__setitem__(0, 'DATE')),
+        ('freshness_branch_count_changed', lambda bp: bp['comparison_scope']['scaffold_overlap']['cross_base_branch_counts'].update(ORDINARY_NEW_NEW=16889)),
+    ]
+
+
 def validate(bp, expected, c):
     checks=[]
     def require(ok,label):
         if not ok:raise ValueError(label)
         checks.append(label)
     require(set(bp)==set(expected),"exact_blueprint_top_level_keys")
+    checks.extend(validate_freshness_plan(bp, c))
     scaffold_checks, _ = validate_scaffold(bp, c)
     checks.extend(scaffold_checks)
     output_checks,_ = validate_output_plans(bp,c)
     checks.extend(output_checks)
     checks.extend(validate_original_preservation(bp))
+    checks.extend(validate_output_blueprint_preservation(bp))
     checks.extend(validate_prior_preservation(bp))
     for key in expected:require(bp[key]==expected[key],"accepted_derivation:"+key)
     ps=bp["logical_positions"];vs=bp["rendered_variants"]
@@ -1136,12 +1433,14 @@ def validate_scaffold_replay(bp, checks):
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--write',action='store_true');args=parser.parse_args()
+    before = preservation_snapshot()
     c,helper,hashes=load_authority();expected=build(c,helper,hashes)
     if args.write:
         (HERE/'BLUEPRINT.json').write_bytes(encoded(expected))
         (HERE/'BLUEPRINT.md').write_text(markdown(expected),encoding='utf-8',newline='\n')
     if (HERE/'BLUEPRINT.json').read_bytes()!=encoded(expected):raise ValueError('blueprint_canonical_bytes_or_derivation_mismatch')
     actual=json.loads((HERE/'BLUEPRINT.json').read_text());checks=validate(actual,expected,c)
+    freshness_checks = validate_freshness_vectors(actual, c, helper, checks)
     validate_scaffold_replay(actual, checks)
     validate_reserve_schedules(actual,c,checks)
     if (HERE/'BLUEPRINT.md').read_bytes()!=markdown(expected).encode():raise ValueError('human_machine_blueprint_mismatch')
@@ -1159,7 +1458,7 @@ def main():
                ('inserted_gold',lambda x:x['logical_positions'][0].update(gold_values={'x':1})),
                ('inserted_source',lambda x:x['logical_positions'][0].update(source_fact_records=[])),
                ('unauthorized_authority',lambda x:x['authority'].update(corpus_gold_authoring=True)),
-               ('reserve',lambda x:x['reserve_map'][0].update(covered_subtype_slot='03'))] + scaffold_mutations()
+               ('reserve',lambda x:x['reserve_map'][0].update(covered_subtype_slot='03'))] + scaffold_mutations() + freshness_plan_mutations()
     for label,change in mutations:
         bad=copy.deepcopy(actual);change(bad)
         try:validate(bad,expected,c)
@@ -1229,11 +1528,19 @@ def main():
     if historical_adapter != accepted_adapter or (historical_adapter['examined'], historical_adapter['adapted'], historical_adapter['rejected']) != (106,106,0):
         raise ValueError('historical_adapter_changed')
     checks.append('historical_adapter_106_unchanged')
+    after = preservation_snapshot()
+    if before != after: raise ValueError('protected_corpus_gold_or_design_changed_during_rebind')
+    checks.append('seven_corpus_artifacts_gold_and_six_design_artifacts_byte_identical_before_after')
     report=dict(schema_version='g-extract1.blueprint-validation.v1', verdict='PASS',check_count=len(checks),
                 validation_scope='deterministic structural/design-equivalence only; not scientific or corpus approval',
                 accepted_design_commit=ACCEPTED, scientific_validity_proven=False,
                 counts=counts,gate_membership_counts=gate_counts,output_field_counts=output_counts,
                 amendment_binding=actual['accepted_design'],
+                freshness_serialization_audit=freshness_checks,
+                preservation_evidence=dict(before=before, after=after, all_byte_identical=True,
+                                           corpus_content_used_for_rule_choice=False, corpus_rescored=False,
+                                           corpus_checkers_repaired=False, corpus_finalized=False),
+                design_checker_scope='accepted 01aafde historical blueprint guard preserved unchanged; only isolated accepted helpers loaded, not standalone design checkpoint validation',
                 all_non_output_allocations_equal_original_blueprint=True,
                 all_prior_blueprint_allocations_preserved=True,
                 scaffold_comparison_audit=scaffold_audit,

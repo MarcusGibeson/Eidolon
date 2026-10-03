@@ -1,20 +1,21 @@
 {
   "accepted_design": {
     "artifacts_sha256": {
-      "DESIGN_CANDIDATE.json": "b74eed2faa0f26350556881fa993b945f8da77afdd97494cd734ca4921d77949",
-      "DESIGN_CANDIDATE.md": "78857b26070659027fcc831923553d66a8cb85cf5c5adf8b783bfee46068d998",
-      "DESIGN_REVISION_CHANGELOG.md": "03e02b5738609e96c768218a0046c136842ad2cd7f26ca588e6d3b79951057f5",
-      "DESIGN_VALIDATION_REPORT.json": "ff31dde49ca5068a7f9b0778d8f5469aafd602cd98f22211a276aa3c232cf4cf",
-      "HUMAN_MACHINE_EQUIVALENCE_CHECKLIST.md": "062b4bcf9e08410ae8b04c6a23265c103e9e11f8c80c201533b2ff394e07540e",
-      "validate_design.py": "664653d8b162a8dc4bdbc9749a94d81282adfb89c391083ea44f0d21834fb470"
+      "DESIGN_CANDIDATE.json": "21a50ed5b15187d87cf71cdbfc367923ef2492a8a87133432fa5eab6042f535b",
+      "DESIGN_CANDIDATE.md": "80dd8252342d9127bbae36e2f69f1d516d248a39c719cfda76a20eed092d0741",
+      "DESIGN_REVISION_CHANGELOG.md": "0c0a2b8be9e756ffe67fffad4aa18fb500b65cd02e31ecf304d8cec496cc0fe2",
+      "DESIGN_VALIDATION_REPORT.json": "e518b8275e6763c2027b0fce560726e75f2209add2e3f06cd2fdbecfb1bed7ea",
+      "HUMAN_MACHINE_EQUIVALENCE_CHECKLIST.md": "0fe64ded4bfb588a9bd02c7a8ce1b7712d17798230c815f5ce0dd32f6cea1916",
+      "validate_design.py": "d7c32da272884f019214b5670e177f9b2bf00b66414f5bce0a257a7f05fdca9f"
     },
-    "commit": "62c783bd8be708a86c82a9e00c80b0fa6fb5b459",
+    "commit": "e12484224cd11cf9c84026eb7deadf8c4eb9bab8",
     "contamination_feasibility_repair_commit": "62c783bd8be708a86c82a9e00c80b0fa6fb5b459",
-    "design_checker_inventory_scope": "historical repair checkpoint at prior_blueprint_commit; not validation of rebound blueprint bytes",
+    "design_checker_inventory_scope": "accepted freshness design preserves prior blueprint 01aafde as historical checkpoint; standalone design inventory guard is not invoked on rebound blueprint bytes",
     "design_side_digest_rebinding_required": false,
+    "freshness_canonicalization_amendment_commit": "e12484224cd11cf9c84026eb7deadf8c4eb9bab8",
     "original_blueprint_commit": "99707b4f13abd6533f1d09313bdb066793996be9",
     "output_field_amendment_commit": "aef3e0900cba41481904c8a451c4ca28b9d46c53",
-    "prior_blueprint_commit": "28fb6bbd3fb668265e4cc50cda0da0f9afdf3ce5",
+    "prior_blueprint_commit": "01aafde7410a44085999aa4aa39f883618e78799",
     "scientific_basis_commit": "394d24121309ec9dce80e725b50dbe5eb60f6d2a"
   },
   "authority": {
@@ -5491,6 +5492,2750 @@
         "tokenizer": "existing contamination.v5 tokenizer, unchanged"
       }
     }
+  },
+  "freshness_serialization_plan": {
+    "active_source_schema_types": [
+      "HH:MM",
+      "YYYY-MM-DD",
+      "boolean",
+      "integer",
+      "number",
+      "option_a|option_b",
+      "option_a|option_b|option_c",
+      "provided|not_provided",
+      "string"
+    ],
+    "amendment_commit": "e12484224cd11cf9c84026eb7deadf8c4eb9bab8",
+    "contract_ref": "DESIGN_CANDIDATE.json#/freshness_canonicalization_contract",
+    "existing_freshness_ref": "DESIGN_CANDIDATE.json#/template_recurrence_contract/freshness_sequence",
+    "historical_side_uses_new_freshness": false,
+    "materialized_contract": {
+      "accepted_contamination_repair": "62c783bd8be708a86c82a9e00c80b0fa6fb5b459",
+      "accepted_parent_commit": "01aafde7410a44085999aa4aa39f883618e78799",
+      "authority": {
+        "belief_effects": "none",
+        "blueprint_update": false,
+        "checker_repair": false,
+        "contamination_rescoring": false,
+        "corpus_finalization": false,
+        "corpus_regeneration": false,
+        "execution": false,
+        "gold_change": false,
+        "independent_rereview_required": true,
+        "provider_calls": 0,
+        "runtime_implementation": false,
+        "separate_blueprint_rebind_required": true
+      },
+      "binding": "Closes only template_recurrence_contract.freshness_sequence encoding; this contract supplies its previously unspecified scalar and byte representation. All prior inclusion/order/equality/freshness obligations remain.",
+      "byte_serialization": {
+        "encoding": "UTF-8",
+        "ensure_ascii": false,
+        "exact_expression": "json.dumps(sequence, ensure_ascii=False, separators=(',', ':')).encode('utf-8')",
+        "host_numeric_scalar_storage": false,
+        "json_engine": "Python json.dumps",
+        "separators": [
+          ",",
+          ":"
+        ],
+        "trailing_newline": false,
+        "unpaired_surrogates": "not valid UTF-8 semantic strings; reject"
+      },
+      "canonical_semantic_text": {
+        "BOOLEAN": {
+          "semantic_value": "Boolean",
+          "text": "true or false, lowercase exactly"
+        },
+        "DATE": {
+          "schema": "YYYY-MM-DD",
+          "text": "exact validated zero-padded proleptic Gregorian YYYY-MM-DD"
+        },
+        "ENUM": {
+          "schema_identity": "first element is full exact enum schema, never ENUM or option index",
+          "text": "exact selected option string"
+        },
+        "INTEGER": {
+          "integer_lexical_input": "already accepted lexical JSON integer only: -?(0|[1-9][0-9]*); no expansion of fixture-authoring literal grammar",
+          "semantic_value": "exact integral value excluding Boolean",
+          "text": "minimal base-10; minus only for negative values; zero and signed zero -> 0; no plus, leading zeroes, exponent or decimal point"
+        },
+        "NUMBER": {
+          "equivalent_input_examples": [
+            "5",
+            "5.0",
+            "5.00",
+            "5e0"
+          ],
+          "equivalent_text": "5",
+          "evaluation": "integer arithmetic or exact Fraction/Decimal token interpretation; no finite-context rounding",
+          "nonterminating": "AUTHORING_ERROR; existing operation/fixture-domain restriction unchanged",
+          "semantic_value": "exact rational/decimal numeric value excluding Boolean; no binary floating point",
+          "text": "plain exact terminating decimal, no exponent/plus/unnecessary leading zeroes; remove trailing fractional zeroes and decimal point if fractional part is empty; all signed zero -> 0"
+        },
+        "STRING": {
+          "text": "exact semantic string value; no trimming, whitespace collapse, casefolding, label removal, Unicode normalization or tokenizer normalization"
+        },
+        "TIME": {
+          "schema": "HH:MM",
+          "text": "exact validated zero-padded 24-hour HH:MM"
+        }
+      },
+      "contract_id": "g-extract1.freshness-canonicalization.v1",
+      "equivalence_groups": [
+        {
+          "expected_utf8": "[[\"number\",\"5\"]]",
+          "id": "number_five",
+          "schema_type": "number",
+          "values": [
+            "5",
+            "5.0",
+            "5.00",
+            "5e0"
+          ]
+        },
+        {
+          "expected_utf8": "[[\"number\",\"0\"]]",
+          "id": "number_zero",
+          "schema_type": "number",
+          "values": [
+            "0",
+            "0.0",
+            "-0",
+            "-0.0"
+          ]
+        },
+        {
+          "expected_utf8": "[[\"integer\",\"0\"]]",
+          "id": "integer_zero",
+          "schema_type": "integer",
+          "values": [
+            "0",
+            "-0"
+          ]
+        }
+      ],
+      "mutation_catalog": [
+        "integer_numeric_scalar",
+        "number_numeric_scalar",
+        "semantic_tag_integer",
+        "semantic_tag_number",
+        "semantic_tag_date",
+        "semantic_tag_time",
+        "semantic_tag_string",
+        "semantic_tag_boolean",
+        "semantic_tag_enum",
+        "number_exponent_retained",
+        "number_trailing_zeroes_retained",
+        "number_empty_fraction_point_retained",
+        "negative_zero_retained",
+        "integer_leading_plus",
+        "integer_leading_zeroes",
+        "boolean_capitalized",
+        "date_reformatted",
+        "time_reformatted",
+        "string_trimmed",
+        "enum_ordinal",
+        "atoms_sorted",
+        "duplicate_removed",
+        "whitespace_formatted_json",
+        "ensure_ascii_true_non_ascii",
+        "trailing_newline",
+        "row_missing_element",
+        "row_extra_element",
+        "null_value",
+        "object_value",
+        "array_value",
+        "schema_enum_reordered",
+        "absence_included",
+        "derived_output_included"
+      ],
+      "original_failure_semantic_vector": {
+        "expected_sequence": [
+          [
+            "YYYY-MM-DD",
+            "2039-10-05"
+          ],
+          [
+            "integer",
+            "0"
+          ]
+        ],
+        "expected_utf8": "[[\"YYYY-MM-DD\",\"2039-10-05\"],[\"integer\",\"0\"]]",
+        "source_schemas": [
+          "YYYY-MM-DD",
+          "integer"
+        ],
+        "source_values": [
+          "2039-10-05",
+          "0"
+        ]
+      },
+      "schema_binding": {
+        "aliases_or_semantic_tags_prohibited": true,
+        "contract_ref": "schema_type_contract",
+        "finite_enum": "exact full validated schema bytes; membership/order restrictions from schema-types.v1 and lexical overlay unchanged",
+        "primitive_spellings": [
+          "string",
+          "number",
+          "integer",
+          "boolean",
+          "YYYY-MM-DD",
+          "HH:MM"
+        ]
+      },
+      "separation": {
+        "corpus_used_to_select_encoding": false,
+        "exceptions_added": false,
+        "historical": "NEW freshness sequence only as already required; no new historical value conversion/comparison rule",
+        "model_facing_bytes_unchanged": true,
+        "numeric_equivalence_unchanged": true,
+        "other_encodings_unchanged": [
+          "whole-answer atoms",
+          "identity atoms",
+          "date-number tuples",
+          "fingerprints",
+          "ordinary Jaccard",
+          "shape view",
+          "content view",
+          "scaffold residuals",
+          "historical projections"
+        ],
+        "semantic_equality_unchanged": true,
+        "thresholds_unchanged": true
+      },
+      "sequence": {
+        "duplicates": "preserved",
+        "excluded": [
+          "field names",
+          "fixture IDs",
+          "operation arguments",
+          "derived operation outputs",
+          "EXPLICIT_ABSENCE facts"
+        ],
+        "first": "exact validated schema_type bytes through schema_type_contract; never semantic_tag",
+        "included_template_ids": [
+          "VALUE"
+        ],
+        "row_elements": "JSON strings only",
+        "row_exact_length": 2,
+        "second": "canonical_semantic_text according to rules below",
+        "sorting": false,
+        "source": "source_fact_records in exact array order"
+      },
+      "validation_scope": "deterministic structural and cross-representation consistency only; no scientific validity approval",
+      "validation_vectors": [
+        {
+          "expected_sequence": [
+            [
+              "integer",
+              "0"
+            ]
+          ],
+          "expected_utf8": "[[\"integer\",\"0\"]]",
+          "id": "integer_0",
+          "semantic_rows": [
+            [
+              "integer",
+              "0"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "integer",
+              "1"
+            ]
+          ],
+          "expected_utf8": "[[\"integer\",\"1\"]]",
+          "id": "integer_1",
+          "semantic_rows": [
+            [
+              "integer",
+              "1"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "integer",
+              "-1"
+            ]
+          ],
+          "expected_utf8": "[[\"integer\",\"-1\"]]",
+          "id": "integer_-1",
+          "semantic_rows": [
+            [
+              "integer",
+              "-1"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "integer",
+              "42"
+            ]
+          ],
+          "expected_utf8": "[[\"integer\",\"42\"]]",
+          "id": "integer_42",
+          "semantic_rows": [
+            [
+              "integer",
+              "42"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "integer",
+              "100000000000000000000000000000000000000000000000000000000000000000000001"
+            ]
+          ],
+          "expected_utf8": "[[\"integer\",\"100000000000000000000000000000000000000000000000000000000000000000000001\"]]",
+          "id": "integer_100000000000000000000000000000000000000000000000000000000000000000000001",
+          "semantic_rows": [
+            [
+              "integer",
+              "100000000000000000000000000000000000000000000000000000000000000000000001"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "number",
+              "5"
+            ]
+          ],
+          "expected_utf8": "[[\"number\",\"5\"]]",
+          "id": "number_5",
+          "semantic_rows": [
+            [
+              "number",
+              "5"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "number",
+              "5"
+            ]
+          ],
+          "expected_utf8": "[[\"number\",\"5\"]]",
+          "id": "number_5.0",
+          "semantic_rows": [
+            [
+              "number",
+              "5.0"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "number",
+              "5"
+            ]
+          ],
+          "expected_utf8": "[[\"number\",\"5\"]]",
+          "id": "number_5.00",
+          "semantic_rows": [
+            [
+              "number",
+              "5.00"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "number",
+              "5"
+            ]
+          ],
+          "expected_utf8": "[[\"number\",\"5\"]]",
+          "id": "number_5e0",
+          "semantic_rows": [
+            [
+              "number",
+              "5e0"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "number",
+              "0"
+            ]
+          ],
+          "expected_utf8": "[[\"number\",\"0\"]]",
+          "id": "number_0",
+          "semantic_rows": [
+            [
+              "number",
+              "0"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "number",
+              "0"
+            ]
+          ],
+          "expected_utf8": "[[\"number\",\"0\"]]",
+          "id": "number_0.0",
+          "semantic_rows": [
+            [
+              "number",
+              "0.0"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "number",
+              "0"
+            ]
+          ],
+          "expected_utf8": "[[\"number\",\"0\"]]",
+          "id": "number_-0",
+          "semantic_rows": [
+            [
+              "number",
+              "-0"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "number",
+              "0"
+            ]
+          ],
+          "expected_utf8": "[[\"number\",\"0\"]]",
+          "id": "number_-0.0",
+          "semantic_rows": [
+            [
+              "number",
+              "-0.0"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "number",
+              "0.5"
+            ]
+          ],
+          "expected_utf8": "[[\"number\",\"0.5\"]]",
+          "id": "number_0.50",
+          "semantic_rows": [
+            [
+              "number",
+              "0.50"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "number",
+              "-12.34"
+            ]
+          ],
+          "expected_utf8": "[[\"number\",\"-12.34\"]]",
+          "id": "number_-12.3400",
+          "semantic_rows": [
+            [
+              "number",
+              "-12.3400"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "number",
+              "0.125"
+            ]
+          ],
+          "expected_utf8": "[[\"number\",\"0.125\"]]",
+          "id": "number_125e-3",
+          "semantic_rows": [
+            [
+              "number",
+              "125e-3"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "number",
+              "10000000000000000000000000000000000000000"
+            ]
+          ],
+          "expected_utf8": "[[\"number\",\"10000000000000000000000000000000000000000\"]]",
+          "id": "number_1e40",
+          "semantic_rows": [
+            [
+              "number",
+              "1e40"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "boolean",
+              "true"
+            ]
+          ],
+          "expected_utf8": "[[\"boolean\",\"true\"]]",
+          "id": "boolean_true",
+          "semantic_rows": [
+            [
+              "boolean",
+              true
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "boolean",
+              "false"
+            ]
+          ],
+          "expected_utf8": "[[\"boolean\",\"false\"]]",
+          "id": "boolean_false",
+          "semantic_rows": [
+            [
+              "boolean",
+              false
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "YYYY-MM-DD",
+              "2039-10-05"
+            ]
+          ],
+          "expected_utf8": "[[\"YYYY-MM-DD\",\"2039-10-05\"]]",
+          "id": "temporal_2039-10-05",
+          "semantic_rows": [
+            [
+              "YYYY-MM-DD",
+              "2039-10-05"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "YYYY-MM-DD",
+              "2032-02-29"
+            ]
+          ],
+          "expected_utf8": "[[\"YYYY-MM-DD\",\"2032-02-29\"]]",
+          "id": "temporal_2032-02-29",
+          "semantic_rows": [
+            [
+              "YYYY-MM-DD",
+              "2032-02-29"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "HH:MM",
+              "00:00"
+            ]
+          ],
+          "expected_utf8": "[[\"HH:MM\",\"00:00\"]]",
+          "id": "temporal_00:00",
+          "semantic_rows": [
+            [
+              "HH:MM",
+              "00:00"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "HH:MM",
+              "23:45"
+            ]
+          ],
+          "expected_utf8": "[[\"HH:MM\",\"23:45\"]]",
+          "id": "temporal_23:45",
+          "semantic_rows": [
+            [
+              "HH:MM",
+              "23:45"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "string",
+              "label_001_01"
+            ]
+          ],
+          "expected_utf8": "[[\"string\",\"label_001_01\"]]",
+          "id": "string_23",
+          "semantic_rows": [
+            [
+              "string",
+              "label_001_01"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "string",
+              "code_002_02"
+            ]
+          ],
+          "expected_utf8": "[[\"string\",\"code_002_02\"]]",
+          "id": "string_24",
+          "semantic_rows": [
+            [
+              "string",
+              "code_002_02"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "string",
+              "id_003_03"
+            ]
+          ],
+          "expected_utf8": "[[\"string\",\"id_003_03\"]]",
+          "id": "string_25",
+          "semantic_rows": [
+            [
+              "string",
+              "id_003_03"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "string",
+              "  Exact Value  "
+            ]
+          ],
+          "expected_utf8": "[[\"string\",\"  Exact Value  \"]]",
+          "id": "string_26",
+          "semantic_rows": [
+            [
+              "string",
+              "  Exact Value  "
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "string",
+              "Cafe\u0301"
+            ]
+          ],
+          "expected_utf8": "[[\"string\",\"Cafe\u0301\"]]",
+          "id": "string_27",
+          "semantic_rows": [
+            [
+              "string",
+              "Cafe\u0301"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "string",
+              "\u00e9"
+            ]
+          ],
+          "expected_utf8": "[[\"string\",\"\u00e9\"]]",
+          "id": "string_28",
+          "semantic_rows": [
+            [
+              "string",
+              "\u00e9"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "string",
+              "Line\nQuote\"\\End"
+            ]
+          ],
+          "expected_utf8": "[[\"string\",\"Line\\nQuote\\\"\\\\End\"]]",
+          "id": "string_29",
+          "semantic_rows": [
+            [
+              "string",
+              "Line\nQuote\"\\End"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "option_a|option_b",
+              "option_a"
+            ]
+          ],
+          "expected_utf8": "[[\"option_a|option_b\",\"option_a\"]]",
+          "id": "enum_option_a|option_b_option_a",
+          "semantic_rows": [
+            [
+              "option_a|option_b",
+              "option_a"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "option_a|option_b",
+              "option_b"
+            ]
+          ],
+          "expected_utf8": "[[\"option_a|option_b\",\"option_b\"]]",
+          "id": "enum_option_a|option_b_option_b",
+          "semantic_rows": [
+            [
+              "option_a|option_b",
+              "option_b"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "option_a|option_b|option_c",
+              "option_a"
+            ]
+          ],
+          "expected_utf8": "[[\"option_a|option_b|option_c\",\"option_a\"]]",
+          "id": "enum_option_a|option_b|option_c_option_a",
+          "semantic_rows": [
+            [
+              "option_a|option_b|option_c",
+              "option_a"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "option_a|option_b|option_c",
+              "option_b"
+            ]
+          ],
+          "expected_utf8": "[[\"option_a|option_b|option_c\",\"option_b\"]]",
+          "id": "enum_option_a|option_b|option_c_option_b",
+          "semantic_rows": [
+            [
+              "option_a|option_b|option_c",
+              "option_b"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "option_a|option_b|option_c",
+              "option_c"
+            ]
+          ],
+          "expected_utf8": "[[\"option_a|option_b|option_c\",\"option_c\"]]",
+          "id": "enum_option_a|option_b|option_c_option_c",
+          "semantic_rows": [
+            [
+              "option_a|option_b|option_c",
+              "option_c"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "provided|not_provided",
+              "provided"
+            ]
+          ],
+          "expected_utf8": "[[\"provided|not_provided\",\"provided\"]]",
+          "id": "enum_provided|not_provided_provided",
+          "semantic_rows": [
+            [
+              "provided|not_provided",
+              "provided"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "provided|not_provided",
+              "not_provided"
+            ]
+          ],
+          "expected_utf8": "[[\"provided|not_provided\",\"not_provided\"]]",
+          "id": "enum_provided|not_provided_not_provided",
+          "semantic_rows": [
+            [
+              "provided|not_provided",
+              "not_provided"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "integer",
+              "42"
+            ],
+            [
+              "string",
+              "label_001_01"
+            ],
+            [
+              "integer",
+              "42"
+            ],
+            [
+              "number",
+              "5"
+            ]
+          ],
+          "expected_utf8": "[[\"integer\",\"42\"],[\"string\",\"label_001_01\"],[\"integer\",\"42\"],[\"number\",\"5\"]]",
+          "id": "source_order_and_duplicates",
+          "semantic_rows": [
+            [
+              "integer",
+              "42"
+            ],
+            [
+              "string",
+              "label_001_01"
+            ],
+            [
+              "integer",
+              "42"
+            ],
+            [
+              "number",
+              "5.00"
+            ]
+          ]
+        },
+        {
+          "expected_sequence": [
+            [
+              "YYYY-MM-DD",
+              "2039-10-05"
+            ],
+            [
+              "integer",
+              "0"
+            ]
+          ],
+          "expected_utf8": "[[\"YYYY-MM-DD\",\"2039-10-05\"],[\"integer\",\"0\"]]",
+          "id": "original_failure",
+          "semantic_rows": [
+            [
+              "YYYY-MM-DD",
+              "2039-10-05"
+            ],
+            [
+              "integer",
+              "0"
+            ]
+          ]
+        }
+      ],
+      "vector_scope": "isolated semantic/serialization vectors, not authored fixtures or provider outputs; evaluator numeric equivalence tests do not loosen canonical authoring metadata"
+    },
+    "other_representations_unchanged": true,
+    "row_plans_are_metadata_not_serialized_freshness_atoms": true,
+    "same_base_e5_exception_unchanged": true,
+    "scope": "NEW VALUE sequence encoding only; existing comparison applicability remains unchanged; no candidate corpus evaluation",
+    "source_row_plans": [
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "A:R2:E1-01:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "A:R2:E1-02:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "A:R2:E1-03:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "A:R2:E1-04:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD",
+          "integer"
+        ],
+        "logical_base_id": "A:R2:E1-05:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "A:R2:E2-01:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "A:R2:E2-02:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM",
+          "HH:MM"
+        ],
+        "logical_base_id": "A:R2:E2-03:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM",
+          "HH:MM"
+        ],
+        "logical_base_id": "A:R2:E2-04:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "A:R2:E2-05:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "A:R2:E3-01:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "number"
+        ],
+        "logical_base_id": "A:R2:E3-02:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "number",
+          "number",
+          "number"
+        ],
+        "logical_base_id": "A:R2:E3-03:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "A:R2:E3-04:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "number"
+        ],
+        "logical_base_id": "A:R2:E3-05:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "A:R2:E4-01:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "number"
+        ],
+        "logical_base_id": "A:R2:E4-02:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "A:R2:E4-03:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "A:R2:E4-04:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "number",
+          "number"
+        ],
+        "logical_base_id": "A:R2:E4-05:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "number",
+          "number"
+        ],
+        "logical_base_id": "A:R2:E5-01:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "string",
+          "string"
+        ],
+        "logical_base_id": "A:R2:E5-02:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "string",
+          "option_a|option_b|option_c",
+          "option_a|option_b|option_c",
+          "option_a|option_b|option_c"
+        ],
+        "logical_base_id": "A:R2:E5-03:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "YYYY-MM-DD",
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "A:R2:E5-04:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "string",
+          "HH:MM",
+          "HH:MM",
+          "HH:MM"
+        ],
+        "logical_base_id": "A:R2:E5-05:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer"
+        ],
+        "logical_base_id": "A:R2:E6-01:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "number"
+        ],
+        "logical_base_id": "A:R2:E6-02:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string"
+        ],
+        "logical_base_id": "A:R2:E6-03:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "A:R2:E6-04:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "A:R2:E6-05:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "A:R2:E7-01:PRIMARY",
+        "source_record_indices": [
+          1,
+          2
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "number",
+          "string"
+        ],
+        "logical_base_id": "A:R2:E7-02:PRIMARY",
+        "source_record_indices": [
+          1,
+          2
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD",
+          "HH:MM"
+        ],
+        "logical_base_id": "A:R2:E7-03:PRIMARY",
+        "source_record_indices": [
+          1,
+          2
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "option_a|option_b",
+          "string"
+        ],
+        "logical_base_id": "A:R2:E7-04:PRIMARY",
+        "source_record_indices": [
+          1,
+          2
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "boolean",
+          "number",
+          "integer"
+        ],
+        "logical_base_id": "A:R2:E7-05:PRIMARY",
+        "source_record_indices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "A:R3:E1-01:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "A:R3:E1-02:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "A:R3:E1-03:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "A:R3:E1-04:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD",
+          "integer"
+        ],
+        "logical_base_id": "A:R3:E1-05:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "A:R3:E2-01:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "A:R3:E2-02:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM",
+          "HH:MM"
+        ],
+        "logical_base_id": "A:R3:E2-03:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM",
+          "HH:MM"
+        ],
+        "logical_base_id": "A:R3:E2-04:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "A:R3:E2-05:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "A:R3:E3-01:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "number"
+        ],
+        "logical_base_id": "A:R3:E3-02:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "number",
+          "number",
+          "number"
+        ],
+        "logical_base_id": "A:R3:E3-03:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "A:R3:E3-04:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "number"
+        ],
+        "logical_base_id": "A:R3:E3-05:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "A:R3:E4-01:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "number"
+        ],
+        "logical_base_id": "A:R3:E4-02:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "A:R3:E4-03:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "A:R3:E4-04:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "number",
+          "number"
+        ],
+        "logical_base_id": "A:R3:E4-05:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "number",
+          "number"
+        ],
+        "logical_base_id": "A:R3:E5-01:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "string",
+          "string"
+        ],
+        "logical_base_id": "A:R3:E5-02:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "string",
+          "option_a|option_b|option_c",
+          "option_a|option_b|option_c",
+          "option_a|option_b|option_c"
+        ],
+        "logical_base_id": "A:R3:E5-03:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "YYYY-MM-DD",
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "A:R3:E5-04:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "string",
+          "HH:MM",
+          "HH:MM",
+          "HH:MM"
+        ],
+        "logical_base_id": "A:R3:E5-05:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer"
+        ],
+        "logical_base_id": "A:R3:E6-01:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "number"
+        ],
+        "logical_base_id": "A:R3:E6-02:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string"
+        ],
+        "logical_base_id": "A:R3:E6-03:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "A:R3:E6-04:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "A:R3:E6-05:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "A:R3:E7-01:PRIMARY",
+        "source_record_indices": [
+          1,
+          2
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "number",
+          "string"
+        ],
+        "logical_base_id": "A:R3:E7-02:PRIMARY",
+        "source_record_indices": [
+          1,
+          2
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD",
+          "HH:MM"
+        ],
+        "logical_base_id": "A:R3:E7-03:PRIMARY",
+        "source_record_indices": [
+          1,
+          2
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "option_a|option_b",
+          "string"
+        ],
+        "logical_base_id": "A:R3:E7-04:PRIMARY",
+        "source_record_indices": [
+          1,
+          2
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "boolean",
+          "number",
+          "integer"
+        ],
+        "logical_base_id": "A:R3:E7-05:PRIMARY",
+        "source_record_indices": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "A:R2:E1-01:RESERVE",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "A:R2:E2-01:RESERVE",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "A:R2:E3-01:RESERVE",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "A:R2:E4-01:RESERVE",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "number",
+          "number"
+        ],
+        "logical_base_id": "A:R2:E5-01:RESERVE",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer"
+        ],
+        "logical_base_id": "A:R2:E6-01:RESERVE",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "A:R2:E7-01:RESERVE",
+        "source_record_indices": [
+          0,
+          2
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "A:R3:E1-01:RESERVE",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "A:R3:E2-01:RESERVE",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "A:R3:E3-01:RESERVE",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "A:R3:E4-01:RESERVE",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "number",
+          "number"
+        ],
+        "logical_base_id": "A:R3:E5-01:RESERVE",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer"
+        ],
+        "logical_base_id": "A:R3:E6-01:RESERVE",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "A:R3:E7-01:RESERVE",
+        "source_record_indices": [
+          0,
+          2
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "B:R2:E1-01:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "B:R2:E1-02:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "B:R2:E1-03:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "B:R2:E1-04:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD",
+          "integer"
+        ],
+        "logical_base_id": "B:R2:E1-05:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "B:R2:E2-01:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "B:R2:E2-02:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM",
+          "HH:MM"
+        ],
+        "logical_base_id": "B:R2:E2-03:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM",
+          "HH:MM"
+        ],
+        "logical_base_id": "B:R2:E2-04:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "B:R2:E2-05:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "B:R2:E3-01:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "number"
+        ],
+        "logical_base_id": "B:R2:E3-02:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "number",
+          "number",
+          "number"
+        ],
+        "logical_base_id": "B:R2:E3-03:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "B:R2:E3-04:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "number"
+        ],
+        "logical_base_id": "B:R2:E3-05:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "B:R2:E4-01:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "number"
+        ],
+        "logical_base_id": "B:R2:E4-02:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "B:R2:E4-03:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "B:R2:E4-04:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "number",
+          "number"
+        ],
+        "logical_base_id": "B:R2:E4-05:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "number",
+          "number"
+        ],
+        "logical_base_id": "B:R2:E5-01:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "string",
+          "string"
+        ],
+        "logical_base_id": "B:R2:E5-02:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "string",
+          "option_a|option_b|option_c",
+          "option_a|option_b|option_c",
+          "option_a|option_b|option_c"
+        ],
+        "logical_base_id": "B:R2:E5-03:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "YYYY-MM-DD",
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "B:R2:E5-04:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "string",
+          "HH:MM",
+          "HH:MM",
+          "HH:MM"
+        ],
+        "logical_base_id": "B:R2:E5-05:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer"
+        ],
+        "logical_base_id": "B:R2:E6-01:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "number"
+        ],
+        "logical_base_id": "B:R2:E6-02:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string"
+        ],
+        "logical_base_id": "B:R2:E6-03:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "B:R2:E6-04:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "B:R2:E6-05:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "B:R2:E7-01:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "number",
+          "string"
+        ],
+        "logical_base_id": "B:R2:E7-02:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD",
+          "HH:MM"
+        ],
+        "logical_base_id": "B:R2:E7-03:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "option_a|option_b",
+          "string"
+        ],
+        "logical_base_id": "B:R2:E7-04:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "boolean",
+          "number",
+          "integer"
+        ],
+        "logical_base_id": "B:R2:E7-05:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "B:R3:E1-01:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "B:R3:E1-02:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "B:R3:E1-03:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "B:R3:E1-04:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD",
+          "integer"
+        ],
+        "logical_base_id": "B:R3:E1-05:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "B:R3:E2-01:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "B:R3:E2-02:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM",
+          "HH:MM"
+        ],
+        "logical_base_id": "B:R3:E2-03:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM",
+          "HH:MM"
+        ],
+        "logical_base_id": "B:R3:E2-04:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "B:R3:E2-05:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "B:R3:E3-01:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "number"
+        ],
+        "logical_base_id": "B:R3:E3-02:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "number",
+          "number",
+          "number"
+        ],
+        "logical_base_id": "B:R3:E3-03:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "B:R3:E3-04:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "number"
+        ],
+        "logical_base_id": "B:R3:E3-05:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "B:R3:E4-01:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "number"
+        ],
+        "logical_base_id": "B:R3:E4-02:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "B:R3:E4-03:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "B:R3:E4-04:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "number",
+          "number"
+        ],
+        "logical_base_id": "B:R3:E4-05:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "number",
+          "number"
+        ],
+        "logical_base_id": "B:R3:E5-01:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "string",
+          "string"
+        ],
+        "logical_base_id": "B:R3:E5-02:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "string",
+          "option_a|option_b|option_c",
+          "option_a|option_b|option_c",
+          "option_a|option_b|option_c"
+        ],
+        "logical_base_id": "B:R3:E5-03:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "YYYY-MM-DD",
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "B:R3:E5-04:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "string",
+          "HH:MM",
+          "HH:MM",
+          "HH:MM"
+        ],
+        "logical_base_id": "B:R3:E5-05:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer"
+        ],
+        "logical_base_id": "B:R3:E6-01:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "number"
+        ],
+        "logical_base_id": "B:R3:E6-02:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string"
+        ],
+        "logical_base_id": "B:R3:E6-03:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "B:R3:E6-04:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "B:R3:E6-05:PRIMARY",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "B:R3:E7-01:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "number",
+          "string"
+        ],
+        "logical_base_id": "B:R3:E7-02:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD",
+          "HH:MM"
+        ],
+        "logical_base_id": "B:R3:E7-03:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "option_a|option_b",
+          "string"
+        ],
+        "logical_base_id": "B:R3:E7-04:PRIMARY",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "boolean",
+          "number",
+          "integer"
+        ],
+        "logical_base_id": "B:R3:E7-05:PRIMARY",
+        "source_record_indices": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "B:R2:E1-01:RESERVE",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "B:R2:E2-01:RESERVE",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "B:R2:E3-01:RESERVE",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "B:R2:E4-01:RESERVE",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "number",
+          "number"
+        ],
+        "logical_base_id": "B:R2:E5-01:RESERVE",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer"
+        ],
+        "logical_base_id": "B:R2:E6-01:RESERVE",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "B:R2:E7-01:RESERVE",
+        "source_record_indices": [
+          0,
+          2
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "YYYY-MM-DD"
+        ],
+        "logical_base_id": "B:R3:E1-01:RESERVE",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "HH:MM"
+        ],
+        "logical_base_id": "B:R3:E2-01:RESERVE",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "B:R3:E3-01:RESERVE",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "B:R3:E4-01:RESERVE",
+        "source_record_indices": [
+          0,
+          1
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "string",
+          "string",
+          "number",
+          "number"
+        ],
+        "logical_base_id": "B:R3:E5-01:RESERVE",
+        "source_record_indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer"
+        ],
+        "logical_base_id": "B:R3:E6-01:RESERVE",
+        "source_record_indices": [
+          0
+        ]
+      },
+      {
+        "exact_schema_type_sequence": [
+          "integer",
+          "integer"
+        ],
+        "logical_base_id": "B:R3:E7-01:RESERVE",
+        "source_record_indices": [
+          0,
+          2
+        ]
+      }
+    ]
   },
   "governance": {
     "autonomy": false,
@@ -71354,6 +74099,11 @@
       "DESIGN_CANDIDATE.json#/subtype_allocation_contract/enum_answer_positions",
       "DESIGN_CANDIDATE.json#/e5_counterfactual_selector_contract"
     ],
+    "freshness_serialization": [
+      "DESIGN_CANDIDATE.json#/freshness_canonicalization_contract",
+      "DESIGN_CANDIDATE.json#/template_recurrence_contract/freshness_sequence",
+      "DESIGN_CANDIDATE.json#/schema_type_contract"
+    ],
     "gate_membership": [
       "DESIGN_CANDIDATE.json#/cell_gates",
       "DESIGN_CANDIDATE.json#/phase_a_fixture_reduction_contract",
@@ -71416,7 +74166,7 @@
       "DESIGN_CANDIDATE.json#/value_allocation_contract"
     ]
   },
-  "status": "READY_FOR_G_EXTRACT1_BLUEPRINT_CONTAMINATION_REREVIEW",
+  "status": "READY_FOR_G_EXTRACT1_BLUEPRINT_FRESHNESS_REREVIEW",
   "terminology": {
     "cell": "model tier x risk round, assessed independently in each phase",
     "logical_base": "one scored/reserve position, regardless of pair expansion",
