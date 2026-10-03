@@ -1,15 +1,16 @@
 # G-EXTRACT1 Authoring Blueprint
 
-Status: READY_FOR_G_EXTRACT1_BLUEPRINT_FRESHNESS_REREVIEW. Mechanical rebind only.
+Status: READY_FOR_G_EXTRACT1_BLUEPRINT_WHOLE_ANSWER_REREVIEW. Mechanical rebind only.
 
 ## Authority And Scope
 
 Scientific basis: V10 commit `394d24121309ec9dce80e725b50dbe5eb60f6d2a`, plus the
 accepted output-field amendment `aef3e0900cba41481904c8a451c4ca28b9d46c53`, and
 accepted contamination repair `62c783bd8be708a86c82a9e00c80b0fa6fb5b459`, and
-accepted freshness amendment `e12484224cd11cf9c84026eb7deadf8c4eb9bab8`.
-The six design artifacts are byte-bound to the freshness amendment in BLUEPRINT.json
-and remain unchanged. Prior accepted blueprint `01aafde7410a44085999aa4aa39f883618e78799`
+accepted freshness amendment `e12484224cd11cf9c84026eb7deadf8c4eb9bab8`, and
+accepted whole-answer amendment `d1b9e2aa5dbe0aeebb74f8226ca8033182f7b3c1`.
+The six design artifacts are byte-bound to the whole-answer amendment in BLUEPRINT.json
+and remain unchanged. Prior accepted blueprint `3bf939ea3160596d89c64f1feef790477991cf8a`
 is lineage only: its allocations are preserved exactly. Original lineage is
 `99707b4f13abd6533f1d09313bdb066793996be9`.
 BLUEPRINT.json is the complete value-free enumeration; its scientific_traceability
@@ -134,13 +135,13 @@ ordinals, variants, gates, schedules, seeds, reserve mappings, comparison scopes
 all qualified-cell subsets and traceability; mutation probes reject mismatches.
 The report claims structural/design equivalence only, not scientific validity,
 future content feasibility, transport correctness or execution readiness.
-The accepted freshness design checker pins the prior accepted blueprint as historical
+The accepted whole-answer design checker pins the prior accepted blueprint as historical
 checkpoint evidence. That guard is not rebound: no mutable design-side digest of
 this later blueprint is required. All six design artifacts remain exact
 accepted bytes. This checker loads only their value-free derivation helpers; it
 does not invoke the old checkpoint inventory guard on updated blueprint files.
-Instead it checks both repair/amendment bindings, exact scaffold membership, canonical outputs,
-freshness serialization obligations and preserved candidate/gold/checker digests,
+Instead it checks all repair/amendment bindings, exact scaffold membership, canonical outputs,
+freshness and whole-answer serialization obligations and preserved candidate/gold/checker digests,
 and exact preservation of both prior and original allocations. No design-side changes
 or circular design/blueprint digest binding are introduced.
 
@@ -231,9 +232,11 @@ The original semantic case must yield exactly:
 `[["YYYY-MM-DD","2039-10-05"],["integer","0"]]`.
 This is a contract test, not authored corpus content or replay of a scored call.
 
-Only the already-required NEW freshness layer uses this encoding. Historical
-projection, all Jaccard views/residuals, fingerprints, whole-answer/identity and
-date-number representations keep their existing encodings and applicability.
+Only the already-required NEW freshness layer uses this encoding. Freshness
+itself does not amend historical projection, Jaccard views/residuals, fingerprints,
+whole-answer, identity or date-number encoding/applicability. The later separate
+accepted whole-answer amendment is materialized in its own section below;
+the other representations remain unchanged.
 The separate NUMBER tuple convention of "5.0" is not replaced by freshness "5".
 Historical adaptation stays 106/106, rejected 0 with unchanged projection digest.
 
@@ -1124,3 +1127,3738 @@ this annex are isolated contract vectors only; they are not fixture allocations.
 }
 ```
 <!-- BLUEPRINT_FRESHNESS_NORMATIVE_END -->
+
+## Accepted Whole-Answer Serialization Rebind
+
+This instantiates g-extract1.whole-answer-canonicalization.v1, not a checker
+repair or a corpus acceptance. Each completed row is
+[field_name,historical_schema_type,[semantic_tag,canonical_semantic_text]].
+All four leaves are JSON strings. Field names and exact historical schema bytes
+(including full enum option order) are preserved. Tags derive only from the
+unchanged schema contract: STRING, NUMBER, INTEGER, BOOLEAN, DATE, TIME, ENUM.
+Rows sort by ascending unsigned UTF-8 field-name bytes; duplicate names reject
+as AUTHORING_ERROR before serialization. No field-wise, subset or name-insensitive
+matching is introduced: the match is whole canonical answer bytes equal.
+
+INTEGER is minimal signed base-10 text, no plus/leading zeros/decimal/exponent;
+signed zero becomes "0". NUMBER uses exact terminating plain decimal, no plus,
+exponent, unnecessary zeros or empty decimal point; all signed zero becomes "0".
+5/5.0/5.00/5e0 all become "5". No binary float or finite-context rounding.
+Equivalent exact int/Decimal/Fraction/validated-token values agree where schema
+permits. Unsupported wrappers fail closed. INTEGER and NUMBER remain typed-distinct.
+BOOLEAN becomes lowercase "true"/"false". DATE/TIME retain validated padded
+Gregorian YYYY-MM-DD / 24-hour HH:MM. STRING preserves exact semantic text without
+trim/casefold/label removal/whitespace/Unicode/tokenizer normalization. ENUM is
+the exact selected option, not an ordinal. Explicit absence is exactly
+[field_name,"provided|not_provided",["ENUM","not_provided"]], never null.
+
+Outer serialization is Python json.dumps with ensure_ascii=True,
+separators=(',', ':'), UTF-8 encoding and no terminal newline. Freshness remains
+separate: [exact_schema_type,canonical_semantic_text], ensure_ascii=False.
+The original isolated regression bytes are
+[["d016_02","boolean",["BOOLEAN","true"]]]. This is an accepted contract vector,
+not corpus-derived authority. All 39 semantic vectors, three equivalence groups,
+sorting/host-type/non-ASCII tests and 28 accepted byte-mutation categories are
+replayed; prior blueprint/freshness/output mutations remain required.
+
+Validated historical and NEW answers use the same completed encoding only in
+the existing whole-answer comparison scope. Historical files are never edited.
+Whole-answer is exact full-object replay only; fixture-specific names limit
+sensitivity. Freshness, identity/tuple/raw-payload controls, fingerprints,
+ordinary/shape/content Jaccard, scaffold residuals, recurrence, gates, schedules
+and seeds are unchanged. No contamination campaign runs here.
+
+The 168 row plans specify exact fields/schemas/derived tags, not answer values;
+future variants inherit the plan but derive their own semantic answer. Separate
+independent blueprint rereview must precede separately authorized checker repair
+and finalization. No later authority is granted.
+
+The following co-normative annex copies the complete accepted encoding contract
+and exact value-free output plans from BLUEPRINT.json; it adds no semantics.
+
+```json
+{
+  "active_output_schema_types": [
+    "HH:MM",
+    "YYYY-MM-DD",
+    "boolean",
+    "integer",
+    "number",
+    "option_a|option_b",
+    "option_a|option_b|option_c",
+    "provided|not_provided",
+    "string"
+  ],
+  "active_semantic_tags": [
+    "BOOLEAN",
+    "DATE",
+    "ENUM",
+    "INTEGER",
+    "NUMBER",
+    "STRING",
+    "TIME"
+  ],
+  "all_rules_apply_to_every_scope": true,
+  "amendment_commit": "d1b9e2aa5dbe0aeebb74f8226ca8033182f7b3c1",
+  "contract_ref": "DESIGN_CANDIDATE.json#/whole_answer_canonicalization_contract",
+  "existing_scope_names": [
+    "historical_new",
+    "phase_a_phase_a",
+    "phase_a_phase_b",
+    "phase_b_phase_b",
+    "scored_reserve",
+    "reserve_reserve"
+  ],
+  "existing_whole_answer_rule": {
+    "canonical_values": "derive through schema-types.v1; explicit not_provided retains schema provided|not_provided, semantic tag ENUM and exact value not_provided",
+    "comparison_unit": "whole canonical answer only; individual field/value recurrence is not prohibited by this rule",
+    "limit": "exact full-object replay only, not semantic-content deduplication; fixture-specific names limit sensitivity; tuples/identities/Jaccard/structure/human review provide complementary content controls",
+    "match_rule": "canonical answer bytes equal",
+    "serialization": "UTF-8 compact JSON array of [field_name,historical_schema_type,[semantic_tag,canonical_value]] rows sorted by unsigned UTF-8 field_name bytes; semantic_tag derives only from schema-types.v1; ensure_ascii=true; separators comma/colon; no terminal newline",
+    "value_tags": [
+      "STRING",
+      "NUMBER",
+      "INTEGER",
+      "BOOLEAN",
+      "DATE",
+      "TIME",
+      "ENUM"
+    ]
+  },
+  "freshness_plan_unchanged": true,
+  "historical_and_new_use_same_encoding_in_existing_scope": true,
+  "historical_artifacts_unchanged": true,
+  "materialized_contract": {
+    "accepted_blueprint": "3bf939ea3160596d89c64f1feef790477991cf8a",
+    "accepted_freshness_amendment": "e12484224cd11cf9c84026eb7deadf8c4eb9bab8",
+    "accepted_parent_commit": "6fb3f2af5806760c034006a8561ce08e938c210a",
+    "authority": {
+      "belief_effects": "none",
+      "blueprint_update": false,
+      "checker_repair": false,
+      "contamination_rescoring": false,
+      "corpus_finalization": false,
+      "corpus_regeneration": false,
+      "execution": false,
+      "gold_change": false,
+      "independent_rereview_required": true,
+      "provider_calls": 0,
+      "runtime_implementation": false,
+      "separate_blueprint_rebind_and_rereview_required": true,
+      "separate_checker_repair_required": true
+    },
+    "binds": "contamination_contract.exact_reuse_contract.whole_answer.canonical_values",
+    "canonical_semantic_text": {
+      "BOOLEAN": {
+        "semantic_value": "Boolean",
+        "text": "true or false lowercase"
+      },
+      "DATE": {
+        "schema": "YYYY-MM-DD",
+        "text": "exact validated zero-padded proleptic-Gregorian YYYY-MM-DD"
+      },
+      "ENUM": {
+        "explicit_absence": {
+          "canonical_semantic_text": "not_provided",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        },
+        "text": "exact selected option, never ordinal/index"
+      },
+      "INTEGER": {
+        "semantic_value": "exact integral semantic value excluding Boolean; existing lexical integer rules unchanged",
+        "text": "minimal base-10; minus only for negatives; no plus, leading zeroes, decimal point or exponent; signed zero -> 0"
+      },
+      "NUMBER": {
+        "evaluation": "integer arithmetic/exact Fraction or Decimal token interpretation; no finite-context rounding",
+        "nonterminating": "AUTHORING_ERROR; no rounding or new domain tolerance",
+        "semantic_value": "exact rational/decimal numeric value excluding Boolean and binary floats",
+        "text": "exact terminating plain decimal; no exponent/plus/unnecessary leading zeroes; remove trailing fractional zeroes and empty decimal point; all signed zero -> 0"
+      },
+      "STRING": {
+        "text": "exact semantic string; no trimming, casefolding, whitespace collapse, label removal, Unicode or tokenizer normalization"
+      },
+      "TIME": {
+        "schema": "HH:MM",
+        "text": "exact validated zero-padded 24-hour HH:MM"
+      }
+    },
+    "comparison": {
+      "historical_new": "Project validated historical and NEW answers through this same completed encoding only when the existing whole-answer comparison applies; never edit historical artifacts.",
+      "limitation": "exact full-object replay only; fixture-specific names limit sensitivity; complementary freshness/identity/tuple/Jaccard/structure/review controls remain unchanged",
+      "match_rule": "canonical answer bytes equal",
+      "per_field_or_subset_matching": false,
+      "scope_ref": "contamination_contract.exact_reuse_contract.scope_names",
+      "unit": "whole canonical answer only"
+    },
+    "contract_id": "g-extract1.whole-answer-canonicalization.v1",
+    "equivalence_groups": [
+      {
+        "expected_utf8": "[[\"field\",\"number\",[\"NUMBER\",\"5\"]]]",
+        "id": "NUMBER_five",
+        "schema_type": "number",
+        "values": [
+          "5",
+          "5.0",
+          "5.00",
+          "5e0"
+        ]
+      },
+      {
+        "expected_utf8": "[[\"field\",\"number\",[\"NUMBER\",\"0\"]]]",
+        "id": "NUMBER_zero",
+        "schema_type": "number",
+        "values": [
+          "0",
+          "0.0",
+          "-0",
+          "-0.0"
+        ]
+      },
+      {
+        "expected_utf8": "[[\"field\",\"integer\",[\"INTEGER\",\"0\"]]]",
+        "id": "INTEGER_zero",
+        "schema_type": "integer",
+        "values": [
+          "0",
+          "-0"
+        ]
+      }
+    ],
+    "implementation_boundary": "New whole-answer helpers are isolated design-test mechanics only. The legacy canonical_answer_bytes helper called by existing corpus tooling remains unchanged; neither old corpus implementation is declared correct. Separate accepted blueprint rebind and checker repair must precede replay.",
+    "input": "Already validated whole semantic answer; isolated test semantic_rows are [field_name,historical_schema_type,semantic_value]. This does not relax source authoring or evaluator parsing.",
+    "mutation_catalog": [
+      "boolean_scalar_true",
+      "boolean_scalar_false",
+      "integer_numeric_scalar",
+      "number_numeric_scalar",
+      "number_exponent",
+      "number_trailing_zeroes",
+      "number_negative_zero",
+      "integer_negative_zero",
+      "tag_lowercase",
+      "tag_replaced_by_schema",
+      "schema_replaced_by_tag",
+      "date_reformatted",
+      "time_reformatted",
+      "string_trimmed",
+      "enum_ordinal",
+      "not_provided_null",
+      "ensure_ascii_false",
+      "pretty_JSON",
+      "terminal_newline",
+      "wrong_field_sorting",
+      "typed_numeric_collapse",
+      "inner_missing_element",
+      "inner_extra_element",
+      "outer_missing_element",
+      "outer_extra_element",
+      "null_value",
+      "array_value",
+      "object_value"
+    ],
+    "outer_serialization": {
+      "encoding": "UTF-8",
+      "ensure_ascii": true,
+      "exact_expression": "json.dumps(rows, ensure_ascii=True, separators=(',', ':')).encode('utf-8')",
+      "json_engine": "Python json.dumps",
+      "separators": [
+        ",",
+        ":"
+      ],
+      "terminal_newline": false,
+      "unpaired_surrogates": "not valid UTF-8 semantic strings; reject"
+    },
+    "precedence": "This completes canonical_value encoding only. Earlier schema canonical_gold and whole-answer examples describe semantic values, not permission to choose native JSON scalar storage or integral NUMBER .0 spelling for this completed encoding. Other encodings retain their prior conventions.",
+    "row_contract": {
+      "all_leaf_elements": "JSON strings only",
+      "canonical_value": "canonical_semantic_text; always a JSON string",
+      "duplicate_field_names": "AUTHORING_ERROR; reject before serialization",
+      "field_name": "exact field-name string",
+      "historical_schema_type": "exact existing validated schema spelling/full enum schema; no aliases or semantic-tag substitution",
+      "inner_length": 2,
+      "outer_length": 3,
+      "semantic_tag": "derive exclusively through schema_type_contract; exact uppercase tag",
+      "sorting": "ascending unsigned UTF-8 field_name bytes; preserve each field/schema/value binding"
+    },
+    "schema_and_type_binding": {
+      "contract_ref": "schema_type_contract",
+      "historical_schema_identity_unchanged": true,
+      "host_representations": "Equivalent exact int/Decimal/Fraction/validated lexical token semantics agree where the schema permits; unsupported wrappers and binary floats reject; never stringify display-only objects.",
+      "semantic_tag_mapping_unchanged": true,
+      "typed_integer_and_number_distinct": true
+    },
+    "semantic_tags": [
+      "STRING",
+      "NUMBER",
+      "INTEGER",
+      "BOOLEAN",
+      "DATE",
+      "TIME",
+      "ENUM"
+    ],
+    "separation": {
+      "allocation_gates_schedules_seeds_unchanged": true,
+      "corpus_used_to_choose_encoding": false,
+      "freshness_contract_unchanged": true,
+      "freshness_ensure_ascii": false,
+      "numeric_equivalence_unchanged": true,
+      "semantic_equality_unchanged": true,
+      "thresholds_unchanged": true,
+      "unrelated_encodings_unchanged": [
+        "entity_identifier_atoms",
+        "date_number_tuple",
+        "raw payload",
+        "freshness_sequence",
+        "fingerprints",
+        "ordinary Jaccard",
+        "shape Jaccard",
+        "content Jaccard",
+        "scaffold residuals",
+        "historical structural projections"
+      ],
+      "whole_answer_ensure_ascii": true
+    },
+    "validation_scope": "deterministic structural/cross-representation consistency only; not scientific approval, corpus acceptance, or historical/new whole-answer campaign results",
+    "validation_vectors": [
+      {
+        "expected_rows": [
+          [
+            "field",
+            "boolean",
+            [
+              "BOOLEAN",
+              "true"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"boolean\",[\"BOOLEAN\",\"true\"]]]",
+        "id": "semantic_0",
+        "semantic_rows": [
+          [
+            "field",
+            "boolean",
+            true
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "boolean",
+            [
+              "BOOLEAN",
+              "false"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"boolean\",[\"BOOLEAN\",\"false\"]]]",
+        "id": "semantic_1",
+        "semantic_rows": [
+          [
+            "field",
+            "boolean",
+            false
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "integer",
+            [
+              "INTEGER",
+              "0"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"integer\",[\"INTEGER\",\"0\"]]]",
+        "id": "semantic_2",
+        "semantic_rows": [
+          [
+            "field",
+            "integer",
+            "0"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "integer",
+            [
+              "INTEGER",
+              "0"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"integer\",[\"INTEGER\",\"0\"]]]",
+        "id": "semantic_3",
+        "semantic_rows": [
+          [
+            "field",
+            "integer",
+            "-0"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "integer",
+            [
+              "INTEGER",
+              "1"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"integer\",[\"INTEGER\",\"1\"]]]",
+        "id": "semantic_4",
+        "semantic_rows": [
+          [
+            "field",
+            "integer",
+            "1"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "integer",
+            [
+              "INTEGER",
+              "-1"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"integer\",[\"INTEGER\",\"-1\"]]]",
+        "id": "semantic_5",
+        "semantic_rows": [
+          [
+            "field",
+            "integer",
+            "-1"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "integer",
+            [
+              "INTEGER",
+              "42"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"integer\",[\"INTEGER\",\"42\"]]]",
+        "id": "semantic_6",
+        "semantic_rows": [
+          [
+            "field",
+            "integer",
+            "42"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "integer",
+            [
+              "INTEGER",
+              "1000000000000000000000000000000000000000001"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"integer\",[\"INTEGER\",\"1000000000000000000000000000000000000000001\"]]]",
+        "id": "semantic_7",
+        "semantic_rows": [
+          [
+            "field",
+            "integer",
+            "1000000000000000000000000000000000000000001"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "number",
+            [
+              "NUMBER",
+              "0"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"number\",[\"NUMBER\",\"0\"]]]",
+        "id": "semantic_8",
+        "semantic_rows": [
+          [
+            "field",
+            "number",
+            "0"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "number",
+            [
+              "NUMBER",
+              "0"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"number\",[\"NUMBER\",\"0\"]]]",
+        "id": "semantic_9",
+        "semantic_rows": [
+          [
+            "field",
+            "number",
+            "-0"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "number",
+            [
+              "NUMBER",
+              "0"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"number\",[\"NUMBER\",\"0\"]]]",
+        "id": "semantic_10",
+        "semantic_rows": [
+          [
+            "field",
+            "number",
+            "-0.0"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "number",
+            [
+              "NUMBER",
+              "5"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"number\",[\"NUMBER\",\"5\"]]]",
+        "id": "semantic_11",
+        "semantic_rows": [
+          [
+            "field",
+            "number",
+            "5"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "number",
+            [
+              "NUMBER",
+              "5"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"number\",[\"NUMBER\",\"5\"]]]",
+        "id": "semantic_12",
+        "semantic_rows": [
+          [
+            "field",
+            "number",
+            "5.0"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "number",
+            [
+              "NUMBER",
+              "5"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"number\",[\"NUMBER\",\"5\"]]]",
+        "id": "semantic_13",
+        "semantic_rows": [
+          [
+            "field",
+            "number",
+            "5.00"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "number",
+            [
+              "NUMBER",
+              "5"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"number\",[\"NUMBER\",\"5\"]]]",
+        "id": "semantic_14",
+        "semantic_rows": [
+          [
+            "field",
+            "number",
+            "5e0"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "number",
+            [
+              "NUMBER",
+              "0.5"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"number\",[\"NUMBER\",\"0.5\"]]]",
+        "id": "semantic_15",
+        "semantic_rows": [
+          [
+            "field",
+            "number",
+            "0.5"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "number",
+            [
+              "NUMBER",
+              "0.05"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"number\",[\"NUMBER\",\"0.05\"]]]",
+        "id": "semantic_16",
+        "semantic_rows": [
+          [
+            "field",
+            "number",
+            "0.05"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "number",
+            [
+              "NUMBER",
+              "-12.34"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"number\",[\"NUMBER\",\"-12.34\"]]]",
+        "id": "semantic_17",
+        "semantic_rows": [
+          [
+            "field",
+            "number",
+            "-12.3400"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "number",
+            [
+              "NUMBER",
+              "123456789012345678901234567890.125"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"number\",[\"NUMBER\",\"123456789012345678901234567890.125\"]]]",
+        "id": "semantic_18",
+        "semantic_rows": [
+          [
+            "field",
+            "number",
+            "123456789012345678901234567890.125000"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "number",
+            [
+              "NUMBER",
+              "0.000000000000000000000000000001"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"number\",[\"NUMBER\",\"0.000000000000000000000000000001\"]]]",
+        "id": "semantic_19",
+        "semantic_rows": [
+          [
+            "field",
+            "number",
+            "1e-30"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "YYYY-MM-DD",
+            [
+              "DATE",
+              "2039-10-05"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"YYYY-MM-DD\",[\"DATE\",\"2039-10-05\"]]]",
+        "id": "semantic_20",
+        "semantic_rows": [
+          [
+            "field",
+            "YYYY-MM-DD",
+            "2039-10-05"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "YYYY-MM-DD",
+            [
+              "DATE",
+              "2032-02-29"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"YYYY-MM-DD\",[\"DATE\",\"2032-02-29\"]]]",
+        "id": "semantic_21",
+        "semantic_rows": [
+          [
+            "field",
+            "YYYY-MM-DD",
+            "2032-02-29"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "HH:MM",
+            [
+              "TIME",
+              "00:00"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"HH:MM\",[\"TIME\",\"00:00\"]]]",
+        "id": "semantic_22",
+        "semantic_rows": [
+          [
+            "field",
+            "HH:MM",
+            "00:00"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "HH:MM",
+            [
+              "TIME",
+              "23:45"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"HH:MM\",[\"TIME\",\"23:45\"]]]",
+        "id": "semantic_23",
+        "semantic_rows": [
+          [
+            "field",
+            "HH:MM",
+            "23:45"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "string",
+            [
+              "STRING",
+              "label_001_01"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"string\",[\"STRING\",\"label_001_01\"]]]",
+        "id": "semantic_24",
+        "semantic_rows": [
+          [
+            "field",
+            "string",
+            "label_001_01"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "string",
+            [
+              "STRING",
+              "code_001_01"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"string\",[\"STRING\",\"code_001_01\"]]]",
+        "id": "semantic_25",
+        "semantic_rows": [
+          [
+            "field",
+            "string",
+            "code_001_01"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "string",
+            [
+              "STRING",
+              "id_001_01"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"string\",[\"STRING\",\"id_001_01\"]]]",
+        "id": "semantic_26",
+        "semantic_rows": [
+          [
+            "field",
+            "string",
+            "id_001_01"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "string",
+            [
+              "STRING",
+              " Label  X "
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"string\",[\"STRING\",\" Label  X \"]]]",
+        "id": "semantic_27",
+        "semantic_rows": [
+          [
+            "field",
+            "string",
+            " Label  X "
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "string",
+            [
+              "STRING",
+              "\u00e9"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"string\",[\"STRING\",\"\\u00e9\"]]]",
+        "id": "semantic_28",
+        "semantic_rows": [
+          [
+            "field",
+            "string",
+            "\u00e9"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "string",
+            [
+              "STRING",
+              "e\u0301"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"string\",[\"STRING\",\"e\\u0301\"]]]",
+        "id": "semantic_29",
+        "semantic_rows": [
+          [
+            "field",
+            "string",
+            "e\u0301"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "string",
+            [
+              "STRING",
+              "A \"quote\" \\ path"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"string\",[\"STRING\",\"A \\\"quote\\\" \\\\ path\"]]]",
+        "id": "semantic_30",
+        "semantic_rows": [
+          [
+            "field",
+            "string",
+            "A \"quote\" \\ path"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "option_a|option_b",
+            [
+              "ENUM",
+              "option_a"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"option_a|option_b\",[\"ENUM\",\"option_a\"]]]",
+        "id": "semantic_31",
+        "semantic_rows": [
+          [
+            "field",
+            "option_a|option_b",
+            "option_a"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "option_a|option_b",
+            [
+              "ENUM",
+              "option_b"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"option_a|option_b\",[\"ENUM\",\"option_b\"]]]",
+        "id": "semantic_32",
+        "semantic_rows": [
+          [
+            "field",
+            "option_a|option_b",
+            "option_b"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "option_a|option_b|option_c",
+            [
+              "ENUM",
+              "option_c"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"option_a|option_b|option_c\",[\"ENUM\",\"option_c\"]]]",
+        "id": "semantic_33",
+        "semantic_rows": [
+          [
+            "field",
+            "option_a|option_b|option_c",
+            "option_c"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "provided|not_provided",
+            [
+              "ENUM",
+              "provided"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"provided|not_provided\",[\"ENUM\",\"provided\"]]]",
+        "id": "semantic_34",
+        "semantic_rows": [
+          [
+            "field",
+            "provided|not_provided",
+            "provided"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "field",
+            "provided|not_provided",
+            [
+              "ENUM",
+              "not_provided"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"field\",\"provided|not_provided\",[\"ENUM\",\"not_provided\"]]]",
+        "id": "semantic_35",
+        "semantic_rows": [
+          [
+            "field",
+            "provided|not_provided",
+            "not_provided"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "a",
+            "string",
+            [
+              "STRING",
+              "\u00e9"
+            ]
+          ],
+          [
+            "b",
+            "number",
+            [
+              "NUMBER",
+              "5"
+            ]
+          ],
+          [
+            "c",
+            "integer",
+            [
+              "INTEGER",
+              "0"
+            ]
+          ],
+          [
+            "d",
+            "boolean",
+            [
+              "BOOLEAN",
+              "true"
+            ]
+          ],
+          [
+            "e",
+            "YYYY-MM-DD",
+            [
+              "DATE",
+              "2039-10-05"
+            ]
+          ],
+          [
+            "f",
+            "HH:MM",
+            [
+              "TIME",
+              "23:45"
+            ]
+          ],
+          [
+            "g",
+            "provided|not_provided",
+            [
+              "ENUM",
+              "not_provided"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"a\",\"string\",[\"STRING\",\"\\u00e9\"]],[\"b\",\"number\",[\"NUMBER\",\"5\"]],[\"c\",\"integer\",[\"INTEGER\",\"0\"]],[\"d\",\"boolean\",[\"BOOLEAN\",\"true\"]],[\"e\",\"YYYY-MM-DD\",[\"DATE\",\"2039-10-05\"]],[\"f\",\"HH:MM\",[\"TIME\",\"23:45\"]],[\"g\",\"provided|not_provided\",[\"ENUM\",\"not_provided\"]]]",
+        "id": "all_seven_tags_unsorted",
+        "semantic_rows": [
+          [
+            "g",
+            "provided|not_provided",
+            "not_provided"
+          ],
+          [
+            "b",
+            "number",
+            "5.00"
+          ],
+          [
+            "f",
+            "HH:MM",
+            "23:45"
+          ],
+          [
+            "a",
+            "string",
+            "\u00e9"
+          ],
+          [
+            "d",
+            "boolean",
+            true
+          ],
+          [
+            "e",
+            "YYYY-MM-DD",
+            "2039-10-05"
+          ],
+          [
+            "c",
+            "integer",
+            "-0"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "Z",
+            "string",
+            [
+              "STRING",
+              "x"
+            ]
+          ],
+          [
+            "a",
+            "string",
+            [
+              "STRING",
+              "x"
+            ]
+          ],
+          [
+            "\u00c5",
+            "string",
+            [
+              "STRING",
+              "x"
+            ]
+          ],
+          [
+            "\u00e9",
+            "string",
+            [
+              "STRING",
+              "x"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"Z\",\"string\",[\"STRING\",\"x\"]],[\"a\",\"string\",[\"STRING\",\"x\"]],[\"\\u00c5\",\"string\",[\"STRING\",\"x\"]],[\"\\u00e9\",\"string\",[\"STRING\",\"x\"]]]",
+        "id": "unsigned_UTF8_field_sorting",
+        "semantic_rows": [
+          [
+            "\u00e9",
+            "string",
+            "x"
+          ],
+          [
+            "Z",
+            "string",
+            "x"
+          ],
+          [
+            "\u00c5",
+            "string",
+            "x"
+          ],
+          [
+            "a",
+            "string",
+            "x"
+          ]
+        ]
+      },
+      {
+        "expected_rows": [
+          [
+            "d016_02",
+            "boolean",
+            [
+              "BOOLEAN",
+              "true"
+            ]
+          ]
+        ],
+        "expected_utf8": "[[\"d016_02\",\"boolean\",[\"BOOLEAN\",\"true\"]]]",
+        "id": "original_failure",
+        "semantic_rows": [
+          [
+            "d016_02",
+            "boolean",
+            true
+          ]
+        ]
+      }
+    ]
+  },
+  "other_exact_reuse_and_similarity_rules_unchanged": true,
+  "output_row_plans": [
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E1-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d001_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E1-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d002_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E1-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d003_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E1-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d004_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E1-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d005_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E2-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d006_01",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E2-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d007_01",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E2-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d008_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E2-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d009_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E2-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d010_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E3-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d011_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E3-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d012_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E3-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d013_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E3-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d014_02",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E3-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d015_02",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E4-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d016_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E4-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d017_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E4-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d018_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E4-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d019_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E4-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d020_01",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E5-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d021_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E5-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d022_01",
+          "historical_schema_type": "string",
+          "semantic_tag": "STRING"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E5-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d023_01",
+          "historical_schema_type": "option_a|option_b|option_c",
+          "semantic_tag": "ENUM"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E5-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d024_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E5-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d025_01",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E6-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d026_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E6-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d027_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E6-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d028_01",
+          "historical_schema_type": "string",
+          "semantic_tag": "STRING"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E6-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d029_02",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E6-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d030_02",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E7-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f031_01",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f031_02",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f031_03",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E7-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f032_01",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f032_02",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f032_03",
+          "historical_schema_type": "string",
+          "semantic_tag": "STRING"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E7-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f033_01",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f033_02",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f033_03",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E7-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f034_01",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f034_02",
+          "historical_schema_type": "option_a|option_b",
+          "semantic_tag": "ENUM"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f034_03",
+          "historical_schema_type": "string",
+          "semantic_tag": "STRING"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E7-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f035_01",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f035_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f035_03",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f035_04",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E1-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d036_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E1-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d037_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E1-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d038_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E1-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d039_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E1-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d040_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E2-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d041_01",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E2-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d042_01",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E2-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d043_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E2-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d044_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E2-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d045_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E3-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d046_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E3-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d047_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E3-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d048_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E3-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d049_02",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E3-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d050_02",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E4-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d051_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E4-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d052_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E4-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d053_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E4-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d054_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E4-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d055_01",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E5-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d056_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E5-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d057_01",
+          "historical_schema_type": "string",
+          "semantic_tag": "STRING"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E5-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d058_01",
+          "historical_schema_type": "option_a|option_b|option_c",
+          "semantic_tag": "ENUM"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E5-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d059_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E5-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d060_01",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E6-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d061_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E6-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d062_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E6-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d063_01",
+          "historical_schema_type": "string",
+          "semantic_tag": "STRING"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E6-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d064_02",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E6-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d065_02",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E7-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f066_01",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f066_02",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f066_03",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E7-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f067_01",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f067_02",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f067_03",
+          "historical_schema_type": "string",
+          "semantic_tag": "STRING"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E7-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f068_01",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f068_02",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f068_03",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E7-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f069_01",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f069_02",
+          "historical_schema_type": "option_a|option_b",
+          "semantic_tag": "ENUM"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f069_03",
+          "historical_schema_type": "string",
+          "semantic_tag": "STRING"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E7-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f070_01",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f070_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f070_03",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f070_04",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E1-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d071_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E2-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d072_01",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E3-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d073_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E4-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d074_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E5-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d075_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E6-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d076_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R2:E7-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f077_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f077_02",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f077_03",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E1-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d078_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E2-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d079_01",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E3-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d080_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E4-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d081_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E5-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d082_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E6-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d083_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "A:R3:E7-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f084_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f084_02",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f084_03",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E1-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d085_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E1-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d086_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E1-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d087_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E1-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d088_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E1-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d089_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E2-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d090_01",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E2-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d091_01",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E2-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d092_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E2-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d093_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E2-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d094_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E3-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d095_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E3-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d096_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E3-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d097_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E3-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d098_02",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E3-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d099_02",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E4-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d100_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E4-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d101_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E4-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d102_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E4-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d103_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E4-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d104_01",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E5-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d105_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E5-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d106_01",
+          "historical_schema_type": "string",
+          "semantic_tag": "STRING"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E5-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d107_01",
+          "historical_schema_type": "option_a|option_b|option_c",
+          "semantic_tag": "ENUM"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E5-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d108_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E5-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d109_01",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E6-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d110_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E6-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d111_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E6-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d112_01",
+          "historical_schema_type": "string",
+          "semantic_tag": "STRING"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E6-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d113_02",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E6-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d114_02",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E7-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f115_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f115_02",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f115_03",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E7-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f116_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f116_02",
+          "historical_schema_type": "string",
+          "semantic_tag": "STRING"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f116_03",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E7-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f117_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f117_02",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f117_03",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E7-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f118_01",
+          "historical_schema_type": "option_a|option_b",
+          "semantic_tag": "ENUM"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f118_02",
+          "historical_schema_type": "string",
+          "semantic_tag": "STRING"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f118_03",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E7-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f119_01",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f119_02",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f119_03",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f119_04",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E1-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d120_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E1-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d121_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E1-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d122_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E1-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d123_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E1-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d124_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E2-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d125_01",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E2-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d126_01",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E2-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d127_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E2-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d128_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E2-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d129_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E3-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d130_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E3-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d131_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E3-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d132_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E3-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d133_02",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E3-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d134_02",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E4-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d135_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E4-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d136_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E4-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d137_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E4-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d138_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E4-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d139_01",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E5-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d140_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E5-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d141_01",
+          "historical_schema_type": "string",
+          "semantic_tag": "STRING"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E5-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d142_01",
+          "historical_schema_type": "option_a|option_b|option_c",
+          "semantic_tag": "ENUM"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E5-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d143_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E5-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d144_01",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E6-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d145_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E6-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d146_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E6-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d147_01",
+          "historical_schema_type": "string",
+          "semantic_tag": "STRING"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E6-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d148_02",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E6-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d149_02",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E7-01:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f150_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f150_02",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f150_03",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E7-02:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f151_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f151_02",
+          "historical_schema_type": "string",
+          "semantic_tag": "STRING"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f151_03",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E7-03:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f152_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f152_02",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f152_03",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E7-04:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f153_01",
+          "historical_schema_type": "option_a|option_b",
+          "semantic_tag": "ENUM"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f153_02",
+          "historical_schema_type": "string",
+          "semantic_tag": "STRING"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f153_03",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E7-05:PRIMARY",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f154_01",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f154_02",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f154_03",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f154_04",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E1-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d155_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E2-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d156_01",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E3-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d157_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E4-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d158_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E5-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d159_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E6-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d160_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R2:E7-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f161_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f161_02",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f161_03",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E1-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d162_01",
+          "historical_schema_type": "YYYY-MM-DD",
+          "semantic_tag": "DATE"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E2-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d163_01",
+          "historical_schema_type": "HH:MM",
+          "semantic_tag": "TIME"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E3-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d164_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E4-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d165_02",
+          "historical_schema_type": "boolean",
+          "semantic_tag": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E5-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d166_01",
+          "historical_schema_type": "number",
+          "semantic_tag": "NUMBER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E6-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "d167_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    },
+    {
+      "answer_values_derived_later_per_variant": true,
+      "logical_base_id": "B:R3:E7-01:RESERVE",
+      "rendered_members_inherit_field_schema_tag_plan": true,
+      "sorted_output_row_plans": [
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f168_01",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f168_02",
+          "historical_schema_type": "provided|not_provided",
+          "semantic_tag": "ENUM"
+        },
+        {
+          "canonical_semantic_text": "UNAUTHORED",
+          "field_name": "f168_03",
+          "historical_schema_type": "integer",
+          "semantic_tag": "INTEGER"
+        }
+      ]
+    }
+  ],
+  "row_plans_are_metadata_not_serialized_answers": true,
+  "scope": "Accepted whole-answer encoding only; isolated vectors and value-free row plans, not corpus evaluation or checker repair"
+}
+```
