@@ -1,4 +1,82 @@
 {
+  "output_field_amendment_contract": {
+    "contract_id": "g-extract1.output-field-amendment.v1",
+    "accepted_v10_commit": "394d24121309ec9dce80e725b50dbe5eb60f6d2a",
+    "reviewed_blueprint_commit": "99707b4f13abd6533f1d09313bdb066793996be9",
+    "scope": {
+      "scored_logical_bases": 140,
+      "reserve_logical_bases": 28,
+      "rendered_variants": 192,
+      "all_output_fields": true,
+      "all_schema_types_and_output_roles": true,
+      "e5_members": ["CF1", "CF2"],
+      "all_e7_outputs": true
+    },
+    "exact_output_field_keys": [
+      "name", "schema_type", "required", "binding_kind",
+      "source_field", "producer_target", "label_removal", "absence_capable"
+    ],
+    "global_constants": {
+      "required": true,
+      "label_removal": false
+    },
+    "binding_construction": {
+      "SOURCE_COPY": {
+        "name": "$generated_source_field_identifier",
+        "schema_type": "$exact_bound_source_schema",
+        "required": true,
+        "binding_kind": "SOURCE_COPY",
+        "source_field": "$generated_source_field_identifier",
+        "producer_target": null,
+        "label_removal": false,
+        "absence_capable": false
+      },
+      "OPERATION_TARGET": {
+        "name": "$generated_operation_target",
+        "schema_type": "$exact_producer_result_schema",
+        "required": true,
+        "binding_kind": "OPERATION_TARGET",
+        "source_field": null,
+        "producer_target": "$generated_operation_target",
+        "label_removal": false,
+        "absence_capable": false
+      },
+      "EXPLICIT_ABSENCE": {
+        "name": "$generated_explicit_absence_field_identifier",
+        "schema_type": "provided|not_provided",
+        "required": true,
+        "binding_kind": "EXPLICIT_ABSENCE",
+        "source_field": "$generated_explicit_absence_field_identifier",
+        "producer_target": null,
+        "label_removal": false,
+        "absence_capable": true
+      }
+    },
+    "derivation_inputs": {
+      "generated_source_field_identifier": "existing lexical identifier generation; first appearance of distinct source field",
+      "generated_operation_target": "existing lexical identifier generation; stable topological node ordinal",
+      "generated_explicit_absence_field_identifier": "existing E7 presentation order and lexical source-field generation",
+      "exact_bound_source_schema": "exact schema identity of unique non-entity VALUE source fact",
+      "exact_producer_result_schema": "operation-semantics.v2 exact producer schema; no widening or coercion"
+    },
+    "output_order": "unsigned UTF-8 name bytes ascending",
+    "output_role_separate_metadata": true,
+    "output_role_derivation_unchanged": true,
+    "author_selectable_output_fields": [],
+    "nonconforming_output_metadata": "AUTHORING_ERROR",
+    "scoring": {
+      "leading_label_normalization_permitted": false,
+      "string_entity_equality": "exact case, whitespace, punctuation and Unicode scalar sequence",
+      "labels_not_stripped": ["the", "Order", "Vendor"],
+      "general_historical_comparator_capability_removed": false,
+      "historical_operational_validator_changed": false
+    },
+    "rationale": "Generated controlled values do not require label-stripping tolerance; allowing it would change semantic scoring without serving the target construct.",
+    "blueprint_update_authorized_by_this_amendment": false,
+    "corpus_gold_authoring_authorized": false,
+    "implementation_authorized": false,
+    "execution_authorized": false
+  },
   "e5_counterfactual_selector_contract": {
     "contract_id": "g-extract1.e5-counterfactual-selector.v1",
     "precedence": "E5-only extension supersedes v9 single-variant accounting, anchor selected-index/rank scoring, seed/lexical uniqueness and within-pair contamination. All cross-base and nonE5 rules unchanged.",
@@ -287,7 +365,7 @@
   "experiment": {
     "id": "G-EXTRACT1",
     "name": "Prospective Structured-Extraction Requalification and Generalization Test",
-    "status": "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_10",
+    "status": "READY_FOR_G_EXTRACT1_OUTPUT_FIELD_AMENDMENT_REREVIEW",
     "design_only": true,
     "implemented": false,
     "blueprint_authorized": false,
@@ -2803,7 +2881,9 @@
       "OPERATION_TARGET": "source_field is null; producer_target equals exactly one operation target; absence_capable is false",
       "EXPLICIT_ABSENCE": "source_field equals generated output name and identifies exactly one EXPLICIT_ABSENCE fact; producer_target null; schema provided|not_provided; gold not_provided; absence_capable true",
       "name_and_source_identifier_rule": "source_field is a generated f identifier; producer_target a generated d identifier; output name is exactly its binding identifier",
-      "label_removal": "boolean fixed before gold review; when true only exact-value-contract label-removal semantics apply",
+      "required": true,
+      "label_removal": false,
+      "construction_contract_ref": "output_field_amendment_contract",
       "ordinary_source_copy_binding": "the unique VALUE fact whose field_identifier equals source_field and whose entity_selector_value is null supplies the output value",
       "entity_source_copy_prohibited": true,
       "operation_target_uniqueness": "each producer_target binds at most one output field; intermediate targets may be unbound",
@@ -4043,6 +4123,8 @@
         "Vendor"
       ],
       "label_removal_rule": "exact leading listed label plus one following space only",
+      "g_extract1_output_field_contract_ref": "output_field_amendment_contract",
+      "g_extract1_leading_label_normalization_permitted": false,
       "json_object": "key order and insignificant JSON whitespace ignored recursively; duplicates, extras, omissions and nulls invalid",
       "arrays_and_nested_values": "prohibited in scored baseline extraction schemas",
       "date": "exact zero-padded YYYY-MM-DD, valid proleptic Gregorian date, start date day zero for plus-N-days",
@@ -6340,7 +6422,7 @@
     "reserve-equivalence bytes and subtype allocation matrix are frozen",
     "schema-derived contamination atom typing passes independent differential checks"
   ],
-  "final_verdict": "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_10",
+  "final_verdict": "READY_FOR_G_EXTRACT1_OUTPUT_FIELD_AMENDMENT_REREVIEW",
   "lexical_neutrality_contract": {
     "contract_id": "g-extract1.lexical-neutrality.v1",
     "all_model_facing_atoms_are_generated": true,

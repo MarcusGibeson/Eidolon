@@ -1,5 +1,18 @@
 # G-EXTRACT1 Design Revision Changelog
 
+## Narrow prospective output-field amendment to accepted V10
+
+Accepted design parent: `394d24121309ec9dce80e725b50dbe5eb60f6d2a`. Reviewed blueprint: `99707b4f13abd6533f1d09313bdb066793996be9`. Marcus authorized only this design/checking amendment; the blueprint remains byte-unchanged and still needs its separate repair/review.
+
+| Blueprint rereview finding | Disposition and prospective repair |
+|---|---|
+| `label_removal` remains an author-selected scoring flag | Resolved in design: constant false for every output/schema/role, primary/reserve and E5 member. Generated values need no stripping tolerance. General historical comparator capability is retained, but G-EXTRACT1 does not exercise it. |
+| Complete eight-key output construction is not bound | Resolved in design: required is always true; binding-specific ordered templates freeze names, exact schemas, source/producer nullability and absence capability. Existing identifier/type/role derivations remain unchanged; roles stay separate metadata. |
+| Validators can share the omission | Resolved for design checking: all 168 symbolic bases and 192 variants derive full eight-key outputs; flags, missing/extra keys and binding corruption are mutation-tested. The exact amended human annex is compared with JSON. No blueprint validator or blueprint artifact is changed. |
+| Old design directory inventory rejects the previously authorized blueprint | Checking compatibility only: allow exactly the five existing blueprint files, byte-bound to the reviewed commit. No wildcard, new content, rewrite or authority extension. |
+
+All other V10 machine rules are compared structurally against the accepted commit with an exact amendment-path allowlist. Historical prompt/comparator capabilities, subtype/value allocations, recurrence, contamination, reserves, schedules/seeds, gates and governance are unchanged. Historical adaptation remains 106/106. This is not scientific approval or corpus/gold authorization. Provider/model calls and corpus/gold/reserve content authoring are zero; G-ROUTE4 remains CLOSED FAILED; belief effects none.
+
 ## Candidate v10: authorized counterfactual correction
 
 Reviewed parent: `500f29dbfc157cd4a024976694da47e8f3e2e5b7`. The original unrestricted selector-blind allocation request was blocked with no edits. Marcus explicitly authorized counterfactual selector controls instead. Design/checking only; no corpus, reserve or blueprint authoring.

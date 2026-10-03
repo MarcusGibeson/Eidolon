@@ -1,8 +1,8 @@
-# G-EXTRACT1 Design Candidate v10
+# G-EXTRACT1 Design Candidate v10: Prospective Output-Field Amendment
 
-Status: `READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_10`
+Status: `READY_FOR_G_EXTRACT1_OUTPUT_FIELD_AMENDMENT_REREVIEW`
 
-This document and `DESIGN_CANDIDATE.json` are co-normative. The machine contract is `g-extract1.design-candidate.v10`. This checkpoint authorizes design rereview only. It authorizes no blueprint, fixture, implementation, pilot, freeze, or execution work.
+This document and `DESIGN_CANDIDATE.json` are co-normative. The machine contract remains `g-extract1.design-candidate.v10`, with the narrow prospective `g-extract1.output-field-amendment.v1`. This checkpoint authorizes amendment rereview only. The previously authored blueprint at `99707b4f13abd6533f1d09313bdb066793996be9` is unchanged and is not rebound or updated by this task. No corpus/gold, reserve content, implementation, pilot, freeze, or execution authority is granted.
 
 ## 1. Historical boundary and question
 
@@ -125,6 +125,8 @@ Every output field has exactly these keys:
 
 `binding_kind` is exactly one of `SOURCE_COPY`, `OPERATION_TARGET`, or `EXPLICIT_ABSENCE`.
 
+For every G-EXTRACT1 output, `required=true` and `label_removal=false`. There are no optional output fields and no label-removal exceptions across any schema, output role, 140 scored bases, 28 reserve bases, E5 CF1/CF2 member, or E7 output. These are constants, not choices for blueprint or corpus authors. The exact binding construction is frozen in the output-field amendment annex below; generated binding identifiers and exact schemas follow the existing lexical and type contracts. `output_role` remains separately derived metadata and is not a ninth canonical key.
+
 - `SOURCE_COPY`: `source_field` names exactly one non-entity VALUE fact; `producer_target` is null; `absence_capable` is false; source literal and schema must match the schema contract.
 - `OPERATION_TARGET`: `source_field` is null; `producer_target` names exactly one operation target; `absence_capable` is false; producer type and schema must match the operation contract.
 - `EXPLICIT_ABSENCE`: `source_field` equals the output name and exactly one EXPLICIT_ABSENCE fact; `producer_target` is null; schema is `provided|not_provided`; gold is `not_provided`; `absence_capable` is true.
@@ -186,7 +188,7 @@ The evaluator contract is `g-extract1.exact-value-comparator.v1`; it does not al
 - Integer output requires a lexical JSON integer. `5.0` and `5e0` fail an integer schema; `-0` equals zero semantically.
 - Number output uses exact decimals, so `5`, `5.0`, `5.00`, and `5e0` are semantically equal.
 - Unit conversion is limited to the finite operation catalog; unit-bearing strings remain exact and omitted units fail.
-- Strings/entities are exact in case, whitespace, punctuation, and Unicode scalar sequence except a field explicitly frozen with label removal may remove one leading `the`, `Order`, or `Vendor` plus one space.
+- Strings/entities are exact in case, whitespace, punctuation, and Unicode scalar sequence. Every G-EXTRACT1 output has `label_removal=false`: no leading `the`, `Order`, or `Vendor` is stripped. The comparator's general historical label-removal capability remains documented and unchanged, but this experiment never exercises it. Generated controlled values do not require that tolerance; enabling it would alter scoring without serving the target construct.
 - Object key order and insignificant JSON whitespace are ignored. Duplicate, extra, omitted, or null fields fail. Arrays and nested values are out of scope.
 - Dates are exact valid zero-padded Gregorian `YYYY-MM-DD`; calendar offset uses source date as day zero.
 - Times are exact `HH:MM`, with the temporal rules in `operation-semantics.v2`.
@@ -2785,3 +2787,164 @@ No fixture/reserve or blueprint is authored here. Checking vectors are determini
 }
 ```
 <!-- V10_NORMATIVE_END -->
+
+## 22. Narrow prospective output-field amendment
+
+The following exact objects are co-normative with JSON. The eight-key templates are metadata substitutions, not source values or gold. Output order and role derivation remain unchanged. Mutation checks cover every planned primary/reserve output and E5 member, and representative E1/E3/E4/E5/E6/E7 bindings. Corpus authors have no scoring-flag choice. Blueprint update, corpus/gold authoring and every execution-related phase still require separate authorization.
+
+<!-- OUTPUT_FIELD_AMENDMENT_NORMATIVE_BEGIN -->
+```json
+{
+  "output_field_amendment_contract": {
+    "contract_id": "g-extract1.output-field-amendment.v1",
+    "accepted_v10_commit": "394d24121309ec9dce80e725b50dbe5eb60f6d2a",
+    "reviewed_blueprint_commit": "99707b4f13abd6533f1d09313bdb066793996be9",
+    "scope": {
+      "scored_logical_bases": 140,
+      "reserve_logical_bases": 28,
+      "rendered_variants": 192,
+      "all_output_fields": true,
+      "all_schema_types_and_output_roles": true,
+      "e5_members": [
+        "CF1",
+        "CF2"
+      ],
+      "all_e7_outputs": true
+    },
+    "exact_output_field_keys": [
+      "name",
+      "schema_type",
+      "required",
+      "binding_kind",
+      "source_field",
+      "producer_target",
+      "label_removal",
+      "absence_capable"
+    ],
+    "global_constants": {
+      "required": true,
+      "label_removal": false
+    },
+    "binding_construction": {
+      "SOURCE_COPY": {
+        "name": "$generated_source_field_identifier",
+        "schema_type": "$exact_bound_source_schema",
+        "required": true,
+        "binding_kind": "SOURCE_COPY",
+        "source_field": "$generated_source_field_identifier",
+        "producer_target": null,
+        "label_removal": false,
+        "absence_capable": false
+      },
+      "OPERATION_TARGET": {
+        "name": "$generated_operation_target",
+        "schema_type": "$exact_producer_result_schema",
+        "required": true,
+        "binding_kind": "OPERATION_TARGET",
+        "source_field": null,
+        "producer_target": "$generated_operation_target",
+        "label_removal": false,
+        "absence_capable": false
+      },
+      "EXPLICIT_ABSENCE": {
+        "name": "$generated_explicit_absence_field_identifier",
+        "schema_type": "provided|not_provided",
+        "required": true,
+        "binding_kind": "EXPLICIT_ABSENCE",
+        "source_field": "$generated_explicit_absence_field_identifier",
+        "producer_target": null,
+        "label_removal": false,
+        "absence_capable": true
+      }
+    },
+    "derivation_inputs": {
+      "generated_source_field_identifier": "existing lexical identifier generation; first appearance of distinct source field",
+      "generated_operation_target": "existing lexical identifier generation; stable topological node ordinal",
+      "generated_explicit_absence_field_identifier": "existing E7 presentation order and lexical source-field generation",
+      "exact_bound_source_schema": "exact schema identity of unique non-entity VALUE source fact",
+      "exact_producer_result_schema": "operation-semantics.v2 exact producer schema; no widening or coercion"
+    },
+    "output_order": "unsigned UTF-8 name bytes ascending",
+    "output_role_separate_metadata": true,
+    "output_role_derivation_unchanged": true,
+    "author_selectable_output_fields": [],
+    "nonconforming_output_metadata": "AUTHORING_ERROR",
+    "scoring": {
+      "leading_label_normalization_permitted": false,
+      "string_entity_equality": "exact case, whitespace, punctuation and Unicode scalar sequence",
+      "labels_not_stripped": [
+        "the",
+        "Order",
+        "Vendor"
+      ],
+      "general_historical_comparator_capability_removed": false,
+      "historical_operational_validator_changed": false
+    },
+    "rationale": "Generated controlled values do not require label-stripping tolerance; allowing it would change semantic scoring without serving the target construct.",
+    "blueprint_update_authorized_by_this_amendment": false,
+    "corpus_gold_authoring_authorized": false,
+    "implementation_authorized": false,
+    "execution_authorized": false
+  },
+  "canonical_output_field_contract": {
+    "exact_keys": [
+      "name",
+      "schema_type",
+      "required",
+      "binding_kind",
+      "source_field",
+      "producer_target",
+      "label_removal",
+      "absence_capable"
+    ],
+    "binding_kind_enum": [
+      "SOURCE_COPY",
+      "OPERATION_TARGET",
+      "EXPLICIT_ABSENCE"
+    ],
+    "SOURCE_COPY": "source_field is a field_identifier naming exactly one VALUE source fact; producer_target is null; absence_capable is false",
+    "OPERATION_TARGET": "source_field is null; producer_target equals exactly one operation target; absence_capable is false",
+    "EXPLICIT_ABSENCE": "source_field equals generated output name and identifies exactly one EXPLICIT_ABSENCE fact; producer_target null; schema provided|not_provided; gold not_provided; absence_capable true",
+    "name_and_source_identifier_rule": "source_field is a generated f identifier; producer_target a generated d identifier; output name is exactly its binding identifier",
+    "required": true,
+    "label_removal": false,
+    "construction_contract_ref": "output_field_amendment_contract",
+    "ordinary_source_copy_binding": "the unique VALUE fact whose field_identifier equals source_field and whose entity_selector_value is null supplies the output value",
+    "entity_source_copy_prohibited": true,
+    "operation_target_uniqueness": "each producer_target binds at most one output field; intermediate targets may be unbound",
+    "output_role_enum": [
+      "source_copy",
+      "derived_number",
+      "derived_boolean",
+      "derived_date",
+      "derived_time",
+      "entity_bound_value",
+      "absence_sentinel"
+    ],
+    "schema_type": "must parse under g-extract1.schema-types.v1; aliases and unknown tokens are AUTHORING_ERROR",
+    "producer_schema_compatibility": "operation-semantics.v2 and schema-types.v1; schema identity exact",
+    "name": "SOURCE_COPY or EXPLICIT_ABSENCE name equals source_field; OPERATION_TARGET name equals producer_target; output fields sorted by unsigned UTF-8 name bytes"
+  },
+  "exact_value_semantic_rules": {
+    "integer": "JSON lexical integer only; 5 passes; 5.0 and 5e0 fail; -0 equals 0",
+    "number": "exact decimal value; 5, 5.0, 5.00 and 5e0 are equivalent; no binary-float tolerance",
+    "units": "only operation-definition unit_conversion_catalog conversions are permitted; unit-bearing strings exact; omission fails",
+    "string_entity": "exact Unicode scalar sequence, case, whitespace and punctuation; no normalization, trimming, aliases, abbreviation or case folding",
+    "removable_leading_labels": [
+      "the",
+      "Order",
+      "Vendor"
+    ],
+    "label_removal_rule": "exact leading listed label plus one following space only",
+    "g_extract1_output_field_contract_ref": "output_field_amendment_contract",
+    "g_extract1_leading_label_normalization_permitted": false,
+    "json_object": "key order and insignificant JSON whitespace ignored recursively; duplicates, extras, omissions and nulls invalid",
+    "arrays_and_nested_values": "prohibited in scored baseline extraction schemas",
+    "date": "exact zero-padded YYYY-MM-DD, valid proleptic Gregorian date, start date day zero for plus-N-days",
+    "time": "exact zero-padded 24-hour HH:MM with forward elapsed-time interpretation and explicit midnight rollover",
+    "timezone": "out of scope",
+    "thresholds": "literal >, >=, <, <= and equality"
+  }
+}
+```
+<!-- OUTPUT_FIELD_AMENDMENT_NORMATIVE_END -->

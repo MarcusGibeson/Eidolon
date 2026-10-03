@@ -2,6 +2,12 @@
 
 Both design files are co-normative. The v10 human annex embeds exact structured normative objects; the validator parses them and compares them with the machine contract. This checklist is an index of checks and reviewer obligations, not a proof of complete prose equivalence or scientific validity.
 
+## Prospective output-field amendment
+
+The additional parsed amendment annex binds `output_field_amendment_contract`, the complete canonical output-field contract and exact-value semantic rules. Every canonical output has exactly eight keys, `required=true`, `label_removal=false`, and binding-derived source/producer/absence fields. Output roles remain separate. No leading-label stripping is permitted in G-EXTRACT1; the general historical comparator capability remains available outside this experiment.
+
+Design validation derives value-free output metadata across all 168 bases/192 variants, including E5 CF1/CF2 and reserves and every E7 output. It rejects both scoring-flag mutations, missing/extra keys and incompatible bindings, and compares every non-amended machine rule to the accepted V10 commit. The reviewed blueprint is neither changed nor rebound; the inventory check recognizes only its five commit-bound files. PASS remains structural/cross-representation evidence, not scientific approval or later authority.
+
 ## Counterfactual extension
 
 Section21 and the parsed exact annex co-normatively bind `e5_counterfactual_selector_contract`, `counterfactual_accounting`, corpus/phases, cell gates, seeds, efficiency, analysis units and repeat reductions. Only E5 scoped sharing/accounting is extended; all cross-base scientific/governance rules remain binding.

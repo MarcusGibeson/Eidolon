@@ -22,6 +22,7 @@ ROOT = HERE.parents[1]
 HUMAN = HERE / "DESIGN_CANDIDATE.md"
 MACHINE = HERE / "DESIGN_CANDIDATE.json"
 REPORT = HERE / "DESIGN_VALIDATION_REPORT.json"
+OUTPUT_FIELD_AMENDMENT_SUMMARY: dict[str, Any] = {}
 
 
 class DuplicateKeyError(ValueError):
@@ -353,6 +354,8 @@ def validate_output_field_shape(field: dict[str, Any], schema: dict[str, Any]) -
         raise ValueError("output_name")
     if not isinstance(field["required"], bool) or not isinstance(field["label_removal"], bool):
         raise ValueError("output_booleans")
+    if field["required"] is not True or field["label_removal"] is not False:
+        raise ValueError("g_extract1_output_scoring_constants")
     if not isinstance(field["absence_capable"], bool):
         raise ValueError("output_absence_boolean")
     info = parse_schema_type(field["schema_type"], schema)
@@ -375,6 +378,29 @@ def validate_output_field_shape(field: dict[str, Any], schema: dict[str, Any]) -
     else:
         raise ValueError("binding_kind")
     return info
+
+
+def derive_canonical_output_field(
+    binding: str, schema_type: str, ordinal: int, binding_ordinal: int,
+    schema_contract: dict[str, Any],
+) -> dict[str, Any]:
+    """Value-free design checking only; no source facts or gold are created."""
+    if type(ordinal) is not int or not 1 <= ordinal <= 168:
+        raise ValueError("output_fixture_ordinal")
+    maximum = 2 if binding == "OPERATION_TARGET" else 99
+    if type(binding_ordinal) is not int or not 1 <= binding_ordinal <= maximum:
+        raise ValueError("output_binding_ordinal")
+    if binding not in {"SOURCE_COPY", "OPERATION_TARGET", "EXPLICIT_ABSENCE"}:
+        raise ValueError("output_binding_kind")
+    identifier = f"{'d' if binding == 'OPERATION_TARGET' else 'f'}{ordinal:03d}_{binding_ordinal:02d}"
+    field = dict(
+        name=identifier, schema_type=schema_type, required=True, binding_kind=binding,
+        source_field=None if binding == "OPERATION_TARGET" else identifier,
+        producer_target=identifier if binding == "OPERATION_TARGET" else None,
+        label_removal=False, absence_capable=binding == "EXPLICIT_ABSENCE",
+    )
+    validate_output_field_shape(field, schema_contract)
+    return field
 
 
 def _literal_value(raw: dict[str, Any], semantics: dict[str, Any]) -> tuple[str, Any]:
@@ -2613,16 +2639,178 @@ def validate_v10(contract: dict[str, Any], checks: list[str]) -> None:
             require(len(rows)==1 or len(rows)==2 and rows[0][0]==rows[1][0] and {x[1] for x in rows}=={'CF1','CF2'} and rows[0][2]==rows[1][2], 'v10_exact_seed_collision_scope:'+phase+str(seed),checks)
 
 
+def validate_output_field_amendment(
+    contract: dict[str, Any], human: str, checks: list[str],
+) -> dict[str, Any]:
+    amendment = contract["output_field_amendment_contract"]
+    require(amendment["contract_id"] == "g-extract1.output-field-amendment.v1", "output_amendment_id", checks)
+    require(amendment["accepted_v10_commit"] == "394d24121309ec9dce80e725b50dbe5eb60f6d2a", "output_amendment_parent", checks)
+    require(amendment["reviewed_blueprint_commit"] == "99707b4f13abd6533f1d09313bdb066793996be9", "output_amendment_blueprint_untouched", checks)
+    require(amendment["scope"] == dict(
+        scored_logical_bases=140, reserve_logical_bases=28, rendered_variants=192,
+        all_output_fields=True, all_schema_types_and_output_roles=True,
+        e5_members=["CF1", "CF2"], all_e7_outputs=True,
+    ), "output_amendment_universal_scope", checks)
+    require(amendment["global_constants"] == dict(required=True, label_removal=False), "output_amendment_constants", checks)
+    expected_keys = ["name", "schema_type", "required", "binding_kind", "source_field", "producer_target", "label_removal", "absence_capable"]
+    require(amendment["exact_output_field_keys"] == expected_keys, "output_amendment_eight_keys", checks)
+    identifiers = {
+        "SOURCE_COPY": "$generated_source_field_identifier",
+        "OPERATION_TARGET": "$generated_operation_target",
+        "EXPLICIT_ABSENCE": "$generated_explicit_absence_field_identifier",
+    }
+    expected_templates = {}
+    for binding, identifier in identifiers.items():
+        expected_templates[binding] = dict(
+            name=identifier,
+            schema_type="provided|not_provided" if binding == "EXPLICIT_ABSENCE" else "$exact_producer_result_schema" if binding == "OPERATION_TARGET" else "$exact_bound_source_schema",
+            required=True, binding_kind=binding,
+            source_field=None if binding == "OPERATION_TARGET" else identifier,
+            producer_target=identifier if binding == "OPERATION_TARGET" else None,
+            label_removal=False, absence_capable=binding == "EXPLICIT_ABSENCE",
+        )
+    require(amendment["binding_construction"] == expected_templates, "output_amendment_exact_templates", checks)
+    require(amendment["author_selectable_output_fields"] == [], "output_amendment_no_author_choice", checks)
+    require(amendment["output_role_separate_metadata"] and amendment["output_role_derivation_unchanged"], "output_amendment_roles_separate", checks)
+    require(amendment["scoring"] == dict(
+        leading_label_normalization_permitted=False,
+        string_entity_equality="exact case, whitespace, punctuation and Unicode scalar sequence",
+        labels_not_stripped=["the", "Order", "Vendor"],
+        general_historical_comparator_capability_removed=False,
+        historical_operational_validator_changed=False,
+    ), "output_amendment_exact_strings_no_historical_change", checks)
+    for key in ("blueprint_update_authorized_by_this_amendment", "corpus_gold_authoring_authorized", "implementation_authorized", "execution_authorized"):
+        require(amendment[key] is False, "output_amendment_no_authority:" + key, checks)
+
+    # Check preservation against the accepted artifact, not a copy of today's contract.
+    accepted = json.loads(subprocess.check_output([
+        "git", "-c", "safe.directory=" + ROOT.as_posix(), "show",
+        amendment["accepted_v10_commit"] + ":experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.json",
+    ], cwd=ROOT, encoding="utf-8"))
+    before_keys = set(accepted)
+    expected = copy.deepcopy(accepted)
+    expected["output_field_amendment_contract"] = amendment
+    expected["experiment"]["status"] = "READY_FOR_G_EXTRACT1_OUTPUT_FIELD_AMENDMENT_REREVIEW"
+    expected["final_verdict"] = "READY_FOR_G_EXTRACT1_OUTPUT_FIELD_AMENDMENT_REREVIEW"
+    field_contract = expected["family_assignment_contract"]["canonical_output_field_contract"]
+    field_contract.update(required=True, label_removal=False, construction_contract_ref="output_field_amendment_contract")
+    rules = expected["exact_value_contract"]["semantic_rules"]
+    rules.update(g_extract1_output_field_contract_ref="output_field_amendment_contract", g_extract1_leading_label_normalization_permitted=False)
+    require(contract == expected, "output_amendment_only_authorized_machine_paths_changed", checks)
+    unchanged = sorted(key for key in before_keys if accepted[key] == contract[key])
+    for key in unchanged:
+        require(accepted[key] == contract[key], "output_amendment_preserved_section:" + key, checks)
+
+    match = re.search(r"<!-- OUTPUT_FIELD_AMENDMENT_NORMATIVE_BEGIN -->\s*```json\s*(.*?)\s*```\s*<!-- OUTPUT_FIELD_AMENDMENT_NORMATIVE_END -->", human, re.DOTALL)
+    require(match is not None, "output_amendment_human_annex_present", checks)
+    require(json.loads(match.group(1)) == dict(
+        output_field_amendment_contract=amendment,
+        canonical_output_field_contract=contract["family_assignment_contract"]["canonical_output_field_contract"],
+        exact_value_semantic_rules=contract["exact_value_contract"]["semantic_rules"],
+    ), "output_amendment_exact_human_machine_objects", checks)
+
+    schema = contract["schema_type_contract"]
+    bases, variants, output_count, scored, reserves = 0, 0, 0, 0, 0
+    coverage: set[tuple[str, str, str]] = set()
+    for row in contract["template_recurrence_contract"]["positions"]:
+        phase, risk, slot, kind = row["position"].split(":")
+        family, index = slot.split("-")
+        reserve = kind == "RESERVE"
+        ordinal = fixture_ordinal(phase, risk, family, int(index), reserve)
+        fingerprint = planned_fingerprint(contract, phase + ":" + risk, slot, reserve)
+        graph, roles, _, _, _, layout = fingerprint
+        planned = []
+        if family == "E7":
+            for field_index, (role, st, _) in enumerate(layout[1], 1):
+                binding = "EXPLICIT_ABSENCE" if role == "EXPLICIT_ABSENCE" else "SOURCE_COPY"
+                planned.append(derive_canonical_output_field(binding, st, ordinal, field_index, schema))
+        else:
+            planned.append(derive_canonical_output_field("OPERATION_TARGET", roles[0][0], ordinal, len(graph), schema))
+        planned.sort(key=lambda field: field["name"].encode("utf-8"))
+        bases += 1
+        scored += not reserve
+        reserves += reserve
+        for member in (["CF1", "CF2"] if family == "E5" else ["SINGLE"]):
+            variants += 1
+            coverage.add((family, kind, member))
+            for field in planned:
+                output_count += 1
+                label = row["position"] + ":" + member + ":" + field["name"]
+                validate_output_field_shape(field, schema)
+                require(list(field) == expected_keys, "planned_output_eight_keys:" + label, checks)
+                require(field["required"] is True and field["label_removal"] is False, "planned_output_fixed_flags:" + label, checks)
+                binding = field["binding_kind"]
+                identifier = field["name"]
+                require(
+                    field["source_field"] == (None if binding == "OPERATION_TARGET" else identifier)
+                    and field["producer_target"] == (identifier if binding == "OPERATION_TARGET" else None)
+                    and field["absence_capable"] is (binding == "EXPLICIT_ABSENCE"),
+                    "planned_output_exact_binding:" + label, checks,
+                )
+                for flag, bad_value in (("label_removal", True), ("required", False)):
+                    bad = dict(field, **{flag: bad_value})
+                    try:
+                        validate_output_field_shape(bad, schema)
+                    except ValueError as error:
+                        require(str(error) == "g_extract1_output_scoring_constants", "planned_output_reject:" + flag + ":" + label, checks)
+                    else:
+                        raise AssertionError("accepted_scoring_flag_mutation:" + label)
+    require((bases, scored, reserves, variants) == (168, 140, 28, 192), "output_amendment_all_positions_variants", checks)
+    for family in ("E1", "E3", "E4", "E5", "E6", "E7"):
+        for kind in ("PRIMARY", "RESERVE"):
+            for member in (["CF1", "CF2"] if family == "E5" else ["SINGLE"]):
+                require((family, kind, member) in coverage, "output_amendment_representative:" + family + ":" + kind + ":" + member, checks)
+    for binding, st, identifier in (("SOURCE_COPY", "string", "f001_01"), ("OPERATION_TARGET", "integer", "d001_01"), ("EXPLICIT_ABSENCE", "provided|not_provided", "f001_01")):
+        field = derive_canonical_output_field(binding, st, 1, 1, schema)
+        for label, mutation in (
+            ("missing_key", {key: value for key, value in field.items() if key != "required"}),
+            ("extra_key", dict(field, output_role="source_copy")),
+            ("binding_corruption", dict(field, source_field=identifier) if binding == "OPERATION_TARGET" else dict(field, producer_target="d001_01")),
+        ):
+            try:
+                validate_output_field_shape(mutation, schema)
+            except ValueError:
+                checks.append("output_amendment_reject_shape:" + binding + ":" + label)
+            else:
+                raise AssertionError("output_amendment_accepted_shape_mutation:" + binding + ":" + label)
+    return dict(
+        contract_id=amendment["contract_id"], accepted_v10_commit=amendment["accepted_v10_commit"],
+        all_other_machine_rules_unchanged=True, unchanged_top_level_sections=unchanged,
+        logical_bases_checked=bases, scored_bases_checked=scored, reserve_bases_checked=reserves,
+        rendered_variants_checked=variants, planned_output_instances_checked=output_count,
+        scoring_flag_mutations_rejected=2 * output_count,
+        required=True, label_removal=False, output_roles_remain_separate=True,
+        scope="value-free design metadata and isolated mutations only; no corpus or gold authored",
+    )
+
+
+def validate_existing_blueprint_inventory(checks: list[str]) -> None:
+    directory = HERE / "blueprint"
+    if not directory.exists():
+        return
+    names = {".gitattributes", "BLUEPRINT.json", "BLUEPRINT.md", "BLUEPRINT_VALIDATION_REPORT.json", "validate_blueprint.py"}
+    require(directory.is_dir() and {path.name for path in directory.iterdir()} == names, "existing_blueprint_exact_inventory", checks)
+    for name in sorted(names):
+        path = directory / name
+        old = subprocess.check_output([
+            "git", "-c", "safe.directory=" + ROOT.as_posix(), "show",
+            "99707b4f13abd6533f1d09313bdb066793996be9:experiments/G-EXTRACT1-candidate/blueprint/" + name,
+        ], cwd=ROOT)
+        require(path.is_file() and path.read_bytes() == old, "existing_blueprint_unchanged:" + name, checks)
+
+
 def validate(contract: dict[str, Any], human: str) -> list[str]:
     COUNTERFACTUAL_AUDITS.clear()
+    OUTPUT_FIELD_AMENDMENT_SUMMARY.clear()
     checks: list[str] = []
     require(contract["schema_version"] == "g-extract1.design-candidate.v10", "schema_v10", checks)
-    require(contract["experiment"]["status"] == "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_10", "status_v10", checks)
+    require(contract["experiment"]["status"] == "READY_FOR_G_EXTRACT1_OUTPUT_FIELD_AMENDMENT_REREVIEW", "status_output_field_amendment", checks)
     require(contract["experiment"]["design_revision"] == 10, "design_revision_v10", checks)
     for field in ("implemented", "blueprint_authorized", "fixture_authoring_authorized", "execution_authorized"):
         require(contract["experiment"][field] is False, f"authority_false:{field}", checks)
     require(contract["experiment"]["provider_generation_calls"] == 0, "provider_calls_zero", checks)
     require(contract["experiment"]["belief_effects"] == "none", "belief_effects_none", checks)
+    OUTPUT_FIELD_AMENDMENT_SUMMARY.update(validate_output_field_amendment(contract, human, checks))
     validate_v7(contract, checks)
     validate_v8(contract, checks)
     validate_v9(contract, checks)
@@ -3049,7 +3237,7 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
         "g-extract1.integrity-events.v2", "g-extract1.result-state-machine.v3",
         "POST_CONTACT_GOLD_DEFECT_DISCOVERED", "UNVERIFIABLE_INTERRUPTION_CHECKPOINT",
         "RESERVE:{phase}:{round}:{primary_family}", "2026-10-01", "5-3",
-        "READY_FOR_G_EXTRACT1_DESIGN_REREVIEW_10", "does not prove scientific validity",
+        "READY_FOR_G_EXTRACT1_OUTPUT_FIELD_AMENDMENT_REREVIEW", "does not prove scientific validity",
         "SOURCE_COPY", "explicit partial absence", "both repeats semantically correct",
     ]
     for literal in human_literals:
@@ -3088,9 +3276,10 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     allowed = {
         "DESIGN_CANDIDATE.md", "DESIGN_CANDIDATE.json", "DESIGN_REVISION_CHANGELOG.md",
         "HUMAN_MACHINE_EQUIVALENCE_CHECKLIST.md", "DESIGN_VALIDATION_REPORT.json",
-        "validate_design.py",
+        "validate_design.py", "blueprint",
     }
     require(not [path.name for path in HERE.iterdir() if path.name not in allowed], "no_fixture_or_runtime_artifacts", checks)
+    validate_existing_blueprint_inventory(checks)
     return checks
 
 
@@ -3108,6 +3297,7 @@ def main() -> int:
         "scientific_validity_assessed": False,
         "adversarial_review_replaced": False,
         "check_count": len(checks),
+        "output_field_amendment": OUTPUT_FIELD_AMENDMENT_SUMMARY,
         "historical_adapter": historical_adaptation_summary(contract),
         "preserved_v8_sections":preserved_v8_sections(contract),
         "template_ledger_summary": {
