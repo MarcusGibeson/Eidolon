@@ -301,6 +301,85 @@ def projection(request,c):
     return [tags,kinds,surfaces]
 
 
+def whole_answer_value(schema, value, c):
+    """Independent typed parse: exact semantic object, never a display string."""
+    definition, choices = freshness_type(schema, c)
+    kind = definition['semantic_tag']
+    if kind in ('INTEGER', 'NUMBER'):
+        if isinstance(value, (bool, float)): raise ValueError('whole_answer_lossy_scalar')
+        if isinstance(value, str):
+            lexical = r'-?(?:0|[1-9][0-9]*)'
+            if kind == 'NUMBER': lexical += r'(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?'
+            if re.fullmatch(lexical, value, flags=re.ASCII) is None:
+                raise ValueError('whole_answer_bad_numeric_token')
+            exact = Fraction(Decimal(value))
+        elif isinstance(value, (int, Decimal, Fraction)):
+            try: exact = Fraction(value)
+            except (ValueError, OverflowError) as error:
+                raise ValueError('whole_answer_bad_exact_number') from error
+        else: raise ValueError('whole_answer_unsupported_number')
+        if kind == 'INTEGER' and exact.denominator != 1: raise ValueError('whole_answer_integer_domain')
+        if kind == 'NUMBER':
+            remaining = exact.denominator
+            for prime in (2, 5):
+                while remaining % prime == 0: remaining //= prime
+            if remaining != 1: raise ValueError('whole_answer_nonterminating_decimal')
+        return kind, exact
+    if kind == 'BOOLEAN':
+        if value is not True and value is not False: raise ValueError('whole_answer_not_boolean')
+        return kind, value
+    if kind == 'DATE' and type(value) is date: value = value.isoformat()
+    if kind == 'TIME' and isinstance(value, time):
+        if (value.second, value.microsecond, value.tzinfo) != (0, 0, None):
+            raise ValueError('whole_answer_time_not_minutes')
+        value = '%02d:%02d' % (value.hour, value.minute)
+    if not isinstance(value, str): raise ValueError('whole_answer_not_string')
+    if kind == 'DATE':
+        if not re.fullmatch(r'[0-9]{4}-[0-9]{2}-[0-9]{2}', value, flags=re.ASCII):
+            raise ValueError('whole_answer_bad_date_bytes')
+        date.fromisoformat(value)
+    if kind == 'TIME':
+        if not re.fullmatch(r'[012][0-9]:[0-5][0-9]', value, flags=re.ASCII) or int(value[:2]) > 23:
+            raise ValueError('whole_answer_bad_time_bytes')
+    if kind == 'ENUM' and value not in choices: raise ValueError('whole_answer_option_not_in_schema')
+    value.encode('utf-8', errors='strict')
+    return kind, value
+
+
+def whole_answer_render(kind, value):
+    if kind == 'INTEGER': return str(value.numerator)
+    if kind == 'NUMBER':
+        integral, remainder = divmod(abs(value.numerator), value.denominator)
+        digits = []
+        while remainder:
+            digit, remainder = divmod(remainder * 10, value.denominator)
+            digits.append(str(digit))
+        magnitude = str(integral) + ('.' + ''.join(digits) if digits else '')
+        return ('-' if value < 0 else '') + magnitude
+    if kind == 'BOOLEAN': return 'true' if value else 'false'
+    return value
+
+
+def whole_answer_bytes(rows, c):
+    if type(rows) is not list: raise ValueError('whole_answer_bad_rows')
+    by_name = {}
+    for record in rows:
+        if type(record) is not list or len(record) != 3: raise ValueError('whole_answer_bad_record')
+        name, schema, value = record
+        if not isinstance(name, str): raise ValueError('whole_answer_name_not_text')
+        if name in by_name: raise ValueError('whole_answer_duplicate_name')
+        name.encode('utf-8', errors='strict')
+        kind, parsed = whole_answer_value(schema, value, c)
+        by_name[name] = [name, schema, [kind, whole_answer_render(kind, parsed)]]
+    encoded_rows = [by_name[name] for name in sorted(by_name, key=lambda name: name.encode('utf-8'))]
+    return json.dumps(encoded_rows, separators=(',', ':'), ensure_ascii=True).encode('utf-8')
+
+
+def require_whole_answer_bytes(candidate, rows, c):
+    if not isinstance(candidate, bytes) or candidate != whole_answer_bytes(rows, c):
+        raise ValueError('whole_answer_encoding_not_canonical')
+
+
 def evidence(f,request,c):
     nodes,derived,resolve,_,_=evaluate(f,c)
     atoms=[]
@@ -327,7 +406,7 @@ def evidence(f,request,c):
         answer.append([field["name"],field["schema_type"],[t,cv]])
         if t in {"INTEGER","NUMBER","DATE","TIME"}: atoms.append(["GOLD",t,cv])
     eligible=any(x[1] in {"DATE","TIME"} for x in atoms) and any(x[1] in {"INTEGER","NUMBER"} for x in atoms)
-    return dict(raw_payload=dump(request["input"]),raw_values=freshness_from_source_facts(f["source_fact_records"],c).decode("utf-8"),identities=identities,answer=dump(answer).encode(),tuple=dump(atoms) if eligible else None,fp=fingerprint(f,c),projection=projection(request,c),ordinary=grams(request,c),content=grams(request,c,"content"),shape=grams(request,c,"shape"))
+    return dict(raw_payload=dump(request["input"]),raw_values=freshness_from_source_facts(f["source_fact_records"],c).decode("utf-8"),identities=identities,answer=whole_answer_bytes([[field['name'],field['schema_type'],f['gold_values'][field['name']]] for field in f['output_fields']],c),tuple=dump(atoms) if eligible else None,fp=fingerprint(f,c),projection=projection(request,c),ordinary=grams(request,c),content=grams(request,c,"content"),shape=grams(request,c,"shape"))
 
 
 def independent_pair(a,b,scaffold):

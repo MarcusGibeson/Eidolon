@@ -391,10 +391,70 @@ def request(fixture,p):
     return dict(prompt=D.assemble_prompt(subject,C["baseline_binding"]),input=dict(text=" ".join(D.render_fact(f,op["placeholder_type_system"],C["schema_type_contract"]) for f in fixture["source_fact_records"]),schema={f["name"]:f["schema_type"] for f in fixture["output_fields"]}))
 
 
+def whole_answer_text(schema, value):
+    """Local amended whole-answer semantics, separate from gold/tuple formatting."""
+    info, options = freshness_schema(schema)
+    semantic = info['semantic_tag']
+    if semantic in {'INTEGER', 'NUMBER'}:
+        if isinstance(value, (bool, float)) or not isinstance(value, (int, Decimal, Fraction, str)):
+            raise ValueError('whole_answer_inexact_numeric')
+        if isinstance(value, str):
+            pattern = r'-?(?:0|[1-9][0-9]*)'
+            if semantic == 'NUMBER': pattern += r'(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?'
+            if re.fullmatch(pattern, value, re.ASCII) is None:
+                raise ValueError('whole_answer_numeric_lexeme')
+        try:
+            exact = Fraction(value)
+        except (ValueError, OverflowError) as error:
+            raise ValueError('whole_answer_nonfinite_numeric') from error
+        if semantic == 'INTEGER':
+            if exact.denominator != 1: raise ValueError('whole_answer_noninteger')
+            return str(exact.numerator)
+        return fixed(exact).removesuffix('.0')
+    if semantic == 'BOOLEAN':
+        if type(value) is not bool: raise ValueError('whole_answer_boolean_type')
+        return 'true' if value else 'false'
+    if semantic == 'DATE' and type(value) is date: value = value.isoformat()
+    if semantic == 'TIME' and isinstance(value, time):
+        if value.second or value.microsecond or value.tzinfo is not None:
+            raise ValueError('whole_answer_time_resolution')
+        value = f'{value.hour:02d}:{value.minute:02d}'
+    if not isinstance(value, str): raise ValueError('whole_answer_text_type')
+    if semantic == 'DATE':
+        if re.fullmatch(r'[0-9]{4}-[0-9]{2}-[0-9]{2}', value, re.ASCII) is None:
+            raise ValueError('whole_answer_date_format')
+        date.fromisoformat(value)
+    if semantic == 'TIME' and re.fullmatch(r'(?:[01][0-9]|2[0-3]):[0-5][0-9]', value, re.ASCII) is None:
+        raise ValueError('whole_answer_time_format')
+    if semantic == 'ENUM' and value not in options: raise ValueError('whole_answer_enum_value')
+    value.encode('utf-8', errors='strict')
+    return value
+
+
+def whole_answer_bytes(semantic_rows):
+    if not isinstance(semantic_rows, list): raise ValueError('whole_answer_rows_type')
+    rows, seen = [], set()
+    for row in semantic_rows:
+        if not isinstance(row, list) or len(row) != 3: raise ValueError('whole_answer_row_shape')
+        field, schema, value = row
+        if not isinstance(field, str) or field in seen: raise ValueError('whole_answer_field_or_duplicate')
+        field.encode('utf-8', errors='strict')
+        seen.add(field)
+        info, _ = freshness_schema(schema)
+        rows.append([field, schema, [info['semantic_tag'], whole_answer_text(schema, value)]])
+    rows.sort(key=lambda row: row[0].encode('utf-8'))
+    return json.dumps(rows, ensure_ascii=True, separators=(',', ':')).encode('utf-8')
+
+
+def require_whole_answer_bytes(raw, semantic_rows):
+    if not isinstance(raw, bytes) or raw != whole_answer_bytes(semantic_rows):
+        raise ValueError('whole_answer_noncanonical_bytes')
+
+
 def cache(fixture,p,variant):
     r=request(fixture,p)
     payload=D.ordinal_neutral_payload(r)
-    answer=D.canonical_answer_bytes({f["name"]:dict(schema_type=f["schema_type"],value=fixture["gold_values"][f["name"]]) for f in fixture["output_fields"]},C["schema_type_contract"])
+    answer=whole_answer_bytes([[f["name"],f["schema_type"],fixture["gold_values"][f["name"]]] for f in fixture["output_fields"]])
     atoms=D.extract_date_number_atoms(fixture,C["operation_definition_contract"],C["schema_type_contract"],C["operation_semantics_contract"],C["entity_population_contract"])
     identities={compact(["ENTITY",e["selector_value"]]) for e in fixture["entities"]}
     identities|={compact(["IDENTIFIER",f["value"]["value"]]) for f in fixture["source_fact_records"] if f["value"] and f["value"]["kind"]=="string_literal" and f["value"]["value"].startswith("id_")}
