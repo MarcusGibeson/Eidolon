@@ -14,7 +14,9 @@ import subprocess
 HERE = Path(__file__).resolve().parent
 DESIGN = HERE.parent
 ROOT = DESIGN.parent.parent
-ACCEPTED = "394d24121309ec9dce80e725b50dbe5eb60f6d2a"
+SCIENTIFIC_BASIS = "394d24121309ec9dce80e725b50dbe5eb60f6d2a"
+ORIGINAL_BLUEPRINT = "99707b4f13abd6533f1d09313bdb066793996be9"
+ACCEPTED = "aef3e0900cba41481904c8a451c4ca28b9d46c53"
 SOURCE_NAMES = (
     "DESIGN_CANDIDATE.md", "DESIGN_CANDIDATE.json",
     "DESIGN_REVISION_CHANGELOG.md", "HUMAN_MACHINE_EQUIVALENCE_CHECKLIST.md",
@@ -65,7 +67,7 @@ def traceability():
         "subtype": [ref("/subtype_allocation_contract/slot_rows")],
         "operation_plan": [ref("/template_recurrence_contract/structural_wiring"), ref("/operation_semantics_contract"), ref("/operation_definition_contract")],
         "secondary_features": [ref("/family_assignment_contract/secondary_feature_derivations")],
-        "schema_plan": [ref("/schema_type_contract"), ref("/family_assignment_contract/canonical_output_field_contract"), ref("/template_recurrence_contract/fingerprint_classes")],
+        "schema_plan": [ref("/schema_type_contract"), ref("/family_assignment_contract/canonical_output_field_contract"), ref("/template_recurrence_contract/fingerprint_classes"), ref("/output_field_amendment_contract")],
         "value_shape_profile": [ref("/value_allocation_contract")],
         "comparison_allocation": [ref("/subtype_allocation_contract/comparison_slot_matrix")],
         "entity_plan": [ref("/entity_population_contract"), ref("/subtype_allocation_contract/enum_answer_positions"), ref("/e5_counterfactual_selector_contract")],
@@ -148,6 +150,32 @@ def typed_node_plan(graph, source_sequence, output_roles, row, ordinal, c):
     return nodes
 
 
+def canonical_output(binding, schema, ordinal, binding_ordinal, c):
+    amendment = c["output_field_amendment_contract"]
+    if binding not in amendment["binding_construction"]:
+        raise ValueError("BLUEPRINT_UPDATE_BLOCKED_BY_DESIGN_AMBIGUITY: output binding")
+    lex = c["lexical_neutrality_contract"]["identifier_generation"]
+    generator = lex["derived_target" if binding == "OPERATION_TARGET" else "source_field"]["format"]
+    identifier = generator.format(fixture_ordinal=ordinal, source_field_ordinal=binding_ordinal,
+                                  topological_node_ordinal=binding_ordinal)
+    substitutions = dict.fromkeys(("$generated_source_field_identifier", "$generated_operation_target",
+                                   "$generated_explicit_absence_field_identifier"), identifier)
+    substitutions.update({"$exact_bound_source_schema":schema, "$exact_producer_result_schema":schema})
+    field = {key:substitutions.get(value,value) if isinstance(value,str) else value
+             for key,value in amendment["binding_construction"][binding].items()}
+    if set(field) != set(amendment["exact_output_field_keys"]) or field["schema_type"] != schema:
+        raise ValueError("BLUEPRINT_UPDATE_BLOCKED_BY_DESIGN_AMBIGUITY: output construction")
+    return field
+
+
+def output_metadata(field, role, source_index, producer_index):
+    pointer = "/output_field_amendment_contract/binding_construction/" + field["binding_kind"] + "/"
+    return dict(name=field["name"], output_role=role, binding_source_field_ordinal=source_index,
+                producer_node=producer_index,
+                canonical_field_traceability={key:ref(pointer+key) for key in field},
+                output_role_ref=ref("/family_assignment_contract/output_role_derivation"))
+
+
 def position(row, c, helper):
     phase, risk, slot, kind = row["position"].split(":")
     family, index = slot.split("-")
@@ -161,17 +189,18 @@ def position(row, c, helper):
     ids = [node[0] for node in graph]
     composed = next((key for key, slots in allocation["composed_rows"].items() if slot in slots), "NONE")
     source_sequence = layout[1]
+    nodes = typed_node_plan(graph,source_sequence,output_roles,subtype,ordinal,c)
     output_fields = []
+    output_field_metadata = []
     if family == "E7":
         for i, (role, schema, _) in enumerate(source_sequence, 1):
-            output_fields.append(dict(name=f"f{ordinal:03d}_{i:02d}", schema_type=schema,
-                                      binding_kind="EXPLICIT_ABSENCE" if role == "EXPLICIT_ABSENCE" else "SOURCE_COPY",
-                                      binding_source_field_ordinal=i, producer_node=None,
-                                      output_role="absence_sentinel" if role == "EXPLICIT_ABSENCE" else "source_copy"))
+            field = canonical_output("EXPLICIT_ABSENCE" if role == "EXPLICIT_ABSENCE" else "SOURCE_COPY",schema,ordinal,i,c)
+            output_fields.append(field)
+            output_field_metadata.append(output_metadata(field,"absence_sentinel" if role == "EXPLICIT_ABSENCE" else "source_copy",i,None))
     else:
-        output_fields.append(dict(name=f"d{ordinal:03d}_{len(ids):02d}", schema_type=output_roles[0][0],
-                                  binding_kind="OPERATION_TARGET", binding_source_field_ordinal=None,
-                                  producer_node=len(ids)-1, output_role=output_roles[0][1]))
+        field = canonical_output("OPERATION_TARGET",nodes[-1]["result_schema_type"],ordinal,len(nodes),c)
+        output_fields.append(field)
+        output_field_metadata.append(output_metadata(field,output_roles[0][1],None,len(nodes)-1))
     entity = None
     if family == "E5":
         count, role = subtype["coverage_class"].split(":")
@@ -205,11 +234,12 @@ def position(row, c, helper):
                              within_family_slot=None if reserve else int(index),
                              generator_ref=ref("/lexical_neutrality_contract")),
         subtype=copy.deepcopy(subtype),
-        operation_plan=dict(nodes=typed_node_plan(graph,source_sequence,output_roles,subtype,ordinal,c),
+        operation_plan=dict(nodes=nodes,
                             node_count=len(graph), terminal_operation=ids[-1] if ids else "NONE",
                             structural_wiring_ref=ref("/template_recurrence_contract/structural_wiring"),
                             conversion_id=allocation["unit_conversion_assignment"][context] if "UNIT_CONVERSION" in ids else None),
         schema_plan=dict(source_fact_role_schema_entity_sequence=source_sequence, output_fields=output_fields,
+                         output_field_metadata=output_field_metadata,
                          output_schema_role_sequence=output_roles, exact_field_count=len(output_fields),
                          schema_contract_ref=ref("/schema_type_contract")),
         composed_quota_row=composed,
@@ -342,8 +372,13 @@ def build(c, helper, hashes):
     schedule=schedules(positions,variants,c)
     all_cells=[m["tier"]+":"+r for m in c["model_provider"]["models"] for r in ("R2","R3")]
     return dict(
-        schema_version="g-extract1.blueprint.v1", status="READY_FOR_G_EXTRACT1_BLUEPRINT_REREVIEW",
-        accepted_design=dict(commit=ACCEPTED, artifacts_sha256=hashes),
+        schema_version="g-extract1.blueprint.v1", status="READY_FOR_G_EXTRACT1_BLUEPRINT_REREVIEW_2",
+        accepted_design=dict(commit=ACCEPTED, artifacts_sha256=hashes,
+                             scientific_basis_commit=SCIENTIFIC_BASIS,
+                             output_field_amendment_commit=ACCEPTED,
+                             original_blueprint_commit=ORIGINAL_BLUEPRINT,
+                             design_side_digest_rebinding_required=False,
+                             design_checker_inventory_scope="historical amendment checkpoint at original_blueprint_commit; not validation of updated blueprint bytes"),
         authority=dict(blueprint_authoring=True, corpus_gold_authoring=False, implementation=False,
                        mechanical_pilot=False, execution_freeze=False, phase_a_execution=False, phase_b_execution=False),
         terminology=dict(logical_base="one scored/reserve position, regardless of pair expansion",
@@ -410,12 +445,15 @@ def build(c, helper, hashes):
 def markdown(bp):
     return """# G-EXTRACT1 Authoring Blueprint
 
-Status: READY_FOR_G_EXTRACT1_BLUEPRINT_REREVIEW. Blueprint authoring only.
+Status: READY_FOR_G_EXTRACT1_BLUEPRINT_REREVIEW_2. Mechanical blueprint update only.
 
 ## Authority And Scope
 
-Accepted scientific specification: commit `394d24121309ec9dce80e725b50dbe5eb60f6d2a`.
-The six accepted artifacts are byte-bound in BLUEPRINT.json. They are unchanged.
+Scientific basis: V10 commit `394d24121309ec9dce80e725b50dbe5eb60f6d2a`, plus the
+accepted output-field amendment `aef3e0900cba41481904c8a451c4ca28b9d46c53`.
+The six amended design artifacts are byte-bound to that amendment commit in
+BLUEPRINT.json and are unchanged by this update. Original blueprint lineage is
+`99707b4f13abd6533f1d09313bdb066793996be9`.
 BLUEPRINT.json is the complete value-free enumeration; its scientific_traceability
 maps every scientific dimension to the accepted JSON contract. The machine artifact
 is authoritative for enumerated IDs, schemas, allocations and schedule positions;
@@ -426,6 +464,35 @@ objects, final prompts or request bytes are authored. Frozen design expectation
 classes (E4 Boolean, enum position and E7 Boolean allocation) are copied constraints,
 not newly authored gold answers. Ranges, schema tokens, selector indices and
 identifier templates are blueprint metadata, not scored content.
+
+## Canonical Output Fields
+
+Every planned output materializes exactly eight keys: `name`, `schema_type`,
+`required`, `binding_kind`, `source_field`, `producer_target`, `label_removal`,
+`absence_capable`. Globally required=true and label_removal=false, including all
+families, schemas, roles, scored/reserve bases and E5 CF1/CF2 members. No optional
+output or label-stripping tolerance exists in G-EXTRACT1. The general historical
+comparator capability remains unchanged; this experiment does not exercise it.
+
+SOURCE_COPY: name/source_field equal the generated ordinary non-entity VALUE
+fact identifier, exact source schema, producer_target=null, absence_capable=false.
+OPERATION_TARGET: name/producer_target equal the generated operation target,
+exact producer result schema, source_field=null, absence_capable=false.
+EXPLICIT_ABSENCE: name/source_field equal the generated absence fact identifier,
+schema provided|not_provided, producer_target=null, absence_capable=true. No gold
+is authored here; the existing E7 gold derivation remains for future corpus work.
+
+Output roles stay in separate output_field_metadata, never a ninth canonical key.
+Each of the eight fields traces to the accepted amendment's binding construction;
+lexical/schema/role derivations retain the existing V10 contracts. Rendered rows
+inherit the canonical output array from their scientific_metadata_source base.
+Thus CF1/CF2 output objects are identical, even though their future gold differs.
+
+There are 220 logical output definitions: 144 non-E7 one-output bases plus 76 E7
+outputs. E7 primaries have 4 contexts x (3+3+3+3+4)=64 outputs; four subtype01
+reserves add 12. The 24 E5 CF2 members add 24 output instances: 244 rendered output
+instances total, 204 scored and 40 reserve. This is not a new fixture/observation
+denominator, and it changes no previous architecture/call/gate count.
 
 ## Enumeration
 
@@ -507,9 +574,14 @@ ordinals, variants, gates, schedules, seeds, reserve mappings, comparison scopes
 all qualified-cell subsets and traceability; mutation probes reject mismatches.
 The report claims structural/design equivalence only, not scientific validity,
 future content feasibility, transport correctness or execution readiness.
-The accepted design validator's closed directory inventory predates this separately
-authorized blueprint directory. It is not edited or treated as a new corpus check;
-this validator binds its exact accepted bytes and uses only value-free derivations.
+The accepted amendment's design checker pins the original blueprint as historical
+checkpoint evidence. That guard is not rebound: the amendment requires no mutable
+design-side digest of this later blueprint. All six design artifacts remain exact
+accepted bytes. This checker loads only their value-free derivation helpers; it
+does not invoke the old checkpoint inventory guard on updated blueprint files.
+Instead it checks the amended design binding, canonical outputs, and preservation
+of the original blueprint's other allocations. No design-side artifact changes
+or circular design/blueprint digest binding are introduced.
 
 G-ROUTE4 remains CLOSED FAILED. Provider/model calls, scored/reserve content and
 gold answers authored are zero; belief effects none; no autonomy or runtime work.
@@ -528,12 +600,127 @@ def resolve_pointer(c, reference):
     return value
 
 
+def check_output_object(field, expected_field, keys):
+    if set(field)!=set(keys) or len(field)!=8:
+        raise ValueError("canonical_output_exact_eight_keys")
+    if field["required"] is not True:
+        raise ValueError("canonical_required_true")
+    if field["label_removal"] is not False:
+        raise ValueError("canonical_label_removal_false")
+    if field["absence_capable"] is not expected_field["absence_capable"]:
+        raise ValueError("canonical_absence_boolean")
+    if field!=expected_field:
+        raise ValueError("canonical_output_binding_schema")
+
+
+def validate_output_plans(bp, c):
+    """Check from source/producer plans, independently of canonical_output()."""
+    checks = []
+    def require(ok, label):
+        if not ok:raise ValueError(label)
+        checks.append(label)
+    amendment = c["output_field_amendment_contract"]
+    keys = amendment["exact_output_field_keys"]
+    require(amendment["global_constants"] == dict(required=True,label_removal=False), "accepted_output_constants")
+    lex = c["lexical_neutrality_contract"]["identifier_generation"]
+    by_base = {p["logical_base_id"]:p for p in bp["logical_positions"]}
+    logical_count = e7_count = rendered_count = scored_count = reserve_count = pair_count = 0
+    schema_coverage = set()
+    for p in bp["logical_positions"]:
+        label = p["logical_base_id"]
+        plan = p["schema_plan"]
+        fields = plan["output_fields"]
+        metadata = plan["output_field_metadata"]
+        source = plan["source_fact_role_schema_entity_sequence"]
+        nodes = p["operation_plan"]["nodes"]
+        requirements = []
+        if p["family"] == "E7":
+            require(not nodes, "e7_zero_nodes:"+label)
+            row = next(x for x in c["subtype_allocation_contract"]["slot_rows"]["E7"] if x["slot_id"]==p["subtype_slot"])
+            require(len(fields)==len(row["domain"])+1, "e7_every_supported_and_absent_output:"+label)
+            require(all(entity == -1 for _,_,entity in source), "source_copy_non_entity:"+label)
+            for i,(role,schema,_) in enumerate(source,1):
+                binding = "EXPLICIT_ABSENCE" if role=="EXPLICIT_ABSENCE" else "SOURCE_COPY"
+                identifier = lex["source_field"]["format"].format(fixture_ordinal=p["fixture_ordinal"],source_field_ordinal=i)
+                requirements.append((binding,schema,identifier,"absence_sentinel" if role=="EXPLICIT_ABSENCE" else "source_copy",i,None))
+            e7_count += len(fields)
+        else:
+            require(len(fields)==1 and len(nodes) in (1,2), "one_producer_output:"+label)
+            producer = nodes[-1]
+            identifier = lex["derived_target"]["format"].format(fixture_ordinal=p["fixture_ordinal"],topological_node_ordinal=len(nodes))
+            require(producer["target_identifier"]==identifier,"producer_identifier:"+label)
+            requirements.append(("OPERATION_TARGET",producer["result_schema_type"],identifier,plan["output_schema_role_sequence"][0][1],None,len(nodes)-1))
+        require(len(fields)==len(metadata)==len(requirements), "output_and_metadata_cardinality:"+label)
+        require([f["name"] for f in fields]==sorted((f["name"] for f in fields),key=lambda name:name.encode()), "canonical_output_name_order:"+label)
+        for f,m,(binding,schema,identifier,role,source_index,producer_index) in zip(fields,metadata,requirements):
+            suffix = label+":"+identifier
+            require(set(f)==set(keys) and len(f)==8, "canonical_output_exact_eight_keys:"+suffix)
+            require(f["required"] is True, "canonical_required_true:"+suffix)
+            require(f["label_removal"] is False, "canonical_label_removal_false:"+suffix)
+            expected_field = dict(name=identifier,schema_type=schema,required=True,binding_kind=binding,
+                                  source_field=None if binding=="OPERATION_TARGET" else identifier,
+                                  producer_target=identifier if binding=="OPERATION_TARGET" else None,
+                                  label_removal=False,absence_capable=binding=="EXPLICIT_ABSENCE")
+            check_output_object(f,expected_field,keys)
+            require(f==expected_field, "canonical_output_binding_schema:"+suffix)
+            pointer = "/output_field_amendment_contract/binding_construction/"+binding+"/"
+            expected_metadata = dict(name=identifier,output_role=role,binding_source_field_ordinal=source_index,
+                                     producer_node=producer_index,canonical_field_traceability={key:ref(pointer+key) for key in keys},
+                                     output_role_ref=ref("/family_assignment_contract/output_role_derivation"))
+            require(m==expected_metadata, "output_roles_and_amendment_trace_separate:"+suffix)
+            for key,reference in m["canonical_field_traceability"].items():
+                require(resolve_pointer(c,reference)==amendment["binding_construction"][binding][key], "canonical_field_trace:"+suffix+":"+key)
+            schema_coverage.add(schema)
+        logical_count += len(fields)
+    for variant in bp["rendered_variants"]:
+        p = by_base[variant["logical_base_id"]]
+        require(variant["scientific_metadata_source"]==p["logical_base_id"], "rendered_output_inherits_base:"+variant["rendered_variant_id"])
+        fields = by_base[variant["scientific_metadata_source"]]["schema_plan"]["output_fields"]
+        rendered_count += len(fields)
+        if p["primary_or_reserve"]=="PRIMARY":scored_count+=len(fields)
+        else:reserve_count+=len(fields)
+        if p["family"]=="E5" and variant["variant_id"]=="CF1":
+            partners = [x for x in bp["rendered_variants"] if x["rendered_variant_id"]==variant["pair_partner"]]
+            require(len(partners)==1,"e5_exact_pair_partner:"+p["logical_base_id"])
+            partner = partners[0]
+            other = by_base[partner["scientific_metadata_source"]]["schema_plan"]["output_fields"]
+            require(fields==other,"e5_pair_output_equality:"+p["logical_base_id"])
+            pair_count += 1
+    require((logical_count,rendered_count,scored_count,reserve_count,e7_count)==(220,244,204,40,76),"output_definition_and_rendered_counts")
+    require({"integer","number","string","boolean","YYYY-MM-DD","HH:MM","provided|not_provided"} <= schema_coverage
+            and any(schema.startswith("option_a|") for schema in schema_coverage), "output_all_schema_categories")
+    return checks, dict(logical_output_definitions=logical_count,rendered_output_instances=rendered_count,
+                        scored_rendered_output_instances=scored_count,reserve_rendered_output_instances=reserve_count,
+                        e7_output_definitions=e7_count,e5_pairs_with_identical_outputs=pair_count,
+                        schema_coverage=sorted(schema_coverage),required=True,label_removal=False)
+
+
+def validate_original_preservation(bp):
+    original = json.loads(git("show",ORIGINAL_BLUEPRINT+":experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.json"))
+    projected = copy.deepcopy(bp)
+    projected["status"] = original["status"]
+    projected["accepted_design"] = original["accepted_design"]
+    projected["scientific_traceability"]["schema_plan"].remove(ref("/output_field_amendment_contract"))
+    for p in projected["logical_positions"]:
+        metadata = p["schema_plan"].pop("output_field_metadata")
+        fields = p["schema_plan"]["output_fields"]
+        p["schema_plan"]["output_fields"] = [dict(name=f["name"],schema_type=f["schema_type"],binding_kind=f["binding_kind"],
+                                                   binding_source_field_ordinal=m["binding_source_field_ordinal"],
+                                                   producer_node=m["producer_node"],output_role=m["output_role"])
+                                               for f,m in zip(fields,metadata)]
+    if projected!=original:raise ValueError("non_output_blueprint_allocation_changed")
+    return ["original_blueprint_all_other_allocations_unchanged"]
+
+
 def validate(bp, expected, c):
     checks=[]
     def require(ok,label):
         if not ok:raise ValueError(label)
         checks.append(label)
     require(set(bp)==set(expected),"exact_blueprint_top_level_keys")
+    output_checks,_ = validate_output_plans(bp,c)
+    checks.extend(output_checks)
+    checks.extend(validate_original_preservation(bp))
     for key in expected:require(bp[key]==expected[key],"accepted_derivation:"+key)
     ps=bp["logical_positions"];vs=bp["rendered_variants"]
     require(len(ps)==168,"168_logical_bases")
@@ -647,17 +834,43 @@ def main():
     validate_reserve_schedules(actual,c,checks)
     if (HERE/'BLUEPRINT.md').read_bytes()!=markdown(expected).encode():raise ValueError('human_machine_blueprint_mismatch')
     mutations=[('extra_top_key',lambda x:x.update(unauthorized_rule=True)),
-               ('third_member',lambda x:x['rendered_variants'].append(copy.deepcopy(next(v for v in x['rendered_variants'] if v['variant_id']=='CF1')))),
+               ('extra_cf2',lambda x:x['rendered_variants'].append(copy.deepcopy(next(v for v in x['rendered_variants'] if v['variant_id']=='CF2')))),
+               ('e5_transition',lambda x:next(v for v in x['rendered_variants'] if v['variant_id']=='CF2').update(selector_index=2)),
+               ('missing_cf2',lambda x:x['rendered_variants'].remove(next(v for v in x['rendered_variants'] if v['variant_id']=='CF2'))),
                ('ordinal',lambda x:x['logical_positions'][0].update(fixture_ordinal=168)),
                ('threshold',lambda x:x['cell_gate_specs']['phase_a']['e5_counterfactual_pairs'].update(minimum_correct_pairs=4)),
+               ('recurrence_class',lambda x:x['recurrence_ledger']['fingerprint_classes'].pop(next(iter(x['recurrence_ledger']['fingerprint_classes'])))),
+               ('gate_membership',lambda x:x['logical_positions'][0]['gate_membership'].update(false_clean=False)),
                ('seed',lambda x:x['schedule_plan']['phase_a'][0].update(seed=1)),
-               ('content',lambda x:x['logical_positions'][0].update(gold_values={'x':1})),
+               ('b_eligibility',lambda x:x['schedule_plan']['phase_b_maximum_template'][0].update(cell_id='UNQUALIFIED:R2')),
+               ('pair_exception_leakage',lambda x:x['comparison_scope'].update(pair_local_exception='all same-family pairs')),
+               ('inserted_gold',lambda x:x['logical_positions'][0].update(gold_values={'x':1})),
+               ('inserted_source',lambda x:x['logical_positions'][0].update(source_fact_records=[])),
+               ('unauthorized_authority',lambda x:x['authority'].update(corpus_gold_authoring=True)),
                ('reserve',lambda x:x['reserve_map'][0].update(covered_subtype_slot='03'))]
     for label,change in mutations:
         bad=copy.deepcopy(actual);change(bad)
         try:validate(bad,expected,c)
         except ValueError:checks.append('mutation_rejected:'+label)
         else:raise ValueError('mutation_accepted:'+label)
+    output_mutations=[('required_false',lambda f:f.update(required=False)),
+                      ('label_removal_true',lambda f:f.update(label_removal=True)),
+                      ('missing_required',lambda f:f.pop('required')),
+                      ('missing_label_removal',lambda f:f.pop('label_removal')),
+                      ('embedded_output_role',lambda f:f.update(output_role='source_copy')),
+                      ('wrong_binding_kind',lambda f:f.update(binding_kind='UNKNOWN')),
+                      ('wrong_source_field',lambda f:f.update(source_field='f999_99')),
+                      ('wrong_producer_target',lambda f:f.update(producer_target='d999_99')),
+                      ('wrong_absence_capable',lambda f:f.update(absence_capable=not f['absence_capable'])),
+                      ('wrong_schema_type',lambda f:f.update(schema_type='string' if f['schema_type']!='string' else 'number'))]
+    keys=c['output_field_amendment_contract']['exact_output_field_keys']
+    for p in actual['logical_positions']:
+        for field in p['schema_plan']['output_fields']:
+            for label,change in output_mutations:
+                bad=copy.deepcopy(field);change(bad)
+                try:check_output_object(bad,field,keys)
+                except ValueError:checks.append('output_mutation_rejected:'+p['logical_base_id']+':'+field['name']+':'+label)
+                else:raise ValueError('output_mutation_accepted:'+label)
     if {p.name for p in HERE.iterdir()}-set(FILES):raise ValueError('unexpected_blueprint_file')
     if (HERE/'.gitattributes').read_bytes()!=b'*.json text eol=lf\n*.md text eol=lf\n*.py text eol=lf\n.gitattributes text eol=lf\n':
         raise ValueError('blueprint_line_ending_policy_mismatch')
@@ -693,10 +906,16 @@ def main():
             membership.update(rendered_variants=sum(sum(v['logical_base_id']==p['logical_base_id'] for v in variants) for p in cell),
                               provider_observations=80 if phase=='A' else 40,e5_observations=20 if phase=='A' else 10,e7_observations=10 if phase=='A' else 5)
             gate_counts[phase][risk]=membership
+    _,output_counts=validate_output_plans(actual,c)
     report=dict(schema_version='g-extract1.blueprint-validation.v1', verdict='PASS',check_count=len(checks),
                 validation_scope='deterministic structural/design-equivalence only; not scientific or corpus approval',
                 accepted_design_commit=ACCEPTED, scientific_validity_proven=False,
-                counts=counts,gate_membership_counts=gate_counts,
+                counts=counts,gate_membership_counts=gate_counts,output_field_counts=output_counts,
+                amendment_binding=actual['accepted_design'],
+                all_non_output_allocations_equal_original_blueprint=True,
+                blueprint_mutation_categories=[label for label,_ in mutations],
+                output_mutation_categories=[label for label,_ in output_mutations],
+                output_mutations_checked=output_counts['logical_output_definitions']*len(output_mutations),
                 equivalence_report=actual['scientific_traceability'],
                 seed_collision_audit='PASS: only same-model/base/repeat CF1/CF2 sharing',phase_b_qualified_cell_subsets_checked=64,
                 reserve_schedule_cases_checked=29,

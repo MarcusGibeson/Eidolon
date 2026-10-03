@@ -1,11 +1,14 @@
 # G-EXTRACT1 Authoring Blueprint
 
-Status: READY_FOR_G_EXTRACT1_BLUEPRINT_REREVIEW. Blueprint authoring only.
+Status: READY_FOR_G_EXTRACT1_BLUEPRINT_REREVIEW_2. Mechanical blueprint update only.
 
 ## Authority And Scope
 
-Accepted scientific specification: commit `394d24121309ec9dce80e725b50dbe5eb60f6d2a`.
-The six accepted artifacts are byte-bound in BLUEPRINT.json. They are unchanged.
+Scientific basis: V10 commit `394d24121309ec9dce80e725b50dbe5eb60f6d2a`, plus the
+accepted output-field amendment `aef3e0900cba41481904c8a451c4ca28b9d46c53`.
+The six amended design artifacts are byte-bound to that amendment commit in
+BLUEPRINT.json and are unchanged by this update. Original blueprint lineage is
+`99707b4f13abd6533f1d09313bdb066793996be9`.
 BLUEPRINT.json is the complete value-free enumeration; its scientific_traceability
 maps every scientific dimension to the accepted JSON contract. The machine artifact
 is authoritative for enumerated IDs, schemas, allocations and schedule positions;
@@ -16,6 +19,35 @@ objects, final prompts or request bytes are authored. Frozen design expectation
 classes (E4 Boolean, enum position and E7 Boolean allocation) are copied constraints,
 not newly authored gold answers. Ranges, schema tokens, selector indices and
 identifier templates are blueprint metadata, not scored content.
+
+## Canonical Output Fields
+
+Every planned output materializes exactly eight keys: `name`, `schema_type`,
+`required`, `binding_kind`, `source_field`, `producer_target`, `label_removal`,
+`absence_capable`. Globally required=true and label_removal=false, including all
+families, schemas, roles, scored/reserve bases and E5 CF1/CF2 members. No optional
+output or label-stripping tolerance exists in G-EXTRACT1. The general historical
+comparator capability remains unchanged; this experiment does not exercise it.
+
+SOURCE_COPY: name/source_field equal the generated ordinary non-entity VALUE
+fact identifier, exact source schema, producer_target=null, absence_capable=false.
+OPERATION_TARGET: name/producer_target equal the generated operation target,
+exact producer result schema, source_field=null, absence_capable=false.
+EXPLICIT_ABSENCE: name/source_field equal the generated absence fact identifier,
+schema provided|not_provided, producer_target=null, absence_capable=true. No gold
+is authored here; the existing E7 gold derivation remains for future corpus work.
+
+Output roles stay in separate output_field_metadata, never a ninth canonical key.
+Each of the eight fields traces to the accepted amendment's binding construction;
+lexical/schema/role derivations retain the existing V10 contracts. Rendered rows
+inherit the canonical output array from their scientific_metadata_source base.
+Thus CF1/CF2 output objects are identical, even though their future gold differs.
+
+There are 220 logical output definitions: 144 non-E7 one-output bases plus 76 E7
+outputs. E7 primaries have 4 contexts x (3+3+3+3+4)=64 outputs; four subtype01
+reserves add 12. The 24 E5 CF2 members add 24 output instances: 244 rendered output
+instances total, 204 scored and 40 reserve. This is not a new fixture/observation
+denominator, and it changes no previous architecture/call/gate count.
 
 ## Enumeration
 
@@ -97,9 +129,14 @@ ordinals, variants, gates, schedules, seeds, reserve mappings, comparison scopes
 all qualified-cell subsets and traceability; mutation probes reject mismatches.
 The report claims structural/design equivalence only, not scientific validity,
 future content feasibility, transport correctness or execution readiness.
-The accepted design validator's closed directory inventory predates this separately
-authorized blueprint directory. It is not edited or treated as a new corpus check;
-this validator binds its exact accepted bytes and uses only value-free derivations.
+The accepted amendment's design checker pins the original blueprint as historical
+checkpoint evidence. That guard is not rebound: the amendment requires no mutable
+design-side digest of this later blueprint. All six design artifacts remain exact
+accepted bytes. This checker loads only their value-free derivation helpers; it
+does not invoke the old checkpoint inventory guard on updated blueprint files.
+Instead it checks the amended design binding, canonical outputs, and preservation
+of the original blueprint's other allocations. No design-side artifact changes
+or circular design/blueprint digest binding are introduced.
 
 G-ROUTE4 remains CLOSED FAILED. Provider/model calls, scored/reserve content and
 gold answers authored are zero; belief effects none; no autonomy or runtime work.
