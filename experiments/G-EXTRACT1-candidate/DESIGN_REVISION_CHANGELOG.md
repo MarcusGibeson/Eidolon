@@ -1,5 +1,33 @@
 # G-EXTRACT1 Design Revision Changelog
 
+## Prospective Freshness Canonicalization Amendment
+
+Parent: `01aafde7410a44085999aa4aa39f883618e78799`. This is serialization
+closure only, independently rereviewable; not checker repair or corpus approval.
+The existing 168-base untracked candidate corpus was constructed before this task
+and is immutable here. Earlier statements about zero authored corpus refer only
+to their historical checkpoints, not the current preserved authoring attempt.
+
+| Requested issue/control | Resolution |
+|---|---|
+| INTEGER `0` versus `"0"` | Both freshness row elements MUST be JSON strings. Integer semantic text is minimal base 10; signed zero becomes `"0"`. |
+| Schema identity versus semantic tag | First element is exact historical schema spelling/full finite-enum schema. Generic INTEGER/NUMBER/DATE/TIME/ENUM tags cannot replace schema bytes. |
+| NUMBER equivalence | Exact rational terminating-decimal rendering; plain notation, no plus/exponent/unnecessary zeros, integral values omit the decimal point, signed zero becomes `"0"`. No float or Decimal-context rounding. |
+| Other schemas | Boolean lowercase; date/time exact validated forms; string and enum values preserved exactly without similarity normalization. |
+| Scope/order/duplicates | VALUE facts only, source-record order, duplicates preserved; no fields/IDs/outputs/implicit absence. |
+| Byte representation | UTF-8, ensure_ascii=false, compact separators, no trailing newline; all values text, independent of host scalar types. |
+| Full schema tests | All primitive and blueprint-used finite enum schemas; numeric equivalence, distinct values, exact fractions, large numbers, strings/Unicode and ordered duplicate rows. Test-only noncanonical numeric lexemes do not loosen authoring metadata. |
+| Adversarial checks | Native scalars, generic tags, exponent/zero variants, capitalization/reformatting/trimming/ordinal substitution, sorting/deduplication, spacing/ASCII escaping and extra scope all reject. |
+| Other encodings | Whole answers, identity atoms, date-number tuples, fingerprints, similarity/views/scaffold residuals/historical projections unchanged. Freshness NUMBER text does not replace their existing encodings. |
+| Allocation/science preservation | Parent projection permits only the new contract and review-status paths. Counts, gates, schedules, seeds, budget, output amendment, contamination thresholds and historical rules remain unchanged. |
+| Corpus/gold/checkers | Seven pre-edit SHA-256 digests checked; candidate gold remains embedded in byte-identical candidates. Stop/diagnosis evidence and both corpus checkers preserved. No rescoring/regeneration/finalization. |
+| Blueprint | Five files checked against accepted 01aafde checkpoint, unchanged. Separate independent amendment rereview and authorized blueprint rebind required. |
+| Human/machine equivalence | Exact parsed freshness normative annex equals the new machine object; validator scope remains structural/cross-representation consistency, not scientific validity. |
+| Governance | Provider/model calls0, no runtime/execution, no historical rewrite, G-ROUTE4 CLOSED FAILED, belief effects none. Only six design/checking files authorized for commit. |
+
+All earlier sections below are checkpoint history; the current amendment changes
+no scientific rule and grants no later-phase authority.
+
 ## Prospective Contamination-Feasibility Repair
 
 Parent: `28fb6bbd3fb668265e4cc50cda0da0f9afdf3ce5`. Design/checking only;

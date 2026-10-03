@@ -24,6 +24,16 @@ MACHINE = HERE / "DESIGN_CANDIDATE.json"
 REPORT = HERE / "DESIGN_VALIDATION_REPORT.json"
 OUTPUT_FIELD_AMENDMENT_SUMMARY: dict[str, Any] = {}
 SCAFFOLD_AUDIT: dict[str, Any] = {}
+FRESHNESS_AMENDMENT_SUMMARY: dict[str, Any] = {}
+PRESERVED_CORPUS_DIGESTS = {
+    "corpus/AUTHORING_ATTEMPTS.json": "b9860b6bd4f662c46935773463bf6caf78035a1c2aa01c0b6a55e5100b9aa8da",
+    "corpus/AUTHORING_CANDIDATES.json": "f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068",
+    "corpus/AUTHORING_FEASIBILITY_REPORT.json": "8767a025c1123541cc858873aff41b60ecc1f8b0186d72ccc738761a24771433",
+    "corpus/FINALIZATION_FAILURE_REPORT.json": "588b6141e3c25b561dff49d7b004ca508468ed39f4dbef8a8e16c54f69918730",
+    "corpus/FRESHNESS_CANONICALIZATION_DIAGNOSIS_REPORT.json": "7395408dcf283821d19ed81f6986d64c47b4d31f9dd76d1c72481f7dff48a442",
+    "corpus/independent_contamination.py": "8bc9d4eee55cbd91aebfb82f9d77bb74592db92e7ba0df9b62f111899d6533b4",
+    "corpus/validate_corpus.py": "8ff1a923c914e31c42121903b9763fd1e9b97a8b01f6b19b7f35a1de4ce2273d"
+}
 
 
 class DuplicateKeyError(ValueError):
@@ -1855,6 +1865,7 @@ def validate_scaffold_amendment(contract: dict[str, Any], human: str, checks: li
     require(match is not None and json.loads(match.group(1)) == amendment,"scaffold_human_machine_complete_equivalence",checks)
     parent = json.loads(subprocess.check_output(["git","-c","safe.directory="+ROOT.as_posix(),"show",amendment["parent_commit"]+":experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.json"],cwd=ROOT))
     projected=copy.deepcopy(contract); projected.pop("declared_scaffold_overlap_contract")
+    projected.pop("freshness_canonicalization_contract", None)
     for key in ("experiment","final_verdict"):
         if key == "experiment": projected[key]["status"] = parent[key]["status"]
         else: projected[key] = parent[key]
@@ -2942,6 +2953,7 @@ def validate_output_field_amendment(
     rules = expected["exact_value_contract"]["semantic_rules"]
     rules.update(g_extract1_output_field_contract_ref="output_field_amendment_contract", g_extract1_leading_label_normalization_permitted=False)
     projection = copy.deepcopy(contract)
+    projection.pop("freshness_canonicalization_contract", None)
     if "declared_scaffold_overlap_contract" in projection:
         projection.pop("declared_scaffold_overlap_contract")
         projection["experiment"]["status"] = expected["experiment"]["status"]
@@ -3034,6 +3046,288 @@ def validate_output_field_amendment(
     )
 
 
+def freshness_semantic_text(schema_type: str, value: Any, contract: dict[str, Any]) -> str:
+    """Isolated design-test canonicalization, not a corpus-checker repair."""
+    info = parse_schema_type(schema_type, contract["schema_type_contract"])
+    semantic = info["semantic_tag"]
+    if semantic in {"INTEGER", "NUMBER"}:
+        if isinstance(value, (bool, float)):
+            raise ValueError("freshness_not_exact_numeric")
+        if isinstance(value, str):
+            pattern = r"-?(?:0|[1-9][0-9]*)" if semantic == "INTEGER" else r"-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?"
+            if re.fullmatch(pattern, value, re.ASCII) is None:
+                raise ValueError("freshness_numeric_lexeme")
+        elif not isinstance(value, (int, Fraction, Decimal)):
+            raise ValueError("freshness_numeric_type")
+        number = Fraction(value)
+        if semantic == "INTEGER":
+            if number.denominator != 1:
+                raise ValueError("freshness_nonintegral_integer")
+            return str(number.numerator)
+        # Integer-only long division avoids binary floats and Decimal context.
+        denominator = number.denominator
+        for prime in (2, 5):
+            while denominator % prime == 0:
+                denominator //= prime
+        if denominator != 1:
+            raise ValueError("freshness_nonterminating_number")
+        whole, remainder = divmod(abs(number.numerator), number.denominator)
+        digits = []
+        while remainder:
+            digit, remainder = divmod(remainder * 10, number.denominator)
+            digits.append(str(digit))
+        text = str(whole) + ("." + "".join(digits) if digits else "")
+        return ("-" if number < 0 else "") + text
+    if semantic == "BOOLEAN":
+        if not isinstance(value, bool):
+            raise ValueError("freshness_boolean_type")
+        return "true" if value else "false"
+    if semantic == "DATE" and isinstance(value, date) and not isinstance(value, datetime):
+        value = value.isoformat()
+    if semantic == "TIME" and isinstance(value, time):
+        if value.second or value.microsecond or value.tzinfo is not None:
+            raise ValueError("freshness_time_resolution")
+        value = value.strftime("%H:%M")
+    if not isinstance(value, str):
+        raise ValueError("freshness_string_type")
+    if semantic == "DATE":
+        if re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", value, re.ASCII) is None:
+            raise ValueError("freshness_date_format")
+        date.fromisoformat(value)
+    elif semantic == "TIME":
+        if re.fullmatch(r"(?:[01][0-9]|2[0-3]):[0-5][0-9]", value, re.ASCII) is None:
+            raise ValueError("freshness_time_format")
+    elif semantic == "ENUM" and value not in info["options"]:
+        raise ValueError("freshness_enum_value")
+    value.encode("utf-8", errors="strict")
+    return value
+
+
+def freshness_sequence_bytes(semantic_rows: list[list[Any]], contract: dict[str, Any]) -> bytes:
+    rows = []
+    for row in semantic_rows:
+        if not isinstance(row, list) or len(row) != 2 or not isinstance(row[0], str):
+            raise ValueError("freshness_row_shape")
+        schema_type, value = row
+        rows.append([schema_type, freshness_semantic_text(schema_type, value, contract)])
+    return json.dumps(rows, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+
+
+def freshness_from_source_facts(facts: list[dict[str, Any]], contract: dict[str, Any]) -> bytes:
+    rows = []
+    for fact in facts:
+        if fact["template_id"] == "EXPLICIT_ABSENCE":
+            continue
+        if fact["template_id"] != "VALUE":
+            raise ValueError("freshness_fact_template")
+        _, value, schema_type = _typed_source_value(
+            fact, contract["schema_type_contract"], contract["operation_semantics_contract"],
+        )
+        rows.append([schema_type, value])
+    return freshness_sequence_bytes(rows, contract)
+
+
+def require_freshness_bytes(raw: bytes, semantic_rows: list[list[Any]], contract: dict[str, Any]) -> None:
+    if not isinstance(raw, bytes) or raw != freshness_sequence_bytes(semantic_rows, contract):
+        raise ValueError("freshness_noncanonical_bytes")
+
+
+def validate_freshness_amendment(contract: dict[str, Any], human: str, checks: list[str]) -> dict[str, Any]:
+    amendment = contract["freshness_canonicalization_contract"]
+    parent_id = "01aafde7410a44085999aa4aa39f883618e78799"
+    require(amendment["contract_id"] == "g-extract1.freshness-canonicalization.v1", "freshness_contract_id", checks)
+    require(amendment["accepted_parent_commit"] == parent_id, "freshness_parent_identity", checks)
+    parent = json.loads(subprocess.check_output([
+        "git", "-c", "safe.directory=" + ROOT.as_posix(), "show",
+        parent_id + ":experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.json",
+    ], cwd=ROOT))
+    projected = copy.deepcopy(contract)
+    projected.pop("freshness_canonicalization_contract")
+    projected["experiment"]["status"] = parent["experiment"]["status"]
+    projected["final_verdict"] = parent["final_verdict"]
+    require(projected == parent, "freshness_only_new_contract_and_review_status_paths", checks)
+    for name in sorted(parent):
+        if name not in {"experiment", "final_verdict"}:
+            require(contract[name] == parent[name], "freshness_preserved_section:" + name, checks)
+    match = re.search(r"<!-- FRESHNESS_AMENDMENT_NORMATIVE_BEGIN -->\s*```json\s*(.*?)\s*```\s*<!-- FRESHNESS_AMENDMENT_NORMATIVE_END -->", human, re.DOTALL)
+    require(match is not None and json.loads(match.group(1)) == amendment, "freshness_exact_human_machine_annex", checks)
+    require(amendment["sequence"]["row_elements"] == "JSON strings only" and amendment["sequence"]["row_exact_length"] == 2, "freshness_two_strings", checks)
+    require(amendment["sequence"]["included_template_ids"] == ["VALUE"] and amendment["sequence"]["sorting"] is False, "freshness_value_only_source_order", checks)
+    require(amendment["schema_binding"]["primitive_spellings"] == contract["schema_type_contract"]["primitive_schema_tokens"], "freshness_exact_schema_binding", checks)
+    require(amendment["byte_serialization"]["ensure_ascii"] is False and amendment["byte_serialization"]["separators"] == [",", ":"] and amendment["byte_serialization"]["trailing_newline"] is False, "freshness_utf8_compact_no_newline", checks)
+    for name, value in amendment["authority"].items():
+        if name in {"independent_rereview_required", "separate_blueprint_rebind_required"}:
+            require(value is True, "freshness_later_review_required:" + name, checks)
+        elif name == "belief_effects":
+            require(value == "none", "freshness_belief_none", checks)
+        elif name == "provider_calls":
+            require(value == 0, "freshness_provider_zero", checks)
+        else:
+            require(value is False, "freshness_no_authority:" + name, checks)
+
+    vectors = amendment["validation_vectors"]
+    require(len({r["id"] for r in vectors}) == len(vectors), "freshness_unique_vector_ids", checks)
+    covered_schemas = set()
+    for vector in vectors:
+        actual = freshness_sequence_bytes(vector["semantic_rows"], contract)
+        require(actual == vector["expected_utf8"].encode("utf-8"), "freshness_vector_bytes:" + vector["id"], checks)
+        require(json.loads(actual) == vector["expected_sequence"], "freshness_vector_rows:" + vector["id"], checks)
+        require(all(len(r) == 2 and all(isinstance(x, str) for x in r) for r in json.loads(actual)), "freshness_vector_no_host_scalars:" + vector["id"], checks)
+        covered_schemas.update(row[0] for row in vector["semantic_rows"])
+    blueprint = load_json_unique(HERE / "blueprint/BLUEPRINT.json")
+    schema_surface = {row[1] for p in blueprint["logical_positions"] for row in p["schema_plan"]["source_fact_role_schema_entity_sequence"]}
+    require(covered_schemas == schema_surface, "freshness_full_blueprint_schema_surface", checks)
+    for group in amendment["equivalence_groups"]:
+        outputs = [freshness_sequence_bytes([[group["schema_type"], value]], contract) for value in group["values"]]
+        require(all(raw == group["expected_utf8"].encode() for raw in outputs), "freshness_equivalence:" + group["id"], checks)
+    for schema_type in ("integer", "number"):
+        values = [-1, 0, 1, 42, 10**70+1]
+        outputs = [freshness_sequence_bytes([[schema_type, value]], contract) for value in values]
+        require(len(set(outputs)) == len(values), "freshness_distinct_numeric_values:" + schema_type, checks)
+        for value, raw in zip(values, outputs):
+            for equivalent in (Fraction(value), Decimal(str(value)), str(value)):
+                require(freshness_sequence_bytes([[schema_type, equivalent]], contract) == raw, "freshness_host_exact_equivalence:" + schema_type + ":" + str(value) + ":" + type(equivalent).__name__, checks)
+    require(freshness_sequence_bytes([["number", Fraction(1, 8)]], contract) == b'[["number","0.125"]]', "freshness_exact_fraction", checks)
+    require(freshness_sequence_bytes([["number", Decimal("123456789012345678901234567890.125000")]], contract) == b'[["number","123456789012345678901234567890.125"]]', "freshness_no_decimal_context_rounding", checks)
+    require(freshness_sequence_bytes([["integer", "5"]], contract) != freshness_sequence_bytes([["number", "5"]], contract), "freshness_schema_types_remain_distinct", checks)
+    require(freshness_sequence_bytes([["string", "e\u0301"]], contract) != freshness_sequence_bytes([["string", "\u00e9"]], contract), "freshness_no_unicode_normalization", checks)
+
+    facts = [
+        dict(template_id="VALUE", field_identifier="f001_01", schema_type="integer", value=dict(kind="integer_literal", value="42"), entity_selector_value=None),
+        dict(template_id="EXPLICIT_ABSENCE", field_identifier="f001_02", schema_type="provided|not_provided", value=None, entity_selector_value=None),
+        dict(template_id="VALUE", field_identifier="f001_03", schema_type="integer", value=dict(kind="integer_literal", value="42"), entity_selector_value=None),
+        dict(template_id="VALUE", field_identifier="f001_04", schema_type="number", value=dict(kind="integer_literal", value="5"), entity_selector_value=None),
+    ]
+    require(freshness_from_source_facts(facts, contract) == b'[["integer","42"],["integer","42"],["number","5"]]', "freshness_source_record_scope_order_duplicates", checks)
+    renamed = copy.deepcopy(facts)
+    for i, fact in enumerate(renamed):
+        fact["field_identifier"] = f"f168_{i+1:02d}"
+    require(freshness_from_source_facts(renamed, contract) == freshness_from_source_facts(facts, contract), "freshness_no_field_names_or_fixture_ids", checks)
+
+    def packed(rows: list[list[Any]]) -> bytes:
+        return json.dumps(rows, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+
+    mutation_rows = {
+        "integer_numeric_scalar": ([["integer", "0"]], [["integer", 0]]),
+        "number_numeric_scalar": ([["number", "5"]], [["number", 5]]),
+        "number_exponent_retained": ([["number", "5e0"]], [["number", "5e0"]]),
+        "number_trailing_zeroes_retained": ([["number", "0.50"]], [["number", "0.50"]]),
+        "number_empty_fraction_point_retained": ([["number", "5.0"]], [["number", "5."]]),
+        "negative_zero_retained": ([["number", "-0.0"]], [["number", "-0"]]),
+        "integer_leading_plus": ([["integer", "1"]], [["integer", "+1"]]),
+        "integer_leading_zeroes": ([["integer", "1"]], [["integer", "01"]]),
+        "boolean_capitalized": ([["boolean", True]], [["boolean", "True"]]),
+        "date_reformatted": ([["YYYY-MM-DD", "2039-10-05"]], [["YYYY-MM-DD", "10/05/2039"]]),
+        "time_reformatted": ([["HH:MM", "23:45"]], [["HH:MM", "11:45 PM"]]),
+        "string_trimmed": ([["string", " label_001_01 "]], [["string", "label_001_01"]]),
+        "enum_ordinal": ([["option_a|option_b", "option_b"]], [["option_a|option_b", 1]]),
+        "atoms_sorted": ([["string", "label_001_01"], ["integer", "42"]], [["integer", "42"], ["string", "label_001_01"]]),
+        "duplicate_removed": ([["integer", "42"], ["integer", "42"]], [["integer", "42"]]),
+        "row_missing_element": ([["integer", "0"]], [["integer"]]),
+        "row_extra_element": ([["integer", "0"]], [["integer", "0", "extra"]]),
+        "null_value": ([["integer", "0"]], [["integer", None]]),
+        "object_value": ([["integer", "0"]], [["integer", {}]]),
+        "array_value": ([["integer", "0"]], [["integer", []]]),
+        "schema_enum_reordered": ([["option_a|option_b", "option_b"]], [["option_b|option_a", "option_b"]]),
+        "absence_included": ([["integer", "42"]], [["integer", "42"], ["provided|not_provided", "not_provided"]]),
+        "derived_output_included": ([["integer", "42"]], [["integer", "42"], ["integer", "84"]]),
+    }
+    for schema_type, value, generic in (
+        ("integer", "0", "INTEGER"), ("number", "5", "NUMBER"),
+        ("YYYY-MM-DD", "2039-10-05", "DATE"), ("HH:MM", "23:45", "TIME"),
+        ("string", "label_001_01", "STRING"), ("boolean", "true", "BOOLEAN"),
+        ("option_a|option_b", "option_a", "ENUM"),
+    ):
+        semantic = True if schema_type == "boolean" else value
+        mutation_rows["semantic_tag_" + generic.lower()] = ([[schema_type, semantic]], [[generic, value]])
+    mutations = [(label, rows, packed(changed)) for label, (rows, changed) in mutation_rows.items()]
+    mutations.extend([
+        ("whitespace_formatted_json", [["integer", "0"]], b'[["integer", "0"]]'),
+        ("ensure_ascii_true_non_ascii", [["string", "\u00e9"]], json.dumps([["string", "\u00e9"]], ensure_ascii=True, separators=(",", ":")).encode()),
+        ("trailing_newline", [["integer", "0"]], b'[["integer","0"]]\n'),
+    ])
+    require({label for label, _, _ in mutations} == set(amendment["mutation_catalog"]), "freshness_mutation_catalog_exact_coverage", checks)
+    for label, rows, mutated in mutations:
+        try:
+            require_freshness_bytes(mutated, rows, contract)
+        except ValueError:
+            rejected = True
+        else:
+            rejected = False
+        require(rejected, "freshness_mutation_rejected:" + label, checks)
+    invalid_inputs = [
+        ("integer", True), ("integer", 5.0), ("integer", "5e0"),
+        ("integer", "05"), ("integer", "+5"), ("integer", Fraction(1, 2)),
+        ("number", 0.5), ("number", True), ("number", "NaN"), ("number", Fraction(1, 3)),
+        ("boolean", "True"), ("boolean", 1), ("YYYY-MM-DD", "2039-02-29"),
+        ("YYYY-MM-DD", "2039-1-05"), ("HH:MM", "24:00"), ("HH:MM", "3:45"),
+        ("option_a|option_b", 0), ("option_a|option_b", "option_c"),
+        ("DATE", "2039-10-05"), ("string", None), ("string", "\ud800"),
+    ]
+    for i, (schema_type, value) in enumerate(invalid_inputs):
+        try:
+            freshness_sequence_bytes([[schema_type, value]], contract)
+        except (ValueError, TypeError, UnicodeEncodeError):
+            rejected = True
+        else:
+            rejected = False
+        require(rejected, f"freshness_invalid_semantic_input:{i}", checks)
+
+    # These are preservation digests only; do not read/score candidate content.
+    preserved = {}
+    directory = HERE / "corpus"
+    require({p.name for p in directory.iterdir()} == {Path(p).name for p in PRESERVED_CORPUS_DIGESTS}, "freshness_preserved_corpus_inventory", checks)
+    for name, expected in PRESERVED_CORPUS_DIGESTS.items():
+        actual = sha256(HERE / name)
+        require(actual == expected, "freshness_preserved_corpus_bytes:" + name, checks)
+        preserved[name] = dict(before_sha256=expected, after_sha256=actual, byte_identical=True)
+    # Hash the existing gold projection only; do not derive or adjudicate gold.
+    candidates = load_json_unique(directory / "AUTHORING_CANDIDATES.json")
+    gold_projection = [[row["logical_base_id"], row["fixture"]["gold_values"]] for row in candidates["accepted"]]
+    gold_hash = hashlib.sha256(json.dumps(gold_projection, sort_keys=True, ensure_ascii=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+    gold_before = "803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec"
+    require(gold_hash == gold_before, "freshness_preserved_gold_projection", checks)
+    blueprint_digests = {}
+    for path in sorted((HERE / "blueprint").iterdir()):
+        old = subprocess.check_output([
+            "git", "-c", "safe.directory=" + ROOT.as_posix(), "show",
+            parent_id + ":experiments/G-EXTRACT1-candidate/blueprint/" + path.name,
+        ], cwd=ROOT)
+        before = hashlib.sha256(old).hexdigest()
+        after = sha256(path)
+        require(before == after, "freshness_preserved_blueprint_digest:" + path.name, checks)
+        blueprint_digests[path.name] = dict(before_sha256=before, after_sha256=after, byte_identical=True)
+    groups = blueprint["comparison_scope"]["scaffold_overlap"]["classes"]
+    scaffold_pairs = {frozenset(pair) for row in groups for pair in row["rendered_position_pairs"]}
+    positions = {p["logical_base_id"]: p for p in blueprint["logical_positions"]}
+    counts = dict(same_base_e5=0, scaffold=0, same_subtype=0, ordinary=0)
+    for a, b in itertools.combinations(blueprint["rendered_variants"], 2):
+        if a["logical_base_id"] == b["logical_base_id"]:
+            counts["same_base_e5"] += 1
+        elif frozenset((a["rendered_variant_id"], b["rendered_variant_id"])) in scaffold_pairs:
+            counts["scaffold"] += 1
+        elif positions[a["logical_base_id"]]["subtype_slot"] == positions[b["logical_base_id"]]["subtype_slot"]:
+            counts["same_subtype"] += 1
+        else:
+            counts["ordinary"] += 1
+    require(counts == dict(same_base_e5=24, scaffold=906, same_subtype=518, ordinary=16888), "freshness_blueprint_comparison_partition_preserved", checks)
+    require(len(groups) == 14 and sum(len(r["logical_position_pairs"]) for r in groups) == 234, "freshness_scaffold_membership_preserved", checks)
+    require((len(positions), len(blueprint["rendered_variants"]), len(blueprint["reserve_map"])) == (168, 192, 28), "freshness_architecture_preserved", checks)
+    return dict(
+        contract_id=amendment["contract_id"], parent_commit=parent_id,
+        semantic_vector_count=len(vectors), numeric_equivalence_groups=len(amendment["equivalence_groups"]),
+        mutation_count=len(mutations), mutations_rejected=len(mutations),
+        invalid_semantic_inputs_rejected=len(invalid_inputs), canonical_case=amendment["original_failure_semantic_vector"]["expected_utf8"],
+        preserved_corpus_files=preserved, blueprint_unchanged_commit=parent_id,
+        preserved_gold_projection=dict(before_sha256=gold_before, after_sha256=gold_hash, byte_identical=True),
+        preserved_blueprint_files=blueprint_digests,
+        comparison_partition=counts, corpus_content_used_for_rule_choice=False,
+        existing_corpus_checker_repaired=False, corpus_finalized=False,
+        gold_byte_identity_evidence="entire AUTHORING_CANDIDATES.json SHA-256 unchanged; embedded gold therefore unchanged; no gold rescoring",
+        scope="isolated design vectors and byte preservation only; no concrete corpus contamination campaign",
+    )
+
+
 def validate_existing_blueprint_inventory(checks: list[str]) -> None:
     directory = HERE / "blueprint"
     if not directory.exists():
@@ -3044,7 +3338,7 @@ def validate_existing_blueprint_inventory(checks: list[str]) -> None:
         path = directory / name
         old = subprocess.check_output([
             "git", "-c", "safe.directory=" + ROOT.as_posix(), "show",
-            "28fb6bbd3fb668265e4cc50cda0da0f9afdf3ce5:experiments/G-EXTRACT1-candidate/blueprint/" + name,
+            "01aafde7410a44085999aa4aa39f883618e78799:experiments/G-EXTRACT1-candidate/blueprint/" + name,
         ], cwd=ROOT)
         require(path.is_file() and path.read_bytes() == old, "existing_blueprint_unchanged:" + name, checks)
 
@@ -3054,7 +3348,8 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     OUTPUT_FIELD_AMENDMENT_SUMMARY.clear()
     checks: list[str] = []
     require(contract["schema_version"] == "g-extract1.design-candidate.v10", "schema_v10", checks)
-    require(contract["experiment"]["status"] == "READY_FOR_G_EXTRACT1_CONTAMINATION_REPAIR_REREVIEW", "status_contamination_repair", checks)
+    require(contract["experiment"]["status"] == "READY_FOR_G_EXTRACT1_FRESHNESS_CANONICALIZATION_REREVIEW", "status_freshness_amendment", checks)
+    require(contract["final_verdict"] == contract["experiment"]["status"], "freshness_final_status", checks)
     require(contract["experiment"]["design_revision"] == 10, "design_revision_v10", checks)
     for field in ("implemented", "blueprint_authorized", "fixture_authoring_authorized", "execution_authorized"):
         require(contract["experiment"][field] is False, f"authority_false:{field}", checks)
@@ -3067,6 +3362,8 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     validate_v10(contract, checks)
     SCAFFOLD_AUDIT.clear()
     SCAFFOLD_AUDIT.update(validate_scaffold_amendment(contract,human,checks))
+    FRESHNESS_AMENDMENT_SUMMARY.clear()
+    FRESHNESS_AMENDMENT_SUMMARY.update(validate_freshness_amendment(contract, human, checks))
 
     corpus, phases = contract["corpus"], contract["phases"]
     expected_counts = {
@@ -3528,9 +3825,9 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     allowed = {
         "DESIGN_CANDIDATE.md", "DESIGN_CANDIDATE.json", "DESIGN_REVISION_CHANGELOG.md",
         "HUMAN_MACHINE_EQUIVALENCE_CHECKLIST.md", "DESIGN_VALIDATION_REPORT.json",
-        "validate_design.py", "blueprint",
+        "validate_design.py", "blueprint", "corpus",
     }
-    require(not [path.name for path in HERE.iterdir() if path.name not in allowed], "no_fixture_or_runtime_artifacts", checks)
+    require(not [path.name for path in HERE.iterdir() if path.name not in allowed], "design_inventory_with_preserved_untracked_corpus", checks)
     validate_existing_blueprint_inventory(checks)
     return checks
 
@@ -3552,6 +3849,7 @@ def main() -> int:
         "check_count": len(checks),
         "output_field_amendment": OUTPUT_FIELD_AMENDMENT_SUMMARY,
         "declared_scaffold_feasibility_audit": SCAFFOLD_AUDIT,
+        "freshness_canonicalization_amendment": FRESHNESS_AMENDMENT_SUMMARY,
         "historical_adapter": historical_adaptation_summary(contract),
         "preserved_v8_sections":preserved_v8_sections(contract),
         "template_ledger_summary": {

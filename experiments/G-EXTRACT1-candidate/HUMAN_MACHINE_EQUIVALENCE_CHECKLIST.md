@@ -1,5 +1,24 @@
 # G-EXTRACT1 v10 Human/Machine Equivalence Checklist
 
+## Freshness Canonicalization Amendment
+
+- Parsed human normative freshness annex equals `freshness_canonicalization_contract` exactly.
+- First element is exact validated schema_type, not a semantic tag; second is always canonical semantic text. Both are JSON strings.
+- INTEGER minimal signed decimal/zero and NUMBER exact plain terminating-decimal/no-rounding rules tested; signed zero and numeric equivalence preserved.
+- Boolean lowercase, DATE/TIME exact forms, STRING no normalization and finite ENUM exact schema/option preservation tested.
+- Full primitive and blueprint-used enum schema surface checked; semantic vectors are isolated tests, not authored fixture or gold changes.
+- VALUE-only scope, source order, duplicate preservation and field/ID/output exclusion behaviorally checked.
+- Compact UTF-8/ensure_ascii=false/no-newline bytes verified; adversarial alternate encodings reject.
+- Parent projection to 01aafde permits only new contract and review-status paths; all unrelated representations, thresholds, gates, seeds, schedules and authorities unchanged.
+- Architecture168/192/reserves28 and comparison partition24/906/518/16888 checked; scaffold14/234 logical/906 rendered preserved.
+- Historical adapter106/106 remains separately tested under unchanged historical contract, not converted to NEW freshness rows.
+- All seven existing corpus files retain their pre-edit hashes; complete candidates byte identity also proves embedded gold byte identity. Corpus checkers and failure/diagnosis evidence unchanged.
+- Five blueprint files remain byte-identical to accepted01aafde. Separate independent amendment rereview and authorized blueprint rebind remain required.
+- No candidate contamination rescoring, checker repair, fixture regeneration, corpus finalization, provider calls or execution authorized/performed.
+- PASS means deterministic structural/cross-representation consistency only; it is not scientific approval or future authority.
+
+Earlier checklists below retain their historical checkpoint scope and identities.
+
 ## Contamination-Feasibility Amendment
 
 - Exact `declared_scaffold_overlap_contract` is parsed from the human normative annex.
