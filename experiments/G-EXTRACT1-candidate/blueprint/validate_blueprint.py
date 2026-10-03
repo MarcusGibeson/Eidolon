@@ -1,0 +1,712 @@
+"""Value-free blueprint construction/checking. No corpus, scorer or provider code."""
+
+from __future__ import annotations
+
+import argparse
+import copy
+import hashlib
+import importlib.util
+import itertools
+import json
+from pathlib import Path
+import subprocess
+
+HERE = Path(__file__).resolve().parent
+DESIGN = HERE.parent
+ROOT = DESIGN.parent.parent
+ACCEPTED = "394d24121309ec9dce80e725b50dbe5eb60f6d2a"
+SOURCE_NAMES = (
+    "DESIGN_CANDIDATE.md", "DESIGN_CANDIDATE.json",
+    "DESIGN_REVISION_CHANGELOG.md", "HUMAN_MACHINE_EQUIVALENCE_CHECKLIST.md",
+    "DESIGN_VALIDATION_REPORT.json", "validate_design.py",
+)
+FILES = ("BLUEPRINT.json", "BLUEPRINT.md", "validate_blueprint.py",
+         "BLUEPRINT_VALIDATION_REPORT.json", ".gitattributes")
+
+
+def encoded(value):
+    return (json.dumps(value, ensure_ascii=True, indent=2, sort_keys=True) + "\n").encode()
+
+
+def digest(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def git(*args):
+    return subprocess.run(
+        ["git", "-c", "safe.directory=" + ROOT.as_posix(), *args], cwd=ROOT,
+        check=True, capture_output=True,
+    ).stdout
+
+
+def load_authority():
+    hashes = {}
+    for name in SOURCE_NAMES:
+        path = DESIGN / name
+        committed = git("show", ACCEPTED + ":" + path.relative_to(ROOT).as_posix())
+        if path.read_bytes() != committed:
+            raise ValueError("BLUEPRINT_BLOCKED_BY_DESIGN_AMBIGUITY: accepted artifact mismatch: " + name)
+        hashes[name] = digest(committed)
+    contract = json.loads((DESIGN / "DESIGN_CANDIDATE.json").read_text())
+    spec = importlib.util.spec_from_file_location("accepted_design_checks", DESIGN / "validate_design.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return contract, module, hashes
+
+
+def ref(pointer):
+    return "DESIGN_CANDIDATE.json#" + pointer
+
+
+def traceability():
+    return {
+        "identity": [ref("/lexical_neutrality_contract/fixture_ordinal_assignment"), ref("/e5_counterfactual_selector_contract/base_fixture_id_format")],
+        "lexical_context": [ref("/lexical_neutrality_contract")],
+        "subtype": [ref("/subtype_allocation_contract/slot_rows")],
+        "operation_plan": [ref("/template_recurrence_contract/structural_wiring"), ref("/operation_semantics_contract"), ref("/operation_definition_contract")],
+        "secondary_features": [ref("/family_assignment_contract/secondary_feature_derivations")],
+        "schema_plan": [ref("/schema_type_contract"), ref("/family_assignment_contract/canonical_output_field_contract"), ref("/template_recurrence_contract/fingerprint_classes")],
+        "value_shape_profile": [ref("/value_allocation_contract")],
+        "comparison_allocation": [ref("/subtype_allocation_contract/comparison_slot_matrix")],
+        "entity_plan": [ref("/entity_population_contract"), ref("/subtype_allocation_contract/enum_answer_positions"), ref("/e5_counterfactual_selector_contract")],
+        "e7_presentation": [ref("/subtype_allocation_contract/e7_source_order"), ref("/ambiguity_contract/integrated_fixture_shape_validation")],
+        "recurrence": [ref("/template_recurrence_contract"), ref("/e5_counterfactual_selector_contract/contamination")],
+        "reserve_map": [ref("/reserve_activation_contract"), ref("/reserve_equivalence_contract"), ref("/e5_counterfactual_selector_contract/reserves")],
+        "gate_membership": [ref("/cell_gates"), ref("/phase_a_fixture_reduction_contract"), ref("/e5_counterfactual_selector_contract/scoring")],
+        "authoring_constraints": [ref("/subtype_content_validation_contract"), ref("/operation_semantics_contract/gold_derivation"), ref("/contamination_contract")],
+        "rendered_variants": [ref("/e5_counterfactual_selector_contract"), ref("/counterfactual_accounting")],
+        "schedule": [ref("/sampling"), ref("/e5_counterfactual_selector_contract/seeds")],
+        "request_template": [ref("/baseline_binding"), ref("/e5_counterfactual_selector_contract/request_contract"), ref("/model_provider")],
+        "comparison_scope": [ref("/contamination_contract"), ref("/ordinal_neutral_similarity_contract"), ref("/historical_fingerprint_adapter_contract"), ref("/e5_counterfactual_selector_contract/contamination")],
+        "governance": [ref("/governance"), ref("/implementation_authorization_prerequisites")],
+    }
+
+
+def features(ids, boundary, family, order):
+    present = {
+        "calendar_date": "CALENDAR_DAY_OFFSET" in ids,
+        "clock_time": "CLOCK_MINUTE_OFFSET" in ids,
+        "elapsed_time": "ELAPSED_MINUTES" in ids,
+        "aggregation": bool(set(ids) & {"ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "SUM", "UNIT_CONVERSION"}),
+        "unit_conversion": "UNIT_CONVERSION" in ids,
+        "threshold": bool(set(ids) & {"GT", "GTE", "LT", "LTE", "EQ"}),
+        "equality_boundary": "EQ" in ids or boundary == "EQUAL",
+        "entity_binding": "ENTITY_FIELD_BIND" in ids,
+        "field_binding": bool(ids) and ids[-1] in {"ENTITY_FIELD_BIND", "EXACT_COPY"},
+        "exact_copy": "EXACT_COPY" in ids,
+        "multi_step": len(ids) == 2,
+        "explicit_partial_absence": family == "E7",
+    }
+    return [tag for tag in order if present[tag]]
+
+
+def typed_node_plan(graph, source_sequence, output_roles, row, ordinal, c):
+    tags = {schema: info["semantic_tag"] for schema, info in c["schema_type_contract"]["primitive_schemas"].items()}
+    tag = lambda schema: tags.get(schema, "ENUM")
+    source_types = [tag(item[1]) for item in source_sequence]
+    nodes = []
+    prior_type = None
+    prior_schema = None
+    for index, (op, kinds, dependencies) in enumerate(graph):
+        semantics = c["operation_semantics_contract"]["operations"][op]
+        catalog = next(x for x in c["operation_definition_contract"]["catalog"] if x["id"]==op)
+        if index:
+            operand_types = [prior_type] * len(kinds)
+        elif op == "ENTITY_FIELD_BIND":
+            operand_types = [tag(row["domain"]), "STRING", "STRING"]
+        elif op == "CALENDAR_DAY_OFFSET":
+            operand_types = ["DATE", "INTEGER"]
+        elif op == "CLOCK_MINUTE_OFFSET":
+            operand_types = ["TIME", "INTEGER"]
+        elif op == "ELAPSED_MINUTES":
+            operand_types = ["TIME", "TIME"]
+        else:
+            operand_types = source_types
+        if op in {"ADD","SUBTRACT","MULTIPLY","SUM"}:
+            result_type = "INTEGER" if all(t=="INTEGER" for t in operand_types) else "NUMBER"
+            promotion = "INTEGER_ONLY" if result_type=="INTEGER" else "NUMBER_ONLY" if all(t=="NUMBER" for t in operand_types) else "MIXED_TO_NUMBER"
+        else:
+            result_type = semantics.get("result_type")
+            if op == "EXACT_COPY":result_type = prior_type if index else source_types[0]
+            if op == "ENTITY_FIELD_BIND":result_type = tag(row["domain"])
+            promotion = {"DIVIDE":"DIVIDE_TO_NUMBER","UNIT_CONVERSION":"UNIT_CONVERSION_TO_NUMBER"}.get(op,"NOT_APPLICABLE")
+        if result_type is None:raise ValueError("BLUEPRINT_BLOCKED_BY_DESIGN_AMBIGUITY: unknown result typing")
+        schema = {"INTEGER":"integer","NUMBER":"number","BOOLEAN":"boolean","DATE":"YYYY-MM-DD","TIME":"HH:MM","STRING":"string"}.get(result_type)
+        if op == "EXACT_COPY":schema = prior_schema if index else source_sequence[0][1]
+        if op == "ENTITY_FIELD_BIND":schema = row["domain"]
+        argument_names=[name for name in catalog["placeholders"] if name!='target']
+        if op=='SUM':argument_names=[f"operands/{i}" for i in range(len(kinds))]
+        nodes.append(dict(node_index=index,operation_id=op,operand_reference_kinds=kinds,
+                          operand_argument_paths=argument_names, operand_semantic_types=operand_types,
+                          upstream_node_indices=dependencies,target_identifier=f"d{ordinal:03d}_{index+1:02d}",
+                          result_semantic_type=result_type,result_schema_type=schema,numeric_promotion_class=promotion,
+                          typing_and_domain_ref=ref("/operation_semantics_contract/operations/"+op),
+                          rendering_ref=ref("/operation_definition_contract/catalog")))
+        prior_type,prior_schema=result_type,schema
+    if nodes and nodes[-1]['result_schema_type']!=output_roles[0][0]:
+        raise ValueError("BLUEPRINT_BLOCKED_BY_DESIGN_AMBIGUITY: planned output schema mismatch")
+    return nodes
+
+
+def position(row, c, helper):
+    phase, risk, slot, kind = row["position"].split(":")
+    family, index = slot.split("-")
+    reserve = kind == "RESERVE"
+    context = phase + ":" + risk
+    allocation = c["subtype_allocation_contract"]
+    subtype = next(x for x in allocation["slot_rows"][family] if x["slot_id"] == slot)
+    ordinal = helper.fixture_ordinal(phase, risk, family, int(index), reserve)
+    fp = helper.planned_fingerprint(c, context, slot, reserve)
+    graph, output_roles, entity_role, boundary, temporal, layout = fp
+    ids = [node[0] for node in graph]
+    composed = next((key for key, slots in allocation["composed_rows"].items() if slot in slots), "NONE")
+    source_sequence = layout[1]
+    output_fields = []
+    if family == "E7":
+        for i, (role, schema, _) in enumerate(source_sequence, 1):
+            output_fields.append(dict(name=f"f{ordinal:03d}_{i:02d}", schema_type=schema,
+                                      binding_kind="EXPLICIT_ABSENCE" if role == "EXPLICIT_ABSENCE" else "SOURCE_COPY",
+                                      binding_source_field_ordinal=i, producer_node=None,
+                                      output_role="absence_sentinel" if role == "EXPLICIT_ABSENCE" else "source_copy"))
+    else:
+        output_fields.append(dict(name=f"d{ordinal:03d}_{len(ids):02d}", schema_type=output_roles[0][0],
+                                  binding_kind="OPERATION_TARGET", binding_source_field_ordinal=None,
+                                  producer_node=len(ids)-1, output_role=output_roles[0][1]))
+    entity = None
+    if family == "E5":
+        count, role = subtype["coverage_class"].split(":")
+        entity = dict(entity_count=int(count.split("_")[1]), selector_role=role,
+                      selector_schema="string", source_schema=subtype["domain"],
+                      selector_transition=c["e5_counterfactual_selector_contract"]["selector_pair_matrix"][context][int(index)-1],
+                      pair_member_order=["CF1", "CF2"], population_contract_ref=ref("/entity_population_contract"),
+                      population_shared=True, source_values_pairwise_semantically_distinct=True,
+                      request_invariant_ref=ref("/e5_counterfactual_selector_contract/request_contract"),
+                      cf1_value_shape_is_anchor=True, cf2_rank_and_enum_position="derive from unchanged population, not anchor rank",
+                      enum_anchor_option_index=allocation["enum_answer_positions"][context].get(slot))
+    e7 = None
+    if family == "E7":
+        e7 = dict(supported_schema_order=subtype["domain"], absence_schema="provided|not_provided",
+                  absence_source_index=next(i for i, item in enumerate(source_sequence) if item[0]=="EXPLICIT_ABSENCE"),
+                  source_presentation="reserve" if reserve else phase,
+                  presentation_rule=allocation["e7_source_order"]["reserve" if reserve else phase],
+                  support_enum_option_index=allocation["enum_answer_positions"][context].get(slot),
+                  supported_boolean_expectation_class=c["value_allocation_contract"]["e7_boolean_source_allocation"][context] if slot=="E7-05" else None)
+    comparison = copy.deepcopy(allocation["comparison_slot_matrix"][context][slot]) if family=="E4" else None
+    gate = dict(determinate_semantic=family!="E7", determinate_structural=family!="E7",
+                useful=family!="E7", family_floor=family!="E7", e7=family=="E7", e5_pair=family=="E5",
+                binding_error=family in {"E5","E6"}, malformed_determinate=family!="E7",
+                false_clean=True, scored=not reserve)
+    return dict(
+        logical_base_id=row["position"], phase=phase, risk_round=risk, family=family,
+        subtype_slot=slot, primary_or_reserve=kind, fixture_ordinal=ordinal,
+        record_type=c["lexical_neutrality_contract"]["record_type_catalog_by_phase"][phase][int(family[1])-1],
+        within_family_slot=None if reserve else int(index), reserve_family=family if reserve else None,
+        lexical_context=dict(phase=phase, risk_round=risk, family=family, fixture_ordinal=ordinal,
+                             within_family_slot=None if reserve else int(index),
+                             generator_ref=ref("/lexical_neutrality_contract")),
+        subtype=copy.deepcopy(subtype),
+        operation_plan=dict(nodes=typed_node_plan(graph,source_sequence,output_roles,subtype,ordinal,c),
+                            node_count=len(graph), terminal_operation=ids[-1] if ids else "NONE",
+                            structural_wiring_ref=ref("/template_recurrence_contract/structural_wiring"),
+                            conversion_id=allocation["unit_conversion_assignment"][context] if "UNIT_CONVERSION" in ids else None),
+        schema_plan=dict(source_fact_role_schema_entity_sequence=source_sequence, output_fields=output_fields,
+                         output_schema_role_sequence=output_roles, exact_field_count=len(output_fields),
+                         schema_contract_ref=ref("/schema_type_contract")),
+        composed_quota_row=composed,
+        secondary_features=features(ids,boundary,family,c["family_assignment_contract"]["allowed_secondary_features"]),
+        value_shape_profile=helper.value_shape_profile(c,context,slot),
+        comparison_allocation=comparison, entity_plan=entity, e7_presentation=e7,
+        recurrence=dict(subtype_template_group=slot, fingerprint_class=row["fingerprint_class"],
+                        planned_six_components=fp,
+                        maximum_class_recurrence=c["template_recurrence_contract"]["fingerprint_classes"][row["fingerprint_class"]]["maximum_recurrence_count"],
+                        scope_table_ref=ref("/template_recurrence_contract/scope_table")),
+        gate_membership=gate,
+        authoring_constraints=dict(semantics_ref=ref("/operation_semantics_contract"),
+                                  slot_validation_ref=ref("/subtype_content_validation_contract"),
+                                  literal_canonicality_ref=ref("/operation_definition_contract/placeholder_type_system"),
+                                  freshness_ref=ref("/contamination_contract/exact_reuse_contract"),
+                                  gold_derivation_ref=ref("/operation_semantics_contract/gold_derivation"),
+                                  source_value_slots="UNAUTHORED", gold_answer_slots="UNAUTHORED",
+                                  content_and_independent_review_required=True),
+        scientific_traceability_groups={
+            "logical_base_id":"identity", "phase":"identity", "risk_round":"identity", "family":"identity",
+            "subtype_slot":"subtype", "primary_or_reserve":"identity", "fixture_ordinal":"identity",
+            "record_type":"lexical_context", "within_family_slot":"identity", "reserve_family":"reserve_map",
+            "lexical_context":"lexical_context", "subtype":"subtype", "operation_plan":"operation_plan",
+            "schema_plan":"schema_plan", "composed_quota_row":"subtype", "secondary_features":"secondary_features",
+            "value_shape_profile":"value_shape_profile", "comparison_allocation":"comparison_allocation",
+            "entity_plan":"entity_plan", "e7_presentation":"e7_presentation", "recurrence":"recurrence",
+            "gate_membership":"gate_membership", "authoring_constraints":"authoring_constraints",
+        },
+    )
+
+
+def schedules(positions, variants, c, replacements=None):
+    models = c["model_provider"]["models"]
+    result = {"A": [], "B": []}
+    replacements = replacements or {}
+    lookup = {p["logical_base_id"]: p for p in positions}
+    by_base = {}
+    for v in variants:
+        by_base.setdefault(v["logical_base_id"], []).append(v)
+    active = [(p["logical_base_id"], lookup[replacements.get(p["logical_base_id"],p["logical_base_id"])])
+              for p in positions if p["primary_or_reserve"] == "PRIMARY"]
+    active.sort(key=lambda item:item[1]["fixture_ordinal"])
+    round_rank = {(phase,risk):0 for phase in ('A','B') for risk in ('R2','R3')}
+    # Round-local rank plus the frozen 35-position offset balances both marginals.
+    for qualification_slot, p in active:
+        phase, ordinal = p["phase"], p["fixture_ordinal"]
+        key=(phase,p['risk_round'])
+        start = (round_rank[key] + (0 if p['risk_round']=='R2' else 35)) % len(models)
+        round_rank[key] += 1
+        ordered = models[start:] + models[:start]
+        for m in ordered:
+            for repeat in range(1, 3 if phase == "A" else 2):
+                seed = c["sampling"]["candidate_phase_"+phase.lower()+"_seed_base"] + (ordinal-1)*10+repeat
+                for v in by_base[p["logical_base_id"]]:
+                    row = dict(template_schedule_position=len(result[phase])+1,
+                               call_id=f"{phase}:{m['tier']}:{p['risk_round']}:{p['logical_base_id']}:{v['variant_id']}:{repeat}",
+                               cell_id=f"{m['tier']}:{p['risk_round']}", model=m["model"], tier=m["tier"],
+                               qualification_slot_id=qualification_slot,
+                               logical_base_id=p["logical_base_id"], rendered_variant_id=v["rendered_variant_id"],
+                               variant_id=v["variant_id"], repeat=repeat, seed=seed,
+                               request_ref=ref("/e5_counterfactual_selector_contract/request_contract") if p["family"]=="E5" else ref("/baseline_binding"))
+                    result[phase].append(row)
+    return result
+
+
+def build(c, helper, hashes):
+    ledger = helper.template_ledger(c)
+    if ledger["positions"] != c["template_recurrence_contract"]["positions"] or ledger["classes"] != c["template_recurrence_contract"]["fingerprint_classes"]:
+        raise ValueError("BLUEPRINT_BLOCKED_BY_DESIGN_AMBIGUITY: recurrence derivation mismatch")
+    positions = sorted((position(x,c,helper) for x in ledger["positions"]),key=lambda x:x["fixture_ordinal"])
+    variants=[]
+    for p in positions:
+        members=["CF1","CF2"] if p["family"]=="E5" else ["SINGLE"]
+        for i, member in enumerate(members):
+            variants.append(dict(rendered_variant_id=p["logical_base_id"]+":"+member,
+                                 logical_base_id=p["logical_base_id"], variant_id=member,
+                                 selector_index=p["entity_plan"]["selector_transition"][i] if p["entity_plan"] else None,
+                                 pair_partner=p["logical_base_id"]+":"+members[1-i] if len(members)==2 else None,
+                                 pair_local_exception_eligible=len(members)==2,
+                                 applicable_check_catalog="comparison_scope/check_catalog",
+                                 seed_relation="same model/base/repeat seed for CF1 and CF2" if len(members)==2 else "one observation per model/repeat",
+                                 request_diff_requirement_ref=ref("/e5_counterfactual_selector_contract/request_contract") if len(members)==2 else None,
+                                 scientific_metadata_source=p["logical_base_id"],
+                                 contamination_rule_ref=ref("/e5_counterfactual_selector_contract/contamination") if len(members)==2 else ref("/contamination_contract")))
+    reserve_map=[]
+    for p in positions:
+        if p["primary_or_reserve"] != "RESERVE":continue
+        covered=p["logical_base_id"].replace(":RESERVE",":PRIMARY")
+        profile=c["reserve_equivalence_contract"]
+        nodes=p['operation_plan']['nodes']
+        outputs=sorted(p['schema_plan']['output_schema_role_sequence'],key=lambda item:json.dumps(item,separators=(',',':')).encode())
+        comparison=p['comparison_allocation']
+        temporal=next((n['operation_id'] for n in nodes if n['operation_id'] in {'CALENDAR_DAY_OFFSET','CLOCK_MINUTE_OFFSET','ELAPSED_MINUTES'}),'NONE')
+        preview={
+            'primary_family':p['family'],'composed_quota_row':p['composed_quota_row'],
+            'secondary_features':p['secondary_features'],'operation_ids':[n['operation_id'] for n in nodes],
+            'conversion_ids':[p['operation_plan']['conversion_id'] if n['operation_id']=='UNIT_CONVERSION' else 'NONE' for n in nodes],
+            'source_schema_sequence':sorted((x[1] for x in p['schema_plan']['source_fact_role_schema_entity_sequence']),key=lambda x:x.encode()),
+            'output_schema_sequence':[x[0] for x in outputs],
+            'operation_result_semantic_types':[n['result_semantic_type'] for n in nodes],
+            'numeric_promotion_classes':[n['numeric_promotion_class'] for n in nodes],
+            'comparison_operator':comparison['operator'] if comparison else 'NONE',
+            'comparison_operand_type_pair':comparison['operand_type_pair'] if comparison else [],
+            'boundary_relation':p['recurrence']['planned_six_components'][3],
+            'temporal_operation':temporal,'temporal_boundary_pattern':p['recurrence']['planned_six_components'][4],
+            'explicit_absence':p['family']=='E7','entity_count':p['entity_plan']['entity_count'] if p['entity_plan'] else 0,
+            'entity_selector_role':p['entity_plan']['selector_role'] if p['entity_plan'] else 'NONE',
+            'output_role_sequence':[x[1] for x in outputs],'consequence_risk':p['risk_round'],
+            'field_count':p['schema_plan']['exact_field_count'],'operation_node_count':len(nodes),
+            'subtype_slot':p['subtype_slot'],'operation_operand_semantic_types':[n['operand_semantic_types'] for n in nodes],
+            'value_shape_profile':p['value_shape_profile'],
+        }
+        fields=[]
+        for name in profile["profile_exact_keys_in_order"]:
+            fields.append(dict(name=name, derivation_ref=ref("/value_allocation_contract") if name=="value_shape_profile" else ref("/reserve_equivalence_contract/derivation/"+name),
+                               blueprint_preview=preview.get(name),
+                               planned_origin="derived from logical blueprint" if name in preview else "derived later from authored fixture",
+                               final_origin="always rederive from authored fixture semantics after actual slot validation",
+                               exact_match_required=True))
+        reserve_map.append(dict(reserve_slot_id=f"RESERVE:{p['phase']}:{p['risk_round']}:{p['family']}",
+                                reserve_base_id=p["logical_base_id"], covered_primary_base_id=covered,
+                                ordered_primary_ids=[covered.replace("-01:PRIMARY",f"-{i:02d}:PRIMARY") for i in range(1,6)],
+                                covered_subtype_slot="01", replacement_unit="CF1_CF2_WHOLE_PAIR" if p["family"]=="E5" else "SINGLE_LOGICAL_BASE",
+                                activation_contract_ref=ref("/reserve_activation_contract"),
+                                profile_fields=fields, profile_serialization=profile["serialization"],
+                                pair_profile_ref=ref("/e5_counterfactual_selector_contract/reserves") if p["family"]=="E5" else None,
+                                maximum_consumptions=1, post_contact_activation=False,
+                                no_defects="NO_ACTIVATION", one_covered_matching_defect="ACTIVATE_SINGLE_RESERVE",
+                                uncovered_or_multiple_or_mismatched="STOP_AUTHORING"))
+    schedule=schedules(positions,variants,c)
+    all_cells=[m["tier"]+":"+r for m in c["model_provider"]["models"] for r in ("R2","R3")]
+    return dict(
+        schema_version="g-extract1.blueprint.v1", status="READY_FOR_G_EXTRACT1_BLUEPRINT_REREVIEW",
+        accepted_design=dict(commit=ACCEPTED, artifacts_sha256=hashes),
+        authority=dict(blueprint_authoring=True, corpus_gold_authoring=False, implementation=False,
+                       mechanical_pilot=False, execution_freeze=False, phase_a_execution=False, phase_b_execution=False),
+        terminology=dict(logical_base="one scored/reserve position, regardless of pair expansion",
+                         rendered_variant="SINGLE or CF1/CF2 member of a logical base",
+                         provider_observation="one model/variant/repeat request-response", repeat="one planned repeated observation per variant",
+                         pair="exactly CF1 and CF2 of an E5 logical base", cell="model tier x risk round, assessed independently in each phase"),
+        logical_positions=positions, rendered_variants=variants, reserve_map=reserve_map,
+        recurrence_ledger=dict(positions=ledger["positions"], fingerprint_classes=ledger["classes"],
+                               subtype_template_groups=c["template_recurrence_contract"]["subtype_template_groups"],
+                               permitted_scope_table=c["template_recurrence_contract"]["scope_table"],
+                               base_count_unit="logical bases; pair expansion is not independent recurrence"),
+        comparison_scope=dict(new_new_order="rendered_variants array order; all unordered i<j pairs",
+                              check_catalog=[
+                                  dict(check="ordinary_ordinal_neutral_jaccard",rule_ref=ref("/ordinal_neutral_similarity_contract"),when="normal new/new and historical/new decision-table scope"),
+                                  dict(check="content_view",rule_ref=ref("/ordinal_neutral_similarity_contract/declared_template_content_view"),when="declared subtype recurrence; exact empty-content behavior from accepted decision table"),
+                                  dict(check="shape_view",rule_ref=ref("/ordinal_neutral_similarity_contract/shape_view"),when="accepted comparison decision-table scope"),
+                                  dict(check="new_new_fingerprint",rule_ref=ref("/template_recurrence_contract"),when="every new/new comparison except audited pair-local sharing"),
+                                  dict(check="historical_three_component_projection",rule_ref=ref("/historical_fingerprint_adapter_contract"),when="every historical/new comparison, including each E5 member"),
+                                  dict(check="whole_answer_reuse",rule_ref=ref("/contamination_contract/exact_reuse_contract/whole_answer"),when="all cross-base exact-reuse scopes"),
+                                  dict(check="identity_reuse",rule_ref=ref("/contamination_contract/exact_reuse_contract/identity_atom_derivation"),when="all cross-base exact-reuse scopes"),
+                                  dict(check="date_number_tuple_reuse",rule_ref=ref("/contamination_contract/exact_reuse_contract/date_number_tuple"),when="all cross-base exact-reuse scopes; accepted tuple applicability rules"),
+                              ],
+                              pair_local_exception="only validated CF1/CF2 with same E5 logical_base_id",
+                              cross_base="all four CF1/CF2 combinations where applicable, no base collapse",
+                              historical_order="adapter artifact order, extraction entries in artifact array order; each versus every rendered variant",
+                              historical_adapter_ref=ref("/historical_fingerprint_adapter_contract"),
+                              pair_exception_ref=ref("/e5_counterfactual_selector_contract/contamination"),
+                              ordinary_ordinal_neutral_ref=ref("/ordinal_neutral_similarity_contract"),
+                              declared_recurrence_content_and_shape_ref=ref("/ordinal_neutral_similarity_contract/decision_table"),
+                              exact_reuse_ref=ref("/contamination_contract/exact_reuse_contract"),
+                              new_new_fingerprint_ref=ref("/template_recurrence_contract"),
+                              comparisons_require_future_content=True),
+        schedule_plan=dict(model_order_algorithm="active logical ordinal ascending within phase; cyclic model list rotation by (zero-based active within-round rank + round_offset) modulo3, offsets R2=0/R3=35; within model repeats ascending, then CF1/CF2 or SINGLE",
+                           model_order_is_operational_allocation_not_new_science=True,
+                           phase_a=schedule["A"], phase_b_maximum_template=schedule["B"],
+                           phase_b_cell_order=all_cells,
+                           phase_b_instantiation="validate sorted unique A-qualified cell set against phase_b_cell_order; stable-filter maximum template by cell_id; renumber schedule_position from1; retain template_schedule_position/call_id/seed; no execution here",
+                           reserve_activation="replace the covered primary's active physical base with its mapped reserve; retain qualification_slot_id for gate accounting; sort active bases by actual ordinal and regenerate model rotation/call IDs/seeds/positions; validate all balances/collisions and refreeze before contact",
+                           schedule_authorization=False),
+        request_template=dict(baseline_ref=ref("/baseline_binding"), provider_ref=ref("/model_provider"),
+                              complete_request_ref=ref("/e5_counterfactual_selector_contract/request_contract"),
+                              body_keys=c["e5_counterfactual_selector_contract"]["request_contract"]["body_keys"],
+                              serialization=c["e5_counterfactual_selector_contract"]["request_contract"]["serializer"],
+                              before_contact_audit_fields=c["e5_counterfactual_selector_contract"]["request_contract"]["report_fields"],
+                              final_request_bytes="UNAUTHORED", source_values="UNAUTHORED", answer_values="UNAUTHORED",
+                              no_extra_model_facing_blueprint_metadata=True),
+        cell_gate_specs=c["cell_gates"],
+        scientific_traceability=traceability(),
+        implementation_checklist=[
+            "Separate independent blueprint review; do not infer corpus authority from this status.",
+            "Separate corpus/gold authorization before selecting any concrete source/operand/gold values.",
+            "Derive actual typed semantics, check slot/value/lexical allocation, then compute reserve profile; no declaration-only copying.",
+            "Independent gold review/adjudication and independent contamination implementations; all scopes including both E5 variants.",
+            "Freeze A/B/reserves/gold/gates/prompt/scorer/schedule/transport identities only after separate freeze authorization.",
+            "Separate implementation, mechanical pilot, Phase A and conditional Phase B authorization; no provider work here.",
+        ],
+        governance=dict(provider_model_calls=0, scored_content_authored=0, reserve_content_authored=0,
+                        gold_answers_authored=0, runtime_implementation_begun=False, experiment_executed=False,
+                        g_route4="CLOSED FAILED unchanged", belief_effects="none", autonomy=False,
+                        source_governance_ref=ref("/governance")),
+    )
+
+
+def markdown(bp):
+    return """# G-EXTRACT1 Authoring Blueprint
+
+Status: READY_FOR_G_EXTRACT1_BLUEPRINT_REREVIEW. Blueprint authoring only.
+
+## Authority And Scope
+
+Accepted scientific specification: commit `394d24121309ec9dce80e725b50dbe5eb60f6d2a`.
+The six accepted artifacts are byte-bound in BLUEPRINT.json. They are unchanged.
+BLUEPRINT.json is the complete value-free enumeration; its scientific_traceability
+maps every scientific dimension to the accepted JSON contract. The machine artifact
+is authoritative for enumerated IDs, schemas, allocations and schedule positions;
+this document describes it without adding semantic rules.
+
+No source values, source prose, operand literals, entity source values, answer
+objects, final prompts or request bytes are authored. Frozen design expectation
+classes (E4 Boolean, enum position and E7 Boolean allocation) are copied constraints,
+not newly authored gold answers. Ranges, schema tokens, selector indices and
+identifier templates are blueprint metadata, not scored content.
+
+## Enumeration
+
+140 scored logical bases plus 28 subtype-01-only logical reserves = 168 bases.
+20 scored and 4 reserve E5 bases are pairs: exactly CF1 then CF2. Others are SINGLE.
+160 scored plus 32 reserve rendered variants = 192 objects. Ordinals are 1..168,
+following the frozen A primaries/A reserves/B primaries/B reserves formulas.
+Each position carries subtype, lexical generator, typed graph/operand-reference
+shape, schema/output binding plan, value-shape constraints, composed/secondary
+features, E4 allocation, E5 population/selector transition, E7 presentation,
+recurrence membership, gate membership and authoring-contract references.
+
+Per phase/round: 35 logical bases, 30 determinate plus 5 E7, 40 rendered variants.
+Each model/round cell has 80 observations in A, 40 in B. E5 contributes 5 logical
+pairs, 20 A observations or 10 B observations, requiring 5/5 semantic pair success.
+General denominators remain 30 determinate logical bases, never rendered variants.
+E7 remains 10/10 observations in A and 5/5 in B. Positive E5 reductions require all
+four A or both B observations; adverse reductions use any observation. All other
+gates are referenced/copied exactly from V10; no threshold is changed.
+
+## Schedules
+
+Phase A skeleton: 480 calls, 160 per model. B maximum template: 240 calls, 80 per
+model. Maximum total: 720. Schedules are source-only metadata, not run journals.
+Bases ascend by ordinal. For each base, rotate the frozen model list cyclically
+by (zero-based active within-round ordinal rank + round offset) modulo3, with
+offsets R2=0 and R3=35, to instantiate balanced model ordering. Within each model,
+repeats ascend, and E5 members are CF1 then CF2. This is an operational allocation
+under the design's balanced-order obligation, not a new scientific rule.
+Each model occupies each list position 23 or 24 times among a phase's 70 bases,
+and 11 or 12 times among a round's 35 bases, including reserve substitutions.
+B is a stable filtered template for the sorted unique A-qualified model/round
+cell set; all 64 subsets are mechanically checked. This does not create a result
+or authorize B. Existing template position, call identity and seed are retained;
+active schedule positions are renumbered after filtering.
+Seeds use phase_base+(logical_ordinal-1)*10+repeat. Only CF1/CF2 of one model/base/
+repeat intentionally collide. Reserve activation replaces the whole covered unit,
+retains the primary qualification slot for denominator accounting, sorts the
+active bases by actual ordinal and regenerates model rotation, seeds, call IDs
+and positions. It requires balance/collision/schedule revalidation and refreeze
+pre-contact. It is never a
+post-output retry or optional model call.
+
+## Contamination And Reserves
+
+The logical recurrence ledger has 51 fingerprint classes, 35 subtype groups and
+14,028 unordered base comparisons. The rendered comparison iterator has 18,336
+pairs: exactly 24 eligible same-base E5 sharing scopes and 18,312 cross-base pairs.
+Historical scope: 106 historical extraction entries times 192 variants = 20,352.
+The comparison iterators and source rule references are frozen, but content
+acceptance is deferred because no corpus exists. Ordinary ordinal-neutral,
+declared-template content/shape, fingerprints, projection and exact-reuse checks
+apply through the accepted comparison decision table, not a blanket similarity
+threshold. Pair masks never alter contamination inputs. Sharing exemptions
+require future byte/gold-validity audit and never extend across bases.
+All 28 reserve mappings cover subtype01 only. Uncovered, multiple or mismatched
+defects stop authoring. E5 replacement unit is the entire CF1/CF2 pair.
+Profile fields retain the exact accepted key order and derivation references.
+Final profiles must derive from actual validated content, not merely blueprint
+declarations. Value-dependent dimensions remain unauthored until corpus work.
+
+## Request And Gold Boundary
+
+The request template references the exact bound historical system/suffix/provider
+configuration and V10 complete-body serializer. Final selector spans, old/new
+selector bytes, both request hashes and masked hash are required for every model/
+repeat before contact, but cannot be filled before corpus authoring. CF1 retains
+anchor checks; CF2 changes only requested selector and mechanically derived gold,
+not the population or anchor allocation. No actual requests are rendered here.
+Gold derivation is referenced to the frozen typed operation evaluator contract.
+No expected answer is selected or computed from authored source values.
+
+## Validation And Governance
+
+Run `python -B experiments/G-EXTRACT1-candidate/blueprint/validate_blueprint.py`.
+`--write` deterministically regenerates blueprint documents/report only. Default
+mode validates existing bytes without writes. Checks independently count IDs,
+ordinals, variants, gates, schedules, seeds, reserve mappings, comparison scopes,
+all qualified-cell subsets and traceability; mutation probes reject mismatches.
+The report claims structural/design equivalence only, not scientific validity,
+future content feasibility, transport correctness or execution readiness.
+The accepted design validator's closed directory inventory predates this separately
+authorized blueprint directory. It is not edited or treated as a new corpus check;
+this validator binds its exact accepted bytes and uses only value-free derivations.
+
+G-ROUTE4 remains CLOSED FAILED. Provider/model calls, scored/reserve content and
+gold answers authored are zero; belief effects none; no autonomy or runtime work.
+Separate authorization remains required for corpus/gold authoring, implementation,
+mechanical pilot, execution freeze, Phase A and conditional Phase B. Blueprint
+review must occur first. This status does not self-authorize any later stage.
+"""
+
+
+def resolve_pointer(c, reference):
+    prefix="DESIGN_CANDIDATE.json#"
+    if not reference.startswith(prefix):raise ValueError("unknown authority reference")
+    value=c
+    for part in reference[len(prefix):].strip("/").split("/"):
+        value=value[int(part)] if isinstance(value,list) else value[part.replace("~1","/").replace("~0","~")]
+    return value
+
+
+def validate(bp, expected, c):
+    checks=[]
+    def require(ok,label):
+        if not ok:raise ValueError(label)
+        checks.append(label)
+    require(set(bp)==set(expected),"exact_blueprint_top_level_keys")
+    for key in expected:require(bp[key]==expected[key],"accepted_derivation:"+key)
+    ps=bp["logical_positions"];vs=bp["rendered_variants"]
+    require(len(ps)==168,"168_logical_bases")
+    require(len({p['logical_base_id'] for p in ps})==168,"unique_base_ids")
+    require(sorted(p['fixture_ordinal'] for p in ps)==list(range(1,169)),"ordinals_1_through_168")
+    require(len(vs)==192 and len({v['rendered_variant_id'] for v in vs})==192,"192_unique_rendered_variants")
+    by_base={p['logical_base_id']:p for p in ps}
+    for p in ps:
+        members=[v for v in vs if v['logical_base_id']==p['logical_base_id']]
+        require([v['variant_id'] for v in members]==(['CF1','CF2'] if p['family']=='E5' else ['SINGLE']),"exact_members:"+p['logical_base_id'])
+        require(p['schema_plan']['exact_field_count']==len(p['schema_plan']['output_fields']),"output_field_count:"+p['logical_base_id'])
+        require(set(p['scientific_traceability_groups'])==set(p)-{'scientific_traceability_groups'},'position_field_traceability:'+p['logical_base_id'])
+        require(all(group in bp['scientific_traceability'] for group in p['scientific_traceability_groups'].values()),'position_trace_groups:'+p['logical_base_id'])
+    for phase in ('A','B'):
+        for risk in ('R2','R3'):
+            cell=[p for p in ps if p['phase']==phase and p['risk_round']==risk and p['primary_or_reserve']=='PRIMARY']
+            require(len(cell)==35,"35_logical:"+phase+':'+risk)
+            for family in ('E1','E2','E3','E4','E5','E6','E7'):
+                require(sorted(p['subtype_slot'] for p in cell if p['family']==family)==[f'{family}-{i:02d}' for i in range(1,6)],"five_slots:"+phase+':'+risk+':'+family)
+            for name,total in [('determinate_semantic',30),('determinate_structural',30),('useful',30),('family_floor',30),('e7',5),('e5_pair',5),('binding_error',10),('malformed_determinate',30),('false_clean',35)]:
+                require(sum(p['gate_membership'][name] for p in cell)==total,"gate_denominator:"+phase+':'+risk+':'+name)
+            require(sum(len([v for v in vs if v['logical_base_id']==p['logical_base_id']]) for p in cell)==40,"40_rendered_cell:"+phase+':'+risk)
+            require(sum(p['composed_quota_row']!='NONE' for p in cell)==8,"eight_composed_positions:"+phase+':'+risk)
+    exceptions=0;cross=0
+    for left,right in itertools.combinations(vs,2):
+        if left['logical_base_id']==right['logical_base_id']:
+            require(by_base[left['logical_base_id']]['family']=='E5' and {left['variant_id'],right['variant_id']}=={'CF1','CF2'},"pair_scope:"+left['logical_base_id'])
+            exceptions+=1
+        else:cross+=1
+    require((exceptions,cross)==(24,18312),"rendered_comparison_scope")
+    require(106*len(vs)==20352,"historical_comparison_scope")
+    require(len(bp['reserve_map'])==28,"28_reserve_maps")
+    for mapping in bp['reserve_map']:
+        require(mapping['covered_primary_base_id'].endswith('-01:PRIMARY'),"reserve_slot01:"+mapping['reserve_slot_id'])
+        require(mapping['reserve_base_id'] in by_base and mapping['covered_primary_base_id'] in by_base,"reserve_referential_integrity:"+mapping['reserve_slot_id'])
+    for phase, rows in [('A',bp['schedule_plan']['phase_a']),('B',bp['schedule_plan']['phase_b_maximum_template'])]:
+        require(len(rows)==(480 if phase=='A' else 240),'schedule_count:'+phase)
+        require(len({r['call_id'] for r in rows})==len(rows),'call_id_unique:'+phase)
+        require([r['template_schedule_position'] for r in rows]==list(range(1,len(rows)+1)),'schedule_contiguous:'+phase)
+        for model in c['model_provider']['models']:
+            mr=[r for r in rows if r['tier']==model['tier']]
+            require(len(mr)==(160 if phase=='A' else 80),'per_tier_calls:'+phase+':'+model['tier'])
+            seeds={}
+            for row in mr:seeds.setdefault(row['seed'],[]).append(row)
+            for seed,group in seeds.items():
+                require(len(group)==1 or len(group)==2 and len({r['logical_base_id'] for r in group})==1 and {r['variant_id'] for r in group}=={'CF1','CF2'} and len({r['repeat'] for r in group})==1,'seed_collision_scope:'+phase+':'+model['tier']+':'+str(seed))
+    cells=bp['schedule_plan']['phase_b_cell_order'];template=bp['schedule_plan']['phase_b_maximum_template']
+    for bits in itertools.product((False,True),repeat=6):
+        chosen={cell for cell,bit in zip(cells,bits) if bit};rows=[r for r in template if r['cell_id'] in chosen]
+        require(len(rows)==40*len(chosen),'conditional_b_subset:'+''.join(str(int(x)) for x in bits))
+    for name,refs in bp['scientific_traceability'].items():
+        for reference in refs:resolve_pointer(c,reference);require(True,'traceable:'+name+':'+reference)
+    forbidden={'source_fact_records','gold_values','input','source_text','operand_values','request_bytes','journal','response'}
+    def walk(value):
+        if isinstance(value,dict):
+            require(not forbidden.intersection(value),'no_content_keys:'+str(len(checks)))
+            for child in value.values():walk(child)
+        elif isinstance(value,list):
+            for child in value:walk(child)
+        elif isinstance(value,str) and value.startswith('DESIGN_CANDIDATE.json#'):
+            resolve_pointer(c,value);require(True,'all_contract_references_resolve:'+str(len(checks)))
+    walk(bp)
+    require(bp['governance']['provider_model_calls']==bp['governance']['gold_answers_authored']==0,'zero_provider_gold')
+    return checks
+
+
+def validate_reserve_schedules(bp,c,checks):
+    maps=bp['reserve_map']
+    substitutions=[{x['covered_primary_base_id']:x['reserve_base_id']} for x in maps]
+    substitutions.append({x['covered_primary_base_id']:x['reserve_base_id'] for x in maps})
+    for index,replacement in enumerate(substitutions):
+        plan=schedules(bp['logical_positions'],bp['rendered_variants'],c,replacement)
+        lookup={p['logical_base_id']:p for p in bp['logical_positions']}
+        for phase,rows in plan.items():
+            if len(rows)!=(480 if phase=='A' else 240):raise ValueError('reserve_schedule_count')
+            ordinals=[lookup[r['logical_base_id']]['fixture_ordinal'] for r in rows]
+            if ordinals!=sorted(ordinals):raise ValueError('reserve_schedule_ordinal_order')
+            positions={m['tier']:[0,0,0] for m in c['model_provider']['models']}
+            risk_positions={(m['tier'],risk):[0,0,0] for m in c['model_provider']['models'] for risk in ('R2','R3')}
+            group=[];last=None;seeds={}
+            for row in rows:
+                key=row['logical_base_id']
+                if key!=last:
+                    if group:
+                        for place,tier in enumerate(group):
+                            positions[tier][place]+=1
+                            risk_positions[(tier,lookup[last]['risk_round'])][place]+=1
+                    group=[];last=key
+                if row['tier'] not in group:group.append(row['tier'])
+                seeds.setdefault((row['tier'],row['seed']),[]).append(row)
+                expected=replacement.get(row['qualification_slot_id'],row['qualification_slot_id'])
+                if row['logical_base_id']!=expected:raise ValueError('reserve_qualification_binding')
+            for place,tier in enumerate(group):
+                positions[tier][place]+=1
+                risk_positions[(tier,lookup[last]['risk_round'])][place]+=1
+            if any(max(n)-min(n)>1 for n in list(positions.values())+list(risk_positions.values())):raise ValueError('reserve_model_balance')
+            for key,observations in seeds.items():
+                if len(observations)>1 and not (len(observations)==2 and len({r['logical_base_id'] for r in observations})==1 and {r['variant_id'] for r in observations}=={'CF1','CF2'} and len({r['repeat'] for r in observations})==1):
+                    raise ValueError('reserve_seed_collision')
+            checks.append('precontact_reserve_schedule:'+str(index)+':'+phase)
+
+
+def main():
+    parser=argparse.ArgumentParser();parser.add_argument('--write',action='store_true');args=parser.parse_args()
+    c,helper,hashes=load_authority();expected=build(c,helper,hashes)
+    if args.write:
+        (HERE/'BLUEPRINT.json').write_bytes(encoded(expected))
+        (HERE/'BLUEPRINT.md').write_text(markdown(expected),encoding='utf-8',newline='\n')
+    if (HERE/'BLUEPRINT.json').read_bytes()!=encoded(expected):raise ValueError('blueprint_canonical_bytes_or_derivation_mismatch')
+    actual=json.loads((HERE/'BLUEPRINT.json').read_text());checks=validate(actual,expected,c)
+    validate_reserve_schedules(actual,c,checks)
+    if (HERE/'BLUEPRINT.md').read_bytes()!=markdown(expected).encode():raise ValueError('human_machine_blueprint_mismatch')
+    mutations=[('extra_top_key',lambda x:x.update(unauthorized_rule=True)),
+               ('third_member',lambda x:x['rendered_variants'].append(copy.deepcopy(next(v for v in x['rendered_variants'] if v['variant_id']=='CF1')))),
+               ('ordinal',lambda x:x['logical_positions'][0].update(fixture_ordinal=168)),
+               ('threshold',lambda x:x['cell_gate_specs']['phase_a']['e5_counterfactual_pairs'].update(minimum_correct_pairs=4)),
+               ('seed',lambda x:x['schedule_plan']['phase_a'][0].update(seed=1)),
+               ('content',lambda x:x['logical_positions'][0].update(gold_values={'x':1})),
+               ('reserve',lambda x:x['reserve_map'][0].update(covered_subtype_slot='03'))]
+    for label,change in mutations:
+        bad=copy.deepcopy(actual);change(bad)
+        try:validate(bad,expected,c)
+        except ValueError:checks.append('mutation_rejected:'+label)
+        else:raise ValueError('mutation_accepted:'+label)
+    if {p.name for p in HERE.iterdir()}-set(FILES):raise ValueError('unexpected_blueprint_file')
+    if (HERE/'.gitattributes').read_bytes()!=b'*.json text eol=lf\n*.md text eol=lf\n*.py text eol=lf\n.gitattributes text eol=lf\n':
+        raise ValueError('blueprint_line_ending_policy_mismatch')
+    checks.append('blueprint_local_lf_policy')
+    history={}
+    for filename,key in [('G_ROUTE4_CLOSURE.json','closure_sha256'),('PHASE_B_UNSAFE_STOP_DIAGNOSTIC.json','diagnostic_sha256')]:
+        path=ROOT/'experiments/G-ROUTE4-candidate/closure'/filename
+        if digest(path.read_bytes())!=c['historical_binding'][key]:raise ValueError('historical_digest_mismatch')
+        history[filename]=digest(path.read_bytes())
+    positions=actual['logical_positions'];variants=actual['rendered_variants']
+    primary_ids={p['logical_base_id'] for p in positions if p['primary_or_reserve']=='PRIMARY'}
+    scored_e5=sum(p['logical_base_id'] in primary_ids and p['family']=='E5' for p in positions)
+    reserve_e5=sum(p['logical_base_id'] not in primary_ids and p['family']=='E5' for p in positions)
+    rendered_scored=sum(v['logical_base_id'] in primary_ids for v in variants)
+    total_pairs=len(variants)*(len(variants)-1)//2
+    pair_local=scored_e5+reserve_e5
+    counts=dict(scored_logical=len(primary_ids),reserve_logical=len(positions)-len(primary_ids),total_logical=len(positions),
+                scored_rendered=rendered_scored,reserve_rendered=len(variants)-rendered_scored,total_rendered=len(variants),
+                scored_e5_pairs=scored_e5,reserve_e5_pairs=reserve_e5,
+                fingerprint_classes=len(actual['recurrence_ledger']['fingerprint_classes']),
+                subtype_groups=len(actual['recurrence_ledger']['subtype_template_groups']),
+                logical_comparisons=len(positions)*(len(positions)-1)//2,
+                rendered_comparisons=total_pairs,pair_local_scopes=pair_local,cross_base_comparisons=total_pairs-pair_local,
+                historical_rendered_comparisons=106*len(variants),
+                phase_a_calls=len(actual['schedule_plan']['phase_a']),phase_b_maximum_calls=len(actual['schedule_plan']['phase_b_maximum_template']),
+                reserve_maps=len(actual['reserve_map']))
+    gate_counts={}
+    for phase in ('A','B'):
+        gate_counts[phase]={}
+        for risk in ('R2','R3'):
+            cell=[p for p in positions if p['logical_base_id'] in primary_ids and p['phase']==phase and p['risk_round']==risk]
+            membership={key:sum(p['gate_membership'][key] for p in cell) for key in cell[0]['gate_membership']}
+            membership.update(rendered_variants=sum(sum(v['logical_base_id']==p['logical_base_id'] for v in variants) for p in cell),
+                              provider_observations=80 if phase=='A' else 40,e5_observations=20 if phase=='A' else 10,e7_observations=10 if phase=='A' else 5)
+            gate_counts[phase][risk]=membership
+    report=dict(schema_version='g-extract1.blueprint-validation.v1', verdict='PASS',check_count=len(checks),
+                validation_scope='deterministic structural/design-equivalence only; not scientific or corpus approval',
+                accepted_design_commit=ACCEPTED, scientific_validity_proven=False,
+                counts=counts,gate_membership_counts=gate_counts,
+                equivalence_report=actual['scientific_traceability'],
+                seed_collision_audit='PASS: only same-model/base/repeat CF1/CF2 sharing',phase_b_qualified_cell_subsets_checked=64,
+                reserve_schedule_cases_checked=29,
+                source_artifact_hashes=hashes,historical_hashes=history,checks=checks,
+                artifacts_sha256={name:digest((HERE/name).read_bytes()) for name in FILES if name!='BLUEPRINT_VALIDATION_REPORT.json'},
+                authority=actual['authority'],governance=actual['governance'])
+    if args.write:(HERE/'BLUEPRINT_VALIDATION_REPORT.json').write_bytes(encoded(report))
+    elif json.loads((HERE/'BLUEPRINT_VALIDATION_REPORT.json').read_text())!=report:raise ValueError('validation_report_stale')
+    print(json.dumps({key:report[key] for key in ('verdict','check_count','counts','seed_collision_audit')},indent=2))
+
+
+if __name__=='__main__':
+    main()
