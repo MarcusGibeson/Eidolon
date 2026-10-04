@@ -194,3 +194,6 @@ Separate authorization remains required for blueprint, fixture/gold authoring, i
 
 ## Historical Tuple Scope Correction
 Resolved historical provenance impossibility with an explicit NOT_APPLICABLE status only for historical/new date-number. Preserved all NEW/NEW semantics and other historical controls; no candidate outcome drove this correction. Blueprint mechanically binds the same annex.
+
+## Corpus Gold Review Closure
+Preserved the prior NOT_READY review. Prospectively froze the exact elapsed-cycle instruction, explicit empty-content applicability and mandatory intermediate differential certification. All unrelated science and candidate/gold bytes are unchanged. Targeted independent audit remains required before publication.

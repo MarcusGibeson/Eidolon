@@ -141,3 +141,9 @@ Section20 and the exact annex freeze the recurrence ledger, comparison decision 
 - [x] No surrogate, PASS/FAIL accounting, or inferred provenance.
 - [x] All other supported historical controls and NEW tuple bytes unchanged.
 - [x] Authority remains bounded; audit required before checker update.
+
+## Review Closure Equivalence
+- [x] Exact elapsed convention and byte placement are co-normative.
+- [x] Content applicability, no-credit handling and differential stages are co-normative.
+- [x] Twelve request deltas and all unchanged inputs are mechanically tested.
+- [x] Historical projection boundary and governance remain unchanged.

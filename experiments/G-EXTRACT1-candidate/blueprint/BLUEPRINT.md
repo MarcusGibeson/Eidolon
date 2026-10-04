@@ -4866,3 +4866,84 @@ and exact value-free output plans from BLUEPRINT.json; it adds no semantics.
 ## Historical Tuple Applicability Rebind
 
 This annex supersedes only universal date-number scope language: NEW/NEW APPLIES unchanged; HISTORICAL/NEW is NOT_APPLICABLE_UNREPRESENTABLE_HISTORICAL_PROVENANCE, neither PASS nor FAIL. No surrogate bytes are permitted. All other historical controls remain enabled. The JSON plan binds the exact co-normative design contract and current design file hashes; no allocation, seed, schedule, gate, reserve or authority change.
+
+## Corpus Gold Review Closure
+
+Only ELAPSED_MINUTES requests append the exact one-cycle convention before the unchanged historical suffix. Evaluator mathematics, facts, gold, allocations, schedules, gates and thresholds remain unchanged. Empty content is explicitly NOT_APPLICABLE_BOTH_EMPTY with no dissimilarity credit. Direct normalized-byte, token-sequence and structural-byte comparisons are mandatory; historical structural bytes remain only the accepted projection. Local guards are not real-finalizer mutation certification. The following exact plan is co-normative; no runtime/pilot/freeze/execution authority is granted.
+
+```json
+{
+  "source_ref": "DESIGN_CANDIDATE.json#/corpus_gold_review_closure_contract",
+  "contract": {
+    "contract_id": "g-extract1.corpus-gold-review-closure.v1",
+    "accepted_parent_package": "a276c73ba5b89d944997a6a82cba4508729653c8",
+    "precedence": "Only the three external review findings are superseded; all other contracts remain unchanged.",
+    "elapsed_minutes": {
+      "operation_id": "ELAPSED_MINUTES",
+      "exact_convention_text": "Elapsed minutes means the forward elapsed time within one 24-hour cycle. If the end time is earlier than the start time, treat the end as occurring on the next day. If the start and end times are equal, the elapsed time is 0 minutes. Do not count additional full days.",
+      "placement": "Append exactly once after all operation fragments and before the historical common suffix, iff the graph contains ELAPSED_MINUTES.",
+      "subject_join": "old periodless SUBJECT + '. ' + exact_convention_text[:-1]; unchanged template supplies the final period",
+      "expected_affected_scored_requests": 12,
+      "evaluator_changed": false,
+      "effect": "Prospective model-facing semantic clarification, not a claim of unchanged SUBJECT instructional behavior; historical system text and common suffix unchanged."
+    },
+    "content_applicability": {
+      "states": [
+        "APPLIES",
+        "NOT_APPLICABLE_BOTH_EMPTY"
+      ],
+      "derivation": "NOT_APPLICABLE_BOTH_EMPTY iff both content five-gram sets are empty; otherwise APPLIES, including exactly one empty set.",
+      "not_applicable_similarity": null,
+      "not_applicable_dissimilarity_credit": false,
+      "applies_similarity": "exact intersection/union integers; one empty set gives 0",
+      "report_scope": "every NEW/NEW comparison, with applicability totals by existing branch",
+      "branches_thresholds_freshness_and_reuse_changed": false
+    },
+    "intermediate_differential": {
+      "new_stages": [
+        "normalized_payload_bytes",
+        "token_sequence",
+        "fingerprint_bytes"
+      ],
+      "historical_stages": [
+        "normalized_payload_bytes",
+        "token_sequence",
+        "projection_bytes"
+      ],
+      "normalization": "Existing ordinal-neutral similarity normalization; historical side unmasked.",
+      "token_sequence_encoding": "UTF-8 compact JSON ordered token array, ensure_ascii=false, no newline",
+      "fingerprint_encoding": "Existing compact UTF-8 six-component fingerprint encoding, ensure_ascii=false, no newline",
+      "projection_encoding": "Existing historical three-component compact UTF-8 encoding, ensure_ascii=true, no newline",
+      "comparison": "Direct byte/sequence equality mandatory at every stage; SHA-256 records are evidence only.",
+      "disagreement": "STOP before any publication"
+    },
+    "mutation_classification": [
+      "REAL_FINALIZATION_PATH",
+      "CHECKER_COMPONENT_PATH",
+      "TEST_LOCAL_GUARD"
+    ],
+    "real_path_requirement": "Run the integrity-protected finalizer in memory with normalized payload, tokens, fingerprint, scaffold and recurrence mutations; require the targeted rejection reason, not any incidental exception.",
+    "preservation": "Candidate bytes, gold, source facts, operation arguments, schemas, entities, selectors, allocations, recurrence, contamination thresholds, gates, seeds and schedules unchanged.",
+    "authority": {
+      "provider_model_calls": 0,
+      "runtime_implementation": false,
+      "mechanical_pilot": false,
+      "execution_freeze": false,
+      "phase_a": false,
+      "phase_b": false,
+      "autonomy": false,
+      "belief_effects": "none",
+      "G_ROUTE4": "CLOSED FAILED unchanged"
+    }
+  },
+  "design_artifacts_sha256": {
+    "DESIGN_CANDIDATE.md": "14dfd00e0ca9d555898d30b51fc3676a5ffe95a9a7f285672b1b0d32474dc018",
+    "DESIGN_CANDIDATE.json": "41c04df59d3ae465dc1094c5e15562fd7ea52c7f20e9d83f7f7ade9d9acbddd5",
+    "DESIGN_REVISION_CHANGELOG.md": "7b84480fa65a9f16294ab7181c26637f5a694becbafc4a388176e74089781d72",
+    "HUMAN_MACHINE_EQUIVALENCE_CHECKLIST.md": "ef8c80ecf5fcace9eeaace7f5b4d44a03b3c33f2cd18511301df48d7e8cae49e",
+    "DESIGN_VALIDATION_REPORT.json": "9ea6a9f50aa9efdc675336bcfb462a8ead583509146a0a10def272d04e100118",
+    "validate_design.py": "a44229a3742ee54f33ae17d8e00dfa0506b678df8c3c1f1e818cf6d5b3892bc0"
+  },
+  "binding": "Prospective review-closure commit; final manifest records resolved Git identity; no allocation change."
+}
+```

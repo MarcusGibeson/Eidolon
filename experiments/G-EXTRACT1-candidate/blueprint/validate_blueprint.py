@@ -1885,8 +1885,43 @@ def tuple_correction_main():
     print(json.dumps({k:report[k] for k in ('verdict','check_count','counts')},indent=2))
 
 
+def review_closure_main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--materialize-review-closure', action='store_true')
+    parser.add_argument('--write', action='store_true')
+    args = parser.parse_args()
+    spec = importlib.util.spec_from_file_location('review_closure_design', DESIGN/'validate_design.py')
+    helper = importlib.util.module_from_spec(spec); spec.loader.exec_module(helper)
+    c = json.loads((DESIGN/'DESIGN_CANDIDATE.json').read_bytes())
+    design_report = helper.validate_review_closure_design(c, (DESIGN/'DESIGN_CANDIDATE.md').read_text(encoding='utf-8'))
+    parent_commit = helper.REVIEW_CLOSURE_PARENT
+    expected = json.loads(git('show', parent_commit+':experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.json'))
+    plan = dict(source_ref=ref('/corpus_gold_review_closure_contract'), contract=c['corpus_gold_review_closure_contract'],
+        design_artifacts_sha256={n:digest((DESIGN/n).read_bytes()) for n in SOURCE_NAMES},
+        binding='Prospective review-closure commit; final manifest records resolved Git identity; no allocation change.')
+    expected['corpus_gold_review_closure_plan'] = plan
+    old_md = git('show', parent_commit+':experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.md').decode()
+    md = old_md + '\n## Corpus Gold Review Closure\n\nOnly ELAPSED_MINUTES requests append the exact one-cycle convention before the unchanged historical suffix. Evaluator mathematics, facts, gold, allocations, schedules, gates and thresholds remain unchanged. Empty content is explicitly NOT_APPLICABLE_BOTH_EMPTY with no dissimilarity credit. Direct normalized-byte, token-sequence and structural-byte comparisons are mandatory; historical structural bytes remain only the accepted projection. Local guards are not real-finalizer mutation certification. The following exact plan is co-normative; no runtime/pilot/freeze/execution authority is granted.\n\n```json\n' + json.dumps(plan, ensure_ascii=False, indent=2) + '\n```\n'
+    if args.materialize_review_closure:
+        (HERE/'BLUEPRINT.json').write_bytes(encoded(expected))
+        (HERE/'BLUEPRINT.md').write_text(md, encoding='utf-8', newline='\n')
+    if json.loads((HERE/'BLUEPRINT.json').read_bytes()) != expected or (HERE/'BLUEPRINT.md').read_text(encoding='utf-8') != md:
+        raise ValueError('blueprint_review_closure_exceeds_exact_plan')
+    previous = json.loads(git('show', parent_commit+':experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT_VALIDATION_REPORT.json'))
+    report = dict(verdict='PASS', check_count=design_report['check_count']+2,
+        validation_scope='deterministic structural/cross-representation consistency only; not scientific approval',
+        review_closure_design_audit=design_report, counts=previous['counts'], output_field_counts=previous['output_field_counts'],
+        all_prior_allocations_and_authority_unchanged=True, authority=expected['authority'],
+        historical_adapter=design_report['historical_adapter'], source_artifact_hashes=plan['design_artifacts_sha256'],
+        artifacts_sha256={n:digest((HERE/n).read_bytes()) for n in FILES if n!='BLUEPRINT_VALIDATION_REPORT.json'})
+    if args.write:(HERE/'BLUEPRINT_VALIDATION_REPORT.json').write_bytes(encoded(report))
+    print(json.dumps({k:report[k] for k in ('verdict','check_count','counts')}, indent=2))
+
+
 if __name__=='__main__':
-    if 'date_number_tuple_applicability_contract' in json.loads((DESIGN/'DESIGN_CANDIDATE.json').read_bytes()):
+    if 'corpus_gold_review_closure_contract' in json.loads((DESIGN/'DESIGN_CANDIDATE.json').read_bytes()):
+        review_closure_main()
+    elif 'date_number_tuple_applicability_contract' in json.loads((DESIGN/'DESIGN_CANDIDATE.json').read_bytes()):
         tuple_correction_main()
     else:
         main()

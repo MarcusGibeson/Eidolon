@@ -6823,3 +6823,74 @@ This annex supersedes only earlier universal date-number scope claims. NEW/NEW t
 }
 ```
 <!-- TUPLE_APPLICABILITY_END -->
+<!-- REVIEW_CLOSURE_BEGIN -->
+
+## Corpus Gold Review Closure
+
+The prior independent corpus/gold verdict remains NOT_READY_FOR_NEXT_G_EXTRACT1_STAGE. This prospective correction communicates the existing elapsed-time semantics; it is an explicit SUBJECT instruction change, not unchanged instructional behavior. Only graphs containing ELAPSED_MINUTES append the exact convention below, once, before the unchanged historical common suffix. The final period is supplied by that suffix. No source, gold, evaluator, schema, allocation, threshold, seed, schedule or historical artifact changes. All other accepted rules remain binding. Empty content receives an explicit NOT_APPLICABLE_BOTH_EMPTY status and no dissimilarity credit; freshness and reuse checks remain mandatory. Differential certification compares actual normalized bytes, ordered tokens and structural bytes, not just hashes. Historical structural bytes remain the three-component projection, never fabricated typed fingerprints. Real-finalizer mutations and local/component checks are reported separately. This grants no provider, runtime, pilot, freeze or execution authority. The following JSON is co-normative.
+
+```json
+{
+  "contract_id": "g-extract1.corpus-gold-review-closure.v1",
+  "accepted_parent_package": "a276c73ba5b89d944997a6a82cba4508729653c8",
+  "precedence": "Only the three external review findings are superseded; all other contracts remain unchanged.",
+  "elapsed_minutes": {
+    "operation_id": "ELAPSED_MINUTES",
+    "exact_convention_text": "Elapsed minutes means the forward elapsed time within one 24-hour cycle. If the end time is earlier than the start time, treat the end as occurring on the next day. If the start and end times are equal, the elapsed time is 0 minutes. Do not count additional full days.",
+    "placement": "Append exactly once after all operation fragments and before the historical common suffix, iff the graph contains ELAPSED_MINUTES.",
+    "subject_join": "old periodless SUBJECT + '. ' + exact_convention_text[:-1]; unchanged template supplies the final period",
+    "expected_affected_scored_requests": 12,
+    "evaluator_changed": false,
+    "effect": "Prospective model-facing semantic clarification, not a claim of unchanged SUBJECT instructional behavior; historical system text and common suffix unchanged."
+  },
+  "content_applicability": {
+    "states": [
+      "APPLIES",
+      "NOT_APPLICABLE_BOTH_EMPTY"
+    ],
+    "derivation": "NOT_APPLICABLE_BOTH_EMPTY iff both content five-gram sets are empty; otherwise APPLIES, including exactly one empty set.",
+    "not_applicable_similarity": null,
+    "not_applicable_dissimilarity_credit": false,
+    "applies_similarity": "exact intersection/union integers; one empty set gives 0",
+    "report_scope": "every NEW/NEW comparison, with applicability totals by existing branch",
+    "branches_thresholds_freshness_and_reuse_changed": false
+  },
+  "intermediate_differential": {
+    "new_stages": [
+      "normalized_payload_bytes",
+      "token_sequence",
+      "fingerprint_bytes"
+    ],
+    "historical_stages": [
+      "normalized_payload_bytes",
+      "token_sequence",
+      "projection_bytes"
+    ],
+    "normalization": "Existing ordinal-neutral similarity normalization; historical side unmasked.",
+    "token_sequence_encoding": "UTF-8 compact JSON ordered token array, ensure_ascii=false, no newline",
+    "fingerprint_encoding": "Existing compact UTF-8 six-component fingerprint encoding, ensure_ascii=false, no newline",
+    "projection_encoding": "Existing historical three-component compact UTF-8 encoding, ensure_ascii=true, no newline",
+    "comparison": "Direct byte/sequence equality mandatory at every stage; SHA-256 records are evidence only.",
+    "disagreement": "STOP before any publication"
+  },
+  "mutation_classification": [
+    "REAL_FINALIZATION_PATH",
+    "CHECKER_COMPONENT_PATH",
+    "TEST_LOCAL_GUARD"
+  ],
+  "real_path_requirement": "Run the integrity-protected finalizer in memory with normalized payload, tokens, fingerprint, scaffold and recurrence mutations; require the targeted rejection reason, not any incidental exception.",
+  "preservation": "Candidate bytes, gold, source facts, operation arguments, schemas, entities, selectors, allocations, recurrence, contamination thresholds, gates, seeds and schedules unchanged.",
+  "authority": {
+    "provider_model_calls": 0,
+    "runtime_implementation": false,
+    "mechanical_pilot": false,
+    "execution_freeze": false,
+    "phase_a": false,
+    "phase_b": false,
+    "autonomy": false,
+    "belief_effects": "none",
+    "G_ROUTE4": "CLOSED FAILED unchanged"
+  }
+}
+```
+<!-- REVIEW_CLOSURE_END -->

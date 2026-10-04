@@ -26,6 +26,52 @@ OUTPUT_FIELD_AMENDMENT_SUMMARY: dict[str, Any] = {}
 SCAFFOLD_AUDIT: dict[str, Any] = {}
 FRESHNESS_AMENDMENT_SUMMARY: dict[str, Any] = {}
 WHOLE_ANSWER_AMENDMENT_SUMMARY: dict[str, Any] = {}
+REVIEW_CLOSURE_PARENT = "a276c73ba5b89d944997a6a82cba4508729653c8"
+ELAPSED_CONVENTION = (
+    "Elapsed minutes means the forward elapsed time within one 24-hour cycle. "
+    "If the end time is earlier than the start time, treat the end as occurring on the next day. "
+    "If the start and end times are equal, the elapsed time is 0 minutes. "
+    "Do not count additional full days."
+)
+REVIEW_CLOSURE_CONTRACT = {
+    "contract_id": "g-extract1.corpus-gold-review-closure.v1",
+    "accepted_parent_package": REVIEW_CLOSURE_PARENT,
+    "precedence": "Only the three external review findings are superseded; all other contracts remain unchanged.",
+    "elapsed_minutes": {
+        "operation_id": "ELAPSED_MINUTES",
+        "exact_convention_text": ELAPSED_CONVENTION,
+        "placement": "Append exactly once after all operation fragments and before the historical common suffix, iff the graph contains ELAPSED_MINUTES.",
+        "subject_join": "old periodless SUBJECT + '. ' + exact_convention_text[:-1]; unchanged template supplies the final period",
+        "expected_affected_scored_requests": 12,
+        "evaluator_changed": False,
+        "effect": "Prospective model-facing semantic clarification, not a claim of unchanged SUBJECT instructional behavior; historical system text and common suffix unchanged.",
+    },
+    "content_applicability": {
+        "states": ["APPLIES", "NOT_APPLICABLE_BOTH_EMPTY"],
+        "derivation": "NOT_APPLICABLE_BOTH_EMPTY iff both content five-gram sets are empty; otherwise APPLIES, including exactly one empty set.",
+        "not_applicable_similarity": None,
+        "not_applicable_dissimilarity_credit": False,
+        "applies_similarity": "exact intersection/union integers; one empty set gives 0",
+        "report_scope": "every NEW/NEW comparison, with applicability totals by existing branch",
+        "branches_thresholds_freshness_and_reuse_changed": False,
+    },
+    "intermediate_differential": {
+        "new_stages": ["normalized_payload_bytes", "token_sequence", "fingerprint_bytes"],
+        "historical_stages": ["normalized_payload_bytes", "token_sequence", "projection_bytes"],
+        "normalization": "Existing ordinal-neutral similarity normalization; historical side unmasked.",
+        "token_sequence_encoding": "UTF-8 compact JSON ordered token array, ensure_ascii=false, no newline",
+        "fingerprint_encoding": "Existing compact UTF-8 six-component fingerprint encoding, ensure_ascii=false, no newline",
+        "projection_encoding": "Existing historical three-component compact UTF-8 encoding, ensure_ascii=true, no newline",
+        "comparison": "Direct byte/sequence equality mandatory at every stage; SHA-256 records are evidence only.",
+        "disagreement": "STOP before any publication",
+    },
+    "mutation_classification": ["REAL_FINALIZATION_PATH", "CHECKER_COMPONENT_PATH", "TEST_LOCAL_GUARD"],
+    "real_path_requirement": "Run the integrity-protected finalizer in memory with normalized payload, tokens, fingerprint, scaffold and recurrence mutations; require the targeted rejection reason, not any incidental exception.",
+    "preservation": "Candidate bytes, gold, source facts, operation arguments, schemas, entities, selectors, allocations, recurrence, contamination thresholds, gates, seeds and schedules unchanged.",
+    "authority": {"provider_model_calls": 0, "runtime_implementation": False, "mechanical_pilot": False,
+                  "execution_freeze": False, "phase_a": False, "phase_b": False, "autonomy": False,
+                  "belief_effects": "none", "G_ROUTE4": "CLOSED FAILED unchanged"},
+}
 PROTECTED_BLUEPRINT_COMMIT = "3bf939ea3160596d89c64f1feef790477991cf8a"
 PRESERVED_CORPUS_DIGESTS = {
     "corpus/AUTHORING_ATTEMPTS.json": "b9860b6bd4f662c46935773463bf6caf78035a1c2aa01c0b6a55e5100b9aa8da",
@@ -231,6 +277,8 @@ def render_subject(vector: dict[str, Any], operation: dict[str, Any]) -> str:
         sentences.append(template.format(**rendered))
     if vector.get("include_absence_sentence", False):
         sentences.append(operation["historical_absence_subject_fragment"])
+    if any(node["id"] == "ELAPSED_MINUTES" for node in ordered):
+        sentences.append(ELAPSED_CONVENTION[:-1])
     subject = operation["subject_fragment_join"].join(sentences)
     if subject.endswith("."):
         raise ValueError("subject_terminal_period")
@@ -4189,6 +4237,12 @@ def tuple_parent(commit: str, name: str) -> bytes:
 
 
 def validate_tuple_applicability(contract: dict[str, Any], human: str) -> dict[str, Any]:
+    if "corpus_gold_review_closure_contract" in contract:
+        if contract["corpus_gold_review_closure_contract"] != REVIEW_CLOSURE_CONTRACT:
+            raise ValueError("review_closure_contract_drift")
+        projected = copy.deepcopy(contract)
+        projected.pop("corpus_gold_review_closure_contract")
+        return validate_tuple_applicability(projected, human.split("<!-- REVIEW_CLOSURE_BEGIN -->", 1)[0])
     checks: list[str] = []
     amendment = contract["date_number_tuple_applicability_contract"]
     require(amendment == TUPLE_APPLICABILITY, "applicability_exact_contract", checks)
@@ -4279,16 +4333,119 @@ def materialize_tuple_correction() -> None:
         (HERE/name).write_text(tuple_parent(TUPLE_APPLICABILITY["accepted_design_parent"], name).decode()+extra,encoding="utf-8",newline="\n")
 
 
+def closure_fixture_request(fixture: dict[str, Any], contract: dict[str, Any]) -> dict[str, Any]:
+    context = fixture["lexical_context"]
+    operation = contract["operation_definition_contract"]
+    family_index = int(context["primary_family_slot"][1:]) - 1
+    record_type = contract["lexical_neutrality_contract"]["record_type_catalog_by_phase"][context["phase"]][family_index]
+    subject = render_subject(dict(record_type=record_type, nodes=fixture["operation_nodes"],
+        include_absence_sentence=not fixture["operation_nodes"]), operation)
+    return dict(prompt=assemble_prompt(subject, contract["baseline_binding"]), input=dict(
+        text=" ".join(render_fact(f, operation["placeholder_type_system"], contract["schema_type_contract"])
+                      for f in fixture["source_fact_records"]),
+        schema={f["name"]: f["schema_type"] for f in fixture["output_fields"]}))
+
+
+def review_closure_human_annex() -> str:
+    return ('<!-- REVIEW_CLOSURE_BEGIN -->\n\n## Corpus Gold Review Closure\n\n'
+        'The prior independent corpus/gold verdict remains NOT_READY_FOR_NEXT_G_EXTRACT1_STAGE. '
+        'This prospective correction communicates the existing elapsed-time semantics; it is an explicit '
+        'SUBJECT instruction change, not unchanged instructional behavior. Only graphs containing '
+        'ELAPSED_MINUTES append the exact convention below, once, before the unchanged historical common '
+        'suffix. The final period is supplied by that suffix. No source, gold, evaluator, schema, allocation, '
+        'threshold, seed, schedule or historical artifact changes. All other accepted rules remain binding. '
+        'Empty content receives an explicit NOT_APPLICABLE_BOTH_EMPTY status and no dissimilarity credit; '
+        'freshness and reuse checks remain mandatory. Differential certification compares actual normalized '
+        'bytes, ordered tokens and structural bytes, not just hashes. Historical structural bytes remain '
+        'the three-component projection, never fabricated typed fingerprints. Real-finalizer mutations and '
+        'local/component checks are reported separately. This grants no provider, runtime, pilot, freeze '
+        'or execution authority. The following JSON is co-normative.\n\n```json\n'
+        + json.dumps(REVIEW_CLOSURE_CONTRACT, ensure_ascii=False, indent=2)
+        + '\n```\n<!-- REVIEW_CLOSURE_END -->\n')
+
+
+def validate_review_closure_design(contract: dict[str, Any], human: str) -> dict[str, Any]:
+    checks: list[str] = []
+    old = json.loads(tuple_parent(REVIEW_CLOSURE_PARENT, "DESIGN_CANDIDATE.json"))
+    projected = copy.deepcopy(contract)
+    require(projected.pop("corpus_gold_review_closure_contract") == REVIEW_CLOSURE_CONTRACT,
+            "exact_review_closure_contract", checks)
+    require(projected == old, "all_prior_scientific_sections_unchanged", checks)
+    old_human = tuple_parent(REVIEW_CLOSURE_PARENT, "DESIGN_CANDIDATE.md").decode()
+    require(human == old_human + review_closure_human_annex(), "exact_conormative_human_annex", checks)
+    prior = validate_tuple_applicability(projected, old_human)
+    checks.extend(prior["checks"])
+    suffix = old["baseline_binding"]["structured_extraction_assembled_template"].replace("{SUBJECT}", "")
+    affected = []
+    for name in ("SCORED_CORPUS.json", "RESERVE_CORPUS.json"):
+        original = json.loads(tuple_parent(REVIEW_CLOSURE_PARENT, "corpus/" + name))
+        for row in original["rendered_variants"]:
+            fixture = row["fixture"]
+            current = closure_fixture_request(fixture, contract)
+            has_elapsed = any(n["id"] == "ELAPSED_MINUTES" for n in fixture["operation_nodes"])
+            expected = copy.deepcopy(row["request"])
+            if has_elapsed:
+                require(expected["prompt"].endswith(suffix), "old_elapsed_suffix:" + row["rendered_variant_id"], checks)
+                expected["prompt"] = expected["prompt"][:-len(suffix)] + ". " + ELAPSED_CONVENTION[:-1] + suffix
+                affected.append(row["rendered_variant_id"])
+            require(current == expected, "exact_request_delta:" + row["rendered_variant_id"], checks)
+            require(current["input"] == row["request"]["input"], "input_and_schema_unchanged:" + row["rendered_variant_id"], checks)
+    require(len(affected) == 12 and all(":E2-0" in x and ":PRIMARY:" in x for x in affected),
+            "twelve_scored_elapsed_only", checks)
+    for start, end, expected in ((707, 738, 31), (1405, 53, 88), (1062, 1062, 0)):
+        result = (end - start) % 1440
+        require(result == expected and 0 <= result < 1440 and result + 1440 >= 1440,
+                "forward_cycle_entailment:" + str(expected), checks)
+    require(REVIEW_CLOSURE_CONTRACT["content_applicability"]["not_applicable_dissimilarity_credit"] is False,
+            "no_not_applicable_credit", checks)
+    return dict(verdict="PASS", check_count=len(checks), checks=checks,
+        validation_scope="deterministic structural/cross-representation consistency only; not scientific approval",
+        review_closure_contract=REVIEW_CLOSURE_CONTRACT, affected_request_ids=affected,
+        historical_adapter=prior["historical_adapter"], gold_projection_sha256=prior["gold_projection_sha256"],
+        accepted_parent_package=REVIEW_CLOSURE_PARENT,
+        artifact_hashes={n: sha256(HERE/n) for n in ("DESIGN_CANDIDATE.md", "DESIGN_CANDIDATE.json",
+            "DESIGN_REVISION_CHANGELOG.md", "HUMAN_MACHINE_EQUIVALENCE_CHECKLIST.md", "validate_design.py")})
+
+
+def materialize_review_closure_contracts() -> None:
+    original = tuple_parent(REVIEW_CLOSURE_PARENT, "DESIGN_CANDIDATE.json").decode()
+    addition = json.dumps(REVIEW_CLOSURE_CONTRACT, ensure_ascii=False, indent=2).replace("\n", "\n  ")
+    result = original.rstrip()[:-1].rstrip() + ',\n  "corpus_gold_review_closure_contract": ' + addition + '\n}\n'
+    expected = json.loads(original)
+    expected["corpus_gold_review_closure_contract"] = REVIEW_CLOSURE_CONTRACT
+    if json.loads(result) != expected:
+        raise ValueError("mechanical_review_closure_patch")
+    MACHINE.write_text(result, encoding="utf-8", newline="\n")
+    HUMAN.write_text(tuple_parent(REVIEW_CLOSURE_PARENT, HUMAN.name).decode() + review_closure_human_annex(),
+                     encoding="utf-8", newline="\n")
+    for name, text in (
+        ("DESIGN_REVISION_CHANGELOG.md", "\n## Corpus Gold Review Closure\nPreserved the prior NOT_READY review. Prospectively froze the exact elapsed-cycle instruction, explicit empty-content applicability and mandatory intermediate differential certification. All unrelated science and candidate/gold bytes are unchanged. Targeted independent audit remains required before publication.\n"),
+        ("HUMAN_MACHINE_EQUIVALENCE_CHECKLIST.md", "\n## Review Closure Equivalence\n- [x] Exact elapsed convention and byte placement are co-normative.\n- [x] Content applicability, no-credit handling and differential stages are co-normative.\n- [x] Twelve request deltas and all unchanged inputs are mechanically tested.\n- [x] Historical projection boundary and governance remain unchanged.\n"),
+    ):
+        (HERE/name).write_text(tuple_parent(REVIEW_CLOSURE_PARENT, name).decode() + text,
+                              encoding="utf-8", newline="\n")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--write-report", action="store_true")
     parser.add_argument("--summary", action="store_true", help="Print compact deterministic report summary")
     parser.add_argument("--materialize-tuple-correction", action="store_true")
+    parser.add_argument("--materialize-review-closure", action="store_true")
     args = parser.parse_args()
     if args.materialize_tuple_correction:
         materialize_tuple_correction()
+    if args.materialize_review_closure:
+        materialize_review_closure_contracts()
     contract = load_json_unique(MACHINE)
     human = HUMAN.read_text(encoding="utf-8")
+    if "corpus_gold_review_closure_contract" in contract:
+        report = validate_review_closure_design(contract, human)
+        if args.write_report:
+            REPORT.write_text(json.dumps(report, ensure_ascii=True, indent=2, sort_keys=True) + "\n",
+                              encoding="utf-8", newline="\n")
+        print(json.dumps({k: report[k] for k in ("verdict", "check_count", "affected_request_ids", "historical_adapter")}, sort_keys=True))
+        return 0
     if "date_number_tuple_applicability_contract" in contract:
         report = validate_tuple_applicability(contract, human)
         if args.write_report:
