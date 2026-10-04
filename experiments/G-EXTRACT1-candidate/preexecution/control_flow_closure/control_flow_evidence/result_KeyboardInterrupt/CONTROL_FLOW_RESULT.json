@@ -1,0 +1,1 @@
+{"boundary":"result_validation","case":"result_KeyboardInterrupt","category":"INVALID","cell":"small:R2","event":"SCHEDULED_CALL_OMITTED_WITHOUT_FAILURE_RECEIPT","exception":"KeyboardInterrupt","fabricated_receipts":0,"later_transport_calls":0,"original_object_propagated":true,"persisted_before_propagation":true,"phase":"A","restart":"REJECTED_OMISSION","second_start":false}
