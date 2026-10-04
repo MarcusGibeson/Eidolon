@@ -409,6 +409,21 @@ def evidence(f,request,c):
     return dict(raw_payload=dump(request["input"]),raw_values=freshness_from_source_facts(f["source_fact_records"],c).decode("utf-8"),identities=identities,answer=whole_answer_bytes([[field['name'],field['schema_type'],f['gold_values'][field['name']]] for field in f['output_fields']],c),tuple=dump(atoms) if eligible else None,fp=fingerprint(f,c),projection=projection(request,c),ordinary=grams(request,c),content=grams(request,c,"content"),shape=grams(request,c,"shape"))
 
 
+def tuple_scope_record(scope, c):
+    plan = c['date_number_tuple_applicability_contract']
+    scopes = plan['scope_status']
+    if scope == 'historical_new':
+        status = 'NOT_APPLICABLE_UNREPRESENTABLE_HISTORICAL_PROVENANCE'
+        if scopes.get(scope) != status or plan['historical_tuple_bytes'] is not None:
+            raise ValueError('unrepresentable_history_cannot_receive_tuple')
+        return {'comparisons_performed': 0, 'tuple_bytes': None, 'status': status}
+    if scope not in {'phase_a_phase_a','phase_a_phase_b','phase_b_phase_b','scored_reserve','reserve_reserve'}:
+        raise ValueError('unrecognized_tuple_scope')
+    if scopes[scope] != 'APPLIES':
+        raise ValueError('new_tuple_control_not_active')
+    return {'status': 'APPLIES'}
+
+
 def independent_pair(a,b,scaffold):
     if a["base"]==b["base"]: return "SAME_BASE_E5",None
     for key,reason in (("raw_payload","raw_payload_reuse"),("raw_values","raw_value_sequence_reuse"),("answer","whole_answer_reuse")):
@@ -429,3 +444,30 @@ def independent_pair(a,b,scaffold):
     matches=sum(x==y for x,y in zip(a["fp"],b["fp"]))
     fail=common*5>=union or matches==6 or (matches>=5 and common*25>=union*3)
     return ("FAIL","ordinary_similarity_or_replay") if fail else ("ORDINARY",None)
+
+
+def historical_record(f, expected, c):
+    fields = f['input']['schema']
+    if set(fields) != set(expected): raise ValueError('historical_output_set_mismatch')
+    identities = set()
+    for key, schema in fields.items():
+        if key == 'id' or any(key.endswith(suffix) for suffix in ('_id','_code','_identifier','_reference')):
+            kind, value = whole_answer_value(schema,expected[key],c)
+            identities.add(dump(['IDENTIFIER',whole_answer_render(kind,value)]))
+    return dict(id=f['fixture_id'],fixture=f,projection=projection(f,c),grams=grams(f,c,historical=True),
+        raw_payload=dump(f['input']), identities=identities,
+        answer=whole_answer_bytes([[key,schema,expected[key]] for key,schema in fields.items()],c),
+        unstructured_entity_semantics='UNAVAILABLE_NOT_GUESSED')
+
+
+def historical_pair_result(h, n, c):
+    applicability = tuple_scope_record('historical_new',c)
+    for key, reason in [('raw_payload','raw_payload_reuse'),('answer','whole_answer_reuse')]:
+        if h[key] == n[key]: return 'FAIL',reason,applicability
+    if h['identities'].intersection(n['identities']): return 'FAIL','identity_reuse',applicability
+    intersection=len(h['grams'].intersection(n['ordinary']))
+    union=len(h['grams'].union(n['ordinary']))
+    matches=sum(left==right for left,right in zip(h['projection'],n['projection']))
+    if not union or 5*intersection>=union or matches==3 or (matches>=2 and 25*intersection>=3*union):
+        return 'FAIL','historical_similarity_or_projection',applicability
+    return 'PASS',None,applicability

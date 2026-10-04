@@ -501,10 +501,46 @@ def historical_rows():
     return result
 
 
+def tuple_applicability(scope):
+    rule = C["date_number_tuple_applicability_contract"]
+    if scope not in rule["scope_status"]:
+        raise ValueError("unknown_tuple_comparison_scope")
+    if scope == "historical_new":
+        expected = "NOT_APPLICABLE_UNREPRESENTABLE_HISTORICAL_PROVENANCE"
+        if rule["scope_status"][scope] != expected or rule["historical_tuple_bytes"] is not None:
+            raise ValueError("historical_tuple_surrogate_or_status")
+        return dict(status=expected, tuple_bytes=None, comparisons_performed=0)
+    if rule["scope_status"][scope] != "APPLIES":
+        raise ValueError("new_tuple_disabled")
+    return dict(status="APPLIES")
+
+
 def historical_decision(h,a):
     i,u=ratio(h["grams"],a["ordinary"])
     equal=sum(x==y for x,y in zip(h["projection"],a["projection"]))
     return u and 5*i<u and equal!=3 and not(equal>=2 and 25*i>=3*u)
+
+
+def historical_evidence(fixture, gold):
+    schema = fixture['input']['schema']
+    if set(schema) != set(gold): raise ValueError('historical_gold_keys')
+    identities = {compact(['IDENTIFIER',whole_answer_text(schema[name],gold[name])])
+        for name in schema if name == 'id' or name.endswith(('_id','_code','_identifier','_reference'))}
+    return dict(id=fixture['fixture_id'], fixture=fixture,
+        projection=json.loads(D.historical_projection(fixture,C)),
+        grams=D.comparison_grams(D.ordinal_neutral_payload(fixture,True),C),
+        raw_payload=compact(fixture['input']), identities=identities,
+        answer=whole_answer_bytes([[name,schema[name],gold[name]] for name in schema]),
+        unstructured_entity_semantics='UNAVAILABLE_NOT_GUESSED')
+
+
+def historical_pair(h, a):
+    applicability = tuple_applicability('historical_new')
+    if h['raw_payload'] == a['raw_payload']: return 'FAIL','raw_payload_reuse',applicability
+    if h['answer'] == a['answer']: return 'FAIL','whole_answer_reuse',applicability
+    if h['identities'] & a['identities']: return 'FAIL','identity_reuse',applicability
+    if not historical_decision(h,a): return 'FAIL','historical_similarity_or_projection',applicability
+    return 'PASS',None,applicability
 
 
 def author():
