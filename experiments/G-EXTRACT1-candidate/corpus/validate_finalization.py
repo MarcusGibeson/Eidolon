@@ -371,6 +371,12 @@ def run_finalization(p,i,replay):
         same_subtype=518,ordinary=16888,same_base_e5=24,fingerprint_classes=len(class_members),subtype_groups=35,
         phase_a_calls=480,max_phase_b_calls=240,max_total_calls=720)
     contamination=dict(verdict='PASS_SUPPORTED_CONTROLS',checkers_agree=True,disagreements=0,new_new_partition=dict(branches),
+        exact_reuse_accounting=dict(new_new_cross_base_scopes=18312,raw_payload_scopes=18312,
+            freshness_scopes=18312,whole_answer_scopes=18312,identity_scopes=18312,
+            eligible_new_new_date_number_scopes=sum(r['eligible_date_number_comparison'] for r in pair_records if r['primary_disposition']!='SAME_BASE_E5'),
+            historical_supported_control_scopes=20352,historical_structured_identifier_atoms=sum(len(h['identities']) for h in historic),
+            historical_unstructured_identity_semantics='UNAVAILABLE_NOT_GUESSED',
+            historical_freshness='NEW freshness contract does not define historical source sequences; not fabricated'),
         new_new_decisions=pair_records,historical_new_decisions=historical_records,
         historical_new_date_number=dict(status=p.tuple_applicability('historical_new')['status'],historical_fixtures=106,
             historical_new_scopes=20352,tuple_comparisons_performed=0,pass_count=0,fail_count=0,reason='frozen provenance unavailable'),
@@ -397,6 +403,8 @@ def run_finalization(p,i,replay):
         prior_checker_repairs=['6fb3f2af5806760c034006a8561ce08e938c210a',CHECKER_PARENT],
         candidate_source_sha256=CANDIDATE_SHA,gold_projection_sha256=GOLD_SHA,
         authority_artifacts_sha256=after['corrected_authority_sha256'],checker_artifacts_sha256=after['checkers_sha256'],
+        checker_applicability_report_sha256=sha((HERE/'TUPLE_APPLICABILITY_CHECKER_REPORT.json').read_bytes()),
+        preserved_authoring_failure_and_repair_artifacts_sha256=after['preserved'],
         finalizer_sha256=sha(Path(__file__).read_bytes()),final_artifacts_sha256={n:sha(packed(v)) for n,v in output.items()},
         manifest_self_binding='No circular self-digest; final commit binds manifest Git blob. All other final artifacts hashed here.',
         counts=counts,date_number_applicability=p.C['date_number_tuple_applicability_contract'],governance=GOVERNANCE)

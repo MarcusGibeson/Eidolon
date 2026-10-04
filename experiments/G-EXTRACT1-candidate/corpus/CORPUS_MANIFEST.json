@@ -1,0 +1,145 @@
+{
+  "authority_artifacts_sha256": {
+    "experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.json": "3916a713f0b6a220679174a147ca455d14f0bd8f0d6cb75096c9d8aed978b6ae",
+    "experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.md": "ebf344ab9c3f386691fde05f690be60f2270dd2e61b3a4135afac5d75997d457",
+    "experiments/G-EXTRACT1-candidate/DESIGN_REVISION_CHANGELOG.md": "43e418a709981c90f47f1f0c659231c2312077970e699ea26721362cb031e504",
+    "experiments/G-EXTRACT1-candidate/DESIGN_VALIDATION_REPORT.json": "1ad57989fa8f10252405a6682af669369b884f00d03e7114c5adbf27b3350c3a",
+    "experiments/G-EXTRACT1-candidate/HUMAN_MACHINE_EQUIVALENCE_CHECKLIST.md": "bfe53e96ccd397a7a933ad5ef036955ea06175141cd5102d02fee768681ccae5",
+    "experiments/G-EXTRACT1-candidate/TUPLE_APPLICABILITY_AUDIT.json": "b74fba0c68c7f9bb47eaea6e032337b09f517ec698e80a201e29977fcff84257",
+    "experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.json": "5635018b7572441c47ee30e8d4ea4ea28d6372b6646a10f0b034ad856fe39e8f",
+    "experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.md": "a9ba9ff78f4c47db7f48194ecbf8db4df68d0f69eaf1cf885edb01cfaba86d50",
+    "experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT_VALIDATION_REPORT.json": "13a0ac95075513bc871fd265560389dcb16d7b1b5eee34b4917621632af319e5",
+    "experiments/G-EXTRACT1-candidate/blueprint/validate_blueprint.py": "17ae0a1b1af094356592076f5a4c2601aa4cc94447bc03488fec1483dfb822f9",
+    "experiments/G-EXTRACT1-candidate/validate_design.py": "5a18f89d701e827058d1d22b96ff8821e88aa005f62ec9545f193b11e268c440"
+  },
+  "blueprint_commit": "62de5dbdb6a646e21640f55e1565e1121ce675a3",
+  "candidate_source_sha256": "f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068",
+  "checker_applicability_commit": "158ba41860b004b51e57aadd77ed278c8861581e",
+  "checker_applicability_report_sha256": "4beb1afd8ff35f092ed5e961e8ddf4156b4314537741d100dee894692245d885",
+  "checker_artifacts_sha256": {
+    "independent_contamination.py": "ec950c94bca5254fce7a962fdcbe4193239d0aff431df3ed6fd8c3c5fbf0dc80",
+    "validate_corpus.py": "90bcf2117c98b8d17ec4e4536111818eda8148adca98af54620e1c822ed6d60b"
+  },
+  "counts": {
+    "fingerprint_classes": 51,
+    "logical_bases": 168,
+    "logical_outputs": 220,
+    "logical_scaffold_memberships": 234,
+    "max_phase_b_calls": 240,
+    "max_total_calls": 720,
+    "ordinary": 16888,
+    "phase_a_calls": 480,
+    "rendered_outputs": 244,
+    "rendered_scaffold_memberships": 906,
+    "rendered_variants": 192,
+    "reserve_logical": 28,
+    "reserve_rendered": 32,
+    "same_base_e5": 24,
+    "same_subtype": 518,
+    "scaffold_classes": 14,
+    "scored_logical": 140,
+    "scored_rendered": 160,
+    "subtype_groups": 35
+  },
+  "date_number_applicability": {
+    "accepted_blueprint_parent": "d8396179204411da15c2dfc330666a490a2287e8",
+    "accepted_design_parent": "d1b9e2aa5dbe0aeebb74f8226ca8033182f7b3c1",
+    "authority": {
+      "autonomy": false,
+      "belief_effects": "none",
+      "execution_freeze": false,
+      "mechanical_pilot": false,
+      "phase_a": false,
+      "phase_b": false,
+      "provider_model_calls": 0,
+      "runtime_implementation": false
+    },
+    "contract_id": "g-extract1.date-number-tuple-applicability.v1",
+    "decision_basis": "preserved historical representation cannot encode accepted tuple; not candidate outcomes",
+    "effect": "applicability correction only; no threshold, equality, ordering, encoding or model-facing change",
+    "historical_missing_provenance": [
+      "ordered typed source facts",
+      "complete source semantic typing",
+      "canonical operation graph",
+      "source/literal/derived provenance",
+      "exact catalog argument ordering"
+    ],
+    "historical_status_is_pass_or_fail": false,
+    "historical_tuple_bytes": null,
+    "historical_tuple_comparisons_performed": 0,
+    "new_new_rule": "contamination_contract.exact_reuse_contract.date_number_tuple unchanged in entirety",
+    "other_historical_controls": [
+      "similarity/projection",
+      "whole-answer exact replay",
+      "identity/identifier where defined",
+      "historical adapter",
+      "structural/projection"
+    ],
+    "prohibited_surrogates": [
+      "lexical SOURCE_FACT",
+      "gold-only tuple",
+      "inferred operation node",
+      "inferred source type",
+      "input.text inference",
+      "free-form instruction inference",
+      "rationale inference",
+      "ledger inference",
+      "authoring-expression inference"
+    ],
+    "scope_status": {
+      "historical_new": "NOT_APPLICABLE_UNREPRESENTABLE_HISTORICAL_PROVENANCE",
+      "phase_a_phase_a": "APPLIES",
+      "phase_a_phase_b": "APPLIES",
+      "phase_b_phase_b": "APPLIES",
+      "reserve_reserve": "APPLIES",
+      "scored_reserve": "APPLIES"
+    }
+  },
+  "design_commit": "62de5dbdb6a646e21640f55e1565e1121ce675a3",
+  "final_artifacts_sha256": {
+    "CONTAMINATION_REPORT.json": "69bd1bb344b2deeb0017cfcf97d19cd9caa2611131771c44aa7c5aa9edee5919",
+    "CORPUS_VALIDATION_REPORT.json": "dab1bf3597d261a8dcfb345a0b65a4b10d6df542e62f8f23f09ac8c5deb52b65",
+    "E5_REQUEST_INVARIANCE_REPORT.json": "9607283730609446a99ffcb4dc326b87cf025e92ca537a9bf8011ff7bd327635",
+    "GOLD.json": "53da54b9c6726108b8520f62b3b2ea894f54b856577d4baf9c058c798a4d31c9",
+    "GOLD_DERIVATION_REPORT.json": "0d492d8ca8cf59e148a1559454d7536189d03b6bf99fd25ef570bc3532db3709",
+    "RESERVE_CORPUS.json": "2d314e73af1cc164286fd4cc5c4f15d5f2cd65facbdea3c38cd60edc3af4ae90",
+    "SCORED_CORPUS.json": "c6d3d26f77f17bb479c07c1eb67424cb4cab5ae2c149aaa7ea1df2a50365c4ce"
+  },
+  "finalizer_sha256": "696aa4b6430c2140712b44117ba899295d4982bccbdcde776f275ed7fedef3dc",
+  "gold_projection_sha256": "803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec",
+  "governance": {
+    "G_ROUTE4": "CLOSED FAILED unchanged",
+    "autonomy": false,
+    "belief_effects": "none",
+    "corpus_regeneration": 0,
+    "execution": "none",
+    "execution_freeze_authorized": false,
+    "external_gold_review": "NOT YET PERFORMED",
+    "gold_modifications": 0,
+    "mechanical_pilot_authorized": false,
+    "phase_a_authorized": false,
+    "phase_b_authorized": false,
+    "provider_model_calls": 0,
+    "runtime_implementation": false
+  },
+  "manifest_self_binding": "No circular self-digest; final commit binds manifest Git blob. All other final artifacts hashed here.",
+  "preserved_authoring_failure_and_repair_artifacts_sha256": {
+    "AUTHORING_ATTEMPTS.json": "b9860b6bd4f662c46935773463bf6caf78035a1c2aa01c0b6a55e5100b9aa8da",
+    "AUTHORING_CANDIDATES.json": "f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068",
+    "AUTHORING_FEASIBILITY_REPORT.json": "8767a025c1123541cc858873aff41b60ecc1f8b0186d72ccc738761a24771433",
+    "FINALIZATION_CONTAMINATION_DISAGREEMENT_REPORT.json": "d9ff96223d36cd2c92d92361be028820d6955b82712f1ed2152178958c8765dc",
+    "FINALIZATION_FAILURE_REPORT.json": "588b6141e3c25b561dff49d7b004ca508468ed39f4dbef8a8e16c54f69918730",
+    "FINALIZATION_HISTORICAL_REUSE_CONTRACT_STOP_REPORT.json": "a011317172165d16569a78a975b861e8ccb7c374a68248da23f9c47498a8984d",
+    "FRESHNESS_CANONICALIZATION_DIAGNOSIS_REPORT.json": "7395408dcf283821d19ed81f6986d64c47b4d31f9dd76d1c72481f7dff48a442",
+    "FRESHNESS_CHECKER_REPAIR_REPORT.json": "3c57078b5ea88b5fc994252cec52307e5b213969797eaa222bb623ef989e262f",
+    "WHOLE_ANSWER_CHECKER_REPAIR_REPORT.json": "a9c5bc5533b2e3d61025576fd91b1f1e57cd2d74c4db675147e3df7a9a2e94a9",
+    "validate_freshness_repair.py": "9d66678d1fa8b62e820b25cc50305ba91ed112d6add57d63f9f5dc734bea70ae",
+    "validate_whole_answer_repair.py": "a389c97681e9630ea4f0c7aa102a02dff76def320412f0dc455eeeb6ff0ab513"
+  },
+  "prior_checker_repairs": [
+    "6fb3f2af5806760c034006a8561ce08e938c210a",
+    "b7fd33eacbd46df7be5274a0e3d5e2dbe34efe1a"
+  ],
+  "schema_version": "g-extract1.corpus-manifest.v1",
+  "status": "READY_FOR_INDEPENDENT_CORPUS_GOLD_REREVIEW"
+}
