@@ -16,13 +16,14 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 DESIGN = HERE.parent
 ROOT = DESIGN.parent.parent
-CORRECTION = '62de5dbdb6a646e21640f55e1565e1121ce675a3'
+CORRECTION = '7b80ae041c74af9965662ea1aaf0d374950640f4'
+PRIOR_PACKAGE = 'a276c73ba5b89d944997a6a82cba4508729653c8'
 CHECKER_PARENT = 'b7fd33eacbd46df7be5274a0e3d5e2dbe34efe1a'
 CANDIDATE_SHA = 'f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068'
 GOLD_SHA = '803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec'
 CHECKER_NAMES = ('validate_corpus.py','independent_contamination.py')
-ADDITIONS = ({'tuple_applicability','historical_evidence','historical_pair'},
-             {'tuple_scope_record','historical_record','historical_pair_result'})
+ADDITIONS = ({'tuple_applicability','historical_evidence','historical_pair','differential_record'},
+             {'tuple_scope_record','historical_record','historical_pair_result','differential_record'})
 PRESERVED = {
     'AUTHORING_ATTEMPTS.json':'b9860b6bd4f662c46935773463bf6caf78035a1c2aa01c0b6a55e5100b9aa8da',
     'AUTHORING_CANDIDATES.json':CANDIDATE_SHA,
@@ -37,7 +38,9 @@ PRESERVED = {
     'validate_whole_answer_repair.py':'a389c97681e9630ea4f0c7aa102a02dff76def320412f0dc455eeeb6ff0ab513',
 }
 FINAL_NAMES = ('SCORED_CORPUS.json','RESERVE_CORPUS.json','GOLD.json','CONTAMINATION_REPORT.json',
-               'GOLD_DERIVATION_REPORT.json','E5_REQUEST_INVARIANCE_REPORT.json','CORPUS_VALIDATION_REPORT.json','CORPUS_MANIFEST.json')
+               'GOLD_DERIVATION_REPORT.json','E5_REQUEST_INVARIANCE_REPORT.json','CORPUS_VALIDATION_REPORT.json','CORPUS_MANIFEST.json',
+               'ELAPSED_REQUEST_ENTAILMENT_REPORT.json','INTERMEDIATE_DIFFERENTIAL_REPORT.json',
+               'MUTATION_CERTIFICATION_REPORT.json','CORPUS_GOLD_REVIEW_CLOSURE.json')
 GOVERNANCE = dict(provider_model_calls=0, corpus_regeneration=0, gold_modifications=0,
     runtime_implementation=False, mechanical_pilot_authorized=False, execution_freeze_authorized=False,
     phase_a_authorized=False, phase_b_authorized=False, execution='none', autonomy=False,
@@ -146,7 +149,7 @@ def independent_gold(f,i,c,p):
 
 def applicability_tests(p,i,checks):
     c=p.C;d=p.D
-    current=d.validate_tuple_applicability(c,(DESIGN/'DESIGN_CANDIDATE.md').read_text(encoding='utf-8'))
+    current=d.validate_review_closure_design(c,(DESIGN/'DESIGN_CANDIDATE.md').read_text(encoding='utf-8'))
     for scope,status in d.TUPLE_APPLICABILITY['scope_status'].items():
         require(p.tuple_applicability(scope)==i.tuple_scope_record(scope,c),'dual_applicability:'+scope,checks)
         require(p.tuple_applicability(scope)['status']==status,'status:'+scope,checks)
@@ -177,6 +180,137 @@ def applicability_tests(p,i,checks):
             atoms=[d.extract_date_number_atoms(f,c['operation_definition_contract'],c['schema_type_contract'],c['operation_semantics_contract'],c['entity_population_contract']) for f in v['fixtures']]
             require([x[0][1:] for x in atoms]==v['expected_atoms_by_fixture'],'plural_tuple_schema_typing_vector',checks)
     return current
+
+
+def bound_inputs(p):
+    disk = json.loads((DESIGN/'blueprint/BLUEPRINT.json').read_bytes())
+    if p.B['recurrence_ledger'] != disk['recurrence_ledger']:
+        raise ValueError('bound_recurrence_memory_drift')
+    if p.B != disk or p.POSITIONS != {r['logical_base_id']:r for r in disk['logical_positions']}:
+        raise ValueError('bound_blueprint_memory_drift')
+    expected = {frozenset(pair):row for row in disk['comparison_scope']['scaffold_overlap']['classes']
+                for pair in row['rendered_position_pairs']}
+    if p.SCAFFOLD != expected:
+        raise ValueError('bound_scaffold_memory_drift')
+    if p.C != json.loads((DESIGN/'DESIGN_CANDIDATE.json').read_bytes()):
+        raise ValueError('bound_design_memory_drift')
+
+
+def certify_intermediates(p,i,fixture,request,record_id,historical,checks):
+    left = p.differential_record(fixture,request,p.C,historical)
+    right = i.differential_record(fixture,request,p.C,historical)
+    stage = 'projection' if historical else 'fingerprint'
+    require(left['normalized_payload_bytes'] == right['normalized_payload_bytes'],
+            'differential_normalized_payload:'+record_id,checks)
+    require(left['token_sequence'] == right['token_sequence'] and
+            left['token_sequence_bytes'] == right['token_sequence_bytes'],
+            'differential_token_sequence:'+record_id,checks)
+    require(left['structural_bytes'] == right['structural_bytes'],
+            'differential_'+stage+'_bytes:'+record_id,checks)
+    return dict(record_id=record_id,scope='HISTORICAL' if historical else 'NEW',
+        direct_normalized_payload_equality=True,direct_token_sequence_equality=True,direct_structural_byte_equality=True,
+        normalized_payload_sha256=sha(left['normalized_payload_bytes']),
+        token_sequence_sha256=sha(left['token_sequence_bytes']),structural_kind=stage,
+        **{stage+'_sha256':sha(left['structural_bytes'])})
+
+
+def request_entailment_report(p,i,rendered,checks):
+    prior = {}
+    for name in ('SCORED_CORPUS.json','RESERVE_CORPUS.json'):
+        old = json.loads(git('show',PRIOR_PACKAGE+':'+(HERE/name).relative_to(ROOT).as_posix()))
+        prior.update({r['rendered_variant_id']:r for r in old['rendered_variants']})
+    encode = lambda obj:json.dumps(obj,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode('utf-8')
+    convention = p.C['corpus_gold_review_closure_contract']['elapsed_minutes']['exact_convention_text']
+    suffix = p.C['baseline_binding']['structured_extraction_assembled_template'].replace('{SUBJECT}','')
+    changes = [];unchanged = []
+    for row in rendered:
+        old = prior[row['rendered_variant_id']];fixture=row['fixture']
+        require(fixture == old['fixture'] and row['gold'] == old['gold'],
+                'prior_fixture_and_gold_exact:'+row['rendered_variant_id'],checks)
+        require(encode(row['request']['input']) == encode(old['request']['input']),
+                'prior_input_and_schema_bytes_exact:'+row['rendered_variant_id'],checks)
+        nodes = [n for n in fixture['operation_nodes'] if n['id']=='ELAPSED_MINUTES']
+        expected = copy.deepcopy(old['request'])
+        if nodes:
+            require(expected['prompt'].endswith(suffix),'elapsed_old_suffix:'+row['rendered_variant_id'],checks)
+            expected['prompt'] = expected['prompt'][:-len(suffix)]+'. '+convention[:-1]+suffix
+        require(encode(row['request']) == encode(expected),'only_permitted_request_delta:'+row['rendered_variant_id'],checks)
+        if not nodes:
+            unchanged.append(row['rendered_variant_id']);continue
+        _,_,resolve,_,_ = i.evaluate(fixture,p.C)
+        start=resolve(nodes[0]['arguments']['start'])[1];end=resolve(nodes[0]['arguments']['end'])[1]
+        result=(end-start)%1440;gold=fixture['gold_values'][next(f['name'] for f in fixture['output_fields'] if f['producer_target']==nodes[0]['target'])]
+        require(result == gold and 0 <= result <= 1439 and row['request']['prompt'].count(convention)==1,
+                'elapsed_one_cycle_entailment:'+row['rendered_variant_id'],checks)
+        changes.append(dict(base_id=row['logical_base_id'],rendered_variant_id=row['rendered_variant_id'],operation='ELAPSED_MINUTES',
+            convention_text=convention,start=f'{start//60:02d}:{start%60:02d}',end=f'{end//60:02d}:{end%60:02d}',
+            derived_gold=result,existing_gold=gold,entailment_check='PASS_EXPLICIT_FORWARD_CYCLE',
+            excluded_additional_day_answer=result+1440,
+            old_request_sha256=sha(encode(old['request'])),new_request_sha256=sha(encode(row['request'])),
+            unaffected_fixture_data_sha256=sha(encode(fixture)),input_schema_sha256=sha(encode(row['request']['input']))))
+    require(len(changes)==12 and len(unchanged)==180 and all(':E2-0' in r['base_id'] and ':PRIMARY' in r['base_id'] for r in changes),
+            'exact_twelve_elapsed_and_180_unchanged',checks)
+    return dict(verdict='PASS',prior_package=PRIOR_PACKAGE,request_hash_encoding='UTF-8 JSON ensure_ascii=false sort_keys=true compact no newline',
+        exact_convention_text=convention,affected_count=len(changes),affected_requests=changes,unaffected_count=len(unchanged),
+        unaffected_request_ids=unchanged,gold_projection_sha256=GOLD_SHA,source_candidate_sha256=CANDIDATE_SHA,
+        facts_schemas_values_entities_selectors_and_gold_unchanged=True,provider_model_calls=0)
+
+
+def approval_record(required=False):
+    path = HERE/'REVIEW_CLOSURE_PREPUBLICATION_AUDIT.json'
+    if not path.exists():
+        if required:raise ValueError('independent_prepublication_audit_missing')
+        return None
+    record = json.loads(path.read_bytes())
+    if record['verdict'] != 'PASS' or not record['independent'] or not all(record['closure_checks'].values()):
+        raise ValueError('independent_prepublication_audit_failed')
+    for relative,expected in record['implementation_and_authority_sha256'].items():
+        if sha((ROOT/relative).read_bytes()) != expected:
+            raise ValueError('independent_audit_source_drift:'+relative)
+    return record
+
+
+def real_path_mutations(p,i,replay):
+    results=[]
+    first=p.B['rendered_variants'][0]['rendered_variant_id']
+    cases=[('normalized_punctuation','differential_normalized_payload:'+first),
+           ('token_sequence','differential_token_sequence:'+first),
+           ('fingerprint_bytes','differential_fingerprint_bytes:'+first),
+           ('scaffold_class','bound_scaffold_memory_drift'),
+           ('scaffold_member','bound_scaffold_memory_drift'),
+           ('scaffold_invariant','bound_scaffold_memory_drift'),
+           ('recurrence_member','bound_recurrence_memory_drift')]
+    for label,expected in cases:
+        old_payload=i.payload;old_differential=i.differential_record;old_scaffold=p.SCAFFOLD;old_blueprint=p.B
+        try:
+            if label=='normalized_punctuation':
+                i.payload=lambda request,historical=False:old_payload(request,historical)+'!'
+            elif label in {'token_sequence','fingerprint_bytes'}:
+                def altered(*args,**kwargs):
+                    out=old_differential(*args,**kwargs)
+                    if label=='token_sequence':
+                        out['token_sequence']=out['token_sequence']+['mutation']
+                        out['token_sequence_bytes']=json.dumps(out['token_sequence'],ensure_ascii=False,separators=(',',':')).encode()
+                    else:out['structural_bytes']=out['structural_bytes']+b' '
+                    return out
+                i.differential_record=altered
+            elif label.startswith('scaffold'):
+                p.SCAFFOLD=copy.deepcopy(p.SCAFFOLD)
+                row=next(iter(p.SCAFFOLD.values()))
+                if label=='scaffold_class':row['class_id']='MUTATED'
+                elif label=='scaffold_member':row['rendered_position_pairs'].append(['MUTATED','MEMBER'])
+                else:row['invariant_five_grams'].append('mutated invariant five gram bytes')
+            else:
+                p.B=copy.deepcopy(p.B)
+                next(iter(p.B['recurrence_ledger']['fingerprint_classes'].values()))['members'].append('MUTATED')
+            try:run_finalization(p,i,replay,certify_real=False)
+            except ValueError as error:
+                if str(error)!=expected:raise ValueError('incidental_mutation_failure:'+label+':'+str(error)) from error
+                results.append(dict(mutation=label,classification='REAL_FINALIZATION_PATH',rejected=True,targeted_rejection=str(error)))
+            else:raise ValueError('real_path_mutation_survived:'+label)
+        finally:
+            i.payload=old_payload;i.differential_record=old_differential;p.SCAFFOLD=old_scaffold;p.B=old_blueprint
+    return results
 
 
 def certify_mutations(p,i,bases,variants,checks):
@@ -270,13 +404,14 @@ def certify_mutations(p,i,bases,variants,checks):
     return results
 
 
-def run_finalization(p,i,replay):
-    checks=[];before=snapshot();checker_scope();applicability_tests(p,i,checks)
+def run_finalization(p,i,replay,certify_real=True):
+    checks=[];before=snapshot();bound_inputs(p);checker_scope();applicability_tests(p,i,checks)
     candidates=json.loads((HERE/'AUTHORING_CANDIDATES.json').read_bytes())
     bases={r['logical_base_id']:r['fixture'] for r in candidates['accepted']}
     require(len(bases)==len(candidates['accepted'])==168 and set(bases)==set(p.POSITIONS),'168_exact_bases',checks)
     require(len(candidates['failed_attempts'])==480 and max(r['attempt'] for r in candidates['accepted'])==194,'authoring_history_preserved',checks)
     traces=[];variants=[];rendered=[];e5_audits=[];class_members=defaultdict(list);family_counts=Counter();output_count=0
+    differential_records=[]
     e4=defaultdict(list);e7=[]
     for pos in p.B['logical_positions']:
         base=pos['logical_base_id'];f=bases[base];slot=dict(pos['subtype'],phase=pos['phase'],risk_round=pos['risk_round'])
@@ -302,6 +437,7 @@ def run_finalization(p,i,replay):
         for index,member in enumerate(members):
             variant='CF'+str(index+1) if pos['family']=='E5' else 'SINGLE'
             a=p.cache(member,pos,variant);other=i.evidence(member,a['request'],p.C)
+            differential_records.append(certify_intermediates(p,i,member,a['request'],a['id'],False,checks))
             require(all(a[k]==other[k] for k in other),'dual_evidence:'+a['id'],checks)
             require(p.independent_gold(member)[0]==independent_gold(member,i,p.C,pos)[0]==member['gold_values'],'rendered_gold:'+a['id'],checks)
             variants.append(a);variant_ids.append(a['id'])
@@ -329,7 +465,8 @@ def run_finalization(p,i,replay):
         require(profiles[0]==profiles[1],'reserve_profile:'+row['reserve_slot_id'],checks)
         reserve_results.append(dict(slot=row['reserve_slot_id'],covered_primary=row['covered_primary_base_id'],reserve=row['reserve_base_id'],
             profile_sha256=sha(profiles[0]),profile=json.loads(profiles[0]),verdict='PASS',activation_performed=False))
-    pair_records=[];branches=Counter()
+    entailment=request_entailment_report(p,i,rendered,checks)
+    pair_records=[];branches=Counter();content_counts=defaultdict(Counter)
     for a,b in itertools.combinations(variants,2):
         first=p.pair_decision(a,b);second=i.independent_pair(a,b,p.SCAFFOLD)
         require(first==second and first[1] is None,'dual_pair:'+a['id']+'|'+b['id'],checks)
@@ -339,8 +476,12 @@ def run_finalization(p,i,replay):
         if scaffold:
             grams={tuple(s.split(' ')) for s in scaffold['invariant_five_grams']}
             residual=p.ratio(a['ordinary']-grams,b['ordinary']-grams)
+        content_status='NOT_APPLICABLE_BOTH_EMPTY' if not a['content'] and not b['content'] else 'APPLIES'
+        content_counts[first[0]][content_status]+=1
         pair_records.append(dict(left=a['id'],right=b['id'],primary_disposition=first[0],independent_disposition=second[0],
             agreement=True,ordinary_intersection_union=p.ratio(a['ordinary'],b['ordinary']),content_intersection_union=p.ratio(a['content'],b['content']),
+            content_status=content_status,content_similarity=None if content_status!='APPLIES' else p.ratio(a['content'],b['content']),
+            content_dissimilarity_credit=content_status=='APPLIES' and first[0]=='CONTENT',
             shape_intersection_union=p.ratio(a['shape'],b['shape']),scaffold_class=scaffold['class_id'] if scaffold else None,
             residual_intersection_union=residual,exact_reuse='PAIR_LOCAL_VALIDATED_E5' if first[0]=='SAME_BASE_E5' else 'PASS',
             eligible_date_number_comparison=bool(a['tuple'] and b['tuple'])))
@@ -353,6 +494,7 @@ def run_finalization(p,i,replay):
             if fixture['task_class']!='structured_extraction':continue
             h=p.historical_evidence(fixture,gold_by_id[fixture['fixture_id']]);other=i.historical_record(fixture,gold_by_id[fixture['fixture_id']],p.C)
             require(h==other,'dual_historical_evidence:'+h['id'],checks);historic.append(h)
+            differential_records.append(certify_intermediates(p,i,fixture,fixture,h['id'],True,checks))
     require(len(historic)==106,'106_historical_records',checks)
     historical_records=[]
     for h in historic:
@@ -365,12 +507,42 @@ def run_finalization(p,i,replay):
                 unstructured_entity_semantics=h['unstructured_entity_semantics'],date_number=left[2]))
     require(len(historical_records)==20352,'20352_supported_historical_controls_not_tuple_passes',checks)
     mutation_results=certify_mutations(p,i,bases,variants,checks)
+    local_names={'wrong_scaffold_class','wrong_invariant_gram','recurrence_overflow'}
+    for row in mutation_results:
+        row['classification']='TEST_LOCAL_GUARD' if row['mutation'] in local_names else 'CHECKER_COMPONENT_PATH'
+    real_mutations=real_path_mutations(p,i,replay) if certify_real else []
+    for row in real_mutations:checks.append('real_path_mutation:'+row['mutation'])
+    require(len(differential_records)==192+106,'298_complete_intermediate_records',checks)
+    require(all(r['content_similarity'] is None and r['content_dissimilarity_credit'] is False
+                for r in pair_records if r['content_status']=='NOT_APPLICABLE_BOTH_EMPTY'),
+            'not_applicable_receives_no_dissimilarity_credit',checks)
+    old_contamination=json.loads(git('show',PRIOR_PACKAGE+':'+(HERE/'CONTAMINATION_REPORT.json').relative_to(ROOT).as_posix()))
+    added_content_fields={'content_status','content_similarity','content_dissimilarity_credit'}
+    require([{k:v for k,v in row.items() if k not in added_content_fields} for row in pair_records]
+            ==old_contamination['new_new_decisions'],'all_prior_new_new_scientific_decisions_unchanged',checks)
+    old_historical=old_contamination['historical_new_decisions']
+    require([{k:v for k,v in row.items() if k!='projection_components_equal'} for row in historical_records]
+            ==[{k:v for k,v in row.items() if k!='projection_components_equal'} for row in old_historical],
+            'all_prior_historical_scientific_decisions_unchanged',checks)
+    elapsed_ids={r['rendered_variant_id'] for r in entailment['affected_requests']}
+    projection_deltas=[dict(historical=new['historical'],new=new['new'],
+        prior_components_equal=old['projection_components_equal'],
+        corrected_components_equal=new['projection_components_equal'])
+        for new,old in zip(historical_records,old_historical)
+        if new['projection_components_equal']!=old['projection_components_equal']]
+    require(all(row['new'] in elapsed_ids for row in projection_deltas),
+            'historical_surface_diagnostic_changes_only_authorized_elapsed_requests',checks)
     after=snapshot();require(before==after,'all_preservation_before_after_exact',checks)
     counts=dict(logical_bases=168,scored_logical=140,reserve_logical=28,rendered_variants=192,scored_rendered=160,reserve_rendered=32,
         logical_outputs=220,rendered_outputs=244,scaffold_classes=14,logical_scaffold_memberships=234,rendered_scaffold_memberships=906,
         same_subtype=518,ordinary=16888,same_base_e5=24,fingerprint_classes=len(class_members),subtype_groups=35,
         phase_a_calls=480,max_phase_b_calls=240,max_total_calls=720)
+    accounting={branch:dict(content_applies=counts['APPLIES'],
+        content_not_applicable_both_empty=counts['NOT_APPLICABLE_BOTH_EMPTY']) for branch,counts in content_counts.items()}
+    accounting['TOTAL']=dict(content_applies=sum(v['APPLIES'] for v in content_counts.values()),
+        content_not_applicable_both_empty=sum(v['NOT_APPLICABLE_BOTH_EMPTY'] for v in content_counts.values()))
     contamination=dict(verdict='PASS_SUPPORTED_CONTROLS',checkers_agree=True,disagreements=0,new_new_partition=dict(branches),
+        content_applicability=accounting,not_applicable_is_dissimilarity_evidence=False,
         exact_reuse_accounting=dict(new_new_cross_base_scopes=18312,raw_payload_scopes=18312,
             freshness_scopes=18312,whole_answer_scopes=18312,identity_scopes=18312,
             eligible_new_new_date_number_scopes=sum(r['eligible_date_number_comparison'] for r in pair_records if r['primary_disposition']!='SAME_BASE_E5'),
@@ -380,26 +552,74 @@ def run_finalization(p,i,replay):
         new_new_decisions=pair_records,historical_new_decisions=historical_records,
         historical_new_date_number=dict(status=p.tuple_applicability('historical_new')['status'],historical_fixtures=106,
             historical_new_scopes=20352,tuple_comparisons_performed=0,pass_count=0,fail_count=0,reason='frozen provenance unavailable'),
-        historical_adapter=p.D.historical_adaptation_summary(p.C),recurrence=dict(verdict='PASS',class_members=dict(class_members)),
+        historical_adapter=p.D.historical_adaptation_summary(p.C),
+        historical_projection_diagnostic_changes=dict(count=len(projection_deltas),
+            reason='Frozen SUBJECT surface parser observes the authorized elapsed convention; no adapter, threshold or scientific disposition change.',
+            scientific_decisions_unchanged=True,records=projection_deltas),
+        recurrence=dict(verdict='PASS',class_members=dict(class_members)),
         reserve_results=reserve_results)
-    validation=dict(verdict='DETERMINISTIC_VALIDATION_PASS',external_corpus_gold_review='NOT YET PERFORMED',provider_execution='NOT AUTHORIZED',
+    approved=approval_record()
+    review_state='TARGETED_INDEPENDENT_CLOSURE_AUDIT_PASS' if approved else 'PRIOR_NOT_READY_TARGETED_CLOSURE_AUDIT_PENDING'
+    governance=dict(GOVERNANCE,external_gold_review=review_state)
+    differential=dict(verdict='PASS',new_records=192,historical_records=106,total_records=len(differential_records),
+        normalized_payload_equalities=298,token_sequence_equalities=298,new_fingerprint_byte_equalities=192,
+        historical_projection_byte_equalities=106,
+        disagreements=dict(normalized_payload=0,token_sequence=0,new_fingerprint_bytes=0,historical_projection_bytes=0),
+        actual_equality_required=True,hashes_are_evidence_only=True,records=differential_records)
+    mutation_report=dict(real_path_mutations=real_mutations,
+        local_guard_tests=[r for r in mutation_results if r['classification']=='TEST_LOCAL_GUARD'],
+        checker_component_tests=[r for r in mutation_results if r['classification']=='CHECKER_COMPONENT_PATH'],
+        contract_local_guard_tests=[dict(test=x,classification='TEST_LOCAL_GUARD') for x in checks if x.startswith('actual_contract_mutation')],
+        real_path_count=len(real_mutations),local_guard_count=sum(r['classification']=='TEST_LOCAL_GUARD' for r in mutation_results),
+        checker_component_count=sum(r['classification']=='CHECKER_COMPONENT_PATH' for r in mutation_results),
+        contract_local_guard_count=sum(x.startswith('actual_contract_mutation') for x in checks),
+        all_real_path_mutations_rejected=all(r['rejected'] for r in real_mutations),
+        local_tests_are_not_real_finalizer_certification=True)
+    closure=dict(prior_review_verdict='NOT_READY_FOR_NEXT_G_EXTRACT1_STAGE',prior_package=PRIOR_PACKAGE,
+        prospective_correction_commit=CORRECTION,
+        closure_matrix=[
+            dict(finding='P1 elapsed-time entailment',status='RESOLVED',evidence='ELAPSED_REQUEST_ENTAILMENT_REPORT.json;12 exact requests;gold unchanged'),
+            dict(finding='P2 content applicability reporting',status='RESOLVED',evidence='CONTAMINATION_REPORT.json explicit statuses and no-credit field'),
+            dict(finding='P2 intermediate differential certification',status='RESOLVED',evidence='INTERMEDIATE_DIFFERENTIAL_REPORT.json;298 direct payload/token comparisons;192 fingerprints;106 historical projections'),
+            dict(finding='mutation-certification labeling',status='RESOLVED',evidence='MUTATION_CERTIFICATION_REPORT.json;real path versus local/component separation')],
+        independent_prepublication_audit='PASS' if approved else 'PENDING',
+        final_read_only_closure_audit='REQUIRED_AFTER_REPUBLICATION',
+        final_read_only_audit_binding='Separate audit commit binds the exact republished package commit; no circular manifest/audit self-digest.',
+        candidate_source_sha256=CANDIDATE_SHA,gold_projection_sha256=GOLD_SHA,governance=governance)
+    validation=dict(verdict='DETERMINISTIC_VALIDATION_PASS',external_corpus_gold_review=review_state,provider_execution='NOT AUTHORIZED',
         check_count=len(checks),checks=checks,counts=counts,repair_replay=replay,preservation=dict(before=before,after=after,byte_identical=True),
         E4_truth_matrix={k:dict(true=v.count(True),false=v.count(False)) for k,v in e4.items()},E7_integrated_validated=e7,
         E5_pairs=24,E5_request_audits=sum(len(x['checks']) for x in e5_audits),reserve_compatible=28,
         mutation_results=mutation_results,mutation_count=len(mutation_results),contract_mutation_tests=[x for x in checks if x.startswith('actual_contract_mutation')],
-        authoring_history=dict(rejected_candidates=480,maximum_accepted_attempt=194,search_rerun=False),governance=GOVERNANCE)
+        real_path_mutation_count=len(real_mutations),mutation_classification=mutation_report,
+        content_applicability=accounting,intermediate_differential_summary={k:v for k,v in differential.items() if k!='records'},
+        elapsed_corrected_requests=12,non_elapsed_requests_unchanged=180,
+        authoring_history=dict(rejected_candidates=480,maximum_accepted_attempt=194,search_rerun=False),governance=governance)
     output={
         'SCORED_CORPUS.json':dict(schema_version='g-extract1.corpus.v1',source_sha256=CANDIDATE_SHA,projection_only=True,rendered_variants=[r for r in rendered if r['primary_or_reserve']=='PRIMARY']),
         'RESERVE_CORPUS.json':dict(schema_version='g-extract1.reserve-corpus.v1',source_sha256=CANDIDATE_SHA,projection_only=True,rendered_variants=[r for r in rendered if r['primary_or_reserve']=='RESERVE'],reserve_maps=p.B['reserve_map']),
         'GOLD.json':dict(schema_version='g-extract1.gold.v1',source_gold_projection_sha256=GOLD_SHA,logical=[dict(logical_base_id=r['logical_base_id'],gold=r['gold']) for r in traces],rendered=[dict(rendered_variant_id=r['rendered_variant_id'],gold=r['gold']) for r in rendered]),
         'CONTAMINATION_REPORT.json':contamination,
-        'GOLD_DERIVATION_REPORT.json':dict(verdict='PASS',independent_logical_agreement=168,independent_rendered_agreement=192,external_gold_review='NOT YET PERFORMED',logical_traces=traces),
+        'GOLD_DERIVATION_REPORT.json':dict(verdict='PASS',independent_logical_agreement=168,independent_rendered_agreement=192,external_gold_review=review_state,logical_traces=traces),
         'E5_REQUEST_INVARIANCE_REPORT.json':dict(verdict='PASS',logical_pairs=24,provider_model_calls=0,request_audits=e5_audits),
         'CORPUS_VALIDATION_REPORT.json':validation,
+        'ELAPSED_REQUEST_ENTAILMENT_REPORT.json':entailment,
+        'INTERMEDIATE_DIFFERENTIAL_REPORT.json':differential,
+        'MUTATION_CERTIFICATION_REPORT.json':mutation_report,
+        'CORPUS_GOLD_REVIEW_CLOSURE.json':closure,
     }
+    for name in ('GOLD.json','RESERVE_CORPUS.json','E5_REQUEST_INVARIANCE_REPORT.json'):
+        require(packed(output[name])==git('show',PRIOR_PACKAGE+':'+(HERE/name).relative_to(ROOT).as_posix()),
+                'byte_identical_prior_artifact:'+name,checks)
+    validation['check_count']=len(checks)
     checker_commit=git('log','-1','--format=%H','--','experiments/G-EXTRACT1-candidate/corpus/validate_corpus.py').decode().strip()
-    manifest=dict(schema_version='g-extract1.corpus-manifest.v1',status='READY_FOR_INDEPENDENT_CORPUS_GOLD_REREVIEW',
+    manifest=dict(schema_version='g-extract1.corpus-manifest.v1',status='READY_FOR_FINAL_READ_ONLY_CLOSURE_AUDIT',
         design_commit=CORRECTION,blueprint_commit=CORRECTION,checker_applicability_commit=checker_commit,
+        prior_package_commit=PRIOR_PACKAGE,
+        prior_design_blueprint_correction='62de5dbdb6a646e21640f55e1565e1121ce675a3',
+        prior_checker_applicability_repair='158ba41860b004b51e57aadd77ed278c8861581e',
+        implementation_correction_commit=git('log','-1','--format=%H','--',Path(__file__).relative_to(ROOT).as_posix()).decode().strip(),
+        final_republished_package_commit_binding='The Git commit publishing this manifest and its exact hashed artifacts; recorded literally by the separate final read-only audit commit.',
         prior_checker_repairs=['6fb3f2af5806760c034006a8561ce08e938c210a',CHECKER_PARENT],
         candidate_source_sha256=CANDIDATE_SHA,gold_projection_sha256=GOLD_SHA,
         authority_artifacts_sha256=after['corrected_authority_sha256'],checker_artifacts_sha256=after['checkers_sha256'],
@@ -407,7 +627,10 @@ def run_finalization(p,i,replay):
         preserved_authoring_failure_and_repair_artifacts_sha256=after['preserved'],
         finalizer_sha256=sha(Path(__file__).read_bytes()),final_artifacts_sha256={n:sha(packed(v)) for n,v in output.items()},
         manifest_self_binding='No circular self-digest; final commit binds manifest Git blob. All other final artifacts hashed here.',
-        counts=counts,date_number_applicability=p.C['date_number_tuple_applicability_contract'],governance=GOVERNANCE)
+        independent_prepublication_audit_sha256=sha((HERE/'REVIEW_CLOSURE_PREPUBLICATION_AUDIT.json').read_bytes()) if approved else None,
+        prior_external_review_history_sha256=sha((HERE/'CORPUS_GOLD_REREVIEW_HISTORY.json').read_bytes()),
+        content_applicability=accounting,intermediate_differential_summary={k:v for k,v in differential.items() if k!='records'},
+        counts=counts,date_number_applicability=p.C['date_number_tuple_applicability_contract'],governance=governance)
     output['CORPUS_MANIFEST.json']=manifest
     return output
 
@@ -428,9 +651,12 @@ def main():
         print(json.dumps(dict(verdict='PASS',applicability_checks=len(checks),repair_replay=replay),indent=2));return
     output=run_finalization(p,i,replay)
     if args.publish:
+        approval_record(required=True)
         for name in FINAL_NAMES:
             path=HERE/name
-            if path.exists() and path.read_bytes()!=packed(output[name]):raise ValueError('existing_final_artifact_not_identical:'+name)
+            if path.exists() and path.read_bytes()!=packed(output[name]):
+                old=subprocess.run(['git','show',PRIOR_PACKAGE+':'+path.relative_to(ROOT).as_posix()],cwd=ROOT,capture_output=True)
+                if old.returncode or path.read_bytes()!=old.stdout:raise ValueError('unexpected_publication_artifact_drift:'+name)
         for name in FINAL_NAMES:(HERE/name).write_bytes(packed(output[name]))
         snapshot()
     print(json.dumps(dict(verdict=output['CORPUS_VALIDATION_REPORT.json']['verdict'],

@@ -467,6 +467,16 @@ def ratio(a,b):
     return [len(a&b),len(a|b)]
 
 
+def differential_record(fixture, rendered_request, contract, historical=False):
+    normalized = D.ordinal_neutral_payload(rendered_request, historical)
+    tokens = re.findall(contract['contamination_contract']['tokenizer']['pattern'], normalized, re.ASCII)
+    structural = (D.historical_projection(rendered_request, contract) if historical else
+                  D.fingerprint_bytes(dict(fixture=fixture), contract['operation_definition_contract']).encode('utf-8'))
+    return dict(normalized_payload_bytes=normalized.encode('utf-8'), token_sequence=tokens,
+        token_sequence_bytes=json.dumps(tokens, ensure_ascii=False, separators=(',', ':')).encode('utf-8'),
+        structural_bytes=structural)
+
+
 def pair_decision(a,b):
     if a["base"]==b["base"]: return "SAME_BASE_E5",None
     if a["raw_payload"]==b["raw_payload"]: return "FAIL","raw_payload_reuse"

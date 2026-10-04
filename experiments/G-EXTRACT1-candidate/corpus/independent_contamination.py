@@ -409,6 +409,16 @@ def evidence(f,request,c):
     return dict(raw_payload=dump(request["input"]),raw_values=freshness_from_source_facts(f["source_fact_records"],c).decode("utf-8"),identities=identities,answer=whole_answer_bytes([[field['name'],field['schema_type'],f['gold_values'][field['name']]] for field in f['output_fields']],c),tuple=dump(atoms) if eligible else None,fp=fingerprint(f,c),projection=projection(request,c),ordinary=grams(request,c),content=grams(request,c,"content"),shape=grams(request,c,"shape"))
 
 
+def differential_record(fixture, rendered_request, contract, historical=False):
+    text = payload(rendered_request, historical)
+    ordered_tokens = re.findall(contract['contamination_contract']['tokenizer']['pattern'], text, flags=re.ASCII)
+    structure = projection(rendered_request, contract) if historical else fingerprint(fixture, contract)
+    structure_bytes = json.dumps(structure, ensure_ascii=historical, separators=(',', ':')).encode('utf-8')
+    token_bytes = json.dumps(ordered_tokens, separators=(',', ':'), ensure_ascii=False).encode('utf-8')
+    return {'normalized_payload_bytes': text.encode('utf-8'), 'token_sequence': ordered_tokens,
+            'token_sequence_bytes': token_bytes, 'structural_bytes': structure_bytes}
+
+
 def tuple_scope_record(scope, c):
     plan = c['date_number_tuple_applicability_contract']
     scopes = plan['scope_status']
