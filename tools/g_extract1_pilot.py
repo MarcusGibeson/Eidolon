@@ -17,6 +17,7 @@ from g_extract1_runner import Run, reserve_replacements, actual_reserve_profile,
 from g_extract1_scoring import (evaluate, synthetic_gold, aggregate, transition, primary_verdict,
                                 event_category, NumericToken, typed, equal)
 from g_extract1_lifecycle_tests import lifecycle_tests
+from g_extract1_final_lifecycle_tests import final_lifecycle_tests, completed_state_regressions
 
 
 class Checks:
@@ -316,9 +317,14 @@ def certify(output):
         root = Path(temporary)
         integrity_tests(p,a,t,root)
         reserve_tests(p,t)
+        final_targeted = final_lifecycle_tests(p,t,root/'final_lifecycle',SyntheticTransport)
+        print(json.dumps(dict(stage='LR1_LR3_TARGETED_PASS',checks=len(t.rows))),flush=True)
         targeted = lifecycle_tests(p,t,root/'lifecycle',SyntheticTransport)
         print(json.dumps(dict(stage='I1_I6_TARGETED_PASS',checks=len(t.rows))),flush=True)
         first = full_pilot(p,root/'pilot1',t,'first')
+        print(json.dumps(dict(stage='FIRST_FULL_PILOT_PASS',observations=720)),flush=True)
+        final_targeted['completed_state_regressions'] = completed_state_regressions(
+            p,t,root/'final_lifecycle/completed_states',root/'pilot1',SyntheticTransport)
         second = full_pilot(p,root/'pilot2',t,'second')
         hashes1 = {x.relative_to(root/'pilot1').as_posix():digest(x.read_bytes()) for x in (root/'pilot1').rglob('*') if x.is_file()}
         hashes2 = {x.relative_to(root/'pilot2').as_posix():digest(x.read_bytes()) for x in (root/'pilot2').rglob('*') if x.is_file()}
@@ -332,6 +338,7 @@ def certify(output):
         shutil.copytree(root/'pilot1',output/'mechanical_pilot')
         shutil.copytree(root/'pilot2',output/'mechanical_pilot_replay')
         shutil.copytree(root/'lifecycle',output/'targeted_evidence')
+        shutil.copytree(root/'final_lifecycle',output/'final_targeted_evidence')
     report = dict(schema_version='g-extract1.mechanical-pilot-report.v1',verdict='PASS',
         scope='Deterministic implementation checks and synthetic mechanical replay only; not scientific qualification.',
         test_count=len(t.rows),tests=t.rows,phase_a_count=len(a),phase_b_maximum=len(b),maximum_calls=len(a+b),
@@ -348,6 +355,10 @@ def certify(output):
     write_once(output/'LIFECYCLE_REPAIR_REPORT.json',dict(verdict='PASS',closure=targeted,
         tests=[x for x in t.rows if x['group'].startswith('I')],provider_model_calls=0,
         scope='Implementation regression only; accepted scientific rules unchanged.'))
+    group_counts = {group:sum(x['group'] == group for x in t.rows) for group in ('LR1','LR2','LR3','I1','I2','I3','I4','I5','I6')}
+    write_once(output/'FINAL_LIFECYCLE_REPAIR_REPORT.json',dict(verdict='PASS',closure=final_targeted,
+        test_counts=group_counts,tests=[x for x in t.rows if x['group'].startswith(('LR','I'))],
+        provider_model_calls=0,scope='LR1-LR3 real-path attacks and I1-I6 regression; no scientific changes.'))
     source = source_pins()
     freeze = dict(schema_version='g-extract1.execution-freeze-candidate.v1',status='EXECUTION_FREEZE_CANDIDATE_ONLY',
         activated=False,phase_a_authorized=False,phase_b_authorized=False,source_sha256=source,
@@ -359,10 +370,14 @@ def certify(output):
         journal_checkpoint_schema=SCHEMA,journal_checkpoint_schema_sha256=digest(canonical(SCHEMA)),
         integrity_event_contract_sha256=digest(canonical(p.design['integrity_event_contract'])),
         lifecycle_repair_report_sha256=digest((output/'LIFECYCLE_REPAIR_REPORT.json').read_bytes()),
+        final_lifecycle_repair_report_sha256=digest((output/'FINAL_LIFECYCLE_REPAIR_REPORT.json').read_bytes()),
+        accepted_science_closure_commit='6c85b10930cefe410a1965c0924e4fd9f47eb4ef',
         complete_manifest_verification=dict(file_count=len(p.pins),protected_files=p.pins,
             pin_categories=p.pin_categories,gold_projection_recomputed=True),
-        supersedes_blocked_candidate_sha256='14fb601c3a58777942ccd0361c2a303b5bfcf10d4c05536a32d265c0babe537f',
-        supersession_reason='Independent implementation audit I1-I6 repair; old evidence remains blocked/unactivated.',
+        supersedes_blocked_candidate_sha256=[
+            '14fb601c3a58777942ccd0361c2a303b5bfcf10d4c05536a32d265c0babe537f',
+            '6e7295b3c79ee95930fee7231265e342905b7848d261ae716d1ef1546ca785ab'],
+        supersession_reason='LR1-LR3 targeted closure with I1-I6 regression; both old candidates remain blocked/unactivated.',
         pilot_report_sha256=digest((output/'MECHANICAL_PILOT_REPORT.json').read_bytes()),
         e5_wire_report_sha256=digest((output/'E5_HARNESS_WIRE_AUDIT.json').read_bytes()),
         authority='Separate execution-freeze review/activation and separate Phase A/conditional Phase B authorization remain required.',

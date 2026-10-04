@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from pathlib import Path
 
 from g_extract1_contract import canonical, digest, load, require, IntegrityError
@@ -82,18 +83,44 @@ def seal_checkpoint(path, payload):
     return row
 
 
+def _shape(value, template):
+    if type(value) is not type(template):
+        return False
+    if type(template) is dict:
+        return set(value) == set(template) and all(_shape(value[k], v) for k, v in template.items())
+    if type(template) is list:
+        # List element domains are checked explicitly below, not inferred from
+        # an arbitrary first element of the reconstructed state.
+        return True
+    return True
+
+
 def verify_checkpoint(path, *, run_id, binding, schedule, journal, reconstructed_state, next_position, prefix=None):
     path = Path(path)
     require(path.is_file(), 'MISSING_CHECKPOINT_AFTER_INTERRUPTION')
     try:
         row = load(path)
-        require(set(row) == {'payload','sha256'} and row['sha256'] == digest(canonical(row['payload'])) and
-                path.read_bytes() == canonical(row), 'CORRUPTED_CHECKPOINT')
+        require(type(row) is dict and set(row) == {'payload','sha256'}, 'CORRUPTED_CHECKPOINT', 'envelope shape')
+        require(type(row['payload']) is dict, 'CORRUPTED_CHECKPOINT', 'payload object required')
+        require(type(row['sha256']) is str and row['sha256'] == digest(canonical(row['payload'])),
+                'CORRUPTED_CHECKPOINT', 'seal')
+        require(path.read_bytes() == canonical(row), 'CORRUPTED_CHECKPOINT', 'canonical bytes')
     except (ValueError, KeyError, UnicodeError, TypeError) as exc:
         raise IntegrityError('CORRUPTED_CHECKPOINT', type(exc).__name__)
     payload = row['payload']
     actual_prefix = journal.prefix() if prefix is None else prefix
-    require(payload.get('journal_prefix') == actual_prefix, 'UNVERIFIABLE_JOURNAL_PREFIX')
     expected = checkpoint_payload(run_id, binding, schedule, journal, next_position, reconstructed_state, prefix=actual_prefix)
+    require(_shape(payload, expected), 'CORRUPTED_CHECKPOINT', 'payload field structure/types')
+    state = payload['state']
+    require(type(payload['next_schedule_position']) is int and payload['next_schedule_position'] >= 1 and
+            type(payload['journal_prefix']['record_count']) is int and payload['journal_prefix']['record_count'] >= 0 and
+            all(type(x) is str for x in state['qualified'] + state['integrity_events']) and
+            all(type(x) is dict and set(x) == {'event','phase','cell'} and
+                type(x['event']) is str and type(x['phase']) is str and
+                (x['cell'] is None or type(x['cell']) is str) for x in state['event_scopes']) and
+            re.fullmatch('[0-9a-f]{64}', payload['schedule_sha256']) is not None and
+            re.fullmatch('[0-9a-f]{64}', payload['journal_prefix']['last_sha256']) is not None,
+            'CORRUPTED_CHECKPOINT', 'payload field domains')
+    require(payload['journal_prefix'] == actual_prefix, 'UNVERIFIABLE_JOURNAL_PREFIX')
     require(payload == expected, 'UNVERIFIABLE_INTERRUPTION_CHECKPOINT', 'state/schedule/next-position/binding')
     return row

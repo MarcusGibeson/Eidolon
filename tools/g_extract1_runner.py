@@ -15,7 +15,7 @@ from g_extract1_contract import Package, canonical, digest, require, source_pins
 from g_extract1_journal import Journal, write_once, seal_checkpoint, verify_checkpoint, checkpoint_payload
 from g_extract1_scoring import evaluate, aggregate, transition, primary_verdict, event_category
 
-VERSION = 'g-extract1.runner.v2'
+VERSION = 'g-extract1.runner.v3'
 PILOT = 'NO_PROVIDER_MECHANICAL_PILOT'
 
 
@@ -87,7 +87,7 @@ def guarded(method):
         except IntegrityError as exc:
             self._retain(exc)
             raise
-        except (OSError, ValueError, KeyError, TypeError) as exc:
+        except Exception as exc:
             failure = IntegrityError('PROVENANCE_MISMATCH', method.__name__ + ':' + type(exc).__name__)
             self._retain(failure)
             raise failure from exc
@@ -104,6 +104,36 @@ def failure_event(row, kind, receipt):
             receipt.get('request_sha256') == row['request_sha256'] and receipt.get('failure_kind') == kind,
             'PROVENANCE_MISMATCH', 'failure receipt binding/kind')
     return kinds[kind]
+
+
+def transport_outcome(row, result):
+    """Only validated plain objects reach response/receipt field access."""
+    unusable = dict(failure='unreceipted', receipt=None, unusable_reason='malformed_transport_outcome')
+    try:
+        if type(result) is not dict or not all(type(k) is str for k in result):
+            return unusable
+        if 'failure' in result:
+            if type(result['failure']) is not str or not {'failure','receipt'} <= set(result) or \
+                    {'raw_output','provider_truncated'} & set(result):
+                return unusable
+            receipt = result['receipt']
+            if receipt is not None:
+                canonical(receipt)
+            failure_event(row, result['failure'], receipt)
+            return dict(failure=result['failure'], receipt=receipt)
+        if not {'raw_output','provider_truncated','receipt'} <= set(result) or \
+                type(result['raw_output']) is not str or type(result['provider_truncated']) is not bool:
+            return unusable
+        receipt = result['receipt']
+        if type(receipt) is not dict or receipt.get('call_id') != row['call_id'] or \
+                receipt.get('request_sha256') != row['request_sha256']:
+            return unusable
+        success = dict(raw_output=result['raw_output'], provider_truncated=result['provider_truncated'], receipt=receipt)
+        canonical(success)
+        return success
+    except Exception:
+        # Never stringify or serialize arbitrary returned objects as evidence.
+        return unusable
 
 
 class Run:
@@ -217,13 +247,19 @@ class Run:
         reports = self.reports()['A'] if reports is None else reports
         return sorted(cell for cell,r in reports.items() if r['complete'] and r['passed'] and not self._cell_incomplete('A',cell))
 
+    def _precontact_blocked(self):
+        return not self.attempted and bool(set(self.events) &
+            set(self.package.design['integrity_event_contract']['precontact_blocking_events']))
+
     def state(self):
         reports = self.reports()
         states = {}
         for phase, cells in reports.items():
             for cell, report in cells.items():
                 origin = 'A_SCHEDULED' if phase == 'A' else 'B_SCHEDULED'
-                if self._cell_incomplete(phase,cell):
+                if phase == 'A' and self._precontact_blocked():
+                    states[phase + ':' + cell] = transition(self.package.design,origin,'A_BLOCKED',blocked=True)
+                elif self._cell_incomplete(phase,cell):
                     states[phase + ':' + cell] = transition(self.package.design,origin,phase + '_INCOMPLETE',incomplete=True)
                 elif report['complete']:
                     target = ('A_QUALIFIED_FOR_B' if report['passed'] else 'A_FAILED') if phase == 'A' else (
@@ -325,32 +361,31 @@ class Run:
         self.attempted.add(row['call_id'])
         try:
             result = transport(wire, row)
-        except Exception as exc:
+        except Exception:
             # An exception is not a provider-issued failure receipt.
-            result = dict(failure='unreceipted', receipt=None, exception_type=type(exc).__name__)
+            result = dict(failure='unreceipted', receipt=None)
+        result = transport_outcome(row, result)
         if result.get('failure'):
-            receipt, kind = result.get('receipt'),result['failure']
-            try:
-                event = failure_event(row,kind,receipt)
-            except IntegrityError:
-                # Preserve unusable evidence, but never claim a valid receipt.
-                result['rejected_receipt'] = receipt
-                receipt = None
-                kind = 'unreceipted'
-                event = failure_event(row,kind,receipt)
-            self.journal.append(dict(type='FAILURE', call_id=row['call_id'], event=event, receipt=receipt,
-                                     rejected_receipt=result.get('rejected_receipt'),failure_kind=kind,
-                                     completion_state=event_category(self.package.design,event)))
-            self._remember(event,row['phase'],row['cell_id'])
+            self._close_failure(row,result['failure'],result['receipt'],result.get('unusable_reason'))
             return
         require(type(result.get('raw_output')) is str and type(result.get('provider_truncated')) is bool,
                 'PROVENANCE_MISMATCH', 'response receipt shape')
         self._check_success_receipt(row,result.get('receipt'))
-        evaluation = evaluate(self.package.variants[row['rendered_variant_id']], result['raw_output'], truncated=result['provider_truncated'])
+        try:
+            evaluation = evaluate(self.package.variants[row['rendered_variant_id']], result['raw_output'], truncated=result['provider_truncated'])
+        except Exception:
+            self._close_failure(row,'unreceipted',None,'response_evaluation_failed')
+            raise IntegrityError('PROVENANCE_MISMATCH', 'response evaluation failed after START')
         self.journal.append(dict(type='COMPLETE', call_id=row['call_id'], raw_output=result['raw_output'],
                                  provider_truncated=result['provider_truncated'], evaluation=evaluation,
                                  completion_state='RESPONSE_CAPTURED', receipt=result.get('receipt')))
         self.evidence[row['call_id']] = evaluation
+
+    def _close_failure(self, row, kind, receipt, reason=None):
+        event = failure_event(row,kind,receipt)
+        self.journal.append(dict(type='FAILURE',call_id=row['call_id'],event=event,receipt=receipt,
+            failure_kind=kind,unusable_reason=reason,completion_state=event_category(self.package.design,event)))
+        self._remember(event,row['phase'],row['cell_id'])
 
     def _check_success_receipt(self, row, receipt):
         require(type(receipt) is dict and receipt.get('call_id') == row['call_id'] and
