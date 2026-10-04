@@ -616,7 +616,7 @@
           },
           "text": "f008_01 is 11:47. f008_02 is 12:18."
         },
-        "prompt": "Extract the entry record. d008_01 is the elapsed minutes from f008_01 to f008_02. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
+        "prompt": "Extract the entry record. d008_01 is the elapsed minutes from f008_01 to f008_02. Elapsed minutes means the forward elapsed time within one 24-hour cycle. If the end time is earlier than the start time, treat the end as occurring on the next day. If the start and end times are equal, the elapsed time is 0 minutes. Do not count additional full days. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
       },
       "request_input_sha256": "e4bbd7210b9ea4acfc0efdfd369dbda7b9c34030b7857e33b40ba3b07e976a71",
       "variant_id": "SINGLE"
@@ -701,7 +701,7 @@
           },
           "text": "f009_01 is 23:25. f009_02 is 00:53."
         },
-        "prompt": "Extract the entry record. d009_01 is the elapsed minutes from f009_01 to f009_02. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
+        "prompt": "Extract the entry record. d009_01 is the elapsed minutes from f009_01 to f009_02. Elapsed minutes means the forward elapsed time within one 24-hour cycle. If the end time is earlier than the start time, treat the end as occurring on the next day. If the start and end times are equal, the elapsed time is 0 minutes. Do not count additional full days. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
       },
       "request_input_sha256": "9296f20fa8605ab741fd3bf9907c40f866cfab9f1a33d7db065292e634d91068",
       "variant_id": "SINGLE"
@@ -776,7 +776,7 @@
           },
           "text": "f010_01 is 17:42."
         },
-        "prompt": "Extract the entry record. d010_01 is the elapsed minutes from f010_01 to 17:42. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
+        "prompt": "Extract the entry record. d010_01 is the elapsed minutes from f010_01 to 17:42. Elapsed minutes means the forward elapsed time within one 24-hour cycle. If the end time is earlier than the start time, treat the end as occurring on the next day. If the start and end times are equal, the elapsed time is 0 minutes. Do not count additional full days. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
       },
       "request_input_sha256": "3b80d34b2522f492a6177b28ca436a3887c32f56afb588c0d3d68f72382b6953",
       "variant_id": "SINGLE"
@@ -4513,7 +4513,7 @@
           },
           "text": "f043_01 is 05:12. f043_02 is 06:17."
         },
-        "prompt": "Extract the entry record. d043_01 is the elapsed minutes from f043_01 to f043_02. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
+        "prompt": "Extract the entry record. d043_01 is the elapsed minutes from f043_01 to f043_02. Elapsed minutes means the forward elapsed time within one 24-hour cycle. If the end time is earlier than the start time, treat the end as occurring on the next day. If the start and end times are equal, the elapsed time is 0 minutes. Do not count additional full days. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
       },
       "request_input_sha256": "e87d5138765adff38f235dadcd63bf8842d1d5f8b3197b6e67a2b849f888384b",
       "variant_id": "SINGLE"
@@ -4598,7 +4598,7 @@
           },
           "text": "f044_01 is 22:46. f044_02 is 00:08."
         },
-        "prompt": "Extract the entry record. d044_01 is the elapsed minutes from f044_01 to f044_02. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
+        "prompt": "Extract the entry record. d044_01 is the elapsed minutes from f044_01 to f044_02. Elapsed minutes means the forward elapsed time within one 24-hour cycle. If the end time is earlier than the start time, treat the end as occurring on the next day. If the start and end times are equal, the elapsed time is 0 minutes. Do not count additional full days. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
       },
       "request_input_sha256": "e87f27821df3b48d41128333db1028c70c5ed897d2db1331bc0a030b4368d474",
       "variant_id": "SINGLE"
@@ -4673,7 +4673,7 @@
           },
           "text": "f045_01 is 17:29."
         },
-        "prompt": "Extract the entry record. d045_01 is the elapsed minutes from f045_01 to 17:29. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
+        "prompt": "Extract the entry record. d045_01 is the elapsed minutes from f045_01 to 17:29. Elapsed minutes means the forward elapsed time within one 24-hour cycle. If the end time is earlier than the start time, treat the end as occurring on the next day. If the start and end times are equal, the elapsed time is 0 minutes. Do not count additional full days. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
       },
       "request_input_sha256": "c2aa297ffac4fd76b3a40ee7416819770b421c3328bf82d069d90e3d9e3aa59c",
       "variant_id": "SINGLE"
@@ -8410,7 +8410,7 @@
           },
           "text": "f092_01 is 12:02. f092_02 is 12:45."
         },
-        "prompt": "Extract the invoice record. d092_01 is the elapsed minutes from f092_01 to f092_02. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
+        "prompt": "Extract the invoice record. d092_01 is the elapsed minutes from f092_01 to f092_02. Elapsed minutes means the forward elapsed time within one 24-hour cycle. If the end time is earlier than the start time, treat the end as occurring on the next day. If the start and end times are equal, the elapsed time is 0 minutes. Do not count additional full days. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
       },
       "request_input_sha256": "1af91c70ff8c85ab31b9f58ebe898d8f1dede8c8599ae6505500dcb31bdb1d61",
       "variant_id": "SINGLE"
@@ -8495,7 +8495,7 @@
           },
           "text": "f093_01 is 23:57. f093_02 is 00:38."
         },
-        "prompt": "Extract the invoice record. d093_01 is the elapsed minutes from f093_01 to f093_02. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
+        "prompt": "Extract the invoice record. d093_01 is the elapsed minutes from f093_01 to f093_02. Elapsed minutes means the forward elapsed time within one 24-hour cycle. If the end time is earlier than the start time, treat the end as occurring on the next day. If the start and end times are equal, the elapsed time is 0 minutes. Do not count additional full days. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
       },
       "request_input_sha256": "c652e79a0c20c5c978049b1aadfea6f8b7abdfcba0992f309deed6fd57575215",
       "variant_id": "SINGLE"
@@ -8570,7 +8570,7 @@
           },
           "text": "f094_01 is 22:25."
         },
-        "prompt": "Extract the invoice record. d094_01 is the elapsed minutes from f094_01 to 22:25. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
+        "prompt": "Extract the invoice record. d094_01 is the elapsed minutes from f094_01 to 22:25. Elapsed minutes means the forward elapsed time within one 24-hour cycle. If the end time is earlier than the start time, treat the end as occurring on the next day. If the start and end times are equal, the elapsed time is 0 minutes. Do not count additional full days. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
       },
       "request_input_sha256": "7c65b4c453dd74a4176062a407dbe3ebd456157994882d4bedf97201be6d7621",
       "variant_id": "SINGLE"
@@ -12307,7 +12307,7 @@
           },
           "text": "f127_01 is 20:03. f127_02 is 20:51."
         },
-        "prompt": "Extract the invoice record. d127_01 is the elapsed minutes from f127_01 to f127_02. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
+        "prompt": "Extract the invoice record. d127_01 is the elapsed minutes from f127_01 to f127_02. Elapsed minutes means the forward elapsed time within one 24-hour cycle. If the end time is earlier than the start time, treat the end as occurring on the next day. If the start and end times are equal, the elapsed time is 0 minutes. Do not count additional full days. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
       },
       "request_input_sha256": "fa7701070279a471b32b44551cb43279dac616f26823eb8c2797b1dbacc75f21",
       "variant_id": "SINGLE"
@@ -12392,7 +12392,7 @@
           },
           "text": "f128_01 is 23:20. f128_02 is 00:24."
         },
-        "prompt": "Extract the invoice record. d128_01 is the elapsed minutes from f128_01 to f128_02. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
+        "prompt": "Extract the invoice record. d128_01 is the elapsed minutes from f128_01 to f128_02. Elapsed minutes means the forward elapsed time within one 24-hour cycle. If the end time is earlier than the start time, treat the end as occurring on the next day. If the start and end times are equal, the elapsed time is 0 minutes. Do not count additional full days. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
       },
       "request_input_sha256": "a680f54d39eddd49e7b42525a2f5e150c257cc75015bdd60a133b2a950656ead",
       "variant_id": "SINGLE"
@@ -12467,7 +12467,7 @@
           },
           "text": "f129_01 is 14:57."
         },
-        "prompt": "Extract the invoice record. d129_01 is the elapsed minutes from f129_01 to 14:57. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
+        "prompt": "Extract the invoice record. d129_01 is the elapsed minutes from f129_01 to 14:57. Elapsed minutes means the forward elapsed time within one 24-hour cycle. If the end time is earlier than the start time, treat the end as occurring on the next day. If the start and end times are equal, the elapsed time is 0 minutes. Do not count additional full days. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Use JSON numbers for number fields, whole numbers written without a decimal point for integer fields (5, not 5.0), true or false for boolean fields, strings written as YYYY-MM-DD or HH:MM for fields of those types, and exactly one of the listed values for fields whose type lists values separated by |. Keep the reply compact: output beyond about 350 tokens is cut off."
       },
       "request_input_sha256": "0ce1e5d59b45df68760da4199eec4a80c4ece5545d1ae6440d9c4285c86ee721",
       "variant_id": "SINGLE"

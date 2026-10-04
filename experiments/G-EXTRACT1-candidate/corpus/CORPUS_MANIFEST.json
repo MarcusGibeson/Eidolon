@@ -1,24 +1,46 @@
 {
   "authority_artifacts_sha256": {
-    "experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.json": "3916a713f0b6a220679174a147ca455d14f0bd8f0d6cb75096c9d8aed978b6ae",
-    "experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.md": "ebf344ab9c3f386691fde05f690be60f2270dd2e61b3a4135afac5d75997d457",
-    "experiments/G-EXTRACT1-candidate/DESIGN_REVISION_CHANGELOG.md": "43e418a709981c90f47f1f0c659231c2312077970e699ea26721362cb031e504",
-    "experiments/G-EXTRACT1-candidate/DESIGN_VALIDATION_REPORT.json": "1ad57989fa8f10252405a6682af669369b884f00d03e7114c5adbf27b3350c3a",
-    "experiments/G-EXTRACT1-candidate/HUMAN_MACHINE_EQUIVALENCE_CHECKLIST.md": "bfe53e96ccd397a7a933ad5ef036955ea06175141cd5102d02fee768681ccae5",
+    "experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.json": "41c04df59d3ae465dc1094c5e15562fd7ea52c7f20e9d83f7f7ade9d9acbddd5",
+    "experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.md": "14dfd00e0ca9d555898d30b51fc3676a5ffe95a9a7f285672b1b0d32474dc018",
+    "experiments/G-EXTRACT1-candidate/DESIGN_REVISION_CHANGELOG.md": "7b84480fa65a9f16294ab7181c26637f5a694becbafc4a388176e74089781d72",
+    "experiments/G-EXTRACT1-candidate/DESIGN_VALIDATION_REPORT.json": "9ea6a9f50aa9efdc675336bcfb462a8ead583509146a0a10def272d04e100118",
+    "experiments/G-EXTRACT1-candidate/HUMAN_MACHINE_EQUIVALENCE_CHECKLIST.md": "ef8c80ecf5fcace9eeaace7f5b4d44a03b3c33f2cd18511301df48d7e8cae49e",
     "experiments/G-EXTRACT1-candidate/TUPLE_APPLICABILITY_AUDIT.json": "b74fba0c68c7f9bb47eaea6e032337b09f517ec698e80a201e29977fcff84257",
-    "experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.json": "5635018b7572441c47ee30e8d4ea4ea28d6372b6646a10f0b034ad856fe39e8f",
-    "experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.md": "a9ba9ff78f4c47db7f48194ecbf8db4df68d0f69eaf1cf885edb01cfaba86d50",
-    "experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT_VALIDATION_REPORT.json": "13a0ac95075513bc871fd265560389dcb16d7b1b5eee34b4917621632af319e5",
-    "experiments/G-EXTRACT1-candidate/blueprint/validate_blueprint.py": "17ae0a1b1af094356592076f5a4c2601aa4cc94447bc03488fec1483dfb822f9",
-    "experiments/G-EXTRACT1-candidate/validate_design.py": "5a18f89d701e827058d1d22b96ff8821e88aa005f62ec9545f193b11e268c440"
+    "experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.json": "8e06cb32ca3998de6cbb1056e628b495f1f48dbb64cab8f3a1cdb2458253b6aa",
+    "experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.md": "cf2bd78b64b66b99866d45c991e11a49b9ebdc1d31a488fe20987396c1d2a2dc",
+    "experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT_VALIDATION_REPORT.json": "e411a08ac408e168716a1d7f41c02366b971ade59d62cf5a86174675fc4aa0c4",
+    "experiments/G-EXTRACT1-candidate/blueprint/validate_blueprint.py": "22975235eed80bbe038641b2efc0df22f3736a9f304f95b78fa010dc70adfae1",
+    "experiments/G-EXTRACT1-candidate/validate_design.py": "a44229a3742ee54f33ae17d8e00dfa0506b678df8c3c1f1e818cf6d5b3892bc0"
   },
-  "blueprint_commit": "62de5dbdb6a646e21640f55e1565e1121ce675a3",
+  "blueprint_commit": "7b80ae041c74af9965662ea1aaf0d374950640f4",
   "candidate_source_sha256": "f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068",
-  "checker_applicability_commit": "158ba41860b004b51e57aadd77ed278c8861581e",
+  "checker_applicability_commit": "d137a912b987575d1b39ba1eaa2bde3ba617fc15",
   "checker_applicability_report_sha256": "4beb1afd8ff35f092ed5e961e8ddf4156b4314537741d100dee894692245d885",
   "checker_artifacts_sha256": {
-    "independent_contamination.py": "ec950c94bca5254fce7a962fdcbe4193239d0aff431df3ed6fd8c3c5fbf0dc80",
-    "validate_corpus.py": "90bcf2117c98b8d17ec4e4536111818eda8148adca98af54620e1c822ed6d60b"
+    "independent_contamination.py": "303fdcbc5af9c958768b2ddbbdda266e2e1a4643b7e564cb886242a49907132a",
+    "validate_corpus.py": "e5e54dca41b20cac5787c940114c77dc8f00059d4d992819e1018ddba03b6824"
+  },
+  "content_applicability": {
+    "CONTENT": {
+      "content_applies": 458,
+      "content_not_applicable_both_empty": 60
+    },
+    "ORDINARY": {
+      "content_applies": 16744,
+      "content_not_applicable_both_empty": 144
+    },
+    "SAME_BASE_E5": {
+      "content_applies": 16,
+      "content_not_applicable_both_empty": 8
+    },
+    "SCAFFOLD": {
+      "content_applies": 842,
+      "content_not_applicable_both_empty": 64
+    },
+    "TOTAL": {
+      "content_applies": 18060,
+      "content_not_applicable_both_empty": 276
+    }
   },
   "counts": {
     "fingerprint_classes": 51,
@@ -95,17 +117,22 @@
       "scored_reserve": "APPLIES"
     }
   },
-  "design_commit": "62de5dbdb6a646e21640f55e1565e1121ce675a3",
+  "design_commit": "7b80ae041c74af9965662ea1aaf0d374950640f4",
   "final_artifacts_sha256": {
-    "CONTAMINATION_REPORT.json": "69bd1bb344b2deeb0017cfcf97d19cd9caa2611131771c44aa7c5aa9edee5919",
-    "CORPUS_VALIDATION_REPORT.json": "dab1bf3597d261a8dcfb345a0b65a4b10d6df542e62f8f23f09ac8c5deb52b65",
+    "CONTAMINATION_REPORT.json": "b4ddb8a30e306ad407c867db1220d70856ec87244df1b04a02a0cb227c967ee2",
+    "CORPUS_GOLD_REVIEW_CLOSURE.json": "d594e19ae62ec2512bd20b026799f2263c0b9b17d6f7844dca29bc868635f21b",
+    "CORPUS_VALIDATION_REPORT.json": "3b85cb640f5fe473e041de07b884ec4b6e20a5c261abba4f449ebd6650de6dc4",
     "E5_REQUEST_INVARIANCE_REPORT.json": "9607283730609446a99ffcb4dc326b87cf025e92ca537a9bf8011ff7bd327635",
+    "ELAPSED_REQUEST_ENTAILMENT_REPORT.json": "b22632df44c361b9819e777710f35d4eb6cd992b6f814e26a3255b264bc3dbd7",
     "GOLD.json": "53da54b9c6726108b8520f62b3b2ea894f54b856577d4baf9c058c798a4d31c9",
-    "GOLD_DERIVATION_REPORT.json": "0d492d8ca8cf59e148a1559454d7536189d03b6bf99fd25ef570bc3532db3709",
+    "GOLD_DERIVATION_REPORT.json": "4d0da75c06d1dfff5d6daef04ab9fd25b45d23fe0e67a90823937b54e2f0e13e",
+    "INTERMEDIATE_DIFFERENTIAL_REPORT.json": "dc8ec5d82c31dce8a3d2bf6776fdf238a8d954308253b79af7fd52bcdb7555db",
+    "MUTATION_CERTIFICATION_REPORT.json": "764a6748a9fb1f31c9e094f360dec7dc5893c5180e006957422aa97bcddf9c3d",
     "RESERVE_CORPUS.json": "2d314e73af1cc164286fd4cc5c4f15d5f2cd65facbdea3c38cd60edc3af4ae90",
-    "SCORED_CORPUS.json": "c6d3d26f77f17bb479c07c1eb67424cb4cab5ae2c149aaa7ea1df2a50365c4ce"
+    "SCORED_CORPUS.json": "7ff3cdb26d3afcb2db3a4b8084e24001071318ca54a7c876c55f59874fb2c702"
   },
-  "finalizer_sha256": "696aa4b6430c2140712b44117ba899295d4982bccbdcde776f275ed7fedef3dc",
+  "final_republished_package_commit_binding": "The Git commit publishing this manifest and its exact hashed artifacts; recorded literally by the separate final read-only audit commit.",
+  "finalizer_sha256": "f1d0f132c54cf87a374d42c95ee8ec63a980f4cc6db0b1364ce6ee66ca113852",
   "gold_projection_sha256": "803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec",
   "governance": {
     "G_ROUTE4": "CLOSED FAILED unchanged",
@@ -114,13 +141,33 @@
     "corpus_regeneration": 0,
     "execution": "none",
     "execution_freeze_authorized": false,
-    "external_gold_review": "NOT YET PERFORMED",
+    "external_gold_review": "TARGETED_INDEPENDENT_CLOSURE_AUDIT_PASS",
     "gold_modifications": 0,
     "mechanical_pilot_authorized": false,
     "phase_a_authorized": false,
     "phase_b_authorized": false,
     "provider_model_calls": 0,
     "runtime_implementation": false
+  },
+  "implementation_correction_commit": "d137a912b987575d1b39ba1eaa2bde3ba617fc15",
+  "independent_prepublication_audit_sha256": "33b45ba71a41ca2262e029e1bed009e2c78aa6c888ac1a46913014bbaf45beeb",
+  "intermediate_differential_summary": {
+    "actual_equality_required": true,
+    "disagreements": {
+      "historical_projection_bytes": 0,
+      "new_fingerprint_bytes": 0,
+      "normalized_payload": 0,
+      "token_sequence": 0
+    },
+    "hashes_are_evidence_only": true,
+    "historical_projection_byte_equalities": 106,
+    "historical_records": 106,
+    "new_fingerprint_byte_equalities": 192,
+    "new_records": 192,
+    "normalized_payload_equalities": 298,
+    "token_sequence_equalities": 298,
+    "total_records": 298,
+    "verdict": "PASS"
   },
   "manifest_self_binding": "No circular self-digest; final commit binds manifest Git blob. All other final artifacts hashed here.",
   "preserved_authoring_failure_and_repair_artifacts_sha256": {
@@ -136,10 +183,14 @@
     "validate_freshness_repair.py": "9d66678d1fa8b62e820b25cc50305ba91ed112d6add57d63f9f5dc734bea70ae",
     "validate_whole_answer_repair.py": "a389c97681e9630ea4f0c7aa102a02dff76def320412f0dc455eeeb6ff0ab513"
   },
+  "prior_checker_applicability_repair": "158ba41860b004b51e57aadd77ed278c8861581e",
   "prior_checker_repairs": [
     "6fb3f2af5806760c034006a8561ce08e938c210a",
     "b7fd33eacbd46df7be5274a0e3d5e2dbe34efe1a"
   ],
+  "prior_design_blueprint_correction": "62de5dbdb6a646e21640f55e1565e1121ce675a3",
+  "prior_external_review_history_sha256": "d29178b5ea10d7ba0054dae9f2ef4e99967a676d7ed253aa889a964a110a0628",
+  "prior_package_commit": "a276c73ba5b89d944997a6a82cba4508729653c8",
   "schema_version": "g-extract1.corpus-manifest.v1",
-  "status": "READY_FOR_INDEPENDENT_CORPUS_GOLD_REREVIEW"
+  "status": "READY_FOR_FINAL_READ_ONLY_CLOSURE_AUDIT"
 }

@@ -1,0 +1,47 @@
+{
+  "candidate_source_sha256": "f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068",
+  "closure_matrix": [
+    {
+      "evidence": "ELAPSED_REQUEST_ENTAILMENT_REPORT.json;12 exact requests;gold unchanged",
+      "finding": "P1 elapsed-time entailment",
+      "status": "RESOLVED"
+    },
+    {
+      "evidence": "CONTAMINATION_REPORT.json explicit statuses and no-credit field",
+      "finding": "P2 content applicability reporting",
+      "status": "RESOLVED"
+    },
+    {
+      "evidence": "INTERMEDIATE_DIFFERENTIAL_REPORT.json;298 direct payload/token comparisons;192 fingerprints;106 historical projections",
+      "finding": "P2 intermediate differential certification",
+      "status": "RESOLVED"
+    },
+    {
+      "evidence": "MUTATION_CERTIFICATION_REPORT.json;real path versus local/component separation",
+      "finding": "mutation-certification labeling",
+      "status": "RESOLVED"
+    }
+  ],
+  "final_read_only_audit_binding": "Separate audit commit binds the exact republished package commit; no circular manifest/audit self-digest.",
+  "final_read_only_closure_audit": "REQUIRED_AFTER_REPUBLICATION",
+  "gold_projection_sha256": "803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec",
+  "governance": {
+    "G_ROUTE4": "CLOSED FAILED unchanged",
+    "autonomy": false,
+    "belief_effects": "none",
+    "corpus_regeneration": 0,
+    "execution": "none",
+    "execution_freeze_authorized": false,
+    "external_gold_review": "TARGETED_INDEPENDENT_CLOSURE_AUDIT_PASS",
+    "gold_modifications": 0,
+    "mechanical_pilot_authorized": false,
+    "phase_a_authorized": false,
+    "phase_b_authorized": false,
+    "provider_model_calls": 0,
+    "runtime_implementation": false
+  },
+  "independent_prepublication_audit": "PASS",
+  "prior_package": "a276c73ba5b89d944997a6a82cba4508729653c8",
+  "prior_review_verdict": "NOT_READY_FOR_NEXT_G_EXTRACT1_STAGE",
+  "prospective_correction_commit": "7b80ae041c74af9965662ea1aaf0d374950640f4"
+}
