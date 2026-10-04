@@ -1,3 +1,6 @@
+# Preserve G-CAL1's reviewed artifact/source bytes across Windows checkouts.
+experiments/G-CAL1-candidate/** -text
+tools/g_cal1_*.py -text
 experiments/G-CAL1-candidate/audit/lifecycle_repair/raw/cloned_packages/DESIGN.json/experiments/G-EXTRACT1-candidate/corpus/AUTHORING_ATTEMPTS.json filter=lfs diff=lfs merge=lfs -text
 experiments/G-CAL1-candidate/audit/lifecycle_repair/raw/cloned_packages/corpus-CORPUS.json/experiments/G-EXTRACT1-candidate/corpus/AUTHORING_ATTEMPTS.json filter=lfs diff=lfs merge=lfs -text
 experiments/G-CAL1-candidate/audit/lifecycle_repair/raw/cloned_packages/schedule-SCHEDULE.json/experiments/G-EXTRACT1-candidate/corpus/AUTHORING_ATTEMPTS.json filter=lfs diff=lfs merge=lfs -text
