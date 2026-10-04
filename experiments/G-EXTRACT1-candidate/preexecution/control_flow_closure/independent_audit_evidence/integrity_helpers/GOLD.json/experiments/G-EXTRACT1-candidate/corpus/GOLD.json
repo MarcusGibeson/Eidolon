@@ -1,0 +1,2272 @@
+{
+  "logical": [
+    {
+      "gold": {
+        "d001_01": "2028-10-11"
+      },
+      "logical_base_id": "A:R2:E1-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d002_01": "2042-02-04"
+      },
+      "logical_base_id": "A:R2:E1-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d003_01": "2042-01-08"
+      },
+      "logical_base_id": "A:R2:E1-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d004_01": "2032-03-04"
+      },
+      "logical_base_id": "A:R2:E1-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d005_01": "2039-10-05"
+      },
+      "logical_base_id": "A:R2:E1-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d006_01": "20:15"
+      },
+      "logical_base_id": "A:R2:E2-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d007_01": "00:26"
+      },
+      "logical_base_id": "A:R2:E2-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d008_01": 31
+      },
+      "logical_base_id": "A:R2:E2-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d009_01": 88
+      },
+      "logical_base_id": "A:R2:E2-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d010_01": 0
+      },
+      "logical_base_id": "A:R2:E2-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d011_01": 162
+      },
+      "logical_base_id": "A:R2:E3-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d012_01": "-25.5"
+      },
+      "logical_base_id": "A:R2:E3-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d013_01": "215.2"
+      },
+      "logical_base_id": "A:R2:E3-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d014_02": "12.5"
+      },
+      "logical_base_id": "A:R2:E3-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d015_02": "348.0"
+      },
+      "logical_base_id": "A:R2:E3-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d016_02": true
+      },
+      "logical_base_id": "A:R2:E4-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d017_02": false
+      },
+      "logical_base_id": "A:R2:E4-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d018_02": true
+      },
+      "logical_base_id": "A:R2:E4-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d019_02": true
+      },
+      "logical_base_id": "A:R2:E4-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d020_01": false
+      },
+      "logical_base_id": "A:R2:E4-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d021_01": "65.5"
+      },
+      "logical_base_id": "A:R2:E5-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d022_01": "code_022_02"
+      },
+      "logical_base_id": "A:R2:E5-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d023_01": "option_a"
+      },
+      "logical_base_id": "A:R2:E5-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d024_01": "2043-10-14"
+      },
+      "logical_base_id": "A:R2:E5-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d025_01": "08:05"
+      },
+      "logical_base_id": "A:R2:E5-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d026_01": 67
+      },
+      "logical_base_id": "A:R2:E6-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d027_01": "74.5"
+      },
+      "logical_base_id": "A:R2:E6-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d028_01": "label_028_01"
+      },
+      "logical_base_id": "A:R2:E6-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d029_02": "2040-01-04"
+      },
+      "logical_base_id": "A:R2:E6-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d030_02": "00:24"
+      },
+      "logical_base_id": "A:R2:E6-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "f031_01": "not_provided",
+        "f031_02": 2,
+        "f031_03": 2
+      },
+      "logical_base_id": "A:R2:E7-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "f032_01": "not_provided",
+        "f032_02": "60.5",
+        "f032_03": "label_032_01"
+      },
+      "logical_base_id": "A:R2:E7-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "f033_01": "not_provided",
+        "f033_02": "2031-12-21",
+        "f033_03": "00:34"
+      },
+      "logical_base_id": "A:R2:E7-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "f034_01": "not_provided",
+        "f034_02": "option_b",
+        "f034_03": "label_034_01"
+      },
+      "logical_base_id": "A:R2:E7-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "f035_01": "not_provided",
+        "f035_02": true,
+        "f035_03": "66.1",
+        "f035_04": 7
+      },
+      "logical_base_id": "A:R2:E7-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d036_01": "2041-11-13"
+      },
+      "logical_base_id": "A:R3:E1-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d037_01": "2033-11-06"
+      },
+      "logical_base_id": "A:R3:E1-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d038_01": "2037-01-05"
+      },
+      "logical_base_id": "A:R3:E1-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d039_01": "2040-03-02"
+      },
+      "logical_base_id": "A:R3:E1-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d040_01": "2034-03-08"
+      },
+      "logical_base_id": "A:R3:E1-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d041_01": "01:38"
+      },
+      "logical_base_id": "A:R3:E2-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d042_01": "00:33"
+      },
+      "logical_base_id": "A:R3:E2-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d043_01": 65
+      },
+      "logical_base_id": "A:R3:E2-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d044_01": 82
+      },
+      "logical_base_id": "A:R3:E2-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d045_01": 0
+      },
+      "logical_base_id": "A:R3:E2-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d046_01": 58
+      },
+      "logical_base_id": "A:R3:E3-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d047_01": "-46.39"
+      },
+      "logical_base_id": "A:R3:E3-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d048_01": "151.56"
+      },
+      "logical_base_id": "A:R3:E3-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d049_02": "10.15"
+      },
+      "logical_base_id": "A:R3:E3-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d050_02": "0.20525"
+      },
+      "logical_base_id": "A:R3:E3-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d051_02": false
+      },
+      "logical_base_id": "A:R3:E4-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d052_02": true
+      },
+      "logical_base_id": "A:R3:E4-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d053_02": true
+      },
+      "logical_base_id": "A:R3:E4-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d054_02": false
+      },
+      "logical_base_id": "A:R3:E4-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d055_01": true
+      },
+      "logical_base_id": "A:R3:E4-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d056_01": "56.58"
+      },
+      "logical_base_id": "A:R3:E5-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d057_01": "label_057_01"
+      },
+      "logical_base_id": "A:R3:E5-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d058_01": "option_b"
+      },
+      "logical_base_id": "A:R3:E5-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d059_01": "2028-08-06"
+      },
+      "logical_base_id": "A:R3:E5-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d060_01": "19:45"
+      },
+      "logical_base_id": "A:R3:E5-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d061_01": 88
+      },
+      "logical_base_id": "A:R3:E6-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d062_01": "53.01"
+      },
+      "logical_base_id": "A:R3:E6-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d063_01": "label_063_01"
+      },
+      "logical_base_id": "A:R3:E6-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d064_02": "2043-01-01"
+      },
+      "logical_base_id": "A:R3:E6-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d065_02": "00:46"
+      },
+      "logical_base_id": "A:R3:E6-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "f066_01": "not_provided",
+        "f066_02": 6,
+        "f066_03": 7
+      },
+      "logical_base_id": "A:R3:E7-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "f067_01": "not_provided",
+        "f067_02": "57.98",
+        "f067_03": "label_067_01"
+      },
+      "logical_base_id": "A:R3:E7-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "f068_01": "not_provided",
+        "f068_02": "2032-04-29",
+        "f068_03": "04:49"
+      },
+      "logical_base_id": "A:R3:E7-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "f069_01": "not_provided",
+        "f069_02": "option_a",
+        "f069_03": "label_069_01"
+      },
+      "logical_base_id": "A:R3:E7-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "f070_01": "not_provided",
+        "f070_02": false,
+        "f070_03": "49.38",
+        "f070_04": 4
+      },
+      "logical_base_id": "A:R3:E7-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d071_01": "2034-11-16"
+      },
+      "logical_base_id": "A:R2:E1-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d072_01": "23:03"
+      },
+      "logical_base_id": "A:R2:E2-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d073_01": 172
+      },
+      "logical_base_id": "A:R2:E3-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d074_02": true
+      },
+      "logical_base_id": "A:R2:E4-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d075_01": "49.4"
+      },
+      "logical_base_id": "A:R2:E5-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d076_01": 48
+      },
+      "logical_base_id": "A:R2:E6-01:RESERVE"
+    },
+    {
+      "gold": {
+        "f077_01": 2,
+        "f077_02": "not_provided",
+        "f077_03": 3
+      },
+      "logical_base_id": "A:R2:E7-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d078_01": "2042-12-16"
+      },
+      "logical_base_id": "A:R3:E1-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d079_01": "15:46"
+      },
+      "logical_base_id": "A:R3:E2-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d080_01": 93
+      },
+      "logical_base_id": "A:R3:E3-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d081_02": false
+      },
+      "logical_base_id": "A:R3:E4-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d082_01": "15.97"
+      },
+      "logical_base_id": "A:R3:E5-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d083_01": 78
+      },
+      "logical_base_id": "A:R3:E6-01:RESERVE"
+    },
+    {
+      "gold": {
+        "f084_01": 3,
+        "f084_02": "not_provided",
+        "f084_03": 7
+      },
+      "logical_base_id": "A:R3:E7-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d085_01": "2029-08-26"
+      },
+      "logical_base_id": "B:R2:E1-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d086_01": "2037-08-03"
+      },
+      "logical_base_id": "B:R2:E1-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d087_01": "2036-01-07"
+      },
+      "logical_base_id": "B:R2:E1-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d088_01": "2036-03-01"
+      },
+      "logical_base_id": "B:R2:E1-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d089_01": "2039-01-10"
+      },
+      "logical_base_id": "B:R2:E1-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d090_01": "23:45"
+      },
+      "logical_base_id": "B:R2:E2-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d091_01": "00:45"
+      },
+      "logical_base_id": "B:R2:E2-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d092_01": 43
+      },
+      "logical_base_id": "B:R2:E2-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d093_01": 41
+      },
+      "logical_base_id": "B:R2:E2-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d094_01": 0
+      },
+      "logical_base_id": "B:R2:E2-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d095_01": 79
+      },
+      "logical_base_id": "B:R2:E3-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d096_01": "-67.27"
+      },
+      "logical_base_id": "B:R2:E3-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d097_01": "215.88"
+      },
+      "logical_base_id": "B:R2:E3-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d098_02": "3.54"
+      },
+      "logical_base_id": "B:R2:E3-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d099_02": "265.2"
+      },
+      "logical_base_id": "B:R2:E3-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d100_02": false
+      },
+      "logical_base_id": "B:R2:E4-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d101_02": true
+      },
+      "logical_base_id": "B:R2:E4-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d102_02": true
+      },
+      "logical_base_id": "B:R2:E4-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d103_02": false
+      },
+      "logical_base_id": "B:R2:E4-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d104_01": true
+      },
+      "logical_base_id": "B:R2:E4-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d105_01": "35.42"
+      },
+      "logical_base_id": "B:R2:E5-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d106_01": "label_106_01"
+      },
+      "logical_base_id": "B:R2:E5-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d107_01": "option_c"
+      },
+      "logical_base_id": "B:R2:E5-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d108_01": "2036-01-09"
+      },
+      "logical_base_id": "B:R2:E5-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d109_01": "13:04"
+      },
+      "logical_base_id": "B:R2:E5-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d110_01": 17
+      },
+      "logical_base_id": "B:R2:E6-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d111_01": "73.34"
+      },
+      "logical_base_id": "B:R2:E6-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d112_01": "label_112_01"
+      },
+      "logical_base_id": "B:R2:E6-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d113_02": "2033-01-06"
+      },
+      "logical_base_id": "B:R2:E6-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d114_02": "00:58"
+      },
+      "logical_base_id": "B:R2:E6-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "f115_01": 7,
+        "f115_02": 2,
+        "f115_03": "not_provided"
+      },
+      "logical_base_id": "B:R2:E7-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "f116_01": "67.59",
+        "f116_02": "label_116_01",
+        "f116_03": "not_provided"
+      },
+      "logical_base_id": "B:R2:E7-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "f117_01": "2031-11-09",
+        "f117_02": "00:52",
+        "f117_03": "not_provided"
+      },
+      "logical_base_id": "B:R2:E7-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "f118_01": "option_b",
+        "f118_02": "label_118_01",
+        "f118_03": "not_provided"
+      },
+      "logical_base_id": "B:R2:E7-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "f119_01": false,
+        "f119_02": "71.24",
+        "f119_03": 1,
+        "f119_04": "not_provided"
+      },
+      "logical_base_id": "B:R2:E7-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d120_01": "2041-04-16"
+      },
+      "logical_base_id": "B:R3:E1-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d121_01": "2033-11-09"
+      },
+      "logical_base_id": "B:R3:E1-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d122_01": "2032-01-02"
+      },
+      "logical_base_id": "B:R3:E1-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d123_01": "2028-03-04"
+      },
+      "logical_base_id": "B:R3:E1-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d124_01": "2042-03-02"
+      },
+      "logical_base_id": "B:R3:E1-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d125_01": "08:43"
+      },
+      "logical_base_id": "B:R3:E2-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d126_01": "00:10"
+      },
+      "logical_base_id": "B:R3:E2-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d127_01": 48
+      },
+      "logical_base_id": "B:R3:E2-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d128_01": 64
+      },
+      "logical_base_id": "B:R3:E2-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d129_01": 0
+      },
+      "logical_base_id": "B:R3:E2-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d130_01": 100
+      },
+      "logical_base_id": "B:R3:E3-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d131_01": "-64.9"
+      },
+      "logical_base_id": "B:R3:E3-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d132_01": "76.7"
+      },
+      "logical_base_id": "B:R3:E3-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d133_02": "13.5"
+      },
+      "logical_base_id": "B:R3:E3-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d134_02": "0.5192"
+      },
+      "logical_base_id": "B:R3:E3-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d135_02": true
+      },
+      "logical_base_id": "B:R3:E4-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d136_02": true
+      },
+      "logical_base_id": "B:R3:E4-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d137_02": false
+      },
+      "logical_base_id": "B:R3:E4-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d138_02": true
+      },
+      "logical_base_id": "B:R3:E4-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d139_01": false
+      },
+      "logical_base_id": "B:R3:E4-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d140_01": "90.4"
+      },
+      "logical_base_id": "B:R3:E5-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d141_01": "code_141_02"
+      },
+      "logical_base_id": "B:R3:E5-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d142_01": "option_b"
+      },
+      "logical_base_id": "B:R3:E5-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d143_01": "2033-11-18"
+      },
+      "logical_base_id": "B:R3:E5-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d144_01": "20:33"
+      },
+      "logical_base_id": "B:R3:E5-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d145_01": 70
+      },
+      "logical_base_id": "B:R3:E6-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "d146_01": "30.8"
+      },
+      "logical_base_id": "B:R3:E6-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "d147_01": "label_147_01"
+      },
+      "logical_base_id": "B:R3:E6-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "d148_02": "2036-01-09"
+      },
+      "logical_base_id": "B:R3:E6-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "d149_02": "00:43"
+      },
+      "logical_base_id": "B:R3:E6-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "f150_01": 3,
+        "f150_02": 3,
+        "f150_03": "not_provided"
+      },
+      "logical_base_id": "B:R3:E7-01:PRIMARY"
+    },
+    {
+      "gold": {
+        "f151_01": "30.3",
+        "f151_02": "label_151_01",
+        "f151_03": "not_provided"
+      },
+      "logical_base_id": "B:R3:E7-02:PRIMARY"
+    },
+    {
+      "gold": {
+        "f152_01": "2041-03-24",
+        "f152_02": "03:43",
+        "f152_03": "not_provided"
+      },
+      "logical_base_id": "B:R3:E7-03:PRIMARY"
+    },
+    {
+      "gold": {
+        "f153_01": "option_a",
+        "f153_02": "label_153_01",
+        "f153_03": "not_provided"
+      },
+      "logical_base_id": "B:R3:E7-04:PRIMARY"
+    },
+    {
+      "gold": {
+        "f154_01": true,
+        "f154_02": "17.4",
+        "f154_03": 2,
+        "f154_04": "not_provided"
+      },
+      "logical_base_id": "B:R3:E7-05:PRIMARY"
+    },
+    {
+      "gold": {
+        "d155_01": "2042-06-21"
+      },
+      "logical_base_id": "B:R2:E1-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d156_01": "16:56"
+      },
+      "logical_base_id": "B:R2:E2-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d157_01": 94
+      },
+      "logical_base_id": "B:R2:E3-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d158_02": false
+      },
+      "logical_base_id": "B:R2:E4-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d159_01": "84.52"
+      },
+      "logical_base_id": "B:R2:E5-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d160_01": 56
+      },
+      "logical_base_id": "B:R2:E6-01:RESERVE"
+    },
+    {
+      "gold": {
+        "f161_01": 7,
+        "f161_02": "not_provided",
+        "f161_03": 8
+      },
+      "logical_base_id": "B:R2:E7-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d162_01": "2038-06-12"
+      },
+      "logical_base_id": "B:R3:E1-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d163_01": "22:17"
+      },
+      "logical_base_id": "B:R3:E2-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d164_01": 118
+      },
+      "logical_base_id": "B:R3:E3-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d165_02": true
+      },
+      "logical_base_id": "B:R3:E4-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d166_01": "20.2"
+      },
+      "logical_base_id": "B:R3:E5-01:RESERVE"
+    },
+    {
+      "gold": {
+        "d167_01": 16
+      },
+      "logical_base_id": "B:R3:E6-01:RESERVE"
+    },
+    {
+      "gold": {
+        "f168_01": 8,
+        "f168_02": "not_provided",
+        "f168_03": 4
+      },
+      "logical_base_id": "B:R3:E7-01:RESERVE"
+    }
+  ],
+  "rendered": [
+    {
+      "gold": {
+        "d001_01": "2028-10-11"
+      },
+      "rendered_variant_id": "A:R2:E1-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d002_01": "2042-02-04"
+      },
+      "rendered_variant_id": "A:R2:E1-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d003_01": "2042-01-08"
+      },
+      "rendered_variant_id": "A:R2:E1-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d004_01": "2032-03-04"
+      },
+      "rendered_variant_id": "A:R2:E1-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d005_01": "2039-10-05"
+      },
+      "rendered_variant_id": "A:R2:E1-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d006_01": "20:15"
+      },
+      "rendered_variant_id": "A:R2:E2-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d007_01": "00:26"
+      },
+      "rendered_variant_id": "A:R2:E2-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d008_01": 31
+      },
+      "rendered_variant_id": "A:R2:E2-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d009_01": 88
+      },
+      "rendered_variant_id": "A:R2:E2-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d010_01": 0
+      },
+      "rendered_variant_id": "A:R2:E2-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d011_01": 162
+      },
+      "rendered_variant_id": "A:R2:E3-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d012_01": "-25.5"
+      },
+      "rendered_variant_id": "A:R2:E3-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d013_01": "215.2"
+      },
+      "rendered_variant_id": "A:R2:E3-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d014_02": "12.5"
+      },
+      "rendered_variant_id": "A:R2:E3-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d015_02": "348.0"
+      },
+      "rendered_variant_id": "A:R2:E3-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d016_02": true
+      },
+      "rendered_variant_id": "A:R2:E4-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d017_02": false
+      },
+      "rendered_variant_id": "A:R2:E4-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d018_02": true
+      },
+      "rendered_variant_id": "A:R2:E4-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d019_02": true
+      },
+      "rendered_variant_id": "A:R2:E4-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d020_01": false
+      },
+      "rendered_variant_id": "A:R2:E4-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d021_01": "65.5"
+      },
+      "rendered_variant_id": "A:R2:E5-01:PRIMARY:CF1"
+    },
+    {
+      "gold": {
+        "d021_01": "67.5"
+      },
+      "rendered_variant_id": "A:R2:E5-01:PRIMARY:CF2"
+    },
+    {
+      "gold": {
+        "d022_01": "code_022_02"
+      },
+      "rendered_variant_id": "A:R2:E5-02:PRIMARY:CF1"
+    },
+    {
+      "gold": {
+        "d022_01": "label_022_01"
+      },
+      "rendered_variant_id": "A:R2:E5-02:PRIMARY:CF2"
+    },
+    {
+      "gold": {
+        "d023_01": "option_a"
+      },
+      "rendered_variant_id": "A:R2:E5-03:PRIMARY:CF1"
+    },
+    {
+      "gold": {
+        "d023_01": "option_b"
+      },
+      "rendered_variant_id": "A:R2:E5-03:PRIMARY:CF2"
+    },
+    {
+      "gold": {
+        "d024_01": "2043-10-14"
+      },
+      "rendered_variant_id": "A:R2:E5-04:PRIMARY:CF1"
+    },
+    {
+      "gold": {
+        "d024_01": "2043-10-16"
+      },
+      "rendered_variant_id": "A:R2:E5-04:PRIMARY:CF2"
+    },
+    {
+      "gold": {
+        "d025_01": "08:05"
+      },
+      "rendered_variant_id": "A:R2:E5-05:PRIMARY:CF1"
+    },
+    {
+      "gold": {
+        "d025_01": "08:18"
+      },
+      "rendered_variant_id": "A:R2:E5-05:PRIMARY:CF2"
+    },
+    {
+      "gold": {
+        "d026_01": 67
+      },
+      "rendered_variant_id": "A:R2:E6-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d027_01": "74.5"
+      },
+      "rendered_variant_id": "A:R2:E6-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d028_01": "label_028_01"
+      },
+      "rendered_variant_id": "A:R2:E6-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d029_02": "2040-01-04"
+      },
+      "rendered_variant_id": "A:R2:E6-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d030_02": "00:24"
+      },
+      "rendered_variant_id": "A:R2:E6-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "f031_01": "not_provided",
+        "f031_02": 2,
+        "f031_03": 2
+      },
+      "rendered_variant_id": "A:R2:E7-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "f032_01": "not_provided",
+        "f032_02": "60.5",
+        "f032_03": "label_032_01"
+      },
+      "rendered_variant_id": "A:R2:E7-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "f033_01": "not_provided",
+        "f033_02": "2031-12-21",
+        "f033_03": "00:34"
+      },
+      "rendered_variant_id": "A:R2:E7-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "f034_01": "not_provided",
+        "f034_02": "option_b",
+        "f034_03": "label_034_01"
+      },
+      "rendered_variant_id": "A:R2:E7-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "f035_01": "not_provided",
+        "f035_02": true,
+        "f035_03": "66.1",
+        "f035_04": 7
+      },
+      "rendered_variant_id": "A:R2:E7-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d036_01": "2041-11-13"
+      },
+      "rendered_variant_id": "A:R3:E1-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d037_01": "2033-11-06"
+      },
+      "rendered_variant_id": "A:R3:E1-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d038_01": "2037-01-05"
+      },
+      "rendered_variant_id": "A:R3:E1-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d039_01": "2040-03-02"
+      },
+      "rendered_variant_id": "A:R3:E1-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d040_01": "2034-03-08"
+      },
+      "rendered_variant_id": "A:R3:E1-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d041_01": "01:38"
+      },
+      "rendered_variant_id": "A:R3:E2-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d042_01": "00:33"
+      },
+      "rendered_variant_id": "A:R3:E2-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d043_01": 65
+      },
+      "rendered_variant_id": "A:R3:E2-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d044_01": 82
+      },
+      "rendered_variant_id": "A:R3:E2-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d045_01": 0
+      },
+      "rendered_variant_id": "A:R3:E2-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d046_01": 58
+      },
+      "rendered_variant_id": "A:R3:E3-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d047_01": "-46.39"
+      },
+      "rendered_variant_id": "A:R3:E3-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d048_01": "151.56"
+      },
+      "rendered_variant_id": "A:R3:E3-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d049_02": "10.15"
+      },
+      "rendered_variant_id": "A:R3:E3-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d050_02": "0.20525"
+      },
+      "rendered_variant_id": "A:R3:E3-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d051_02": false
+      },
+      "rendered_variant_id": "A:R3:E4-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d052_02": true
+      },
+      "rendered_variant_id": "A:R3:E4-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d053_02": true
+      },
+      "rendered_variant_id": "A:R3:E4-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d054_02": false
+      },
+      "rendered_variant_id": "A:R3:E4-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d055_01": true
+      },
+      "rendered_variant_id": "A:R3:E4-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d056_01": "56.58"
+      },
+      "rendered_variant_id": "A:R3:E5-01:PRIMARY:CF1"
+    },
+    {
+      "gold": {
+        "d056_01": "54.58"
+      },
+      "rendered_variant_id": "A:R3:E5-01:PRIMARY:CF2"
+    },
+    {
+      "gold": {
+        "d057_01": "label_057_01"
+      },
+      "rendered_variant_id": "A:R3:E5-02:PRIMARY:CF1"
+    },
+    {
+      "gold": {
+        "d057_01": "code_057_02"
+      },
+      "rendered_variant_id": "A:R3:E5-02:PRIMARY:CF2"
+    },
+    {
+      "gold": {
+        "d058_01": "option_b"
+      },
+      "rendered_variant_id": "A:R3:E5-03:PRIMARY:CF1"
+    },
+    {
+      "gold": {
+        "d058_01": "option_c"
+      },
+      "rendered_variant_id": "A:R3:E5-03:PRIMARY:CF2"
+    },
+    {
+      "gold": {
+        "d059_01": "2028-08-06"
+      },
+      "rendered_variant_id": "A:R3:E5-04:PRIMARY:CF1"
+    },
+    {
+      "gold": {
+        "d059_01": "2028-08-04"
+      },
+      "rendered_variant_id": "A:R3:E5-04:PRIMARY:CF2"
+    },
+    {
+      "gold": {
+        "d060_01": "19:45"
+      },
+      "rendered_variant_id": "A:R3:E5-05:PRIMARY:CF1"
+    },
+    {
+      "gold": {
+        "d060_01": "19:58"
+      },
+      "rendered_variant_id": "A:R3:E5-05:PRIMARY:CF2"
+    },
+    {
+      "gold": {
+        "d061_01": 88
+      },
+      "rendered_variant_id": "A:R3:E6-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d062_01": "53.01"
+      },
+      "rendered_variant_id": "A:R3:E6-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d063_01": "label_063_01"
+      },
+      "rendered_variant_id": "A:R3:E6-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d064_02": "2043-01-01"
+      },
+      "rendered_variant_id": "A:R3:E6-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d065_02": "00:46"
+      },
+      "rendered_variant_id": "A:R3:E6-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "f066_01": "not_provided",
+        "f066_02": 6,
+        "f066_03": 7
+      },
+      "rendered_variant_id": "A:R3:E7-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "f067_01": "not_provided",
+        "f067_02": "57.98",
+        "f067_03": "label_067_01"
+      },
+      "rendered_variant_id": "A:R3:E7-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "f068_01": "not_provided",
+        "f068_02": "2032-04-29",
+        "f068_03": "04:49"
+      },
+      "rendered_variant_id": "A:R3:E7-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "f069_01": "not_provided",
+        "f069_02": "option_a",
+        "f069_03": "label_069_01"
+      },
+      "rendered_variant_id": "A:R3:E7-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "f070_01": "not_provided",
+        "f070_02": false,
+        "f070_03": "49.38",
+        "f070_04": 4
+      },
+      "rendered_variant_id": "A:R3:E7-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d071_01": "2034-11-16"
+      },
+      "rendered_variant_id": "A:R2:E1-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "d072_01": "23:03"
+      },
+      "rendered_variant_id": "A:R2:E2-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "d073_01": 172
+      },
+      "rendered_variant_id": "A:R2:E3-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "d074_02": true
+      },
+      "rendered_variant_id": "A:R2:E4-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "d075_01": "49.4"
+      },
+      "rendered_variant_id": "A:R2:E5-01:RESERVE:CF1"
+    },
+    {
+      "gold": {
+        "d075_01": "51.4"
+      },
+      "rendered_variant_id": "A:R2:E5-01:RESERVE:CF2"
+    },
+    {
+      "gold": {
+        "d076_01": 48
+      },
+      "rendered_variant_id": "A:R2:E6-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "f077_01": 2,
+        "f077_02": "not_provided",
+        "f077_03": 3
+      },
+      "rendered_variant_id": "A:R2:E7-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "d078_01": "2042-12-16"
+      },
+      "rendered_variant_id": "A:R3:E1-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "d079_01": "15:46"
+      },
+      "rendered_variant_id": "A:R3:E2-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "d080_01": 93
+      },
+      "rendered_variant_id": "A:R3:E3-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "d081_02": false
+      },
+      "rendered_variant_id": "A:R3:E4-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "d082_01": "15.97"
+      },
+      "rendered_variant_id": "A:R3:E5-01:RESERVE:CF1"
+    },
+    {
+      "gold": {
+        "d082_01": "13.97"
+      },
+      "rendered_variant_id": "A:R3:E5-01:RESERVE:CF2"
+    },
+    {
+      "gold": {
+        "d083_01": 78
+      },
+      "rendered_variant_id": "A:R3:E6-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "f084_01": 3,
+        "f084_02": "not_provided",
+        "f084_03": 7
+      },
+      "rendered_variant_id": "A:R3:E7-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "d085_01": "2029-08-26"
+      },
+      "rendered_variant_id": "B:R2:E1-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d086_01": "2037-08-03"
+      },
+      "rendered_variant_id": "B:R2:E1-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d087_01": "2036-01-07"
+      },
+      "rendered_variant_id": "B:R2:E1-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d088_01": "2036-03-01"
+      },
+      "rendered_variant_id": "B:R2:E1-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d089_01": "2039-01-10"
+      },
+      "rendered_variant_id": "B:R2:E1-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d090_01": "23:45"
+      },
+      "rendered_variant_id": "B:R2:E2-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d091_01": "00:45"
+      },
+      "rendered_variant_id": "B:R2:E2-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d092_01": 43
+      },
+      "rendered_variant_id": "B:R2:E2-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d093_01": 41
+      },
+      "rendered_variant_id": "B:R2:E2-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d094_01": 0
+      },
+      "rendered_variant_id": "B:R2:E2-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d095_01": 79
+      },
+      "rendered_variant_id": "B:R2:E3-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d096_01": "-67.27"
+      },
+      "rendered_variant_id": "B:R2:E3-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d097_01": "215.88"
+      },
+      "rendered_variant_id": "B:R2:E3-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d098_02": "3.54"
+      },
+      "rendered_variant_id": "B:R2:E3-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d099_02": "265.2"
+      },
+      "rendered_variant_id": "B:R2:E3-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d100_02": false
+      },
+      "rendered_variant_id": "B:R2:E4-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d101_02": true
+      },
+      "rendered_variant_id": "B:R2:E4-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d102_02": true
+      },
+      "rendered_variant_id": "B:R2:E4-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d103_02": false
+      },
+      "rendered_variant_id": "B:R2:E4-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d104_01": true
+      },
+      "rendered_variant_id": "B:R2:E4-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d105_01": "35.42"
+      },
+      "rendered_variant_id": "B:R2:E5-01:PRIMARY:CF1"
+    },
+    {
+      "gold": {
+        "d105_01": "33.42"
+      },
+      "rendered_variant_id": "B:R2:E5-01:PRIMARY:CF2"
+    },
+    {
+      "gold": {
+        "d106_01": "label_106_01"
+      },
+      "rendered_variant_id": "B:R2:E5-02:PRIMARY:CF1"
+    },
+    {
+      "gold": {
+        "d106_01": "code_106_02"
+      },
+      "rendered_variant_id": "B:R2:E5-02:PRIMARY:CF2"
+    },
+    {
+      "gold": {
+        "d107_01": "option_c"
+      },
+      "rendered_variant_id": "B:R2:E5-03:PRIMARY:CF1"
+    },
+    {
+      "gold": {
+        "d107_01": "option_a"
+      },
+      "rendered_variant_id": "B:R2:E5-03:PRIMARY:CF2"
+    },
+    {
+      "gold": {
+        "d108_01": "2036-01-09"
+      },
+      "rendered_variant_id": "B:R2:E5-04:PRIMARY:CF1"
+    },
+    {
+      "gold": {
+        "d108_01": "2036-01-07"
+      },
+      "rendered_variant_id": "B:R2:E5-04:PRIMARY:CF2"
+    },
+    {
+      "gold": {
+        "d109_01": "13:04"
+      },
+      "rendered_variant_id": "B:R2:E5-05:PRIMARY:CF1"
+    },
+    {
+      "gold": {
+        "d109_01": "12:38"
+      },
+      "rendered_variant_id": "B:R2:E5-05:PRIMARY:CF2"
+    },
+    {
+      "gold": {
+        "d110_01": 17
+      },
+      "rendered_variant_id": "B:R2:E6-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d111_01": "73.34"
+      },
+      "rendered_variant_id": "B:R2:E6-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d112_01": "label_112_01"
+      },
+      "rendered_variant_id": "B:R2:E6-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d113_02": "2033-01-06"
+      },
+      "rendered_variant_id": "B:R2:E6-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d114_02": "00:58"
+      },
+      "rendered_variant_id": "B:R2:E6-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "f115_01": 7,
+        "f115_02": 2,
+        "f115_03": "not_provided"
+      },
+      "rendered_variant_id": "B:R2:E7-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "f116_01": "67.59",
+        "f116_02": "label_116_01",
+        "f116_03": "not_provided"
+      },
+      "rendered_variant_id": "B:R2:E7-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "f117_01": "2031-11-09",
+        "f117_02": "00:52",
+        "f117_03": "not_provided"
+      },
+      "rendered_variant_id": "B:R2:E7-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "f118_01": "option_b",
+        "f118_02": "label_118_01",
+        "f118_03": "not_provided"
+      },
+      "rendered_variant_id": "B:R2:E7-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "f119_01": false,
+        "f119_02": "71.24",
+        "f119_03": 1,
+        "f119_04": "not_provided"
+      },
+      "rendered_variant_id": "B:R2:E7-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d120_01": "2041-04-16"
+      },
+      "rendered_variant_id": "B:R3:E1-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d121_01": "2033-11-09"
+      },
+      "rendered_variant_id": "B:R3:E1-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d122_01": "2032-01-02"
+      },
+      "rendered_variant_id": "B:R3:E1-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d123_01": "2028-03-04"
+      },
+      "rendered_variant_id": "B:R3:E1-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d124_01": "2042-03-02"
+      },
+      "rendered_variant_id": "B:R3:E1-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d125_01": "08:43"
+      },
+      "rendered_variant_id": "B:R3:E2-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d126_01": "00:10"
+      },
+      "rendered_variant_id": "B:R3:E2-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d127_01": 48
+      },
+      "rendered_variant_id": "B:R3:E2-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d128_01": 64
+      },
+      "rendered_variant_id": "B:R3:E2-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d129_01": 0
+      },
+      "rendered_variant_id": "B:R3:E2-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d130_01": 100
+      },
+      "rendered_variant_id": "B:R3:E3-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d131_01": "-64.9"
+      },
+      "rendered_variant_id": "B:R3:E3-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d132_01": "76.7"
+      },
+      "rendered_variant_id": "B:R3:E3-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d133_02": "13.5"
+      },
+      "rendered_variant_id": "B:R3:E3-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d134_02": "0.5192"
+      },
+      "rendered_variant_id": "B:R3:E3-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d135_02": true
+      },
+      "rendered_variant_id": "B:R3:E4-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d136_02": true
+      },
+      "rendered_variant_id": "B:R3:E4-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d137_02": false
+      },
+      "rendered_variant_id": "B:R3:E4-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d138_02": true
+      },
+      "rendered_variant_id": "B:R3:E4-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d139_01": false
+      },
+      "rendered_variant_id": "B:R3:E4-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d140_01": "90.4"
+      },
+      "rendered_variant_id": "B:R3:E5-01:PRIMARY:CF1"
+    },
+    {
+      "gold": {
+        "d140_01": "92.4"
+      },
+      "rendered_variant_id": "B:R3:E5-01:PRIMARY:CF2"
+    },
+    {
+      "gold": {
+        "d141_01": "code_141_02"
+      },
+      "rendered_variant_id": "B:R3:E5-02:PRIMARY:CF1"
+    },
+    {
+      "gold": {
+        "d141_01": "label_141_01"
+      },
+      "rendered_variant_id": "B:R3:E5-02:PRIMARY:CF2"
+    },
+    {
+      "gold": {
+        "d142_01": "option_b"
+      },
+      "rendered_variant_id": "B:R3:E5-03:PRIMARY:CF1"
+    },
+    {
+      "gold": {
+        "d142_01": "option_c"
+      },
+      "rendered_variant_id": "B:R3:E5-03:PRIMARY:CF2"
+    },
+    {
+      "gold": {
+        "d143_01": "2033-11-18"
+      },
+      "rendered_variant_id": "B:R3:E5-04:PRIMARY:CF1"
+    },
+    {
+      "gold": {
+        "d143_01": "2033-11-20"
+      },
+      "rendered_variant_id": "B:R3:E5-04:PRIMARY:CF2"
+    },
+    {
+      "gold": {
+        "d144_01": "20:33"
+      },
+      "rendered_variant_id": "B:R3:E5-05:PRIMARY:CF1"
+    },
+    {
+      "gold": {
+        "d144_01": "20:20"
+      },
+      "rendered_variant_id": "B:R3:E5-05:PRIMARY:CF2"
+    },
+    {
+      "gold": {
+        "d145_01": 70
+      },
+      "rendered_variant_id": "B:R3:E6-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d146_01": "30.8"
+      },
+      "rendered_variant_id": "B:R3:E6-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d147_01": "label_147_01"
+      },
+      "rendered_variant_id": "B:R3:E6-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d148_02": "2036-01-09"
+      },
+      "rendered_variant_id": "B:R3:E6-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d149_02": "00:43"
+      },
+      "rendered_variant_id": "B:R3:E6-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "f150_01": 3,
+        "f150_02": 3,
+        "f150_03": "not_provided"
+      },
+      "rendered_variant_id": "B:R3:E7-01:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "f151_01": "30.3",
+        "f151_02": "label_151_01",
+        "f151_03": "not_provided"
+      },
+      "rendered_variant_id": "B:R3:E7-02:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "f152_01": "2041-03-24",
+        "f152_02": "03:43",
+        "f152_03": "not_provided"
+      },
+      "rendered_variant_id": "B:R3:E7-03:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "f153_01": "option_a",
+        "f153_02": "label_153_01",
+        "f153_03": "not_provided"
+      },
+      "rendered_variant_id": "B:R3:E7-04:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "f154_01": true,
+        "f154_02": "17.4",
+        "f154_03": 2,
+        "f154_04": "not_provided"
+      },
+      "rendered_variant_id": "B:R3:E7-05:PRIMARY:SINGLE"
+    },
+    {
+      "gold": {
+        "d155_01": "2042-06-21"
+      },
+      "rendered_variant_id": "B:R2:E1-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "d156_01": "16:56"
+      },
+      "rendered_variant_id": "B:R2:E2-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "d157_01": 94
+      },
+      "rendered_variant_id": "B:R2:E3-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "d158_02": false
+      },
+      "rendered_variant_id": "B:R2:E4-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "d159_01": "84.52"
+      },
+      "rendered_variant_id": "B:R2:E5-01:RESERVE:CF1"
+    },
+    {
+      "gold": {
+        "d159_01": "82.52"
+      },
+      "rendered_variant_id": "B:R2:E5-01:RESERVE:CF2"
+    },
+    {
+      "gold": {
+        "d160_01": 56
+      },
+      "rendered_variant_id": "B:R2:E6-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "f161_01": 7,
+        "f161_02": "not_provided",
+        "f161_03": 8
+      },
+      "rendered_variant_id": "B:R2:E7-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "d162_01": "2038-06-12"
+      },
+      "rendered_variant_id": "B:R3:E1-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "d163_01": "22:17"
+      },
+      "rendered_variant_id": "B:R3:E2-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "d164_01": 118
+      },
+      "rendered_variant_id": "B:R3:E3-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "d165_02": true
+      },
+      "rendered_variant_id": "B:R3:E4-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "d166_01": "20.2"
+      },
+      "rendered_variant_id": "B:R3:E5-01:RESERVE:CF1"
+    },
+    {
+      "gold": {
+        "d166_01": "22.2"
+      },
+      "rendered_variant_id": "B:R3:E5-01:RESERVE:CF2"
+    },
+    {
+      "gold": {
+        "d167_01": 16
+      },
+      "rendered_variant_id": "B:R3:E6-01:RESERVE:SINGLE"
+    },
+    {
+      "gold": {
+        "f168_01": 8,
+        "f168_02": "not_provided",
+        "f168_03": 4
+      },
+      "rendered_variant_id": "B:R3:E7-01:RESERVE:SINGLE"
+    }
+  ],
+  "schema_version": "g-extract1.gold.v1",
+  "source_gold_projection_sha256": "803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec"
+}
