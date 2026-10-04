@@ -188,12 +188,20 @@ class Package:
                     'PRE_GOLD_DIGEST_MISMATCH','complete canonical member')
         self.binding = {'experiment':'G-CAL1','contract_version':VERSION,'manifest_sha256':self.manifest_sha,
                         'schedule_sha256':digest(canonical(self.schedule)),'journal_schema':'g-extract1.call-journal.v2'}
+        self._derived_bytes = canonical(self._derived_state())
+
+    def _derived_state(self):
+        return {'manifest':self.manifest,'manifest_sha':self.manifest_sha,'pins':self.pins,
+                'design':self.design,'baseline':self.baseline,'members':self.members,
+                'schedule':self.schedule,'binding':self.binding,'historical_design':self.historical.design}
 
     def wire(self, row):
         return wire_bytes(self.members[row['fixture_id']],row,self.design,self.baseline)
 
     def verify(self, contacted=False):
         event = 'PROTECTED_ARTIFACT_DIGEST_MISMATCH' if contacted else 'PRE_ARTIFACT_DIGEST_MISMATCH'
+        if hasattr(self,'_derived_bytes'):
+            require(canonical(self._derived_state())==self._derived_bytes,event,'authority-bearing cache drift')
         require(file_digest(DATA/'LAB_MANIFEST.json') == self.manifest_sha,event,'manifest drift')
         for path, expected in self.pins.items():
             require((ROOT/path).is_file() and file_digest(ROOT/path) == expected,event,path)

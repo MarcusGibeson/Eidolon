@@ -30,6 +30,12 @@ class Checks:
         raise AssertionError('accepted forbidden action:'+detail)
 
 
+def synthetic(transport):
+    """Explicit marker for this no-provider test module's local stub functions."""
+    transport.synthetic_only = True
+    return transport
+
+
 def success(package,request,row):
     return {'raw_output':synthetic_gold(package.members[row['fixture_id']]),'provider_truncated':False,
             'receipt':{'call_id':row['call_id'],'request_sha256':row['request_sha256'],'synthetic_only':True}}
@@ -43,7 +49,7 @@ def full_pilot(package,directory,checks):
     run = Run(package,directory,'G-CAL1-SYNTHETIC-REPLAY')
     run.checkpoint()
     for index,row in enumerate(package.schedule,1):
-        score = run.perform(row,lambda request,r:success(package,request,r))
+        score = run.perform(row,synthetic(lambda request,r:success(package,request,r)))
         checks.check(score['semantic_correct'] and score['structural_valid'] and not score['false_clean'],
                      'full_pilot',row['call_id'])
         checkpoint = run.checkpoint()
@@ -70,6 +76,7 @@ def adversarial(package,checks,root):
     def unused(request,row):
         calls.append(row['call_id'])
         return success(package,request,row)
+    synthetic(unused)
     index=0
     def fresh():
         nonlocal index
@@ -87,6 +94,7 @@ def adversarial(package,checks,root):
     for signal in (KeyboardInterrupt('stop'),SystemExit(7),GeneratorExit('close'),CustomControl('custom')):
         run=fresh()
         def thrown(request,row,signal=signal): raise signal
+        synthetic(thrown)
         try: run.perform(package.schedule[0],thrown)
         except BaseException as caught:
             checks.check(caught is signal and caught.args==signal.args,'control_flow',type(signal).__name__+' original propagated')
@@ -100,6 +108,7 @@ def adversarial(package,checks,root):
     for error in (RuntimeError('ordinary'),ValueError('ordinary'),OSError('ordinary')):
         run=fresh()
         def thrown(request,row,error=error): raise error
+        synthetic(thrown)
         checks.reject(lambda:run.perform(package.schedule[0],thrown),'ordinary_transport',type(error).__name__,'PROVIDER_FAILURE_WITHOUT_RECEIPT')
         checks.check(run.journal.read()[-1]['payload']['kind']=='FAILURE','ordinary_transport','START governed closure')
         terminal(run,'ordinary_transport')
@@ -108,7 +117,7 @@ def adversarial(package,checks,root):
                  {'raw_output':'{}','provider_truncated':False,'receipt':{'call_id':'wrong','request_sha256':'wrong'}}]
     for value in malformed:
         run=fresh()
-        checks.reject(lambda:run.perform(package.schedule[0],lambda *_:value),'malformed_transport',type(value).__name__,
+        checks.reject(lambda:run.perform(package.schedule[0],synthetic(lambda *_:value)),'malformed_transport',type(value).__name__,
                       'PROVIDER_FAILURE_WITHOUT_RECEIPT')
         checks.check(run.journal.read()[-1]['payload']['kind']=='FAILURE','malformed_transport','no continuable open START')
         terminal(run,'malformed_transport')
@@ -116,7 +125,7 @@ def adversarial(package,checks,root):
                        ('missing','MISSING_RESPONSE_WITH_FAILURE_RECEIPT')]:
         run=fresh(); row=package.schedule[0]
         result={'failure':kind,'receipt':{'call_id':row['call_id'],'request_sha256':row['request_sha256'],'failure_kind':kind}}
-        checks.reject(lambda:run.perform(row,lambda *_:result),'valid_failure_receipts',kind,event)
+        checks.reject(lambda:run.perform(row,synthetic(lambda *_:result)),'valid_failure_receipts',kind,event)
         checks.check(run.state()['verdict']=='INCOMPLETE','valid_failure_receipts','not relabeled INVALID')
         terminal(run,'valid_failure_receipts')
     for payload in ([],None,0,1,'string',True,{}, {'journal_prefix':{}}, {'next_schedule_position':'1'}):
@@ -151,7 +160,7 @@ def adversarial(package,checks,root):
         checks.reject(lambda:authority(package,'CAL-NOT-A-REAL-RUN',None,authorization,None),
                       'live_authority','inactive G-CAL1 denies every live collection boundary')
     checks.check(not (DATA/'execution/ACTIVE_FREEZE.json').exists(),'live_authority','no activation artifact created')
-    checks.reject(lambda:transport_boundary(unused,False),'live_authority','unmarked synthetic callable cannot be live')
+    checks.reject(lambda:transport_boundary(lambda *_:None,False),'live_authority','unmarked synthetic callable cannot be live')
     unused.synthetic_only=True
     checks.reject(lambda:transport_boundary(unused,False),'live_authority','explicit synthetic callable cannot be live')
     unused.synthetic_only=False
@@ -220,11 +229,15 @@ def science_checks(package,checks):
 
 
 def main():
+    from g_cal1_repair_tests import attacks, deny_network, science_replay
+    import sys
+    sys.addaudithook(deny_network)
     package=Package();checks=Checks()
     science_checks(package,checks)
-    with tempfile.TemporaryDirectory(prefix='g-cal1-adversarial-') as temp:
-        adversarial(package,checks,Path(temp))
-    out=DATA/'preexecution/final'
+    out=DATA/'preexecution/lifecycle_repair'
+    adversarial(package,checks,out/'established_regression_attempt02')
+    attacks(package,checks,out/'targeted_attacks_attempt02')
+    science_replay(package,checks)
     a=out/'pilot_one';b=out/'pilot_two'
     full_pilot(package,a,checks);full_pilot(package,b,checks)
     ta,tb=tree(a),tree(b)
@@ -248,6 +261,8 @@ def main():
         'pilot_report_sha256':file_digest(out/'PILOT_REPORT.json'),
         'preservation_report_sha256':file_digest(out/'PRESERVATION_REPORT.json'),
         'supersedes_unactivated_initial_candidate_sha256':file_digest(DATA/'preexecution/EXECUTION_FREEZE_CANDIDATE.json'),
+        'prior_blocked_candidate_sha256':file_digest(DATA/'preexecution/final/EXECUTION_FREEZE_CANDIDATE.json'),
+        'prior_blocked_audit_sha256':file_digest(DATA/'audit/INDEPENDENT_PREREGISTRATION_AUDIT.json'),
         'authority':'candidate only; separate independent audit, freeze review, explicit activation and CAL authorization required',
         'execution_authorized':False,'provider_model_calls':0,'autonomy':False,'belief_effects':'none'}
     write_once(out/'EXECUTION_FREEZE_CANDIDATE.json',candidate)
