@@ -1,0 +1,106 @@
+{
+  "schema_version": "g-extract1.lifecycle-repair-stage-status.v1",
+  "stage_verdict": "G_EXTRACT1_LIFECYCLE_REPAIR_FAILED",
+  "reason": "The single independent final audit found two P1 continuation bypasses and one P2 integrated-state defect. Required stop honored; no post-audit repair, test rerun, or nested review.",
+  "implementation_commit": "a861c5676a1254ff99f6a7df55e11824c652e948",
+  "source_sha256": {
+    "tools/g_extract1_contract.py": "078083bb966488d5c9da548f340cab8189d1d4a3b4bc19fac388b33598638c5c",
+    "tools/g_extract1_journal.py": "9ad24b463b6dcfdce67c609b899a8f13d9b93fd6e3e2fd745ab6b346ae338b2b",
+    "tools/g_extract1_lifecycle_tests.py": "d63d1b78a5d66709787804a3cb8885abb6e6ba5225cf285dcf267f4f828e7165",
+    "tools/g_extract1_pilot.py": "393c5f515e71af14c217f0d43a244fedad2eaef21aeb9085be043601487430fa",
+    "tools/g_extract1_runner.py": "c6f2888f2f6d2a136e78569a4cfe070efe599ae4bf0bc4e24ec6fdf6ef311bcb",
+    "tools/g_extract1_scoring.py": "e6d9b6171cdccf14da7a69a68b0e3558e632edde4e39d7920406d28c872be27f"
+  },
+  "independent_audit": {
+    "verdict": "BLOCKED",
+    "count": 1,
+    "artifact": "IMPLEMENTATION_CLOSURE_AUDIT.json",
+    "findings": [
+      {
+        "id": "LR1",
+        "severity": "P1",
+        "title": "Malformed checkpoint payload is unretained and permits later continuation"
+      },
+      {
+        "id": "LR2",
+        "severity": "P1",
+        "title": "Non-object transport result leaves unreceipted START and permits next call"
+      },
+      {
+        "id": "LR3",
+        "severity": "P2",
+        "title": "Pre-contact blocked cells remain A_SCHEDULED rather than A_BLOCKED"
+      }
+    ]
+  },
+  "pilot": {
+    "verdict": "PASS_NOT_STAGE_APPROVAL",
+    "test_count": 2153,
+    "targeted_test_count": 130,
+    "phase_a": 480,
+    "phase_b_maximum": 240,
+    "total_maximum": 720,
+    "first_synthetic_observations": 720,
+    "second_synthetic_observations": 720,
+    "all_authority_files_equal": true,
+    "file_count_each": 1447,
+    "conditional_b_subsets": 64,
+    "e5_wire_audits": 108,
+    "elapsed_clarifications": 12,
+    "phase_a_schedule_sha256": "3c48390307dd683e7ba2f736318d42f4d9fbda6527bbb9d64ee03b4bf97bb4dd",
+    "phase_b_maximum_schedule_sha256": "6361e990216be94ca3ad69b75b485adf70fc8a035b2e459e5d309063c8ea164b",
+    "pilot_report_sha256": "5cc470f24adbabc2ccddd31fe5deb256d3cb8f242497b310112ac24a8b48ebd1",
+    "targeted_report_sha256": "5dd1088f95f1d8356bf7e4e1454f621b2c59cdb125d8b023ee6ff299b5c057b8"
+  },
+  "manifest_verification": {
+    "protected_file_count": 50,
+    "newly_covered_actual_byte_mutations": 17,
+    "pre_and_post_contact_rejected": true,
+    "candidate_actual_bytes_hashed": true,
+    "gold_projection_recomputed": true
+  },
+  "candidate": {
+    "sha256": "6e7295b3c79ee95930fee7231265e342905b7848d261ae716d1ef1546ca785ab",
+    "artifact": "EXECUTION_FREEZE_CANDIDATE.json",
+    "stored_status": "EXECUTION_FREEZE_CANDIDATE_ONLY",
+    "disposition": "BLOCKED_BY_SINGLE_INDEPENDENT_AUDIT; NOT_READY_FOR_EXECUTION_FREEZE_REVIEW",
+    "activated": false,
+    "old_blocked_candidate_sha256": "14fb601c3a58777942ccd0361c2a303b5bfcf10d4c05536a32d265c0babe537f",
+    "old_evidence_unchanged": true
+  },
+  "preservation": {
+    "accepted_scientific_inputs_unchanged": true,
+    "untracked_authoring_files": [
+      "experiments/G-EXTRACT1-candidate/corpus/AUTHORING_ATTEMPTS.json",
+      "experiments/G-EXTRACT1-candidate/corpus/AUTHORING_CANDIDATES.json",
+      "experiments/G-EXTRACT1-candidate/corpus/AUTHORING_FEASIBILITY_REPORT.json",
+      "experiments/G-EXTRACT1-candidate/corpus/FINALIZATION_CONTAMINATION_DISAGREEMENT_REPORT.json",
+      "experiments/G-EXTRACT1-candidate/corpus/FINALIZATION_FAILURE_REPORT.json",
+      "experiments/G-EXTRACT1-candidate/corpus/FINALIZATION_HISTORICAL_REUSE_CONTRACT_STOP_REPORT.json",
+      "experiments/G-EXTRACT1-candidate/corpus/FRESHNESS_CANONICALIZATION_DIAGNOSIS_REPORT.json"
+    ],
+    "corpus_and_gold_unchanged": true,
+    "design_and_blueprint_unchanged": true,
+    "scoring_source_unchanged": true,
+    "hash_evidence": "MECHANICAL_PILOT_REPORT.json protected_artifacts_before_after and preserved_corpus_before_after; independent audit verifies all 50 protected files unchanged"
+  },
+  "governance": {
+    "provider_model_calls": 0,
+    "real_phase_a_calls": 0,
+    "real_phase_b_calls": 0,
+    "execution_freeze_active": false,
+    "phase_a_authorized": false,
+    "phase_b_authorized": false,
+    "corpus_changes": 0,
+    "gold_changes": 0,
+    "design_changes": 0,
+    "blueprint_changes": 0,
+    "threshold_changes": 0,
+    "post_audit_implementation_repairs": 0,
+    "nested_reviews": 0,
+    "production_runtime_changes": 0,
+    "autonomy": false,
+    "belief_effects": "none",
+    "g_route4": "CLOSED FAILED unchanged"
+  }
+}

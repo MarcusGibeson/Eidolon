@@ -1,0 +1,199 @@
+{
+  "schema_version": "g-extract1.lifecycle-repair-independent-audit.v1",
+  "verdict": "BLOCKED",
+  "reviewed_commit": "a861c5676a1254ff99f6a7df55e11824c652e948",
+  "auditor_agent_id": "01a1072d-3ecb-7652-918a-b889d987bc60",
+  "independent_audit_count": 1,
+  "findings": [
+    {
+      "id": "LR1",
+      "severity": "P1",
+      "title": "Malformed checkpoint payload is unretained and permits later continuation",
+      "files": [
+        {
+          "path": "tools/g_extract1_journal.py",
+          "line": 96
+        },
+        {
+          "path": "tools/g_extract1_runner.py",
+          "line": 90
+        }
+      ],
+      "inputs": [
+        "[]",
+        "null",
+        "integer",
+        "string"
+      ],
+      "exception": "AttributeError",
+      "retained_events_before_retry": [],
+      "successful_continuation_transport_invocations_per_attack": 1,
+      "affected_original_items": [
+        "I1",
+        "I2",
+        "I4"
+      ]
+    },
+    {
+      "id": "LR2",
+      "severity": "P1",
+      "title": "Non-object transport result leaves unreceipted START and permits next call",
+      "files": [
+        {
+          "path": "tools/g_extract1_runner.py",
+          "line": 331
+        }
+      ],
+      "input": "None",
+      "exception": "AttributeError",
+      "retained_events": [],
+      "subsequent_transport_invocations": 1,
+      "affected_original_items": [
+        "I2"
+      ]
+    },
+    {
+      "id": "LR3",
+      "severity": "P2",
+      "title": "Pre-contact blocked cells remain A_SCHEDULED rather than A_BLOCKED",
+      "files": [
+        {
+          "path": "tools/g_extract1_runner.py",
+          "line": 225
+        }
+      ],
+      "event": "PRE_MODEL_IDENTITY_MISMATCH",
+      "transport_invocations": 0,
+      "primary_verdict": "PRE_CONTACT_BLOCKED",
+      "observed_cell_states": "all six A_SCHEDULED",
+      "expected_transition": "A_SCHEDULED -> A_BLOCKED",
+      "affected_original_items": [
+        "I3"
+      ]
+    }
+  ],
+  "original_issue_results": {
+    "I1": "PARTIAL_NOT_CLOSED",
+    "I2": "PARTIAL_NOT_CLOSED",
+    "I3": "PARTIAL_NOT_CLOSED",
+    "I4": "RECEIPT_LINEAGE_PASSED_CHECKPOINT_SHAPE_BLOCKED",
+    "I5": "CLOSED_INDEPENDENTLY",
+    "I6": "CLOSED_INDEPENDENTLY"
+  },
+  "verbatim_auditor_report": "**Overall: BLOCKED**\nExactly one independent read-only audit of `a861c5676a1254ff99f6a7df55e11824c652e948`. **Parent must STOP.** No repair or further review was performed.\n\n**Blocking Findings**\n1. **P1: Malformed checkpoints do not remain terminal.** A correctly hashed checkpoint with payload `[]`, `null`, integer, or string raises `AttributeError` at [g_extract1_journal.py:96](/C:/Users/marcu/Eidolon-g4adj/tools/g_extract1_journal.py:96). The [guard at line 90](/C:/Users/marcu/Eidolon-g4adj/tools/g_extract1_runner.py:90) does not retain it. After catching the exception, all four attacks successfully resumed using the original checkpoint and invoked the next synthetic transport once. Integrity events before retry: `[]`.\n\n2. **P1: Malformed transport results allow continuation.** A synthetic transport returning `None` raises an unretained `AttributeError` at [g_extract1_runner.py:331](/C:/Users/marcu/Eidolon-g4adj/tools/g_extract1_runner.py:331), after recording `START`. Catching it permits the next scheduled call to execute, leaving an unreceipted omission in the journal. Retained events: `[]`; subsequent transport invocations: `1`.\n\n3. **P2: Pre-contact blocked cells remain scheduled.** An actual harness call with mismatched identity receipts produces `PRE_MODEL_IDENTITY_MISMATCH`, zero transport calls, and verdict `PRE_CONTACT_BLOCKED`, but all six cells remain `A_SCHEDULED`. [g_extract1_runner.py:225](/C:/Users/marcu/Eidolon-g4adj/tools/g_extract1_runner.py:225) never applies the frozen `A_BLOCKED` transition.\n\n**I1–I6 Results**\n| Item | Independent Result |\n|---|---|\n| I1 | Ordinary unverified `perform`, `enter_b`, `checkpoint`, and `final_report` reject with zero transport calls. Malformed-checkpoint terminal semantics remain blocked by finding 1. |\n| I2 | Skip/retry errors survive catching and reconstruction; sealed interruption remains `INCOMPLETE` and prevents A qualification. Findings 1–2 defeat complete terminal retention. |\n| I3 | Actual 480-observation A completion correctly derives six eligible cells before B entry. Zero/mixed A, `B_NOT_ELIGIBLE`, isolated receipted A/B failures, and B-invalid reporting passed. Finding 3 remains. |\n| I4 | Seven resealed FAILURE mutations rejected. Fabricated START lineage, checkpoint seal, and missing marker target rejected; prefix, position, schedule, and binding mutations rejected. Malformed checkpoint shape remains defective. |\n| I5 | Mechanical `exercise_authorization=True`: B-only grant resumed B successfully; A-for-B and candidate-freeze grants rejected. No real grants or activation. |\n| I6 | Independently enumerated manifest maps/scalar bindings and hashed all 50 protected files. Candidate source bytes and separate gold projection verified. All 17 newly covered files rejected pre/post byte mutations; four named omissions additionally tested through `Run.perform`. |\n\n**Core Verification**\n- Schedules recomputed: **480 A / 240 maximum B / 720 maximum**, all **64** conditional B subsets, all **720** request hashes.\n- All **108 E5** selector-invariance entries recomputed; **12** elapsed clarifications preserved; scorer checked across every variant with exact, malformed, and wrong-value outputs.\n- Both complete pilot trees independently replayed and compared: **1,447 files each, byte-identical**, matching recorded file hashes. Targeted journal/incident chains independently hashed.\n- Producer counts **2,153 / 130** were independently counted, not accepted as blanket proof.\n- Fresh rehearsal completed **480 synthetic A + 159 synthetic B** observations before stopping promptly. Fresh B completion and all-failed/mixed-B rehearsals were not completed; no producer pilot rerun.\n\nVerified schedule SHA-256:\n```text\nA: 3c48390307dd683e7ba2f736318d42f4d9fbda6527bbb9d64ee03b4bf97bb4dd\nB: 6361e990216be94ca3ad69b75b485adf70fc8a035b2e459e5d309063c8ea164b\n```\n\n**Commands And Candidate**\nExecuted from `C:\\Users\\marcu\\Eidolon-g4adj`:\n```powershell\npython -B -X utf8 C:\\Users\\marcu\\AppData\\Local\\Temp\\gextract1-final-a861-audit\\audit.py\npython -B -X utf8 C:\\Users\\marcu\\AppData\\Local\\Temp\\gextract1-final-a861-audit\\supplement.py\n```\nMain rehearsal deliberately stopped after established blockers; supplement exited `0`. Both used socket tripwires and repository-write guards.\n\nVerified new candidate SHA-256:\n`6e7295b3c79ee95930fee7231265e342905b7848d261ae716d1ef1546ca785ab`\n\nSource, accepted-package, schema, schedule, and report bindings match. Explicit supersession of retained blocked candidate `14fb601c3a58777942ccd0361c2a303b5bfcf10d4c05536a32d265c0babe537f` verified.\n\n**Governance**\nProvider/model calls, network attempts, and real A/B calls: **0**. No activation, real authorization, commits, or repository edits. All 50 protected files and seven untracked corpus files remain unchanged. Science unchanged; G-ROUTE4 unchanged; autonomy false; belief effects none. Findings returned here for the parent to record unchanged.\n\n`G_EXTRACT1_LIFECYCLE_REPAIR_FAILED`\n\n",
+  "independent_supplement_results": [
+    {
+      "test": "integrated_precontact_blocked_state",
+      "event": "PRE_MODEL_IDENTITY_MISMATCH",
+      "transport_calls": 0,
+      "verdict": "PRE_CONTACT_BLOCKED",
+      "states": {
+        "A:small:R2": "A_SCHEDULED",
+        "A:small:R3": "A_SCHEDULED",
+        "A:mid:R2": "A_SCHEDULED",
+        "A:mid:R3": "A_SCHEDULED",
+        "A:large:R2": "A_SCHEDULED",
+        "A:large:R3": "A_SCHEDULED"
+      },
+      "frozen_transition": [
+        [
+          "A_SCHEDULED",
+          "precontact blocker exists before provider contact",
+          "A_BLOCKED"
+        ]
+      ]
+    },
+    {
+      "test": "actual_harness_file_mutation",
+      "file": "AUTHORING_CANDIDATES.json",
+      "contacted": false,
+      "event": "PRE_ARTIFACT_DIGEST_MISMATCH",
+      "continuation": "PRE_ARTIFACT_DIGEST_MISMATCH",
+      "transport_calls": 0,
+      "verdict": "PRE_CONTACT_BLOCKED"
+    },
+    {
+      "test": "actual_harness_file_mutation",
+      "file": "AUTHORING_CANDIDATES.json",
+      "contacted": true,
+      "event": "PROTECTED_ARTIFACT_DIGEST_MISMATCH",
+      "continuation": "PROTECTED_ARTIFACT_DIGEST_MISMATCH",
+      "transport_calls": 1,
+      "verdict": "INVALID"
+    },
+    {
+      "test": "actual_harness_file_mutation",
+      "file": "validate_corpus.py",
+      "contacted": false,
+      "event": "PRE_ARTIFACT_DIGEST_MISMATCH",
+      "continuation": "PRE_ARTIFACT_DIGEST_MISMATCH",
+      "transport_calls": 0,
+      "verdict": "PRE_CONTACT_BLOCKED"
+    },
+    {
+      "test": "actual_harness_file_mutation",
+      "file": "validate_corpus.py",
+      "contacted": true,
+      "event": "PROTECTED_ARTIFACT_DIGEST_MISMATCH",
+      "continuation": "PROTECTED_ARTIFACT_DIGEST_MISMATCH",
+      "transport_calls": 1,
+      "verdict": "INVALID"
+    },
+    {
+      "test": "actual_harness_file_mutation",
+      "file": "independent_contamination.py",
+      "contacted": false,
+      "event": "PRE_ARTIFACT_DIGEST_MISMATCH",
+      "continuation": "PRE_ARTIFACT_DIGEST_MISMATCH",
+      "transport_calls": 0,
+      "verdict": "PRE_CONTACT_BLOCKED"
+    },
+    {
+      "test": "actual_harness_file_mutation",
+      "file": "independent_contamination.py",
+      "contacted": true,
+      "event": "PROTECTED_ARTIFACT_DIGEST_MISMATCH",
+      "continuation": "PROTECTED_ARTIFACT_DIGEST_MISMATCH",
+      "transport_calls": 1,
+      "verdict": "INVALID"
+    },
+    {
+      "test": "actual_harness_file_mutation",
+      "file": "validate_finalization.py",
+      "contacted": false,
+      "event": "PRE_ARTIFACT_DIGEST_MISMATCH",
+      "continuation": "PRE_ARTIFACT_DIGEST_MISMATCH",
+      "transport_calls": 0,
+      "verdict": "PRE_CONTACT_BLOCKED"
+    },
+    {
+      "test": "actual_harness_file_mutation",
+      "file": "validate_finalization.py",
+      "contacted": true,
+      "event": "PROTECTED_ARTIFACT_DIGEST_MISMATCH",
+      "continuation": "PROTECTED_ARTIFACT_DIGEST_MISMATCH",
+      "transport_calls": 1,
+      "verdict": "INVALID"
+    },
+    {
+      "test": "network_attempts",
+      "count": 0
+    }
+  ],
+  "limitations": [
+    "Fresh independent rehearsal stopped at 480 synthetic A and 159 synthetic B observations; fresh B completion and all-failed/mixed B scenarios not completed.",
+    "Producer pilots are regression evidence, not scientific qualification or stage approval."
+  ],
+  "governance": {
+    "provider_model_calls": 0,
+    "real_phase_a_calls": 0,
+    "real_phase_b_calls": 0,
+    "execution_freeze_active": false,
+    "phase_a_authorized": false,
+    "phase_b_authorized": false,
+    "post_audit_implementation_repairs": 0,
+    "nested_reviews": 0,
+    "autonomy": false,
+    "belief_effects": "none"
+  }
+}
