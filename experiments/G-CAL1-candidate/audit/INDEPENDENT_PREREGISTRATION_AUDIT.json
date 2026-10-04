@@ -1,0 +1,77 @@
+{
+  "schema_version": "g-cal1.independent-preregistration-audit.v1",
+  "audit_count": 1,
+  "reviewer_agent_id": "01a1090d-0bb0-7d01-b884-21f9d86cbd0f",
+  "verdict": "BLOCKED",
+  "ready_for_execution_freeze_review": false,
+  "reviewed_commit": "dbea3241abb8e798b62783b7135b74967db924ea",
+  "authoring_commit": "0473daf55fde1cb85e54aae1a65987d4a1ed19ac",
+  "reviewed_candidate_sha256": "f036f3380d51dd80d627d2e641ad7e40a123d2ae23d4d472588c3732e61f0692",
+  "findings": [
+    {
+      "id": "F1", "severity": "P1", "blocking": true,
+      "title": "Terminality and journal advancement are not enforced across existing Run objects",
+      "locations": [{"file": "tools/g_cal1_lab.py", "lines": [[78,86],[112,115],[222,233]]}],
+      "reproduction": "Keep original Run alive after checkpoint; construct resumed Run; verify an externally created checkpoint with sealed payload=[] through resumed Run. It retains CORRUPTED_CHECKPOINT. Then original.perform(schedule[0], synthetic_transport) succeeds.",
+      "observed": "One later transport call and START/COMPLETE occurred despite CORRUPTED_CHECKPOINT already on disk. Original state remained RUNNING with no local integrity events. A new restart correctly rejected the disk incident, but only after collection had continued.",
+      "additional_reproductions": "After one object completes schedule[0], the stale original executes schedule[0] again. Separately, a resumed object constructed before journal advancement successfully verifies its stale checkpoint and repeats that completed call. New restarts subsequently reject both duplicate histories with SCHEDULE_POSITION_MISMATCH.",
+      "scope": "Ordinary public Run/resume usage with two objects sharing a directory; no repository mutation, monkeypatching or concurrent threads required."
+    },
+    {
+      "id": "F2", "severity": "P1", "blocking": true,
+      "title": "Post-return control-flow exceptions escape without retaining terminal invalidity",
+      "locations": [{"file": "tools/g_cal1_lab.py", "lines": [[136,143]]},{"file": "tools/g_extract1_runner.py", "lines": [[90,93],[109,136]]}],
+      "reproduction": "Synthetic transport returns otherwise valid success fields and a bound plain-dict receipt containing a list subclass whose __iter__ raises KeyboardInterrupt, SystemExit, GeneratorExit or custom BaseException. Serialization during transport_outcome raises after the callback has returned.",
+      "observed": "All four cases propagated the exception with zero retained incidents, RUNNING state, one attempted call and an open START. After catching it, the next scheduled transport and START/COMPLETE succeeded. New restarts later detected SCHEDULED_CALL_OMITTED_WITHOUT_FAILURE_RECEIPT.",
+      "scope": "Exposed transport-result validation boundary. Direct callback exceptions were retained correctly; exceptions arising during validation of returned nested values were not."
+    },
+    {
+      "id": "F3", "severity": "P1", "blocking": true,
+      "title": "Mutable cached schedule and gold can diverge from the protected package",
+      "locations": [{"file": "tools/g_cal1_contract.py", "lines": [[192,199]]},{"file": "tools/g_cal1_lab.py", "lines": [[125,137],[153,158]]}],
+      "schedule_reproduction": "Replace cached schedule[0] with seed=0 and recompute its request hash. perform accepts it and sends seed=0 despite the unchanged original frozen schedule binding. Separately, the transport callback changes its received row['seed']; that row aliases package.schedule. Subsequent collection and final_report still succeed.",
+      "gold_reproduction": "Change only cached member.gold from 2051-05-22 to 2051-05-23. package.verify succeeds and wire bytes remain unchanged. Returning 2051-05-23 scores semantic_correct=true and false_clean=false; against the unchanged frozen member it scores semantic_correct=false and false_clean=true.",
+      "scope": "Public Package/Run caller boundary; callback schedule mutation requires only the provided row reference, not arbitrary runner-code replacement. This is not a claim of protection against arbitrary Python code execution."
+    }
+  ],
+  "same_audit_addendum": "INDEPENDENT_AUDIT_ADDENDUM.json adds confirmed P1 finding F4; not a second audit",
+  "verification": {
+    "corpus": {"fixtures":40,"independent_gold_agreements":40,"strata":4,"fixtures_each":10,"positive_each":5,"negative_each":5,"independent_400_year_vectors":13200},
+    "authoring_replay": {"attempts":53,"accepted":40,"rejected":13,"matched_frozen_corpus_and_rejection_evidence":true},
+    "wire": {"independently_reconstructed_requests":80,"unique_calls":80,"unique_seeds":80,"exact_baseline_model_configuration":true,"gold_or_difficulty_label_leakage":false},
+    "history": {"G_ROUTE1":4,"G_ROUTE3":16,"G_ROUTE4_original_adapter":106,"G_EXTRACT1_typed_variants":192,"comparisons":12720,"legacy_tuple_NA_comparisons":5040,"typed_history_comparisons":7680},
+    "contamination": {"new_pairs":780,"maximum_historical_Jaccard":"0","maximum_new_ordinary_Jaccard":"1/3","maximum_new_residual_Jaccard":"0","symbolically_verified_invariant_grams":3,"DATE_grams_removed":0,"ordinary_nonpasses_not_credited":780,"historical_scaffold_exemptions":0},
+    "legacy_values": {"independently_verified_whole_answers":126,"uppercase_currency_fields_preserved":2,"exact_numeric_fields":171},
+    "protected_bytes": {"manifest_pins_verified":94,"direct_Git_blob_matches":66,"legacy_LF_CRLF_only_differences":21,"preexisting_untracked_protected_files":7,"preservation_files_verified":2961},
+    "preservation": {"old_G_EXTRACT1_and_G_ROUTE4_tracked_files_unchanged_from_closure_commit":77728,"whole_repository_snapshot_files":85889,"repository_byte_changes":0,"final_HEAD_branch_and_status_unchanged":true},
+    "final_pilots": {"files_each":327,"manifest_members_each":326,"journal_records_each":244,"sealed_checkpoints_each":81,"scorer_replayed_observations_each":80,"both_trees_byte_identical":true,"fresh_external_80_call_pilots":2,"external_trees_match_supplied_final_trees":true},
+    "scientific_result": "NOT_OBSERVED: synthetic pilots and producer counts are not scientific evidence."
+  },
+  "tests_executed": [
+    "26 malformed checkpoint envelope/payload/domain cases, durable same-object terminality, post-catch denial and restart retention.",
+    "29 direct transport exception, malformed-result and failure-receipt cases; four additional post-return BaseException reproductions.",
+    "Unverified resume collection/checkpoint/report denial, ten schedule-row mutation cases, consumed-call rejection and valid sealed checkpoint replay.",
+    "Inactive G-CAL1 authority denial, live constructor denial before directory creation, non-synthetic transport marking and Boolean-mode boundaries without invoking live transport.",
+    "440 scorer cases covering correct, wrong, truncated, malformed, missing, extra, invalid-date and duplicate-key outputs; exact descriptive reductions and incomplete reporting.",
+    "Pre-contact and post-contact protected-byte drift fault injection, with retained PRE_CONTACT_BLOCKED and INVALID respectively.",
+    "Five additional shared-object, stale-checkpoint, cached-gold and callback-alias cases, reported from actual runner outcomes."
+  ],
+  "hashes": {
+    "current_inactive_candidate":"f036f3380d51dd80d627d2e641ad7e40a123d2ae23d4d472588c3732e61f0692",
+    "LAB_MANIFEST":"9c943c503f8b2225222df358ef16c30213a3e71debc1de778edda78729995fc1",
+    "CORPUS":"6356ac7e59ff625b7d6c137a1e469c94db4b138dedd99a3e1a6a287e0a928ee8",
+    "canonical_schedule":"b4d4a5a7ba37961dcfbbe0c6aa6101fbbeb40dcf2dad0c54c8680d216c2e1858",
+    "canonical_final_pilot_tree_map":"bfb8209d4d7ebc398c05855845103e94f882369f5f7e01b19cd407107441bd6a"
+  },
+  "nonblocking_notes": [
+    "Prospective uniform scaffold is explained; symbolic residual controls retain DATE content and historical controls were not loosened.",
+    "Descriptive-only interpretation is appropriate; no categorical threshold or causal conclusion was credited.",
+    "Legacy Git byte differences are exclusively LF/CRLF conversion. Current G-CAL1 bytes match Git exactly; seven preexisting untracked artifacts match protected hashes."
+  ],
+  "gaps": ["Provider option honoring remains explicitly unattested.","Activated live-authority execution was not exercised: authority creation, activation and provider contact were prohibited."],
+  "original_evidence_directory":"C:/Users/marcu/AppData/Local/Temp/gcal1-independent-audit-g3c5s44e",
+  "preserved_evidence_directory":"evidence",
+  "reproduction_scripts":["evidence/lifecycle.py","evidence/shared_boundary.py","evidence/reverse_fence.py"],
+  "reproduction_note":"Use fresh external write-once directories, never execute these attack scripts against repository evidence. Recorded outcomes are preserved verbatim.",
+  "governance":{"repository_edits_by_reviewer":0,"provider_network_Ollama_calls":0,"authority_created":false,"activation":false,"real_experimental_requests":0,"post_audit_repository_repairs":0,"G_EXTRACT1_and_G_ROUTE4_changed":false}
+}

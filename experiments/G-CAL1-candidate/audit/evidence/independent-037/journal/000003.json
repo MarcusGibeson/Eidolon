@@ -1,0 +1,1 @@
+{"payload":{"call_id":"G-CAL1-C4-10:REPEAT1","event":"PROVIDER_FAILURE_WITHOUT_RECEIPT","failure":"unreceipted","kind":"FAILURE","receipt":null},"previous_sha256":"833ccaf8e8b9b61783ecacf6eb225926d773e01306e1eb88a21a59fce791600b","sequence":3,"sha256":"42b087bd645d4d1801a3ddefc65f0cd527c81986cde5415641fff15874b7a806"}

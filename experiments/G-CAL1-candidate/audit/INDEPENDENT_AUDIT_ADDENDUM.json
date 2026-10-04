@@ -1,0 +1,127 @@
+{
+  "same_audit_addendum": true,
+  "verdict": "BLOCKED",
+  "previous_findings": "F1-F3 remain blocking",
+  "finding": {
+    "id": "F4",
+    "severity": "P1",
+    "blocking": true,
+    "title": "Mechanical mode admits non-synthetic and unmarked transports without authority",
+    "locations": [
+      {
+        "file": "C:/Users/marcu/Eidolon-g4adj/tools/g_cal1_lab.py",
+        "lines": [
+          [
+            15,
+            19
+          ],
+          [
+            67,
+            68
+          ],
+          [
+            132,
+            137
+          ],
+          [
+            150,
+            151
+          ],
+          [
+            238,
+            240
+          ]
+        ]
+      },
+      {
+        "file": "C:/Users/marcu/Eidolon-g4adj/tools/g_extract1_runner.py",
+        "lines": [
+          [
+            343,
+            346
+          ]
+        ]
+      }
+    ],
+    "reproduction": "Create mechanical=True Run in a fresh external directory, without activation or grant. Call perform using a local counter-only fake labeled synthetic_only=False, then repeat with an unmarked fake. Return valid bound fake responses and call final_report.",
+    "scope_judgment": "Substantive authority-boundary regression. The public transport injection boundary permits a non-synthetic-labeled callable without live authority, while mechanically labeling its evidence synthetic and reporting zero provider calls. These probes used harmless local fakes; no actual provider contact occurred."
+  },
+  "mechanical_runner_results": [
+    {
+      "runner": "G-CAL1",
+      "label": false,
+      "accepted": true,
+      "counter": 1,
+      "START": 1,
+      "COMPLETE": 1,
+      "report_mode": "SYNTHETIC_ONLY",
+      "reported_provider_model_calls": 0
+    },
+    {
+      "runner": "G-CAL1",
+      "label": "UNMARKED",
+      "accepted": true,
+      "counter": 1,
+      "START": 1,
+      "COMPLETE": 1,
+      "report_mode": "SYNTHETIC_ONLY",
+      "reported_provider_model_calls": 0
+    },
+    {
+      "runner": "G-CAL1",
+      "label": true,
+      "accepted": true,
+      "counter": 1,
+      "START": 1,
+      "COMPLETE": 1,
+      "report_mode": "SYNTHETIC_ONLY",
+      "reported_provider_model_calls": 0
+    },
+    {
+      "runner": "G-EXTRACT1",
+      "label": false,
+      "accepted": false,
+      "counter": 0,
+      "START": 0,
+      "event": "PROVENANCE_MISMATCH"
+    },
+    {
+      "runner": "G-EXTRACT1",
+      "label": "UNMARKED",
+      "accepted": false,
+      "counter": 0,
+      "START": 0,
+      "event": "PROVENANCE_MISMATCH"
+    },
+    {
+      "runner": "G-EXTRACT1",
+      "label": true,
+      "accepted": true,
+      "counter": 1,
+      "START": 1,
+      "COMPLETE": 1
+    }
+  ],
+  "live_direction": {
+    "boundary_only": true,
+    "explicit_false_label": "ACCEPTED",
+    "unmarked": "REJECTED: PROVENANCE_MISMATCH",
+    "explicit_true_label": "REJECTED: PROVENANCE_MISMATCH",
+    "callable_invocations": 0,
+    "authority_created": false
+  },
+  "comparison": "Unchanged G-EXTRACT1 requires synthetic_only is True in mechanical mode. G-CAL1 transport_boundary checks only the live direction and omits this requirement.",
+  "verification": {
+    "genuine_runner_cases": 6,
+    "live_boundary_only_cases": 3,
+    "actual_provider_network_calls": 0,
+    "provider_modules_loaded": [],
+    "protected_hashes_and_git_status_unchanged": true,
+    "HEAD": "dbea3241abb8e798b62783b7135b74967db924ea",
+    "repository_edits_or_repairs": 0
+  },
+  "evidence": {
+    "file": "C:/Users/marcu/AppData/Local/Temp/gcal1-independent-audit-g3c5s44e/reverse_fence_result.json",
+    "sha256": "f03623efbc9f63cdd1cda3b1b53988d2c6628be85106aedd2dca123a5e37de21"
+  }
+}
