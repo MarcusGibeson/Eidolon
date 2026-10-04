@@ -1,0 +1,109 @@
+{
+  "schema_version": "g-extract1.independent-implementation-audit.v1",
+  "verdict": "BLOCKED",
+  "independent": true,
+  "reviewer": {
+    "name": "Curie",
+    "agent_id": "01a106f5-c64e-7542-8cc6-24f8615c2941",
+    "files_edited": 0,
+    "harness_executions": 0,
+    "provider_calls": 0
+  },
+  "recorded_by": "Primary assistant relays the one completed independent audit; this is not another audit or a repair.",
+  "implementation_commit": "8287da1ad8831b43bf20d41acb68138b380e1b7e",
+  "accepted_science_commit": "6c85b10930cefe410a1965c0924e4fd9f47eb4ef",
+  "execution_freeze_candidate_sha256": "14fb601c3a58777942ccd0361c2a303b5bfcf10d4c05536a32d265c0babe537f",
+  "pilot_verdict_preserved_separately": "PASS",
+  "findings": [
+    {
+      "id": "I1",
+      "priority": "P1",
+      "title": "Checkpoint verification can be bypassed",
+      "file": "tools/g_extract1_runner.py",
+      "lines": [107, 181, 246],
+      "static_reproduction": "Reconstruct an interrupted run with Run(..., resume=True), omit resume(checkpoint_path), and submit the next row through perform(). Construction checks the header and journal but collection has no checkpoint-verified prerequisite. Missing/corrupt checkpoint evidence need not block continuation.",
+      "evidence": "AST/source inspection: no checkpoint-verification call in construction or collection."
+    },
+    {
+      "id": "I2",
+      "priority": "P1",
+      "title": "Integrity violations are not retained or made terminal",
+      "file": "tools/g_extract1_runner.py",
+      "lines": [188, 191, 246],
+      "static_reproduction": "Complete call 1, attempt call 3, catch SCHEDULE_POSITION_MISMATCH, then submit call 2. The exception creates neither an append-only integrity entry nor a self.events entry, so continuation remains possible. Duplicate/checkpoint exceptions have the same problem. Successful resume returns MACHINE_INTERRUPTION_WITH_SEALED_CHECKPOINT without recording the frozen INCOMPLETE event.",
+      "evidence": "Pilot tests exception rejection, not terminal event retention."
+    },
+    {
+      "id": "I3",
+      "priority": "P1",
+      "title": "Incorrect terminal verdict and incomplete integrated cell-state reporting",
+      "file": "tools/g_extract1_runner.py",
+      "lines": [133, 227, 254],
+      "static_reproduction": "After 480 correct A observations, call final_report() before enter_b(). A passes but self.qualified is empty, producing NO_PHASE_A_CELL_QUALIFIED. Receipted failures leave cells scheduled instead of incomplete; failed A cells never become B_NOT_ELIGIBLE.",
+      "evidence": "Pilot transition tests cover the helper, not these integrated paths."
+    },
+    {
+      "id": "I4",
+      "priority": "P1",
+      "title": "Replay does not validate failure receipts or checkpoint lineage",
+      "file": "tools/g_extract1_runner.py",
+      "lines": [148],
+      "static_reproduction": "Replace an isolated FAILURE receipt with null/another call's receipt and reseal the journal. Replay checks pending call and stored event category, not receipt validity. Changing and resealing a START checkpoint_lineage is also undetected.",
+      "evidence": "AST inspection found zero reads of receipt and checkpoint_lineage in _replay()."
+    },
+    {
+      "id": "I5",
+      "priority": "P2",
+      "title": "Authorized B resume incorrectly requires an A grant first",
+      "file": "tools/g_extract1_runner.py",
+      "lines": [97, 115],
+      "static_reproduction": "Reconstruct a live-mode interrupted B run with a correctly bound B grant. Construction unconditionally calls _authorize('A') before replay discovers the phase and rejects the valid B grant.",
+      "evidence": "The full mechanical pilot interrupts/resumes A only."
+    },
+    {
+      "id": "I6",
+      "priority": "P2",
+      "title": "Manifest verification omits explicitly hashed artifacts",
+      "file": "tools/g_extract1_contract.py",
+      "lines": [62, 76, 100],
+      "static_reproduction": "In an isolated view change corpus/validate_corpus.py, independent_contamination.py, validate_finalization.py or AUTHORING_CANDIDATES.json. These manifest-hashed files are absent from Package.pins and not inspected. Comparing candidate SHA text to a constant does not hash the candidate file.",
+      "evidence": "Verification does not meet the supplied all-manifest-artifact-hashes requirement."
+    }
+  ],
+  "independent_checks_performed": {
+    "method": "Read-only source/AST inspection and independent byte/schema recomputation; static defect traces were not executed through the harness.",
+    "scientific_historical_supplementary_artifact_hashes": 47,
+    "phase_a_schedule": 480,
+    "maximum_phase_b_schedule": 240,
+    "request_bodies": 720,
+    "conditional_b_subsets": 64,
+    "elapsed_clarifications": 12,
+    "e5_wire_audits": 108,
+    "persisted_evidence_hashes": 1447,
+    "journal_records": 1441,
+    "synthetic_responses_checked_against_schema_gold": 720,
+    "synthetic_final_cells_passed": 6,
+    "committed_source_hashes": 5,
+    "checkpoint_seals_prefixes": true,
+    "confidence_boundary_arithmetic": true,
+    "freeze_report_e5_schema_event_hashes": true,
+    "accepted_science_corpus_paths_unchanged": true
+  },
+  "limitations": [
+    "Producer 2031-test PASS inspected, not independently rerun.",
+    "Producer contamination-failure test checks event inventory only.",
+    "Second-run equality is supported by the producer report; reviewer verified retained evidence against reported hashes, not a separately retained second tree.",
+    "Separate producer 1454 Git authority-byte comparisons were not duplicated by reviewer.",
+    "Live provider identity, option honoring, fresh sessions and runtime behavior were not tested."
+  ],
+  "scientific_ambiguity_established": false,
+  "findings_are": "implementation defects",
+  "stop_required": true,
+  "freeze_activation_authorized": false,
+  "phase_a_authorized": false,
+  "phase_b_authorized": false,
+  "provider_model_calls": 0,
+  "autonomy": false,
+  "belief_effects": "none",
+  "g_route4": "CLOSED FAILED unchanged"
+}

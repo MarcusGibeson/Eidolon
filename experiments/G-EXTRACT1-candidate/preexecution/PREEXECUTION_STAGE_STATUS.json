@@ -1,0 +1,87 @@
+{
+  "schema_version": "g-extract1.preexecution-stage-status.v1",
+  "stage_verdict": "G_EXTRACT1_PREEXECUTION_STAGE_FAILED",
+  "reason": "The one independent implementation audit found six blockers. The required stop boundary is honored; no post-audit implementation repairs, reruns or nested reviews occurred.",
+  "implementation_commit": "8287da1ad8831b43bf20d41acb68138b380e1b7e",
+  "audit_artifact": "IMPLEMENTATION_AUDIT.json",
+  "audit_verdict": "BLOCKED",
+  "audit_blocker_ids": ["I1", "I2", "I3", "I4", "I5", "I6"],
+  "pilot_artifact": "MECHANICAL_PILOT_REPORT.json",
+  "pilot_sha256": "60cc086e97a9bf5aceba9cbf4d3af90d84c07613528c3395d26cd03b35d355f1",
+  "pilot_verdict": "PASS",
+  "pilot_pass_is_not_stage_approval": true,
+  "test_count": 2031,
+  "test_groups": {
+    "scorer": 768, "request": 721, "normalization": 192,
+    "reserve": 93, "schedule": 69, "integrity_catalog": 49,
+    "comparator": 20, "gates": 20, "E7_classifier": 17,
+    "verdict": 15, "state_machine": 12, "precontact": 10,
+    "call_binding": 6, "reduction": 6, "retry": 5,
+    "checkpoint": 5, "failure_receipt": 4, "pilot": 4,
+    "truncation": 3, "journal": 3, "E5": 2,
+    "postcontact": 2, "preservation": 2, "resume": 1,
+    "authority": 1, "replay": 1
+  },
+  "test_coverage_limits": "Passing producer tests do not protect the six audited bypass/integration paths. Event-inventory checks and helper-state tests are not full lifecycle tests.",
+  "schedule_accounting": {
+    "phase_a_maximum": 480,
+    "phase_b_maximum": 240,
+    "total_maximum": 720,
+    "conditional_b_subsets_checked": 64,
+    "phase_a_schedule_sha256": "3c48390307dd683e7ba2f736318d42f4d9fbda6527bbb9d64ee03b4bf97bb4dd",
+    "phase_b_maximum_schedule_sha256": "6361e990216be94ca3ad69b75b485adf70fc8a035b2e459e5d309063c8ea164b"
+  },
+  "mechanical_pilots": {
+    "first": "PASS",
+    "second": "PASS",
+    "synthetic_observations_each": 720,
+    "a_interruption_resume_each": "PASS in producer test; integrated integrity retention remains blocked by I2",
+    "byte_identical_authority_files": 1447,
+    "e5_wire_audits": 108,
+    "elapsed_clarifications_preserved": 12,
+    "git_source_evidence_hash_matches": 1454,
+    "git_source_evidence_hash_mismatches": 0
+  },
+  "candidate_freeze": {
+    "artifact": "EXECUTION_FREEZE_CANDIDATE.json",
+    "sha256": "14fb601c3a58777942ccd0361c2a303b5bfcf10d4c05536a32d265c0babe537f",
+    "status_preserved": "EXECUTION_FREEZE_CANDIDATE_ONLY",
+    "disposition": "BLOCKED_BY_IMPLEMENTATION_AUDIT; retained as historical preaudit candidate, not ready for execution-freeze approval",
+    "activated": false,
+    "activation_pointer_written": false
+  },
+  "runner_source_sha256": {
+    "tools/g_extract1_contract.py": "262f8cc22ed4fbc37dbead9eae3a12cb0291384ff2ad3d1f447c7cb475c7336d",
+    "tools/g_extract1_journal.py": "98b05ae62c84bfe5df8d56e813f38975a06ad8e420e85e43ccecbd5e55fc9cdc",
+    "tools/g_extract1_pilot.py": "9212498a0e694b726a14143b071dc1a751666f0ae716bca1805056068c4f0d46",
+    "tools/g_extract1_runner.py": "b4a10b3a65714762a035deb267dce9c70604719076ba9305939a7ec27f8f6ccd",
+    "tools/g_extract1_scoring.py": "e6d9b6171cdccf14da7a69a68b0e3558e632edde4e39d7920406d28c872be27f"
+  },
+  "preservation": {
+    "accepted_design_blueprint_corpus_gold_changed": false,
+    "all_corpus_json_hashes_before_after_equal": true,
+    "preserved_untracked_authoring_failure_files": 7,
+    "candidate_source_sha256": "f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068",
+    "gold_projection_sha256": "803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec",
+    "hash_evidence": "MECHANICAL_PILOT_REPORT.json protected_artifacts_before_after and preserved_corpus_before_after; no accepted inputs rewritten",
+    "g_route4_closure_sha256": "d992a169a2be293909f0fe0f1b39720656f40a09dc4f6b4e9c53449110cef8be",
+    "g_route4_diagnostic_sha256": "461a85368a6cbbd39429bebbae883c0b17be614db52e343150b23051041b4868"
+  },
+  "activity": "NOT_APPLICABLE to accepted isolated experiment architecture; no Activity or runtime/router modifications",
+  "governance": {
+    "provider_model_calls": 0,
+    "real_phase_a_calls": 0,
+    "real_phase_b_calls": 0,
+    "phase_a_authorized": false,
+    "phase_b_authorized": false,
+    "corpus_regeneration": 0,
+    "gold_changes": 0,
+    "threshold_changes": 0,
+    "design_changes": 0,
+    "blueprint_changes": 0,
+    "production_runtime_changes": 0,
+    "runtime_autonomous_behavior": false,
+    "belief_effects": "none",
+    "g_route4": "CLOSED FAILED unchanged"
+  }
+}
