@@ -360,11 +360,19 @@ class Run:
                                  mode=PILOT if self.mechanical else 'AUTHORIZED_EXPERIMENT'))
         self.attempted.add(row['call_id'])
         try:
-            result = transport(wire, row)
-        except Exception:
-            # An exception is not a provider-issued failure receipt.
-            result = dict(failure='unreceipted', receipt=None)
-        result = transport_outcome(row, result)
+            try:
+                result = transport(wire, row)
+            except Exception:
+                # An exception is not a provider-issued failure receipt.
+                result = dict(failure='unreceipted', receipt=None)
+            result = transport_outcome(row, result)
+        except BaseException as exc:
+            if not isinstance(exc, Exception):
+                # Preserve process-control identity, but seal terminal incident
+                # evidence before it can be caught outside this started call.
+                self._retain(IntegrityError('SCHEDULED_CALL_OMITTED_WITHOUT_FAILURE_RECEIPT',
+                    'transport-control-flow:' + type(exc).__name__))
+            raise
         if result.get('failure'):
             self._close_failure(row,result['failure'],result['receipt'],result.get('unusable_reason'))
             return
