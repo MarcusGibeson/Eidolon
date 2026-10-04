@@ -1848,5 +1848,45 @@ def main():
     print(json.dumps({key:report[key] for key in ('verdict','check_count','counts','seed_collision_audit')},indent=2))
 
 
+def tuple_correction_main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--materialize-tuple-correction', action='store_true')
+    parser.add_argument('--write', action='store_true')
+    args = parser.parse_args()
+    spec = importlib.util.spec_from_file_location('tuple_design_checks', DESIGN/'validate_design.py')
+    helper = importlib.util.module_from_spec(spec); spec.loader.exec_module(helper)
+    c = json.loads((DESIGN/'DESIGN_CANDIDATE.json').read_bytes())
+    design_report = helper.validate_tuple_applicability(c, (DESIGN/'DESIGN_CANDIDATE.md').read_text(encoding='utf-8'))
+    parent_commit = helper.TUPLE_APPLICABILITY['accepted_blueprint_parent']
+    parent = json.loads(git('show', parent_commit+':experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.json'))
+    expected = copy.deepcopy(parent)
+    expected['date_number_tuple_applicability_plan'] = dict(
+        source_ref=ref('/date_number_tuple_applicability_contract'),
+        contract=c['date_number_tuple_applicability_contract'],
+        design_artifacts_sha256={n:digest((DESIGN/n).read_bytes()) for n in SOURCE_NAMES},
+        binding='same correction commit as design; manifest records resolved commit; original accepted_design retains historical parent provenance')
+    old_md = git('show', parent_commit+':experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.md').decode()
+    md = old_md + '\n## Historical Tuple Applicability Rebind\n\nThis annex supersedes only universal date-number scope language: NEW/NEW APPLIES unchanged; HISTORICAL/NEW is NOT_APPLICABLE_UNREPRESENTABLE_HISTORICAL_PROVENANCE, neither PASS nor FAIL. No surrogate bytes are permitted. All other historical controls remain enabled. The JSON plan binds the exact co-normative design contract and current design file hashes; no allocation, seed, schedule, gate, reserve or authority change.\n'
+    if args.materialize_tuple_correction:
+        (HERE/'BLUEPRINT.json').write_bytes(encoded(expected))
+        (HERE/'BLUEPRINT.md').write_text(md,encoding='utf-8',newline='\n')
+    actual = json.loads((HERE/'BLUEPRINT.json').read_bytes())
+    if actual != expected or (HERE/'BLUEPRINT.md').read_text(encoding='utf-8') != md:
+        raise ValueError('blueprint_correction_exceeds_frozen_mechanical_rebind')
+    prior = json.loads(git('show',parent_commit+':experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT_VALIDATION_REPORT.json'))
+    report = dict(verdict='PASS',check_count=design_report['check_count']+3,
+        validation_scope='narrow deterministic structural/cross-representation consistency; not scientific approval',
+        design_applicability_audit=design_report,counts=prior['counts'],output_field_counts=prior['output_field_counts'],
+        all_prior_blueprint_allocations_preserved=True,authority=actual['authority'],
+        governance=actual['governance'],historical_adapter=design_report['historical_adapter'],
+        prior_full_checkpoint_not_rerun=True,source_artifact_hashes=expected['date_number_tuple_applicability_plan']['design_artifacts_sha256'],
+        artifacts_sha256={n:digest((HERE/n).read_bytes()) for n in FILES if n!='BLUEPRINT_VALIDATION_REPORT.json'})
+    if args.write:(HERE/'BLUEPRINT_VALIDATION_REPORT.json').write_bytes(encoded(report))
+    print(json.dumps({k:report[k] for k in ('verdict','check_count','counts')},indent=2))
+
+
 if __name__=='__main__':
-    main()
+    if 'date_number_tuple_applicability_contract' in json.loads((DESIGN/'DESIGN_CANDIDATE.json').read_bytes()):
+        tuple_correction_main()
+    else:
+        main()

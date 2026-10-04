@@ -6760,3 +6760,66 @@ The following exact objects are co-normative with JSON. The eight-key templates 
 }
 ```
 <!-- OUTPUT_FIELD_AMENDMENT_NORMATIVE_END -->
+<!-- TUPLE_APPLICABILITY_BEGIN -->
+
+## Historical Tuple Applicability Correction
+
+This annex supersedes only earlier universal date-number scope claims. NEW/NEW tuple representation and comparison are unchanged. Historical/NEW is neither PASS nor FAIL: no tuple is constructed. Gold-only or lexical surrogates and inferred graphs/types are prohibited. All other supported historical controls remain mandatory. This correction follows representational impossibility, not candidate outcomes. No execution authority is granted. The following JSON is co-normative.
+
+```json
+{
+  "contract_id": "g-extract1.date-number-tuple-applicability.v1",
+  "accepted_design_parent": "d1b9e2aa5dbe0aeebb74f8226ca8033182f7b3c1",
+  "accepted_blueprint_parent": "d8396179204411da15c2dfc330666a490a2287e8",
+  "scope_status": {
+    "historical_new": "NOT_APPLICABLE_UNREPRESENTABLE_HISTORICAL_PROVENANCE",
+    "phase_a_phase_a": "APPLIES",
+    "phase_a_phase_b": "APPLIES",
+    "phase_b_phase_b": "APPLIES",
+    "scored_reserve": "APPLIES",
+    "reserve_reserve": "APPLIES"
+  },
+  "historical_missing_provenance": [
+    "ordered typed source facts",
+    "complete source semantic typing",
+    "canonical operation graph",
+    "source/literal/derived provenance",
+    "exact catalog argument ordering"
+  ],
+  "historical_tuple_bytes": null,
+  "historical_tuple_comparisons_performed": 0,
+  "historical_status_is_pass_or_fail": false,
+  "prohibited_surrogates": [
+    "lexical SOURCE_FACT",
+    "gold-only tuple",
+    "inferred operation node",
+    "inferred source type",
+    "input.text inference",
+    "free-form instruction inference",
+    "rationale inference",
+    "ledger inference",
+    "authoring-expression inference"
+  ],
+  "new_new_rule": "contamination_contract.exact_reuse_contract.date_number_tuple unchanged in entirety",
+  "other_historical_controls": [
+    "similarity/projection",
+    "whole-answer exact replay",
+    "identity/identifier where defined",
+    "historical adapter",
+    "structural/projection"
+  ],
+  "decision_basis": "preserved historical representation cannot encode accepted tuple; not candidate outcomes",
+  "effect": "applicability correction only; no threshold, equality, ordering, encoding or model-facing change",
+  "authority": {
+    "provider_model_calls": 0,
+    "runtime_implementation": false,
+    "mechanical_pilot": false,
+    "execution_freeze": false,
+    "phase_a": false,
+    "phase_b": false,
+    "autonomy": false,
+    "belief_effects": "none"
+  }
+}
+```
+<!-- TUPLE_APPLICABILITY_END -->

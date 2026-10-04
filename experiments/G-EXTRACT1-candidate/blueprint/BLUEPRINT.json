@@ -5494,6 +5494,72 @@
       }
     }
   },
+  "date_number_tuple_applicability_plan": {
+    "binding": "same correction commit as design; manifest records resolved commit; original accepted_design retains historical parent provenance",
+    "contract": {
+      "accepted_blueprint_parent": "d8396179204411da15c2dfc330666a490a2287e8",
+      "accepted_design_parent": "d1b9e2aa5dbe0aeebb74f8226ca8033182f7b3c1",
+      "authority": {
+        "autonomy": false,
+        "belief_effects": "none",
+        "execution_freeze": false,
+        "mechanical_pilot": false,
+        "phase_a": false,
+        "phase_b": false,
+        "provider_model_calls": 0,
+        "runtime_implementation": false
+      },
+      "contract_id": "g-extract1.date-number-tuple-applicability.v1",
+      "decision_basis": "preserved historical representation cannot encode accepted tuple; not candidate outcomes",
+      "effect": "applicability correction only; no threshold, equality, ordering, encoding or model-facing change",
+      "historical_missing_provenance": [
+        "ordered typed source facts",
+        "complete source semantic typing",
+        "canonical operation graph",
+        "source/literal/derived provenance",
+        "exact catalog argument ordering"
+      ],
+      "historical_status_is_pass_or_fail": false,
+      "historical_tuple_bytes": null,
+      "historical_tuple_comparisons_performed": 0,
+      "new_new_rule": "contamination_contract.exact_reuse_contract.date_number_tuple unchanged in entirety",
+      "other_historical_controls": [
+        "similarity/projection",
+        "whole-answer exact replay",
+        "identity/identifier where defined",
+        "historical adapter",
+        "structural/projection"
+      ],
+      "prohibited_surrogates": [
+        "lexical SOURCE_FACT",
+        "gold-only tuple",
+        "inferred operation node",
+        "inferred source type",
+        "input.text inference",
+        "free-form instruction inference",
+        "rationale inference",
+        "ledger inference",
+        "authoring-expression inference"
+      ],
+      "scope_status": {
+        "historical_new": "NOT_APPLICABLE_UNREPRESENTABLE_HISTORICAL_PROVENANCE",
+        "phase_a_phase_a": "APPLIES",
+        "phase_a_phase_b": "APPLIES",
+        "phase_b_phase_b": "APPLIES",
+        "reserve_reserve": "APPLIES",
+        "scored_reserve": "APPLIES"
+      }
+    },
+    "design_artifacts_sha256": {
+      "DESIGN_CANDIDATE.json": "3916a713f0b6a220679174a147ca455d14f0bd8f0d6cb75096c9d8aed978b6ae",
+      "DESIGN_CANDIDATE.md": "ebf344ab9c3f386691fde05f690be60f2270dd2e61b3a4135afac5d75997d457",
+      "DESIGN_REVISION_CHANGELOG.md": "43e418a709981c90f47f1f0c659231c2312077970e699ea26721362cb031e504",
+      "DESIGN_VALIDATION_REPORT.json": "1ad57989fa8f10252405a6682af669369b884f00d03e7114c5adbf27b3350c3a",
+      "HUMAN_MACHINE_EQUIVALENCE_CHECKLIST.md": "bfe53e96ccd397a7a933ad5ef036955ea06175141cd5102d02fee768681ccae5",
+      "validate_design.py": "5a18f89d701e827058d1d22b96ff8821e88aa005f62ec9545f193b11e268c440"
+    },
+    "source_ref": "DESIGN_CANDIDATE.json#/date_number_tuple_applicability_contract"
+  },
   "freshness_serialization_plan": {
     "active_source_schema_types": [
       "HH:MM",

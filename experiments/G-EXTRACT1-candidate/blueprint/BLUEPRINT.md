@@ -4862,3 +4862,7 @@ and exact value-free output plans from BLUEPRINT.json; it adds no semantics.
   "scope": "Accepted whole-answer encoding only; isolated vectors and value-free row plans, not corpus evaluation or checker repair"
 }
 ```
+
+## Historical Tuple Applicability Rebind
+
+This annex supersedes only universal date-number scope language: NEW/NEW APPLIES unchanged; HISTORICAL/NEW is NOT_APPLICABLE_UNREPRESENTABLE_HISTORICAL_PROVENANCE, neither PASS nor FAIL. No surrogate bytes are permitted. All other historical controls remain enabled. The JSON plan binds the exact co-normative design contract and current design file hashes; no allocation, seed, schedule, gate, reserve or authority change.

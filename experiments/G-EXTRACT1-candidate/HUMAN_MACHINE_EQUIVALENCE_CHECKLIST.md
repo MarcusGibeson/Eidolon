@@ -135,3 +135,9 @@ Section19/annex directly encode legacy projection, E4 context matrices, entity d
 ## Candidate v9 validation limits
 
 Section20 and the exact annex freeze the recurrence ledger, comparison decision table, entity matrix and value profiles. Symbolic structural feasibility is not content feasibility or scientific independence. Every future actual fixture must pass semantic/slot/value/wiring checks before claiming ledger compatibility or reserve equivalence. Old isolated test vectors intentionally test historical/individual mechanics, not full v9 corpus conformance. No corpus/reserve content is created by the symbolic ledger or checking probes. The content-view correction and fixed-boundary confounds are explicitly prospective and require adversarial rereview.
+
+## Historical Tuple Applicability
+- [x] Exact status and all five NEW/NEW scopes are co-normative.
+- [x] No surrogate, PASS/FAIL accounting, or inferred provenance.
+- [x] All other supported historical controls and NEW tuple bytes unchanged.
+- [x] Authority remains bounded; audit required before checker update.

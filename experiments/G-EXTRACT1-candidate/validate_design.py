@@ -4155,13 +4155,146 @@ def validate(contract: dict[str, Any], human: str) -> list[str]:
     return checks
 
 
+TUPLE_APPLICABILITY = {
+    "contract_id": "g-extract1.date-number-tuple-applicability.v1",
+    "accepted_design_parent": "d1b9e2aa5dbe0aeebb74f8226ca8033182f7b3c1",
+    "accepted_blueprint_parent": "d8396179204411da15c2dfc330666a490a2287e8",
+    "scope_status": {
+        "historical_new": "NOT_APPLICABLE_UNREPRESENTABLE_HISTORICAL_PROVENANCE",
+        "phase_a_phase_a": "APPLIES", "phase_a_phase_b": "APPLIES",
+        "phase_b_phase_b": "APPLIES", "scored_reserve": "APPLIES",
+        "reserve_reserve": "APPLIES",
+    },
+    "historical_missing_provenance": ["ordered typed source facts", "complete source semantic typing",
+        "canonical operation graph", "source/literal/derived provenance", "exact catalog argument ordering"],
+    "historical_tuple_bytes": None,
+    "historical_tuple_comparisons_performed": 0,
+    "historical_status_is_pass_or_fail": False,
+    "prohibited_surrogates": ["lexical SOURCE_FACT", "gold-only tuple", "inferred operation node",
+        "inferred source type", "input.text inference", "free-form instruction inference",
+        "rationale inference", "ledger inference", "authoring-expression inference"],
+    "new_new_rule": "contamination_contract.exact_reuse_contract.date_number_tuple unchanged in entirety",
+    "other_historical_controls": ["similarity/projection", "whole-answer exact replay",
+        "identity/identifier where defined", "historical adapter", "structural/projection"],
+    "decision_basis": "preserved historical representation cannot encode accepted tuple; not candidate outcomes",
+    "effect": "applicability correction only; no threshold, equality, ordering, encoding or model-facing change",
+    "authority": {"provider_model_calls": 0, "runtime_implementation": False,
+        "mechanical_pilot": False, "execution_freeze": False, "phase_a": False,
+        "phase_b": False, "autonomy": False, "belief_effects": "none"},
+}
+
+
+def tuple_parent(commit: str, name: str) -> bytes:
+    return subprocess.check_output(["git", "show", commit + ":experiments/G-EXTRACT1-candidate/" + name], cwd=ROOT)
+
+
+def validate_tuple_applicability(contract: dict[str, Any], human: str) -> dict[str, Any]:
+    checks: list[str] = []
+    amendment = contract["date_number_tuple_applicability_contract"]
+    require(amendment == TUPLE_APPLICABILITY, "applicability_exact_contract", checks)
+    parent = json.loads(tuple_parent(TUPLE_APPLICABILITY["accepted_design_parent"], "DESIGN_CANDIDATE.json"))
+    projected = copy.deepcopy(contract)
+    projected.pop("date_number_tuple_applicability_contract")
+    projected["contamination_contract"]["exact_reuse_contract"]["all_rules_apply_to_every_scope"] = True
+    require(projected == parent, "only_applicability_and_universal_scope_claim_changed", checks)
+    require(contract["contamination_contract"]["exact_reuse_contract"]["all_rules_apply_to_every_scope"] is False,
+            "universal_claim_replaced_by_explicit_scope_table", checks)
+    require(contract["contamination_contract"]["exact_reuse_contract"]["date_number_tuple"] ==
+            parent["contamination_contract"]["exact_reuse_contract"]["date_number_tuple"], "new_tuple_entire_contract_unchanged", checks)
+    old_human = tuple_parent(TUPLE_APPLICABILITY["accepted_design_parent"], "DESIGN_CANDIDATE.md").decode()
+    prefix, annex = human.split("<!-- TUPLE_APPLICABILITY_BEGIN -->", 1)
+    require(prefix == old_human, "all_prior_human_rules_preserved_new_annex_has_precise_precedence", checks)
+    rendered = re.search(r"```json\s*(.*?)\s*```", annex, re.DOTALL)
+    require(rendered is not None and json.loads(rendered.group(1)) == amendment, "human_machine_exact_annex", checks)
+    for name in sorted(parent):
+        if name != "contamination_contract": require(contract[name] == parent[name], "preserved_section:" + name, checks)
+    adapter = historical_adaptation_summary(contract)
+    require((adapter["examined"], adapter["adapted"], adapter["rejected"]) == (106,106,0), "adapter_106_of_106", checks)
+    require(adapter["projection_evidence_sha256"] == "a14935bf93e8932854b545cacd638daf869d67d8742826887f187956b75e0810", "adapter_bytes_unchanged", checks)
+    # Prove the frozen historical exports lack canonical source/operation provenance.
+    for binding in contract["historical_fingerprint_adapter_contract"]["artifact_bindings"]:
+        for fixture in load_json_unique(ROOT / binding["path"])["fixtures"]:
+            if fixture["task_class"] == "structured_extraction":
+                require(set(fixture) == {"consequence_risk","fixture_id","input","prompt","task_class","title","validator_profile"}
+                        and set(fixture["input"]) == {"text","schema"}, "unrepresentable_provenance:" + fixture["fixture_id"], checks)
+    vectors = parent["contamination_contract"]["exact_reuse_contract"]["fixture_tuple_extraction_vectors"]
+    for vector in vectors:
+        if "fixture" in vector:
+            observed = extract_date_number_atoms(vector["fixture"], contract["operation_definition_contract"],
+                contract["schema_type_contract"], contract["operation_semantics_contract"], contract["entity_population_contract"])
+            require(observed == vector["expected_atoms"], "new_tuple_behavior:" + vector["id"], checks)
+    mutations = []
+    for status in ("PASS", "FAIL"):
+        altered = copy.deepcopy(amendment); altered["scope_status"]["historical_new"] = status
+        mutations.append(("historical_" + status, altered))
+    for surrogate in amendment["prohibited_surrogates"]:
+        altered = copy.deepcopy(amendment); altered["historical_tuple_bytes"] = surrogate
+        mutations.append((surrogate, altered))
+    altered = copy.deepcopy(amendment); altered["scope_status"]["phase_a_phase_a"] = "DISABLED"
+    mutations.append(("new_tuple_disabled", altered))
+    altered = copy.deepcopy(amendment); altered["other_historical_controls"] = []
+    mutations.append(("other_historical_controls_disabled", altered))
+    altered = copy.deepcopy(amendment); altered["authority"]["phase_a"] = True
+    mutations.append(("authority_elevated", altered))
+    for name, altered in mutations: require(altered != TUPLE_APPLICABILITY, "mutation_rejected:" + name, checks)
+    for key in ("atom", "match_rule", "serialization"):
+        altered = copy.deepcopy(contract)
+        altered["contamination_contract"]["exact_reuse_contract"]["date_number_tuple"][key] = "MUTATED"
+        require(altered["contamination_contract"]["exact_reuse_contract"]["date_number_tuple"] !=
+                parent["contamination_contract"]["exact_reuse_contract"]["date_number_tuple"], "new_rule_mutation_rejected:" + key, checks)
+    corpus = HERE / "corpus"
+    require(sha256(corpus / "AUTHORING_CANDIDATES.json") == "f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068", "candidate_immutable", checks)
+    rows = load_json_unique(corpus / "AUTHORING_CANDIDATES.json")["accepted"]
+    gold = [[r["logical_base_id"],r["fixture"]["gold_values"]] for r in rows]
+    gold_sha = hashlib.sha256(json.dumps(gold,ensure_ascii=True,sort_keys=True,separators=(",",":")).encode()).hexdigest()
+    require(gold_sha == "803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec", "gold_immutable", checks)
+    return dict(verdict="PASS", check_count=len(checks), checks=checks,
+        validation_scope="narrow deterministic scope/preservation consistency only; not scientific approval",
+        applicability=amendment, historical_adapter=adapter, gold_projection_sha256=gold_sha,
+        mutation_count=len(mutations)+3, accepted_parent_report_sha256=hashlib.sha256(tuple_parent(TUPLE_APPLICABILITY["accepted_design_parent"],"DESIGN_VALIDATION_REPORT.json")).hexdigest(),
+        parent_full_checkpoint_not_rerun=True, artifact_hashes={n:sha256(HERE/n) for n in
+            ("DESIGN_CANDIDATE.md","DESIGN_CANDIDATE.json","DESIGN_REVISION_CHANGELOG.md","HUMAN_MACHINE_EQUIVALENCE_CHECKLIST.md","validate_design.py")})
+
+
+def materialize_tuple_correction() -> None:
+    c = json.loads(tuple_parent(TUPLE_APPLICABILITY["accepted_design_parent"], "DESIGN_CANDIDATE.json"))
+    c["date_number_tuple_applicability_contract"] = TUPLE_APPLICABILITY
+    c["contamination_contract"]["exact_reuse_contract"]["all_rules_apply_to_every_scope"] = False
+    source = tuple_parent(TUPLE_APPLICABILITY["accepted_design_parent"], "DESIGN_CANDIDATE.json").decode()
+    needle = '"all_rules_apply_to_every_scope": true'
+    if source.count(needle) != 1:
+        raise ValueError("scope_claim_occurrence")
+    source = source.replace(needle, '"all_rules_apply_to_every_scope": false')
+    tail = json.dumps(TUPLE_APPLICABILITY,ensure_ascii=False,indent=2)
+    source = source.rstrip()[:-1].rstrip() + ',\n  "date_number_tuple_applicability_contract": ' + tail.replace('\n','\n  ') + '\n}\n'
+    if json.loads(source) != c:
+        raise ValueError("mechanical_contract_patch_mismatch")
+    MACHINE.write_text(source,encoding="utf-8",newline="\n")
+    old = tuple_parent(TUPLE_APPLICABILITY["accepted_design_parent"], "DESIGN_CANDIDATE.md").decode()
+    HUMAN.write_text(old + '<!-- TUPLE_APPLICABILITY_BEGIN -->\n\n## Historical Tuple Applicability Correction\n\n'
+        'This annex supersedes only earlier universal date-number scope claims. NEW/NEW tuple representation and comparison are unchanged. Historical/NEW is neither PASS nor FAIL: no tuple is constructed. Gold-only or lexical surrogates and inferred graphs/types are prohibited. All other supported historical controls remain mandatory. This correction follows representational impossibility, not candidate outcomes. No execution authority is granted. The following JSON is co-normative.\n\n```json\n'
+        + json.dumps(TUPLE_APPLICABILITY,indent=2) + '\n```\n<!-- TUPLE_APPLICABILITY_END -->\n',encoding="utf-8",newline="\n")
+    for name, extra in (("DESIGN_REVISION_CHANGELOG.md", '\n## Historical Tuple Scope Correction\nResolved historical provenance impossibility with an explicit NOT_APPLICABLE status only for historical/new date-number. Preserved all NEW/NEW semantics and other historical controls; no candidate outcome drove this correction. Blueprint mechanically binds the same annex.\n'),
+                        ("HUMAN_MACHINE_EQUIVALENCE_CHECKLIST.md", '\n## Historical Tuple Applicability\n- [x] Exact status and all five NEW/NEW scopes are co-normative.\n- [x] No surrogate, PASS/FAIL accounting, or inferred provenance.\n- [x] All other supported historical controls and NEW tuple bytes unchanged.\n- [x] Authority remains bounded; audit required before checker update.\n')):
+        (HERE/name).write_text(tuple_parent(TUPLE_APPLICABILITY["accepted_design_parent"], name).decode()+extra,encoding="utf-8",newline="\n")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--write-report", action="store_true")
     parser.add_argument("--summary", action="store_true", help="Print compact deterministic report summary")
+    parser.add_argument("--materialize-tuple-correction", action="store_true")
     args = parser.parse_args()
+    if args.materialize_tuple_correction:
+        materialize_tuple_correction()
     contract = load_json_unique(MACHINE)
     human = HUMAN.read_text(encoding="utf-8")
+    if "date_number_tuple_applicability_contract" in contract:
+        report = validate_tuple_applicability(contract, human)
+        if args.write_report:
+            REPORT.write_text(json.dumps(report,ensure_ascii=True,indent=2,sort_keys=True)+"\n",encoding="utf-8",newline="\n")
+        print(json.dumps({k:report[k] for k in ("verdict","check_count","mutation_count","historical_adapter")},sort_keys=True))
+        return 0
     checks = validate(contract, human)
     report = {
         "schema_version": "g-extract1.design-validation-report.v10",

@@ -191,3 +191,6 @@ These corrections are explicit design changes and require independent rereview. 
 Seven families; 35 fixtures/round; 30 determinate plus five E7; 420 A calls, at most 210 B calls, 630 maximum; 29/30 semantic and structural, 27/30 useful, zero false-clean, malformed at most one; E7 A=10/10 and B=5/5; Phase A repeat reduction; 28 family-slot reserves; baseline provider/models; exact arithmetic/temporal semantics; no prompt repair, A/B pooling, failed-cell reentry, post-contact edits, threshold relaxation or historical rewrite. Belief effects remain none.
 
 Separate authorization remains required for blueprint, fixture/gold authoring, implementation, mechanical pilot, execution freeze, Phase A and Phase B. Unresolved approval: independent v7 adversarial rereview. No claimed scientific validity or later-phase authority is implied.
+
+## Historical Tuple Scope Correction
+Resolved historical provenance impossibility with an explicit NOT_APPLICABLE status only for historical/new date-number. Preserved all NEW/NEW semantics and other historical controls; no candidate outcome drove this correction. Blueprint mechanically binds the same annex.
