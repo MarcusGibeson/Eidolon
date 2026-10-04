@@ -16,6 +16,7 @@ from g_extract1_journal import SCHEMA, write_once, seal_checkpoint, load, Journa
 from g_extract1_runner import Run, reserve_replacements, actual_reserve_profile, check_call, PILOT
 from g_extract1_scoring import (evaluate, synthetic_gold, aggregate, transition, primary_verdict,
                                 event_category, NumericToken, typed, equal)
+from g_extract1_lifecycle_tests import lifecycle_tests
 
 
 class Checks:
@@ -44,7 +45,7 @@ class SyntheticTransport:
     def __call__(self, wire, row):
         if self.kind:
             return dict(failure=self.kind, receipt=None if self.kind == 'unreceipted' else
-                        dict(call_id=row['call_id'],request_sha256=digest(wire),synthetic_only=True))
+                        dict(call_id=row['call_id'],request_sha256=digest(wire),synthetic_only=True,failure_kind=self.kind))
         return dict(raw_output=synthetic_gold(self.package.variants[row['rendered_variant_id']]),
                     provider_truncated=False, receipt=dict(synthetic_only=True,call_id=row['call_id'],request_sha256=digest(wire)))
 
@@ -229,26 +230,16 @@ def integrity_tests(p,a,t,temp):
         r = Run(p,temp / kind,kind)
         r.perform(r.a[0],SyntheticTransport(p,kind),p.receipts())
         t.check('failure_receipt',kind,r.events == [event] and primary_verdict(p.design,dict(events=r.events)) == event_category(p.design,event))
-        t.rejects('retry','failed call:' + kind,'PROVENANCE_MISMATCH',lambda:r.perform(r.a[0],SyntheticTransport(p),p.receipts()))
+        t.rejects('retry','failed call:' + kind,event,lambda:r.perform(r.a[0],SyntheticTransport(p),p.receipts()))
     run.perform(run.a[0],SyntheticTransport(p),p.receipts())
     t.rejects('retry','duplicate call','UNAUTHORIZED_RETRY',lambda:run.perform(run.a[0],SyntheticTransport(p),p.receipts()))
     t.rejects('journal','exclusive entry collision','PROVENANCE_MISMATCH',lambda:write_once(directory / 'journal/000001.json',{}))
-    t.rejects('schedule','omitted call','SCHEDULE_POSITION_MISMATCH',lambda:run.perform(run.a[2],SyntheticTransport(p),p.receipts()))
+    run = Run(p,temp/'cleanresume','cleanresume')
+    directory = run.directory
+    run.perform(run.a[0],SyntheticTransport(p),p.receipts())
     cp = run.checkpoint('one')
-    resumed = Run(p,directory,'receipt',resume=True)
+    resumed = Run(p,directory,'cleanresume',resume=True)
     t.check('resume','clean',resumed.resume(directory / 'CHECKPOINT_one.json') == 'MACHINE_INTERRUPTION_WITH_SEALED_CHECKPOINT')
-    t.rejects('checkpoint','missing','MISSING_CHECKPOINT_AFTER_INTERRUPTION',lambda:resumed.resume(directory / 'missing.json'))
-    path = temp / 'corrupt.json'; path.write_bytes(b'{')
-    t.rejects('checkpoint','corrupt','CORRUPTED_CHECKPOINT',lambda:resumed.resume(path))
-    path = temp / 'next.json'; payload = copy.deepcopy(cp['payload']); payload['next_schedule_position'] += 1
-    seal_checkpoint(path,payload)
-    t.rejects('checkpoint','wrong next','UNVERIFIABLE_INTERRUPTION_CHECKPOINT',lambda:resumed.resume(path))
-    path = temp / 'prefix.json'; payload = copy.deepcopy(cp['payload']); payload['journal_prefix']['last_sha256'] = '0'*64
-    seal_checkpoint(path,payload)
-    t.rejects('checkpoint','wrong prefix','UNVERIFIABLE_JOURNAL_PREFIX',lambda:resumed.resume(path))
-    path = temp / 'schedule.json'; payload = copy.deepcopy(cp['payload']); payload['schedule_sha256'] = '0'*64
-    seal_checkpoint(path,payload)
-    t.rejects('checkpoint','changed schedule','UNVERIFIABLE_INTERRUPTION_CHECKPOINT',lambda:resumed.resume(path))
     record_path = directory / 'journal/000002.json'
     raw = record_path.read_bytes(); record_path.write_bytes(raw.replace(b'RESPONSE_CAPTURED',b'RESPONSE_TAMPERED'))
     t.rejects('journal','tampered payload','CORRUPTED_OR_UNPARSEABLE_JOURNAL',resumed.journal.read)
@@ -292,12 +283,9 @@ def reserve_tests(p,t):
 def full_pilot(p,directory,t,label):
     run = Run(p,directory,'mechanical-only')
     transport = SyntheticTransport(p)
-    for row in run.a[:37]:
-        run.perform(row,transport,p.receipts())
-    run.checkpoint('interrupt')
-    run = Run(p,directory,'mechanical-only',resume=True)
-    t.check('pilot',label + ':verified interruption',run.resume(directory / 'CHECKPOINT_interrupt.json') == 'MACHINE_INTERRUPTION_WITH_SEALED_CHECKPOINT')
-    for row in run.a[37:]:
+    # Clean qualification rehearsals are uninterrupted. Separate real-path tests
+    # retain the sealed-interruption INCOMPLETE event instead of clearing it.
+    for row in run.a:
         run.perform(row,transport,p.receipts())
     run.enter_b()
     for row in run.b:
@@ -328,6 +316,8 @@ def certify(output):
         root = Path(temporary)
         integrity_tests(p,a,t,root)
         reserve_tests(p,t)
+        targeted = lifecycle_tests(p,t,root/'lifecycle',SyntheticTransport)
+        print(json.dumps(dict(stage='I1_I6_TARGETED_PASS',checks=len(t.rows))),flush=True)
         first = full_pilot(p,root/'pilot1',t,'first')
         second = full_pilot(p,root/'pilot2',t,'second')
         hashes1 = {x.relative_to(root/'pilot1').as_posix():digest(x.read_bytes()) for x in (root/'pilot1').rglob('*') if x.is_file()}
@@ -340,12 +330,14 @@ def certify(output):
         # Copy only mechanical evidence, never any run/apply/release pointer.
         require(not (output/'mechanical_pilot').exists(), 'PRE_EXISTING_RUN_COLLISION', 'pilot evidence')
         shutil.copytree(root/'pilot1',output/'mechanical_pilot')
+        shutil.copytree(root/'pilot2',output/'mechanical_pilot_replay')
+        shutil.copytree(root/'lifecycle',output/'targeted_evidence')
     report = dict(schema_version='g-extract1.mechanical-pilot-report.v1',verdict='PASS',
         scope='Deterministic implementation checks and synthetic mechanical replay only; not scientific qualification.',
         test_count=len(t.rows),tests=t.rows,phase_a_count=len(a),phase_b_maximum=len(b),maximum_calls=len(a+b),
         phase_a_schedule_sha256=digest(canonical(a)),phase_b_maximum_schedule_sha256=digest(canonical(b)),
         e5_wire_audits=len(audits),request_materializations=720,conditional_b_subsets=64,
-        first_pilot='PASS',second_pilot='PASS',interrupt_resume='PASS',authority_bytes_equal=True,
+        first_pilot='PASS',second_pilot='PASS',interrupt_resume='PASS_RETAINED_INCOMPLETE',authority_bytes_equal=True,
         replay_file_count=len(hashes1),replay_files_sha256=hashes1,
         protected_artifacts_before_after=protected_before,preserved_corpus_before_after=preserved_before,
         activity_integration='NOT_APPLICABLE: accepted isolated experiment architecture requires no Activity integration; no runtime changes.',
@@ -353,6 +345,9 @@ def certify(output):
         corpus_regeneration=0,gold_changes=0,autonomy=False,belief_effects='none',g_route4='CLOSED FAILED unchanged')
     write_once(output/'MECHANICAL_PILOT_REPORT.json',report)
     write_once(output/'E5_HARNESS_WIRE_AUDIT.json',dict(verdict='PASS',audits=audits,provider_model_calls=0))
+    write_once(output/'LIFECYCLE_REPAIR_REPORT.json',dict(verdict='PASS',closure=targeted,
+        tests=[x for x in t.rows if x['group'].startswith('I')],provider_model_calls=0,
+        scope='Implementation regression only; accepted scientific rules unchanged.'))
     source = source_pins()
     freeze = dict(schema_version='g-extract1.execution-freeze-candidate.v1',status='EXECUTION_FREEZE_CANDIDATE_ONLY',
         activated=False,phase_a_authorized=False,phase_b_authorized=False,source_sha256=source,
@@ -363,6 +358,11 @@ def certify(output):
         response_validator_sha256=next(x['sha256'] for x in p.design['baseline_binding']['existing_behavior_artifacts'] if x['role']=='operational_wrapper'),
         journal_checkpoint_schema=SCHEMA,journal_checkpoint_schema_sha256=digest(canonical(SCHEMA)),
         integrity_event_contract_sha256=digest(canonical(p.design['integrity_event_contract'])),
+        lifecycle_repair_report_sha256=digest((output/'LIFECYCLE_REPAIR_REPORT.json').read_bytes()),
+        complete_manifest_verification=dict(file_count=len(p.pins),protected_files=p.pins,
+            pin_categories=p.pin_categories,gold_projection_recomputed=True),
+        supersedes_blocked_candidate_sha256='14fb601c3a58777942ccd0361c2a303b5bfcf10d4c05536a32d265c0babe537f',
+        supersession_reason='Independent implementation audit I1-I6 repair; old evidence remains blocked/unactivated.',
         pilot_report_sha256=digest((output/'MECHANICAL_PILOT_REPORT.json').read_bytes()),
         e5_wire_report_sha256=digest((output/'E5_HARNESS_WIRE_AUDIT.json').read_bytes()),
         authority='Separate execution-freeze review/activation and separate Phase A/conditional Phase B authorization remain required.',

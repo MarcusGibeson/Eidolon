@@ -1,0 +1,1 @@
+{"payload":{"checkpoint_sha256":"8c4e39b2789b00ac2c536e1c48b267823f157059aebb3db91309fab7a0fb36ca","event":"MACHINE_INTERRUPTION_WITH_SEALED_CHECKPOINT","phase":"A","type":"RESUME_VERIFIED"},"previous_sha256":"69ab23f4be87a234f9892e7fc5fa3ca72c66f503f3ea1542df86cd8f61b9ebfe","sequence":4,"sha256":"a4467b88f70e9bb762856a410ee7154d7a97cfa29f10b1083b70f10353175def"}

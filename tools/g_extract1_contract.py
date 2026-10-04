@@ -17,7 +17,7 @@ MANIFEST_SHA = 'aad9f460edd373f5ce3a0b5469449e4b6df918081c956ca819c1b515f8ca1042
 AUDIT_SHA = 'dc75c2c40635a93babf0fb903521f54489f3fed4ff06128ae866801310df9c97'
 CANDIDATE_SHA = 'f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068'
 GOLD_PROJECTION_SHA = '803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec'
-VERSION = 'g-extract1.execution-contract.v1'
+VERSION = 'g-extract1.execution-contract.v2'
 
 
 def canonical(value):
@@ -27,6 +27,14 @@ def canonical(value):
 
 def digest(value):
     return hashlib.sha256(value).hexdigest()
+
+
+def file_digest(path):
+    hasher = hashlib.sha256()
+    with Path(path).open('rb') as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b''):
+            hasher.update(chunk)
+    return hasher.hexdigest()
 
 
 def load(path):
@@ -59,9 +67,31 @@ class Package:
         require(digest(self.manifest_path.read_bytes()) == MANIFEST_SHA,
                 'PRE_ARTIFACT_DIGEST_MISMATCH', 'manifest')
         self.manifest = load(self.manifest_path)
-        self.pins = dict(self.manifest['authority_artifacts_sha256'])
-        for name, sha in self.manifest['final_artifacts_sha256'].items():
-            self.pins['experiments/G-EXTRACT1-candidate/corpus/' + name] = sha
+        self.pins, self.pin_categories = {}, {}
+        prefix = 'experiments/G-EXTRACT1-candidate/corpus/'
+        def pin(path, sha, category):
+            require(path not in self.pins or self.pins[path] == sha,
+                    'PRE_ARTIFACT_DIGEST_MISMATCH', 'contradictory manifest pin:' + path)
+            self.pins[path] = sha
+            self.pin_categories[path] = category
+        for group, category in [('authority_artifacts_sha256','authority'), ('final_artifacts_sha256','final'),
+                                ('checker_artifacts_sha256','checker'),
+                                ('preserved_authoring_failure_and_repair_artifacts_sha256','preserved')]:
+            for name, sha in self.manifest[group].items():
+                pin(name if group == 'authority_artifacts_sha256' else prefix + name, sha, category)
+        # These scalar pins are file bindings, not semantic projection digests.
+        scalar_paths = dict(candidate_source_sha256='AUTHORING_CANDIDATES.json',
+                            finalizer_sha256='validate_finalization.py',
+                            checker_applicability_report_sha256='TUPLE_APPLICABILITY_CHECKER_REPORT.json',
+                            independent_prepublication_audit_sha256='REVIEW_CLOSURE_PREPUBLICATION_AUDIT.json',
+                            prior_external_review_history_sha256='CORPUS_GOLD_REREVIEW_HISTORY.json')
+        for key, name in scalar_paths.items():
+            pin(prefix + name, self.manifest[key], 'source_or_supplement')
+        covered = set(scalar_paths) | {'gold_projection_sha256'}
+        covered |= {'authority_artifacts_sha256', 'final_artifacts_sha256', 'checker_artifacts_sha256',
+                    'preserved_authoring_failure_and_repair_artifacts_sha256'}
+        require({x for x in self.manifest if x.endswith('_sha256')} == covered,
+                'PRE_ARTIFACT_DIGEST_MISMATCH', 'unclassified manifest digest')
         self.pins['experiments/G-EXTRACT1-candidate/corpus/CORPUS_MANIFEST.json'] = MANIFEST_SHA
         self.pins['experiments/G-EXTRACT1-candidate/corpus/FINAL_READ_ONLY_CLOSURE_AUDIT.json'] = AUDIT_SHA
         self.verify()
@@ -96,13 +126,18 @@ class Package:
         for key, row in self.variants.items():
             require(row['gold'] == gold[key] == row['fixture']['gold_values'], 'PRE_GOLD_DIGEST_MISMATCH', key)
         self.model_bindings = load(self.root / 'experiments/G-ROUTE4-candidate/model_bindings.json')
+        candidates = load(self.data / 'corpus/AUTHORING_CANDIDATES.json')
+        projection = [[row['logical_base_id'], row['fixture']['gold_values']] for row in candidates['accepted']]
+        projection_bytes = json.dumps(projection, ensure_ascii=True, sort_keys=True, separators=(',', ':')).encode('utf-8')
+        require(digest(projection_bytes) == GOLD_PROJECTION_SHA,
+                'PRE_GOLD_DIGEST_MISMATCH', 'semantic source projection')
 
     def verify(self, contacted=False):
         for relative, expected in self.pins.items():
             path = self.root / relative
             event = ('GOLD_DIGEST_MISMATCH' if contacted else 'PRE_GOLD_DIGEST_MISMATCH') if relative.endswith('/GOLD.json') else (
                 'PROTECTED_ARTIFACT_DIGEST_MISMATCH' if contacted else 'PRE_ARTIFACT_DIGEST_MISMATCH')
-            require(path.is_file() and digest(path.read_bytes()) == expected, event, relative)
+            require(path.is_file() and file_digest(path) == expected, event, relative)
 
     def receipts(self):
         """Expected identities, not evidence of installed provider state."""
