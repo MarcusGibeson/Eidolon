@@ -1,4 +1,4 @@
-# G-CAL1: Publication Rebind Awaiting Integrity Verification
+# G-CAL1: Publication Verified, Branch Push Pending
 
 ## Publication-only repair
 
@@ -26,7 +26,12 @@ unchanged. The completed independent audit remains PASS; its original evidence
 and conclusions are preserved, with rewritten commit identities resolved by the
 publication map. No scientific tests or model observations are rerun.
 
-Publication verification, LFS upload and normal branch push remain pending.
+Publication verification is PASS: all 99 protected hashes and preexisting
+non-metadata file bytes match, and the push range has no oversized ordinary blob.
+The single LFS object was uploaded and downloaded through normal Git LFS into
+an initially empty external cache; exact SHA-256 and size match, with LFS fsck OK.
+Normal descendant branch push remains pending. Verification and command records
+are preserved in `publication/`; no scientific or implementation audit was rerun.
 Freeze inactive, execution unauthorized; readiness grants freeze REVIEW only.
 
 ## Preserved prepublication lock-timeout repair and independent closure

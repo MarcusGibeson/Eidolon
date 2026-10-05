@@ -1,0 +1,18 @@
+{
+  "schema_version": "g-cal1.lfs-migration-tool-side-effect.v1",
+  "tool": "git-lfs/3.3.0",
+  "archival_ref": "refs/heads/archive/g-cal1-pre-lfs-publication",
+  "original_tip": "349cc4ac44dae608d4418db21be7ebb0b1c2c09f",
+  "unexpected_tool_updated_tip": "5f0b3995b22b0f4df6c1be9c97d4340bc64c71ce",
+  "explicit_include_ref": "refs/heads/g-extract1/design",
+  "explicit_exclude_ref": "refs/remotes/origin/g-extract1/design",
+  "observation": "The migration tool unexpectedly advanced the separate archival branch that shared the selected branch tip. The immediate archival invariant check stopped the wrapper.",
+  "restore_command": "git -c safe.directory=C:/Users/marcu/Eidolon-g4adj update-ref refs/heads/archive/g-cal1-pre-lfs-publication 349cc4ac44dae608d4418db21be7ebb0b1c2c09f 5f0b3995b22b0f4df6c1be9c97d4340bc64c71ce",
+  "restore_exit_code": 0,
+  "original_bundle_unchanged": true,
+  "old_commit_objects_removed": false,
+  "history_loss": false,
+  "science_changed": false,
+  "implementation_changed": false,
+  "not_claimed": "The archival ref was never moved during the task. It was automatically moved by the tool and restored to the exact recorded original tip."
+}
