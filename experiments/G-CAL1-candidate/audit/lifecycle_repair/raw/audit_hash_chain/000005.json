@@ -1,0 +1,1 @@
+{"payload":{"category":"P1-A-stale-public-paths","data":{"event":"CORRUPTED_CHECKPOINT"},"detail":"caught exception cannot continue","passed":true},"previous_sha256":"017bfa05706bb6ad3026d96b825eedd4cb7d0c6869a325a6fb493def4dfdca02","sequence":5,"sha256":"792c314fe9800f31305b8b7709a4b58f110ffd8b1ae96e0087d6cc804bf040a1"}

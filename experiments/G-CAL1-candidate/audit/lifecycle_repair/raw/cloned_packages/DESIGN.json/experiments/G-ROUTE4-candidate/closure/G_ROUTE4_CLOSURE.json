@@ -1,0 +1,154 @@
+{
+  "closed_on": "2026-10-01",
+  "closure_verdict": "FAILED",
+  "diagnostic_artifact": "experiments/G-ROUTE4-candidate/closure/PHASE_B_UNSAFE_STOP_DIAGNOSTIC.json",
+  "experiment_id": "G-ROUTE4",
+  "governance": {
+    "belief_effects": "none",
+    "historical_results_modified": false,
+    "new_experiment_started": false,
+    "production_routing_enabled": false,
+    "provider_calls_for_closure": 0,
+    "qualification_table_modified": false,
+    "runtime_or_input_code_changed": false
+  },
+  "governed_lineage": {
+    "artifacts": {
+      "certification_report": {
+        "path": "experiments/G-ROUTE4-candidate/implementation/CERTIFICATION_REPORT.json",
+        "sha256": "31d187839500570e0a65f3f9212ea682331d2a3bfd9ed87aa71cbd195ba74acf"
+      },
+      "differential_report": {
+        "path": "experiments/G-ROUTE4-candidate/implementation/DIFFERENTIAL_REPORT.json",
+        "sha256": "89aabbfa6e3317cefd695533fc01f32aff1913099729c68d67649c52c9cd23de"
+      },
+      "execution_freeze_manifest": {
+        "path": "experiments/G-ROUTE4-candidate/EXECUTION_FREEZE_CANDIDATE.json",
+        "sha256": "73c91455f93e16b2ac024cf8cd3d7f5cdc0b356332b55c80661a6d15ef67de50"
+      },
+      "phase_a_final_disclosure": {
+        "path": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4\\disclosure\\phase_a\\000003.json",
+        "sha256": "54b9f434a90594fe47e7651b06162e76067b059e380038c1f62b4525aef32007"
+      },
+      "phase_a_receipt": {
+        "path": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4\\phase_a\\runs\\groute4a-001-2f9407b8159dc8ac\\receipt.json",
+        "sha256": "85574883d6d7593d3781e423a386af42f7ef2c7662e0745f228718cdbfcf6ba9"
+      },
+      "phase_a_score": {
+        "path": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4\\phase_a\\runs\\groute4a-001-2f9407b8159dc8ac\\score.json",
+        "sha256": "44d7a2bc62ebb7785b636ba910069e37a89b8ece0973c881164000b3265f18f0"
+      },
+      "phase_a_terminal_journal": {
+        "path": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4\\phase_a\\runs\\groute4a-001-2f9407b8159dc8ac\\journal\\000964.json",
+        "sha256": "74aea5a678d940d6056122f2d84164f7e1700d706f1ba569f45da66fac3a7702"
+      },
+      "phase_b_final_disclosure": {
+        "path": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4\\disclosure\\phase_b\\000003.json",
+        "sha256": "5e295492f130cb3719f4050631d3aaf255b4e3cda5041090dc3c4dfe297b3ecd"
+      },
+      "phase_b_receipt": {
+        "path": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4\\phase_b\\runs\\groute4b-001-954e9144ee1ce370\\receipt.json",
+        "sha256": "8b01ac1512ca5a8b2c106c1b2898e6484f376361d76275587ad6dd11b84b4559"
+      },
+      "phase_b_score": {
+        "path": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4\\phase_b\\runs\\groute4b-001-954e9144ee1ce370\\score.json",
+        "sha256": "1cce9a471cb7be727b83225542cbbb3e7bfded2063605f81984741e8c050db96"
+      },
+      "phase_b_terminal_journal": {
+        "path": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4\\phase_b\\runs\\groute4b-001-954e9144ee1ce370\\journal\\001834.json",
+        "sha256": "9396480655b208e4e48a3d3cc1e04f7286aa74f48bd1cc92b421886409c1500a"
+      },
+      "qualification_audit": {
+        "path": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4\\tables\\QUALIFICATION_AUDIT_DOCUMENT",
+        "sha256": "a8cb66f95079e4454e1a96289dd6ae36adffad55fb32de11cfe8a8d4950cdeb5"
+      },
+      "qualification_table": {
+        "path": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4\\tables\\QUALIFICATION_TABLE.json",
+        "sha256": "d0ae0635b44040764ad724e922576c1924e129ac6960b9d6d68a01625432635f"
+      }
+    },
+    "certification_evidence_commit": "126173a94553495f5757862ccfc71e1a7a0aef9f",
+    "certified_implementation_commit": "b1ca92e7b6c538dc24c3f5fab2ee238273a2c7e0",
+    "execution_freeze_commit": "0feb1b092bcdb1b934f01a3ce9611c59fcd8fa28",
+    "execution_freeze_content_digest": "934ababde1e01bd647adcbecbc936072ad5c458f9188fc72d8be385dbd947b9ad",
+    "phase_a_evidence_commit": "9b717d99879ed05204fd77377252bc5f9ce0f5f7",
+    "phase_a_run_id": "groute4a-001-2f9407b8159dc8ac",
+    "phase_b_evidence_commit": "fa430c3269eec57a7a9df5b992580ded91eca6ee",
+    "phase_b_run_id": "groute4b-001-954e9144ee1ce370",
+    "phase_b_schedule_digest": "d24a9e960921cd725bf08d4bc671fbd3c96239359f7798b580e6172c969fe939",
+    "phase_b_schedule_id": "G-ROUTE4-SCHEDULE-B",
+    "qualification_published_main_commit": "14d3f4001a0400fbb8f6671684e82bdc25c074ca",
+    "qualification_runtime_evidence_commit": "a454d36bfa42336180840daec33109fdf5a102f1",
+    "qualification_table_content_digest": "d91edab014f733c1ef188557268ce1205f82ddd221525285daa01facae02f4b2",
+    "qualification_table_id": "G-ROUTE4-QUALIFICATION-TABLE"
+  },
+  "interpretation": {
+    "actual_phase_b_outcome": "FAILED",
+    "capability_qualification": "Phase A produced and correctly froze 12 qualified cells.",
+    "execution_integrity": "clean",
+    "not_established": [
+      "The failure is not established as a routing-enforcement defect.",
+      "No causal mechanism for the qualification generalization gap is established.",
+      "No repair or revised threshold has been tested."
+    ],
+    "predictive_validity": "failed to support the preregistered unsafe-stop ceiling in Phase B, especially for structured extraction",
+    "primary_observed_problem": "Phase A qualification did not sufficiently predict Phase B safe operational use.",
+    "routing_policy_compliance": "clean"
+  },
+  "phase_a": {
+    "actual_calls": 480,
+    "insufficient_cells": 0,
+    "not_qualified_cells": 48,
+    "qualified_cells": 12,
+    "scheduled_calls": 480,
+    "status": "completed"
+  },
+  "phase_b_execution_integrity": {
+    "actual_calls": 915,
+    "duplicates": 0,
+    "independent_scorer_reconstruction_differences": 0,
+    "integrity_failures": 0,
+    "model_config_seed_mismatches": 0,
+    "omissions": 0,
+    "scheduled_calls": 915,
+    "status": "clean",
+    "structurally_malformed_outputs": 10,
+    "transport_failures": 0,
+    "unique_call_ids": 915,
+    "unique_positions": 915
+  },
+  "phase_b_gates": {
+    "correct_stop_floor": {
+      "k": 128,
+      "lower_95": 0.773553,
+      "n": 154,
+      "outcome": "PASS",
+      "rate": 0.831169,
+      "upper_95": 0.878924
+    },
+    "unsafe_stop_ceiling": {
+      "k": 20,
+      "lower_95": 0.091388,
+      "n": 148,
+      "outcome": "FAIL (not shown)",
+      "rate": 0.135135,
+      "upper_95": 0.19028
+    }
+  },
+  "primary_status": "FAIL",
+  "qualification_table": {
+    "audit_verdict": "READY",
+    "frozen_correctly": true,
+    "immutable": true,
+    "independently_audited": true
+  },
+  "reason": "The preregistered unsafe-stop ceiling failed: 20 of 148 stops were unsafe (13.5135 percent).",
+  "routing_policy_compliance": {
+    "enforcement_status": "passed",
+    "grounded_research_operational_routes": 0,
+    "qualification_table_obeyed": true,
+    "routing_policy_violations": 0,
+    "unqualified_operational_uses": 0
+  },
+  "schema": "g-route4.closure.v1"
+}

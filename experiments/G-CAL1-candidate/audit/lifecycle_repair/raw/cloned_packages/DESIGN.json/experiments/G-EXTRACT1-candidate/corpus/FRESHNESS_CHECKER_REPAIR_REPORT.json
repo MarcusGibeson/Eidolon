@@ -1,0 +1,4027 @@
+{
+  "active_schemas": [
+    "HH:MM",
+    "YYYY-MM-DD",
+    "boolean",
+    "integer",
+    "number",
+    "option_a|option_b",
+    "option_a|option_b|option_c",
+    "provided|not_provided",
+    "string"
+  ],
+  "after": {
+    "accepted_artifacts_sha256": {
+      "experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.json": "21a50ed5b15187d87cf71cdbfc367923ef2492a8a87133432fa5eab6042f535b",
+      "experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.md": "80dd8252342d9127bbae36e2f69f1d516d248a39c719cfda76a20eed092d0741",
+      "experiments/G-EXTRACT1-candidate/DESIGN_REVISION_CHANGELOG.md": "0c0a2b8be9e756ffe67fffad4aa18fb500b65cd02e31ecf304d8cec496cc0fe2",
+      "experiments/G-EXTRACT1-candidate/DESIGN_VALIDATION_REPORT.json": "e518b8275e6763c2027b0fce560726e75f2209add2e3f06cd2fdbecfb1bed7ea",
+      "experiments/G-EXTRACT1-candidate/HUMAN_MACHINE_EQUIVALENCE_CHECKLIST.md": "0fe64ded4bfb588a9bd02c7a8ce1b7712d17798230c815f5ce0dd32f6cea1916",
+      "experiments/G-EXTRACT1-candidate/blueprint/.gitattributes": "18558cf45b3c9a976165730e240cd14b473fbe411cde4317cb3b95d936265306",
+      "experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.json": "30776ffc4b6b3528bf33dcbdb8e1100e669febd140f65fc25846f808bffd666a",
+      "experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.md": "25d14928948515d1afa31a10df82b652fa5bbad8822b2c997f49f084b7e03554",
+      "experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT_VALIDATION_REPORT.json": "0999b9e52df1e8d8ab4000964f5aa5556b5cbeed72f0d31d6591cccb1e9784c4",
+      "experiments/G-EXTRACT1-candidate/blueprint/validate_blueprint.py": "59e55798a8a6044306872c8f1d60c72f671b76b89028893d48b87d91cb19ec2e",
+      "experiments/G-EXTRACT1-candidate/validate_design.py": "d7c32da272884f019214b5670e177f9b2bf00b66414f5bce0a257a7f05fdca9f"
+    },
+    "files": {
+      "AUTHORING_ATTEMPTS.json": "b9860b6bd4f662c46935773463bf6caf78035a1c2aa01c0b6a55e5100b9aa8da",
+      "AUTHORING_CANDIDATES.json": "f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068",
+      "AUTHORING_FEASIBILITY_REPORT.json": "8767a025c1123541cc858873aff41b60ecc1f8b0186d72ccc738761a24771433",
+      "FINALIZATION_FAILURE_REPORT.json": "588b6141e3c25b561dff49d7b004ca508468ed39f4dbef8a8e16c54f69918730",
+      "FRESHNESS_CANONICALIZATION_DIAGNOSIS_REPORT.json": "7395408dcf283821d19ed81f6986d64c47b4d31f9dd76d1c72481f7dff48a442",
+      "independent_contamination.py": "c2a8221a37057a3433e2314a7c63fd57aac1cafe3038ba67ec9952eaf9894ef7",
+      "validate_corpus.py": "27cda5efa4856b6fb3b33a46d1daa712cc019213632dfe789686330183f22114"
+    },
+    "gold_projection_sha256": "803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec",
+    "historical_sha256": {
+      "G_ROUTE4_CLOSURE.json": "d992a169a2be293909f0fe0f1b39720656f40a09dc4f6b4e9c53449110cef8be",
+      "PHASE_B_UNSAFE_STOP_DIAGNOSTIC.json": "461a85368a6cbbd39429bebbae883c0b17be614db52e343150b23051041b4868"
+    }
+  },
+  "before": {
+    "files": {
+      "AUTHORING_ATTEMPTS.json": "b9860b6bd4f662c46935773463bf6caf78035a1c2aa01c0b6a55e5100b9aa8da",
+      "AUTHORING_CANDIDATES.json": "f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068",
+      "AUTHORING_FEASIBILITY_REPORT.json": "8767a025c1123541cc858873aff41b60ecc1f8b0186d72ccc738761a24771433",
+      "FINALIZATION_FAILURE_REPORT.json": "588b6141e3c25b561dff49d7b004ca508468ed39f4dbef8a8e16c54f69918730",
+      "FRESHNESS_CANONICALIZATION_DIAGNOSIS_REPORT.json": "7395408dcf283821d19ed81f6986d64c47b4d31f9dd76d1c72481f7dff48a442",
+      "independent_contamination.py": "8bc9d4eee55cbd91aebfb82f9d77bb74592db92e7ba0df9b62f111899d6533b4",
+      "validate_corpus.py": "8ff1a923c914e31c42121903b9763fd1e9b97a8b01f6b19b7f35a1de4ce2273d"
+    },
+    "function_ast_sha256": {
+      "independent_contamination.py": {
+        "canon": "f67f8c37343369b29deeb7d07bbdd638bc897aae57c53e4d62e89bbc99a4f6d4",
+        "decimal": "741112b2f114318f67fb154a788d49f8562c3fb3040b90ec644796e9c256576e",
+        "dump": "86dc634e2aeff4dfbd2e17ee547a0e1470c8a57bb35bf177d291bed9dc3b113b",
+        "evaluate": "aabeebbb697e693f9eb48b28660152b03a367552f39f3d5c736dce268ac5d6bb",
+        "evidence": "d7ecaefccee1a0793892a7f8204c22f935bb1046d55d8a9dae9f993cbfb9c4e9",
+        "fingerprint": "0d7d95683bcbd5b070864750d0396fb6595267f36fa0d044437cf7a4305037e0",
+        "grams": "fa2fa7108c51ee4cedccfdccf9cf3328b4ebd4233b6a582576b6319305330e1f",
+        "independent_pair": "8591529444df74d81268eb1463c7bacbeb59f95ada41585e0c8a06582a2b7b98",
+        "ordered_nodes": "6975af9db53c0ccc50a055eb4bbd9caf54e0f3d14a6eda28f840415240e04320",
+        "payload": "b3b40edbace6e288b41d103304417aa406c41c188e3cb27bdb5a4b4c06539e9a",
+        "projection": "d3847b4ce0366756ca720aba10435541a314873ba31b3894d14471cd27e408c9",
+        "schema_tag": "f1fa310d5ebc85415d3e0741ff9cf79c719de0462800babb7d347e69b964f831"
+      },
+      "validate_corpus.py": {
+        "author": "fe780d69007f4b773f44e99ce5eba4591cb3fc49ff6dbc7474a9d42c86aed6ef",
+        "cache": "769505b8abd1d3faa4ee4ab2f9b85fdd8c66bef76e2ec733b688ccb7035852f2",
+        "canonical": "1cf22959e5fb6a546246904fac8933730807c7095d6c99a917cd835a935f426c",
+        "check_fixture": "e1006688a07756ec84ba8442ea05a993c07b4e67d46a02c717347551ee23723b",
+        "compact": "afd475b519756597bdc52c20157430e397ec9c3100c1ccdf4b669eb9b9820af7",
+        "decode": "b991712c0429ae669ac74e5a3aa57b7baa7ac1d63784dc1568c90b614957b795",
+        "digest": "0ee938c2ae936d1886ea6f63230755891c80b7d67db85d5bfc57b267058bb0e9",
+        "fixed": "12b046865e6013eb167b63204ddd8122711fa991d73537b38a8462a27b45ee8b",
+        "historical_decision": "7b8253437073d44489b07c2ab435e1ee1d6559e1770ad9263b468db116de5e4d",
+        "historical_rows": "468105a2fe95328efa550e906dcdb3e96297595c6e63318052d40a25698cce56",
+        "independent_gold": "5ae8ee727f2f97829ceda5d3d73551ba99a461d2ed90abe6e142efe05a780cea",
+        "literal": "132c998a4b2857607f433f8007e9a50e4a2c495142c77d8034d976a518b8a822",
+        "make_candidate": "58057dbca80a6be0cb58a82de6db596cb9a1d620e44610967b863cdcd7b40f91",
+        "pair_decision": "33569ef1630e9a66d430640554882970e61b90f518d088feec8798dd74f0eaa7",
+        "ratio": "b8a9af24e2b252b45823e3a0a154316400e69114b1bd139fae6bf8582ad0dc9c",
+        "request": "4ee12f3beb5ebaddca1aa18ac3bf3bc616703c457eea97d3c1755e5f0cfbeaf6",
+        "save": "e986d7d9a695a57de9152bf5ec80c29ce47da11edcca8a510950118c7e2c3e04",
+        "tag": "e61c1adbd0a55ce59a8da16b9f448e5e13cc1dc33e8ee1c909caa8f855ef239e"
+      }
+    },
+    "gold": "803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec"
+  },
+  "canonicalization_contract_id": "g-extract1.freshness-canonicalization.v1",
+  "check_count": 811,
+  "checker_sha256": {
+    "independent_contamination.py": "c2a8221a37057a3433e2314a7c63fd57aac1cafe3038ba67ec9952eaf9894ef7",
+    "validate_corpus.py": "27cda5efa4856b6fb3b33a46d1daa712cc019213632dfe789686330183f22114"
+  },
+  "checks": [
+    "schema_vector:integer_0",
+    "two_string_rows:integer_0",
+    "schema_vector:integer_1",
+    "two_string_rows:integer_1",
+    "schema_vector:integer_-1",
+    "two_string_rows:integer_-1",
+    "schema_vector:integer_42",
+    "two_string_rows:integer_42",
+    "schema_vector:integer_100000000000000000000000000000000000000000000000000000000000000000000001",
+    "two_string_rows:integer_100000000000000000000000000000000000000000000000000000000000000000000001",
+    "schema_vector:number_5",
+    "two_string_rows:number_5",
+    "schema_vector:number_5.0",
+    "two_string_rows:number_5.0",
+    "schema_vector:number_5.00",
+    "two_string_rows:number_5.00",
+    "schema_vector:number_5e0",
+    "two_string_rows:number_5e0",
+    "schema_vector:number_0",
+    "two_string_rows:number_0",
+    "schema_vector:number_0.0",
+    "two_string_rows:number_0.0",
+    "schema_vector:number_-0",
+    "two_string_rows:number_-0",
+    "schema_vector:number_-0.0",
+    "two_string_rows:number_-0.0",
+    "schema_vector:number_0.50",
+    "two_string_rows:number_0.50",
+    "schema_vector:number_-12.3400",
+    "two_string_rows:number_-12.3400",
+    "schema_vector:number_125e-3",
+    "two_string_rows:number_125e-3",
+    "schema_vector:number_1e40",
+    "two_string_rows:number_1e40",
+    "schema_vector:boolean_true",
+    "two_string_rows:boolean_true",
+    "schema_vector:boolean_false",
+    "two_string_rows:boolean_false",
+    "schema_vector:temporal_2039-10-05",
+    "two_string_rows:temporal_2039-10-05",
+    "schema_vector:temporal_2032-02-29",
+    "two_string_rows:temporal_2032-02-29",
+    "schema_vector:temporal_00:00",
+    "two_string_rows:temporal_00:00",
+    "schema_vector:temporal_23:45",
+    "two_string_rows:temporal_23:45",
+    "schema_vector:string_23",
+    "two_string_rows:string_23",
+    "schema_vector:string_24",
+    "two_string_rows:string_24",
+    "schema_vector:string_25",
+    "two_string_rows:string_25",
+    "schema_vector:string_26",
+    "two_string_rows:string_26",
+    "schema_vector:string_27",
+    "two_string_rows:string_27",
+    "schema_vector:string_28",
+    "two_string_rows:string_28",
+    "schema_vector:string_29",
+    "two_string_rows:string_29",
+    "schema_vector:enum_option_a|option_b_option_a",
+    "two_string_rows:enum_option_a|option_b_option_a",
+    "schema_vector:enum_option_a|option_b_option_b",
+    "two_string_rows:enum_option_a|option_b_option_b",
+    "schema_vector:enum_option_a|option_b|option_c_option_a",
+    "two_string_rows:enum_option_a|option_b|option_c_option_a",
+    "schema_vector:enum_option_a|option_b|option_c_option_b",
+    "two_string_rows:enum_option_a|option_b|option_c_option_b",
+    "schema_vector:enum_option_a|option_b|option_c_option_c",
+    "two_string_rows:enum_option_a|option_b|option_c_option_c",
+    "schema_vector:enum_provided|not_provided_provided",
+    "two_string_rows:enum_provided|not_provided_provided",
+    "schema_vector:enum_provided|not_provided_not_provided",
+    "two_string_rows:enum_provided|not_provided_not_provided",
+    "schema_vector:source_order_and_duplicates",
+    "two_string_rows:source_order_and_duplicates",
+    "schema_vector:original_failure",
+    "two_string_rows:original_failure",
+    "supplemental_vector:integer_negative_zero",
+    "supplemental_vector:number_small_exact",
+    "supplemental_vector:number_large_exact",
+    "supplemental_vector:number_0.5",
+    "supplemental_vector:number_0.05",
+    "supplemental_vector:number_-12.34",
+    "all_nine_active_schemas",
+    "equivalence:number_five",
+    "equivalence:number_zero",
+    "equivalence:integer_zero",
+    "host_types:integer:0",
+    "host_types:integer:1",
+    "host_types:integer:-1",
+    "host_types:integer:42",
+    "host_types:integer:10000000000000000000000000000000000000000000000000000000000000000000001",
+    "host_types:number:0",
+    "host_types:number:1",
+    "host_types:number:-1",
+    "host_types:number:42",
+    "host_types:number:10000000000000000000000000000000000000000000000000000000000000000000001",
+    "exact_rational:1/8",
+    "exact_rational:-0.000",
+    "exact_rational:-617/50",
+    "temporal_host_value:YYYY-MM-DD",
+    "temporal_host_value:HH:MM",
+    "distinctness_order_or_duplicate:0",
+    "distinctness_order_or_duplicate:1",
+    "distinctness_order_or_duplicate:2",
+    "distinctness_order_or_duplicate:3",
+    "distinctness_order_or_duplicate:4",
+    "distinctness_order_or_duplicate:5",
+    "distinctness_order_or_duplicate:6",
+    "invalid_input_rejected:primary:0",
+    "invalid_input_rejected:independent:0",
+    "invalid_input_rejected:primary:1",
+    "invalid_input_rejected:independent:1",
+    "invalid_input_rejected:primary:2",
+    "invalid_input_rejected:independent:2",
+    "invalid_input_rejected:primary:3",
+    "invalid_input_rejected:independent:3",
+    "invalid_input_rejected:primary:4",
+    "invalid_input_rejected:independent:4",
+    "invalid_input_rejected:primary:5",
+    "invalid_input_rejected:independent:5",
+    "invalid_input_rejected:primary:6",
+    "invalid_input_rejected:independent:6",
+    "invalid_input_rejected:primary:7",
+    "invalid_input_rejected:independent:7",
+    "invalid_input_rejected:primary:8",
+    "invalid_input_rejected:independent:8",
+    "invalid_input_rejected:primary:9",
+    "invalid_input_rejected:independent:9",
+    "invalid_input_rejected:primary:10",
+    "invalid_input_rejected:independent:10",
+    "invalid_input_rejected:primary:11",
+    "invalid_input_rejected:independent:11",
+    "invalid_input_rejected:primary:12",
+    "invalid_input_rejected:independent:12",
+    "invalid_input_rejected:primary:13",
+    "invalid_input_rejected:independent:13",
+    "invalid_input_rejected:primary:14",
+    "invalid_input_rejected:independent:14",
+    "invalid_input_rejected:primary:15",
+    "invalid_input_rejected:independent:15",
+    "invalid_input_rejected:primary:16",
+    "invalid_input_rejected:independent:16",
+    "invalid_input_rejected:primary:17",
+    "invalid_input_rejected:independent:17",
+    "invalid_input_rejected:primary:18",
+    "invalid_input_rejected:independent:18",
+    "invalid_input_rejected:primary:19",
+    "invalid_input_rejected:independent:19",
+    "invalid_input_rejected:primary:20",
+    "invalid_input_rejected:independent:20",
+    "invalid_input_rejected:primary:21",
+    "invalid_input_rejected:independent:21",
+    "invalid_input_rejected:primary:22",
+    "invalid_input_rejected:independent:22",
+    "invalid_input_rejected:primary:23",
+    "invalid_input_rejected:independent:23",
+    "invalid_input_rejected:primary:24",
+    "invalid_input_rejected:independent:24",
+    "invalid_input_rejected:primary:25",
+    "invalid_input_rejected:independent:25",
+    "invalid_input_rejected:primary:26",
+    "invalid_input_rejected:independent:26",
+    "invalid_input_rejected:primary:27",
+    "invalid_input_rejected:independent:27",
+    "invalid_input_rejected:primary:28",
+    "invalid_input_rejected:independent:28",
+    "invalid_input_rejected:primary:29",
+    "invalid_input_rejected:independent:29",
+    "invalid_input_rejected:primary:30",
+    "invalid_input_rejected:independent:30",
+    "byte_mutation_rejected:primary:integer_numeric_scalar",
+    "byte_mutation_rejected:independent:integer_numeric_scalar",
+    "byte_mutation_rejected:primary:number_numeric_scalar",
+    "byte_mutation_rejected:independent:number_numeric_scalar",
+    "byte_mutation_rejected:primary:number_exponent_retained",
+    "byte_mutation_rejected:independent:number_exponent_retained",
+    "byte_mutation_rejected:primary:number_trailing_zeroes_retained",
+    "byte_mutation_rejected:independent:number_trailing_zeroes_retained",
+    "byte_mutation_rejected:primary:number_empty_fraction_point_retained",
+    "byte_mutation_rejected:independent:number_empty_fraction_point_retained",
+    "byte_mutation_rejected:primary:negative_zero_retained",
+    "byte_mutation_rejected:independent:negative_zero_retained",
+    "byte_mutation_rejected:primary:integer_leading_plus",
+    "byte_mutation_rejected:independent:integer_leading_plus",
+    "byte_mutation_rejected:primary:integer_leading_zeroes",
+    "byte_mutation_rejected:independent:integer_leading_zeroes",
+    "byte_mutation_rejected:primary:boolean_capitalized",
+    "byte_mutation_rejected:independent:boolean_capitalized",
+    "byte_mutation_rejected:primary:date_reformatted",
+    "byte_mutation_rejected:independent:date_reformatted",
+    "byte_mutation_rejected:primary:time_reformatted",
+    "byte_mutation_rejected:independent:time_reformatted",
+    "byte_mutation_rejected:primary:string_trimmed",
+    "byte_mutation_rejected:independent:string_trimmed",
+    "byte_mutation_rejected:primary:enum_ordinal",
+    "byte_mutation_rejected:independent:enum_ordinal",
+    "byte_mutation_rejected:primary:atoms_sorted",
+    "byte_mutation_rejected:independent:atoms_sorted",
+    "byte_mutation_rejected:primary:duplicate_removed",
+    "byte_mutation_rejected:independent:duplicate_removed",
+    "byte_mutation_rejected:primary:row_missing_element",
+    "byte_mutation_rejected:independent:row_missing_element",
+    "byte_mutation_rejected:primary:row_extra_element",
+    "byte_mutation_rejected:independent:row_extra_element",
+    "byte_mutation_rejected:primary:null_value",
+    "byte_mutation_rejected:independent:null_value",
+    "byte_mutation_rejected:primary:object_value",
+    "byte_mutation_rejected:independent:object_value",
+    "byte_mutation_rejected:primary:array_value",
+    "byte_mutation_rejected:independent:array_value",
+    "byte_mutation_rejected:primary:schema_enum_reordered",
+    "byte_mutation_rejected:independent:schema_enum_reordered",
+    "byte_mutation_rejected:primary:absence_included",
+    "byte_mutation_rejected:independent:absence_included",
+    "byte_mutation_rejected:primary:derived_output_included",
+    "byte_mutation_rejected:independent:derived_output_included",
+    "byte_mutation_rejected:primary:integer_number_schema_collapse",
+    "byte_mutation_rejected:independent:integer_number_schema_collapse",
+    "byte_mutation_rejected:primary:boolean_scalar",
+    "byte_mutation_rejected:independent:boolean_scalar",
+    "byte_mutation_rejected:primary:semantic_tag_integer",
+    "byte_mutation_rejected:independent:semantic_tag_integer",
+    "byte_mutation_rejected:primary:semantic_tag_number",
+    "byte_mutation_rejected:independent:semantic_tag_number",
+    "byte_mutation_rejected:primary:semantic_tag_date",
+    "byte_mutation_rejected:independent:semantic_tag_date",
+    "byte_mutation_rejected:primary:semantic_tag_time",
+    "byte_mutation_rejected:independent:semantic_tag_time",
+    "byte_mutation_rejected:primary:semantic_tag_string",
+    "byte_mutation_rejected:independent:semantic_tag_string",
+    "byte_mutation_rejected:primary:semantic_tag_boolean",
+    "byte_mutation_rejected:independent:semantic_tag_boolean",
+    "byte_mutation_rejected:primary:semantic_tag_enum",
+    "byte_mutation_rejected:independent:semantic_tag_enum",
+    "byte_mutation_rejected:primary:whitespace_formatted_json",
+    "byte_mutation_rejected:independent:whitespace_formatted_json",
+    "byte_mutation_rejected:primary:ensure_ascii_true_non_ascii",
+    "byte_mutation_rejected:independent:ensure_ascii_true_non_ascii",
+    "byte_mutation_rejected:primary:trailing_newline",
+    "byte_mutation_rejected:independent:trailing_newline",
+    "entire_accepted_mutation_catalog",
+    "168_existing_bases",
+    "unchanged_existing_gold:A:R2:E1-01:PRIMARY",
+    "variant_freshness:A:R2:E1-01:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E1-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E1-02:PRIMARY",
+    "variant_freshness:A:R2:E1-02:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E1-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E1-03:PRIMARY",
+    "variant_freshness:A:R2:E1-03:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E1-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E1-04:PRIMARY",
+    "variant_freshness:A:R2:E1-04:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E1-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E1-05:PRIMARY",
+    "variant_freshness:A:R2:E1-05:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E1-05:PRIMARY:SINGLE",
+    "original_failure_replay",
+    "original_failure_history_binding",
+    "unchanged_existing_gold:A:R2:E2-01:PRIMARY",
+    "variant_freshness:A:R2:E2-01:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E2-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E2-02:PRIMARY",
+    "variant_freshness:A:R2:E2-02:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E2-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E2-03:PRIMARY",
+    "variant_freshness:A:R2:E2-03:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E2-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E2-04:PRIMARY",
+    "variant_freshness:A:R2:E2-04:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E2-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E2-05:PRIMARY",
+    "variant_freshness:A:R2:E2-05:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E2-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E3-01:PRIMARY",
+    "variant_freshness:A:R2:E3-01:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E3-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E3-02:PRIMARY",
+    "variant_freshness:A:R2:E3-02:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E3-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E3-03:PRIMARY",
+    "variant_freshness:A:R2:E3-03:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E3-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E3-04:PRIMARY",
+    "variant_freshness:A:R2:E3-04:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E3-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E3-05:PRIMARY",
+    "variant_freshness:A:R2:E3-05:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E3-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E4-01:PRIMARY",
+    "variant_freshness:A:R2:E4-01:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E4-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E4-02:PRIMARY",
+    "variant_freshness:A:R2:E4-02:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E4-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E4-03:PRIMARY",
+    "variant_freshness:A:R2:E4-03:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E4-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E4-04:PRIMARY",
+    "variant_freshness:A:R2:E4-04:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E4-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E4-05:PRIMARY",
+    "variant_freshness:A:R2:E4-05:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E4-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E5-01:PRIMARY",
+    "variant_freshness:A:R2:E5-01:PRIMARY:CF1",
+    "freshness_integration:A:R2:E5-01:PRIMARY:CF1",
+    "variant_freshness:A:R2:E5-01:PRIMARY:CF2",
+    "freshness_integration:A:R2:E5-01:PRIMARY:CF2",
+    "unchanged_existing_gold:A:R2:E5-02:PRIMARY",
+    "variant_freshness:A:R2:E5-02:PRIMARY:CF1",
+    "freshness_integration:A:R2:E5-02:PRIMARY:CF1",
+    "variant_freshness:A:R2:E5-02:PRIMARY:CF2",
+    "freshness_integration:A:R2:E5-02:PRIMARY:CF2",
+    "unchanged_existing_gold:A:R2:E5-03:PRIMARY",
+    "variant_freshness:A:R2:E5-03:PRIMARY:CF1",
+    "freshness_integration:A:R2:E5-03:PRIMARY:CF1",
+    "variant_freshness:A:R2:E5-03:PRIMARY:CF2",
+    "freshness_integration:A:R2:E5-03:PRIMARY:CF2",
+    "unchanged_existing_gold:A:R2:E5-04:PRIMARY",
+    "variant_freshness:A:R2:E5-04:PRIMARY:CF1",
+    "freshness_integration:A:R2:E5-04:PRIMARY:CF1",
+    "variant_freshness:A:R2:E5-04:PRIMARY:CF2",
+    "freshness_integration:A:R2:E5-04:PRIMARY:CF2",
+    "unchanged_existing_gold:A:R2:E5-05:PRIMARY",
+    "variant_freshness:A:R2:E5-05:PRIMARY:CF1",
+    "freshness_integration:A:R2:E5-05:PRIMARY:CF1",
+    "variant_freshness:A:R2:E5-05:PRIMARY:CF2",
+    "freshness_integration:A:R2:E5-05:PRIMARY:CF2",
+    "unchanged_existing_gold:A:R2:E6-01:PRIMARY",
+    "variant_freshness:A:R2:E6-01:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E6-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E6-02:PRIMARY",
+    "variant_freshness:A:R2:E6-02:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E6-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E6-03:PRIMARY",
+    "variant_freshness:A:R2:E6-03:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E6-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E6-04:PRIMARY",
+    "variant_freshness:A:R2:E6-04:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E6-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E6-05:PRIMARY",
+    "variant_freshness:A:R2:E6-05:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E6-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E7-01:PRIMARY",
+    "variant_freshness:A:R2:E7-01:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E7-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E7-02:PRIMARY",
+    "variant_freshness:A:R2:E7-02:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E7-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E7-03:PRIMARY",
+    "variant_freshness:A:R2:E7-03:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E7-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E7-04:PRIMARY",
+    "variant_freshness:A:R2:E7-04:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E7-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E7-05:PRIMARY",
+    "variant_freshness:A:R2:E7-05:PRIMARY:SINGLE",
+    "freshness_integration:A:R2:E7-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E1-01:PRIMARY",
+    "variant_freshness:A:R3:E1-01:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E1-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E1-02:PRIMARY",
+    "variant_freshness:A:R3:E1-02:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E1-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E1-03:PRIMARY",
+    "variant_freshness:A:R3:E1-03:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E1-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E1-04:PRIMARY",
+    "variant_freshness:A:R3:E1-04:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E1-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E1-05:PRIMARY",
+    "variant_freshness:A:R3:E1-05:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E1-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E2-01:PRIMARY",
+    "variant_freshness:A:R3:E2-01:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E2-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E2-02:PRIMARY",
+    "variant_freshness:A:R3:E2-02:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E2-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E2-03:PRIMARY",
+    "variant_freshness:A:R3:E2-03:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E2-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E2-04:PRIMARY",
+    "variant_freshness:A:R3:E2-04:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E2-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E2-05:PRIMARY",
+    "variant_freshness:A:R3:E2-05:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E2-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E3-01:PRIMARY",
+    "variant_freshness:A:R3:E3-01:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E3-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E3-02:PRIMARY",
+    "variant_freshness:A:R3:E3-02:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E3-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E3-03:PRIMARY",
+    "variant_freshness:A:R3:E3-03:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E3-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E3-04:PRIMARY",
+    "variant_freshness:A:R3:E3-04:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E3-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E3-05:PRIMARY",
+    "variant_freshness:A:R3:E3-05:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E3-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E4-01:PRIMARY",
+    "variant_freshness:A:R3:E4-01:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E4-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E4-02:PRIMARY",
+    "variant_freshness:A:R3:E4-02:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E4-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E4-03:PRIMARY",
+    "variant_freshness:A:R3:E4-03:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E4-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E4-04:PRIMARY",
+    "variant_freshness:A:R3:E4-04:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E4-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E4-05:PRIMARY",
+    "variant_freshness:A:R3:E4-05:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E4-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E5-01:PRIMARY",
+    "variant_freshness:A:R3:E5-01:PRIMARY:CF1",
+    "freshness_integration:A:R3:E5-01:PRIMARY:CF1",
+    "variant_freshness:A:R3:E5-01:PRIMARY:CF2",
+    "freshness_integration:A:R3:E5-01:PRIMARY:CF2",
+    "unchanged_existing_gold:A:R3:E5-02:PRIMARY",
+    "variant_freshness:A:R3:E5-02:PRIMARY:CF1",
+    "freshness_integration:A:R3:E5-02:PRIMARY:CF1",
+    "variant_freshness:A:R3:E5-02:PRIMARY:CF2",
+    "freshness_integration:A:R3:E5-02:PRIMARY:CF2",
+    "unchanged_existing_gold:A:R3:E5-03:PRIMARY",
+    "variant_freshness:A:R3:E5-03:PRIMARY:CF1",
+    "freshness_integration:A:R3:E5-03:PRIMARY:CF1",
+    "variant_freshness:A:R3:E5-03:PRIMARY:CF2",
+    "freshness_integration:A:R3:E5-03:PRIMARY:CF2",
+    "unchanged_existing_gold:A:R3:E5-04:PRIMARY",
+    "variant_freshness:A:R3:E5-04:PRIMARY:CF1",
+    "freshness_integration:A:R3:E5-04:PRIMARY:CF1",
+    "variant_freshness:A:R3:E5-04:PRIMARY:CF2",
+    "freshness_integration:A:R3:E5-04:PRIMARY:CF2",
+    "unchanged_existing_gold:A:R3:E5-05:PRIMARY",
+    "variant_freshness:A:R3:E5-05:PRIMARY:CF1",
+    "freshness_integration:A:R3:E5-05:PRIMARY:CF1",
+    "variant_freshness:A:R3:E5-05:PRIMARY:CF2",
+    "freshness_integration:A:R3:E5-05:PRIMARY:CF2",
+    "unchanged_existing_gold:A:R3:E6-01:PRIMARY",
+    "variant_freshness:A:R3:E6-01:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E6-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E6-02:PRIMARY",
+    "variant_freshness:A:R3:E6-02:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E6-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E6-03:PRIMARY",
+    "variant_freshness:A:R3:E6-03:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E6-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E6-04:PRIMARY",
+    "variant_freshness:A:R3:E6-04:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E6-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E6-05:PRIMARY",
+    "variant_freshness:A:R3:E6-05:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E6-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E7-01:PRIMARY",
+    "variant_freshness:A:R3:E7-01:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E7-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E7-02:PRIMARY",
+    "variant_freshness:A:R3:E7-02:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E7-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E7-03:PRIMARY",
+    "variant_freshness:A:R3:E7-03:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E7-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E7-04:PRIMARY",
+    "variant_freshness:A:R3:E7-04:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E7-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R3:E7-05:PRIMARY",
+    "variant_freshness:A:R3:E7-05:PRIMARY:SINGLE",
+    "freshness_integration:A:R3:E7-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:A:R2:E1-01:RESERVE",
+    "variant_freshness:A:R2:E1-01:RESERVE:SINGLE",
+    "freshness_integration:A:R2:E1-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:A:R2:E2-01:RESERVE",
+    "variant_freshness:A:R2:E2-01:RESERVE:SINGLE",
+    "freshness_integration:A:R2:E2-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:A:R2:E3-01:RESERVE",
+    "variant_freshness:A:R2:E3-01:RESERVE:SINGLE",
+    "freshness_integration:A:R2:E3-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:A:R2:E4-01:RESERVE",
+    "variant_freshness:A:R2:E4-01:RESERVE:SINGLE",
+    "freshness_integration:A:R2:E4-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:A:R2:E5-01:RESERVE",
+    "variant_freshness:A:R2:E5-01:RESERVE:CF1",
+    "freshness_integration:A:R2:E5-01:RESERVE:CF1",
+    "variant_freshness:A:R2:E5-01:RESERVE:CF2",
+    "freshness_integration:A:R2:E5-01:RESERVE:CF2",
+    "unchanged_existing_gold:A:R2:E6-01:RESERVE",
+    "variant_freshness:A:R2:E6-01:RESERVE:SINGLE",
+    "freshness_integration:A:R2:E6-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:A:R2:E7-01:RESERVE",
+    "variant_freshness:A:R2:E7-01:RESERVE:SINGLE",
+    "freshness_integration:A:R2:E7-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:A:R3:E1-01:RESERVE",
+    "variant_freshness:A:R3:E1-01:RESERVE:SINGLE",
+    "freshness_integration:A:R3:E1-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:A:R3:E2-01:RESERVE",
+    "variant_freshness:A:R3:E2-01:RESERVE:SINGLE",
+    "freshness_integration:A:R3:E2-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:A:R3:E3-01:RESERVE",
+    "variant_freshness:A:R3:E3-01:RESERVE:SINGLE",
+    "freshness_integration:A:R3:E3-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:A:R3:E4-01:RESERVE",
+    "variant_freshness:A:R3:E4-01:RESERVE:SINGLE",
+    "freshness_integration:A:R3:E4-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:A:R3:E5-01:RESERVE",
+    "variant_freshness:A:R3:E5-01:RESERVE:CF1",
+    "freshness_integration:A:R3:E5-01:RESERVE:CF1",
+    "variant_freshness:A:R3:E5-01:RESERVE:CF2",
+    "freshness_integration:A:R3:E5-01:RESERVE:CF2",
+    "unchanged_existing_gold:A:R3:E6-01:RESERVE",
+    "variant_freshness:A:R3:E6-01:RESERVE:SINGLE",
+    "freshness_integration:A:R3:E6-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:A:R3:E7-01:RESERVE",
+    "variant_freshness:A:R3:E7-01:RESERVE:SINGLE",
+    "freshness_integration:A:R3:E7-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:B:R2:E1-01:PRIMARY",
+    "variant_freshness:B:R2:E1-01:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E1-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E1-02:PRIMARY",
+    "variant_freshness:B:R2:E1-02:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E1-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E1-03:PRIMARY",
+    "variant_freshness:B:R2:E1-03:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E1-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E1-04:PRIMARY",
+    "variant_freshness:B:R2:E1-04:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E1-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E1-05:PRIMARY",
+    "variant_freshness:B:R2:E1-05:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E1-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E2-01:PRIMARY",
+    "variant_freshness:B:R2:E2-01:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E2-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E2-02:PRIMARY",
+    "variant_freshness:B:R2:E2-02:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E2-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E2-03:PRIMARY",
+    "variant_freshness:B:R2:E2-03:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E2-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E2-04:PRIMARY",
+    "variant_freshness:B:R2:E2-04:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E2-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E2-05:PRIMARY",
+    "variant_freshness:B:R2:E2-05:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E2-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E3-01:PRIMARY",
+    "variant_freshness:B:R2:E3-01:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E3-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E3-02:PRIMARY",
+    "variant_freshness:B:R2:E3-02:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E3-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E3-03:PRIMARY",
+    "variant_freshness:B:R2:E3-03:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E3-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E3-04:PRIMARY",
+    "variant_freshness:B:R2:E3-04:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E3-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E3-05:PRIMARY",
+    "variant_freshness:B:R2:E3-05:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E3-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E4-01:PRIMARY",
+    "variant_freshness:B:R2:E4-01:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E4-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E4-02:PRIMARY",
+    "variant_freshness:B:R2:E4-02:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E4-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E4-03:PRIMARY",
+    "variant_freshness:B:R2:E4-03:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E4-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E4-04:PRIMARY",
+    "variant_freshness:B:R2:E4-04:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E4-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E4-05:PRIMARY",
+    "variant_freshness:B:R2:E4-05:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E4-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E5-01:PRIMARY",
+    "variant_freshness:B:R2:E5-01:PRIMARY:CF1",
+    "freshness_integration:B:R2:E5-01:PRIMARY:CF1",
+    "variant_freshness:B:R2:E5-01:PRIMARY:CF2",
+    "freshness_integration:B:R2:E5-01:PRIMARY:CF2",
+    "unchanged_existing_gold:B:R2:E5-02:PRIMARY",
+    "variant_freshness:B:R2:E5-02:PRIMARY:CF1",
+    "freshness_integration:B:R2:E5-02:PRIMARY:CF1",
+    "variant_freshness:B:R2:E5-02:PRIMARY:CF2",
+    "freshness_integration:B:R2:E5-02:PRIMARY:CF2",
+    "unchanged_existing_gold:B:R2:E5-03:PRIMARY",
+    "variant_freshness:B:R2:E5-03:PRIMARY:CF1",
+    "freshness_integration:B:R2:E5-03:PRIMARY:CF1",
+    "variant_freshness:B:R2:E5-03:PRIMARY:CF2",
+    "freshness_integration:B:R2:E5-03:PRIMARY:CF2",
+    "unchanged_existing_gold:B:R2:E5-04:PRIMARY",
+    "variant_freshness:B:R2:E5-04:PRIMARY:CF1",
+    "freshness_integration:B:R2:E5-04:PRIMARY:CF1",
+    "variant_freshness:B:R2:E5-04:PRIMARY:CF2",
+    "freshness_integration:B:R2:E5-04:PRIMARY:CF2",
+    "unchanged_existing_gold:B:R2:E5-05:PRIMARY",
+    "variant_freshness:B:R2:E5-05:PRIMARY:CF1",
+    "freshness_integration:B:R2:E5-05:PRIMARY:CF1",
+    "variant_freshness:B:R2:E5-05:PRIMARY:CF2",
+    "freshness_integration:B:R2:E5-05:PRIMARY:CF2",
+    "unchanged_existing_gold:B:R2:E6-01:PRIMARY",
+    "variant_freshness:B:R2:E6-01:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E6-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E6-02:PRIMARY",
+    "variant_freshness:B:R2:E6-02:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E6-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E6-03:PRIMARY",
+    "variant_freshness:B:R2:E6-03:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E6-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E6-04:PRIMARY",
+    "variant_freshness:B:R2:E6-04:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E6-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E6-05:PRIMARY",
+    "variant_freshness:B:R2:E6-05:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E6-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E7-01:PRIMARY",
+    "variant_freshness:B:R2:E7-01:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E7-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E7-02:PRIMARY",
+    "variant_freshness:B:R2:E7-02:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E7-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E7-03:PRIMARY",
+    "variant_freshness:B:R2:E7-03:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E7-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E7-04:PRIMARY",
+    "variant_freshness:B:R2:E7-04:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E7-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E7-05:PRIMARY",
+    "variant_freshness:B:R2:E7-05:PRIMARY:SINGLE",
+    "freshness_integration:B:R2:E7-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E1-01:PRIMARY",
+    "variant_freshness:B:R3:E1-01:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E1-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E1-02:PRIMARY",
+    "variant_freshness:B:R3:E1-02:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E1-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E1-03:PRIMARY",
+    "variant_freshness:B:R3:E1-03:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E1-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E1-04:PRIMARY",
+    "variant_freshness:B:R3:E1-04:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E1-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E1-05:PRIMARY",
+    "variant_freshness:B:R3:E1-05:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E1-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E2-01:PRIMARY",
+    "variant_freshness:B:R3:E2-01:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E2-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E2-02:PRIMARY",
+    "variant_freshness:B:R3:E2-02:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E2-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E2-03:PRIMARY",
+    "variant_freshness:B:R3:E2-03:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E2-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E2-04:PRIMARY",
+    "variant_freshness:B:R3:E2-04:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E2-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E2-05:PRIMARY",
+    "variant_freshness:B:R3:E2-05:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E2-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E3-01:PRIMARY",
+    "variant_freshness:B:R3:E3-01:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E3-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E3-02:PRIMARY",
+    "variant_freshness:B:R3:E3-02:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E3-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E3-03:PRIMARY",
+    "variant_freshness:B:R3:E3-03:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E3-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E3-04:PRIMARY",
+    "variant_freshness:B:R3:E3-04:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E3-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E3-05:PRIMARY",
+    "variant_freshness:B:R3:E3-05:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E3-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E4-01:PRIMARY",
+    "variant_freshness:B:R3:E4-01:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E4-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E4-02:PRIMARY",
+    "variant_freshness:B:R3:E4-02:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E4-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E4-03:PRIMARY",
+    "variant_freshness:B:R3:E4-03:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E4-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E4-04:PRIMARY",
+    "variant_freshness:B:R3:E4-04:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E4-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E4-05:PRIMARY",
+    "variant_freshness:B:R3:E4-05:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E4-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E5-01:PRIMARY",
+    "variant_freshness:B:R3:E5-01:PRIMARY:CF1",
+    "freshness_integration:B:R3:E5-01:PRIMARY:CF1",
+    "variant_freshness:B:R3:E5-01:PRIMARY:CF2",
+    "freshness_integration:B:R3:E5-01:PRIMARY:CF2",
+    "unchanged_existing_gold:B:R3:E5-02:PRIMARY",
+    "variant_freshness:B:R3:E5-02:PRIMARY:CF1",
+    "freshness_integration:B:R3:E5-02:PRIMARY:CF1",
+    "variant_freshness:B:R3:E5-02:PRIMARY:CF2",
+    "freshness_integration:B:R3:E5-02:PRIMARY:CF2",
+    "unchanged_existing_gold:B:R3:E5-03:PRIMARY",
+    "variant_freshness:B:R3:E5-03:PRIMARY:CF1",
+    "freshness_integration:B:R3:E5-03:PRIMARY:CF1",
+    "variant_freshness:B:R3:E5-03:PRIMARY:CF2",
+    "freshness_integration:B:R3:E5-03:PRIMARY:CF2",
+    "unchanged_existing_gold:B:R3:E5-04:PRIMARY",
+    "variant_freshness:B:R3:E5-04:PRIMARY:CF1",
+    "freshness_integration:B:R3:E5-04:PRIMARY:CF1",
+    "variant_freshness:B:R3:E5-04:PRIMARY:CF2",
+    "freshness_integration:B:R3:E5-04:PRIMARY:CF2",
+    "unchanged_existing_gold:B:R3:E5-05:PRIMARY",
+    "variant_freshness:B:R3:E5-05:PRIMARY:CF1",
+    "freshness_integration:B:R3:E5-05:PRIMARY:CF1",
+    "variant_freshness:B:R3:E5-05:PRIMARY:CF2",
+    "freshness_integration:B:R3:E5-05:PRIMARY:CF2",
+    "unchanged_existing_gold:B:R3:E6-01:PRIMARY",
+    "variant_freshness:B:R3:E6-01:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E6-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E6-02:PRIMARY",
+    "variant_freshness:B:R3:E6-02:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E6-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E6-03:PRIMARY",
+    "variant_freshness:B:R3:E6-03:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E6-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E6-04:PRIMARY",
+    "variant_freshness:B:R3:E6-04:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E6-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E6-05:PRIMARY",
+    "variant_freshness:B:R3:E6-05:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E6-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E7-01:PRIMARY",
+    "variant_freshness:B:R3:E7-01:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E7-01:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E7-02:PRIMARY",
+    "variant_freshness:B:R3:E7-02:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E7-02:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E7-03:PRIMARY",
+    "variant_freshness:B:R3:E7-03:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E7-03:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E7-04:PRIMARY",
+    "variant_freshness:B:R3:E7-04:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E7-04:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R3:E7-05:PRIMARY",
+    "variant_freshness:B:R3:E7-05:PRIMARY:SINGLE",
+    "freshness_integration:B:R3:E7-05:PRIMARY:SINGLE",
+    "unchanged_existing_gold:B:R2:E1-01:RESERVE",
+    "variant_freshness:B:R2:E1-01:RESERVE:SINGLE",
+    "freshness_integration:B:R2:E1-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:B:R2:E2-01:RESERVE",
+    "variant_freshness:B:R2:E2-01:RESERVE:SINGLE",
+    "freshness_integration:B:R2:E2-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:B:R2:E3-01:RESERVE",
+    "variant_freshness:B:R2:E3-01:RESERVE:SINGLE",
+    "freshness_integration:B:R2:E3-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:B:R2:E4-01:RESERVE",
+    "variant_freshness:B:R2:E4-01:RESERVE:SINGLE",
+    "freshness_integration:B:R2:E4-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:B:R2:E5-01:RESERVE",
+    "variant_freshness:B:R2:E5-01:RESERVE:CF1",
+    "freshness_integration:B:R2:E5-01:RESERVE:CF1",
+    "variant_freshness:B:R2:E5-01:RESERVE:CF2",
+    "freshness_integration:B:R2:E5-01:RESERVE:CF2",
+    "unchanged_existing_gold:B:R2:E6-01:RESERVE",
+    "variant_freshness:B:R2:E6-01:RESERVE:SINGLE",
+    "freshness_integration:B:R2:E6-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:B:R2:E7-01:RESERVE",
+    "variant_freshness:B:R2:E7-01:RESERVE:SINGLE",
+    "freshness_integration:B:R2:E7-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:B:R3:E1-01:RESERVE",
+    "variant_freshness:B:R3:E1-01:RESERVE:SINGLE",
+    "freshness_integration:B:R3:E1-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:B:R3:E2-01:RESERVE",
+    "variant_freshness:B:R3:E2-01:RESERVE:SINGLE",
+    "freshness_integration:B:R3:E2-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:B:R3:E3-01:RESERVE",
+    "variant_freshness:B:R3:E3-01:RESERVE:SINGLE",
+    "freshness_integration:B:R3:E3-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:B:R3:E4-01:RESERVE",
+    "variant_freshness:B:R3:E4-01:RESERVE:SINGLE",
+    "freshness_integration:B:R3:E4-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:B:R3:E5-01:RESERVE",
+    "variant_freshness:B:R3:E5-01:RESERVE:CF1",
+    "freshness_integration:B:R3:E5-01:RESERVE:CF1",
+    "variant_freshness:B:R3:E5-01:RESERVE:CF2",
+    "freshness_integration:B:R3:E5-01:RESERVE:CF2",
+    "unchanged_existing_gold:B:R3:E6-01:RESERVE",
+    "variant_freshness:B:R3:E6-01:RESERVE:SINGLE",
+    "freshness_integration:B:R3:E6-01:RESERVE:SINGLE",
+    "unchanged_existing_gold:B:R3:E7-01:RESERVE",
+    "variant_freshness:B:R3:E7-01:RESERVE:SINGLE",
+    "freshness_integration:B:R3:E7-01:RESERVE:SINGLE",
+    "exact_192_variant_inventory",
+    "original_failure_case_present",
+    "no_field_names:primary",
+    "no_fixture_ids:primary",
+    "source_order:primary",
+    "source_duplicates:primary",
+    "VALUE_only:primary",
+    "no_field_names:independent",
+    "no_fixture_ids:independent",
+    "source_order:independent",
+    "source_duplicates:independent",
+    "VALUE_only:independent",
+    "all_protected_bytes_and_gold_unchanged_during_replay"
+  ],
+  "corpus_accepted": false,
+  "corpus_finalized": false,
+  "disagreement_count": 0,
+  "existing_gold_replay": [
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E1-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E1-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E1-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E1-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E1-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E2-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E2-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E2-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E2-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E2-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E3-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E3-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E3-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E3-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E3-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E4-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E4-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E4-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E4-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E4-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E5-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E5-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E5-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E5-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E5-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E6-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E6-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E6-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E6-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E6-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E7-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E7-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E7-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E7-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E7-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E1-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E1-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E1-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E1-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E1-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E2-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E2-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E2-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E2-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E2-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E3-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E3-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E3-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E3-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E3-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E4-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E4-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E4-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E4-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E4-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E5-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E5-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E5-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E5-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E5-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E6-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E6-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E6-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E6-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E6-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E7-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E7-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E7-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E7-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E7-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E1-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E2-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E3-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E4-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E5-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E6-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R2:E7-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E1-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E2-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E3-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E4-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E5-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E6-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "A:R3:E7-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E1-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E1-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E1-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E1-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E1-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E2-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E2-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E2-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E2-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E2-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E3-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E3-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E3-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E3-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E3-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E4-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E4-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E4-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E4-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E4-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E5-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E5-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E5-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E5-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E5-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E6-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E6-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E6-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E6-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E6-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E7-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E7-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E7-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E7-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E7-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E1-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E1-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E1-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E1-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E1-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E2-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E2-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E2-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E2-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E2-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E3-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E3-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E3-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E3-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E3-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E4-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E4-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E4-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E4-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E4-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E5-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E5-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E5-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E5-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E5-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E6-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E6-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E6-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E6-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E6-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E7-01:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E7-02:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E7-03:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E7-04:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E7-05:PRIMARY"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E1-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E2-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E3-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E4-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E5-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E6-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R2:E7-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E1-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E2-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E3-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E4-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E5-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E6-01:RESERVE"
+    },
+    {
+      "existing_gold_matches": true,
+      "logical_base_id": "B:R3:E7-01:RESERVE"
+    }
+  ],
+  "final_contamination_campaign_run": false,
+  "governance": {
+    "G_ROUTE4": "CLOSED FAILED unchanged",
+    "belief_effects": "none",
+    "corpus_regeneration": 0,
+    "experiment_execution": false,
+    "gold_modifications": 0,
+    "mechanical_pilot": false,
+    "provider_model_calls": 0,
+    "runtime_implementation": false
+  },
+  "host_type_results": [
+    {
+      "agreement": true,
+      "host_types": [
+        "int",
+        "str",
+        "Decimal",
+        "Fraction"
+      ],
+      "schema": "integer",
+      "value": "0"
+    },
+    {
+      "agreement": true,
+      "host_types": [
+        "int",
+        "str",
+        "Decimal",
+        "Fraction"
+      ],
+      "schema": "integer",
+      "value": "1"
+    },
+    {
+      "agreement": true,
+      "host_types": [
+        "int",
+        "str",
+        "Decimal",
+        "Fraction"
+      ],
+      "schema": "integer",
+      "value": "-1"
+    },
+    {
+      "agreement": true,
+      "host_types": [
+        "int",
+        "str",
+        "Decimal",
+        "Fraction"
+      ],
+      "schema": "integer",
+      "value": "42"
+    },
+    {
+      "agreement": true,
+      "host_types": [
+        "int",
+        "str",
+        "Decimal",
+        "Fraction"
+      ],
+      "schema": "integer",
+      "value": "10000000000000000000000000000000000000000000000000000000000000000000001"
+    },
+    {
+      "agreement": true,
+      "host_types": [
+        "int",
+        "str",
+        "Decimal",
+        "Fraction"
+      ],
+      "schema": "number",
+      "value": "0"
+    },
+    {
+      "agreement": true,
+      "host_types": [
+        "int",
+        "str",
+        "Decimal",
+        "Fraction"
+      ],
+      "schema": "number",
+      "value": "1"
+    },
+    {
+      "agreement": true,
+      "host_types": [
+        "int",
+        "str",
+        "Decimal",
+        "Fraction"
+      ],
+      "schema": "number",
+      "value": "-1"
+    },
+    {
+      "agreement": true,
+      "host_types": [
+        "int",
+        "str",
+        "Decimal",
+        "Fraction"
+      ],
+      "schema": "number",
+      "value": "42"
+    },
+    {
+      "agreement": true,
+      "host_types": [
+        "int",
+        "str",
+        "Decimal",
+        "Fraction"
+      ],
+      "schema": "number",
+      "value": "10000000000000000000000000000000000000000000000000000000000000000000001"
+    }
+  ],
+  "independent_implementation": "Local typed schema/parser path; Decimal token to exact Fraction; separate integer long division produces minimal plain decimal.",
+  "invalid_semantic_inputs": [
+    {
+      "independent_rejected": true,
+      "index": 0,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 1,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 2,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 3,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 4,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 5,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 6,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 7,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 8,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 9,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 10,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 11,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 12,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 13,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 14,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 15,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 16,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 17,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 18,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 19,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 20,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 21,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 22,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 23,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 24,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 25,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 26,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 27,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 28,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 29,
+      "primary_rejected": true
+    },
+    {
+      "independent_rejected": true,
+      "index": 30,
+      "primary_rejected": true
+    }
+  ],
+  "manifest_frozen": false,
+  "mutation_count": 35,
+  "mutation_results": [
+    {
+      "id": "integer_numeric_scalar",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"integer\",0]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "number_numeric_scalar",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"number\",5]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "number_exponent_retained",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"number\",\"5e0\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "number_trailing_zeroes_retained",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"number\",\"0.50\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "number_empty_fraction_point_retained",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"number\",\"5.\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "negative_zero_retained",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"number\",\"-0\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "integer_leading_plus",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"integer\",\"+1\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "integer_leading_zeroes",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"integer\",\"01\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "boolean_capitalized",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"boolean\",\"True\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "date_reformatted",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"YYYY-MM-DD\",\"10/05/2039\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "time_reformatted",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"HH:MM\",\"11:45 PM\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "string_trimmed",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"string\",\"label_001_01\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "enum_ordinal",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"option_a|option_b\",1]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "atoms_sorted",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"integer\",\"42\"],[\"string\",\"label_001_01\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "duplicate_removed",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"integer\",\"42\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "row_missing_element",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"integer\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "row_extra_element",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"integer\",\"0\",\"extra\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "null_value",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"integer\",null]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "object_value",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"integer\",{}]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "array_value",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"integer\",[]]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "schema_enum_reordered",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"option_b|option_a\",\"option_a\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "absence_included",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"provided|not_provided\",\"not_provided\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "derived_output_included",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"integer\",\"1\"],[\"integer\",\"2\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "integer_number_schema_collapse",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"integer\",\"5\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "boolean_scalar",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"boolean\",true]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "semantic_tag_integer",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"INTEGER\",\"0\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "semantic_tag_number",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"NUMBER\",\"5\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "semantic_tag_date",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"DATE\",\"2039-10-05\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "semantic_tag_time",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"TIME\",\"23:45\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "semantic_tag_string",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"STRING\",\"label_001_01\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "semantic_tag_boolean",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"BOOLEAN\",\"true\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "semantic_tag_enum",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"ENUM\",\"option_a\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "whitespace_formatted_json",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"integer\", \"0\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "ensure_ascii_true_non_ascii",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"string\",\"\\u00e9\"]]",
+      "primary_rejected": true
+    },
+    {
+      "id": "trailing_newline",
+      "independent_rejected": true,
+      "mutated_utf8": "[[\"integer\",\"0\"]]\n",
+      "primary_rejected": true
+    }
+  ],
+  "normative_path": "DESIGN_CANDIDATE.json#/freshness_canonicalization_contract",
+  "numeric_equivalence_results": [
+    {
+      "expected_utf8": "[[\"number\",\"5\"]]",
+      "id": "number_five",
+      "primary_and_independent_agree": true,
+      "schema_type": "number",
+      "values": [
+        "5",
+        "5.0",
+        "5.00",
+        "5e0"
+      ]
+    },
+    {
+      "expected_utf8": "[[\"number\",\"0\"]]",
+      "id": "number_zero",
+      "primary_and_independent_agree": true,
+      "schema_type": "number",
+      "values": [
+        "0",
+        "0.0",
+        "-0",
+        "-0.0"
+      ]
+    },
+    {
+      "expected_utf8": "[[\"integer\",\"0\"]]",
+      "id": "integer_zero",
+      "primary_and_independent_agree": true,
+      "schema_type": "integer",
+      "values": [
+        "0",
+        "-0"
+      ]
+    }
+  ],
+  "original_failure_replay": {
+    "after_independent_utf8": "[[\"YYYY-MM-DD\",\"2039-10-05\"],[\"integer\",\"0\"]]",
+    "after_primary_utf8": "[[\"YYYY-MM-DD\",\"2039-10-05\"],[\"integer\",\"0\"]]",
+    "agreement": true,
+    "before_independent_utf8": "[[\"DATE\",\"2039-10-05\"],[\"INTEGER\",\"0\"]]",
+    "before_primary_utf8": "[[\"DATE\",\"2039-10-05\"],[\"INTEGER\",0]]",
+    "logical_base_id": "A:R2:E1-05:PRIMARY",
+    "variant_id": "SINGLE"
+  },
+  "primary_implementation": "Local schema parser and schema-specific conversion; exact reduced-rational power-of-ten scaling via unchanged local fixed(); freshness removes integral .0.",
+  "rendered_variant_count": 192,
+  "replay_before": {
+    "accepted_artifacts_sha256": {
+      "experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.json": "21a50ed5b15187d87cf71cdbfc367923ef2492a8a87133432fa5eab6042f535b",
+      "experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.md": "80dd8252342d9127bbae36e2f69f1d516d248a39c719cfda76a20eed092d0741",
+      "experiments/G-EXTRACT1-candidate/DESIGN_REVISION_CHANGELOG.md": "0c0a2b8be9e756ffe67fffad4aa18fb500b65cd02e31ecf304d8cec496cc0fe2",
+      "experiments/G-EXTRACT1-candidate/DESIGN_VALIDATION_REPORT.json": "e518b8275e6763c2027b0fce560726e75f2209add2e3f06cd2fdbecfb1bed7ea",
+      "experiments/G-EXTRACT1-candidate/HUMAN_MACHINE_EQUIVALENCE_CHECKLIST.md": "0fe64ded4bfb588a9bd02c7a8ce1b7712d17798230c815f5ce0dd32f6cea1916",
+      "experiments/G-EXTRACT1-candidate/blueprint/.gitattributes": "18558cf45b3c9a976165730e240cd14b473fbe411cde4317cb3b95d936265306",
+      "experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.json": "30776ffc4b6b3528bf33dcbdb8e1100e669febd140f65fc25846f808bffd666a",
+      "experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.md": "25d14928948515d1afa31a10df82b652fa5bbad8822b2c997f49f084b7e03554",
+      "experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT_VALIDATION_REPORT.json": "0999b9e52df1e8d8ab4000964f5aa5556b5cbeed72f0d31d6591cccb1e9784c4",
+      "experiments/G-EXTRACT1-candidate/blueprint/validate_blueprint.py": "59e55798a8a6044306872c8f1d60c72f671b76b89028893d48b87d91cb19ec2e",
+      "experiments/G-EXTRACT1-candidate/validate_design.py": "d7c32da272884f019214b5670e177f9b2bf00b66414f5bce0a257a7f05fdca9f"
+    },
+    "files": {
+      "AUTHORING_ATTEMPTS.json": "b9860b6bd4f662c46935773463bf6caf78035a1c2aa01c0b6a55e5100b9aa8da",
+      "AUTHORING_CANDIDATES.json": "f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068",
+      "AUTHORING_FEASIBILITY_REPORT.json": "8767a025c1123541cc858873aff41b60ecc1f8b0186d72ccc738761a24771433",
+      "FINALIZATION_FAILURE_REPORT.json": "588b6141e3c25b561dff49d7b004ca508468ed39f4dbef8a8e16c54f69918730",
+      "FRESHNESS_CANONICALIZATION_DIAGNOSIS_REPORT.json": "7395408dcf283821d19ed81f6986d64c47b4d31f9dd76d1c72481f7dff48a442",
+      "independent_contamination.py": "c2a8221a37057a3433e2314a7c63fd57aac1cafe3038ba67ec9952eaf9894ef7",
+      "validate_corpus.py": "27cda5efa4856b6fb3b33a46d1daa712cc019213632dfe789686330183f22114"
+    },
+    "gold_projection_sha256": "803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec",
+    "historical_sha256": {
+      "G_ROUTE4_CLOSURE.json": "d992a169a2be293909f0fe0f1b39720656f40a09dc4f6b4e9c53449110cef8be",
+      "PHASE_B_UNSAFE_STOP_DIAGNOSTIC.json": "461a85368a6cbbd39429bebbae883c0b17be614db52e343150b23051041b4868"
+    }
+  },
+  "root_cause": "Both old raw_values paths used semantic tags. Primary canonical(INTEGER) returned int; independent canon(INTEGER) returned str. Gold/display serializers were incorrectly reused for freshness.",
+  "schema_vector_count": 45,
+  "schema_vector_results": [
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"integer\",\"0\"]]",
+      "id": "integer_0",
+      "independent_sha256": "e9fba33c37d48f2b3105d44e504e146db9f0d778e43fda03c9b40a9302d1c6a0",
+      "primary_sha256": "e9fba33c37d48f2b3105d44e504e146db9f0d778e43fda03c9b40a9302d1c6a0",
+      "schemas": [
+        "integer"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"integer\",\"1\"]]",
+      "id": "integer_1",
+      "independent_sha256": "77c14c7ee894f3f14ace33d7e15dfb363c3f37ff86811a9c23b5a9e7ead46b03",
+      "primary_sha256": "77c14c7ee894f3f14ace33d7e15dfb363c3f37ff86811a9c23b5a9e7ead46b03",
+      "schemas": [
+        "integer"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"integer\",\"-1\"]]",
+      "id": "integer_-1",
+      "independent_sha256": "17e5b6cec6952e74d57691841f07d21e24bf751aecc40c60dd2eeed9fa9e2d26",
+      "primary_sha256": "17e5b6cec6952e74d57691841f07d21e24bf751aecc40c60dd2eeed9fa9e2d26",
+      "schemas": [
+        "integer"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"integer\",\"42\"]]",
+      "id": "integer_42",
+      "independent_sha256": "eba1898b6002d0a96605a27cd851158c443d6e3470eabd96aaebea209274d30f",
+      "primary_sha256": "eba1898b6002d0a96605a27cd851158c443d6e3470eabd96aaebea209274d30f",
+      "schemas": [
+        "integer"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"integer\",\"100000000000000000000000000000000000000000000000000000000000000000000001\"]]",
+      "id": "integer_100000000000000000000000000000000000000000000000000000000000000000000001",
+      "independent_sha256": "f8e4ffc9bb26bb7d7741c734fe68a971a455ff632568712d625677d83f3974dd",
+      "primary_sha256": "f8e4ffc9bb26bb7d7741c734fe68a971a455ff632568712d625677d83f3974dd",
+      "schemas": [
+        "integer"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"number\",\"5\"]]",
+      "id": "number_5",
+      "independent_sha256": "e61e56940d6dfebc041cacb1f1d7adbd44e3177927c2b90d620c2e3fc13e4eb6",
+      "primary_sha256": "e61e56940d6dfebc041cacb1f1d7adbd44e3177927c2b90d620c2e3fc13e4eb6",
+      "schemas": [
+        "number"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"number\",\"5\"]]",
+      "id": "number_5.0",
+      "independent_sha256": "e61e56940d6dfebc041cacb1f1d7adbd44e3177927c2b90d620c2e3fc13e4eb6",
+      "primary_sha256": "e61e56940d6dfebc041cacb1f1d7adbd44e3177927c2b90d620c2e3fc13e4eb6",
+      "schemas": [
+        "number"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"number\",\"5\"]]",
+      "id": "number_5.00",
+      "independent_sha256": "e61e56940d6dfebc041cacb1f1d7adbd44e3177927c2b90d620c2e3fc13e4eb6",
+      "primary_sha256": "e61e56940d6dfebc041cacb1f1d7adbd44e3177927c2b90d620c2e3fc13e4eb6",
+      "schemas": [
+        "number"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"number\",\"5\"]]",
+      "id": "number_5e0",
+      "independent_sha256": "e61e56940d6dfebc041cacb1f1d7adbd44e3177927c2b90d620c2e3fc13e4eb6",
+      "primary_sha256": "e61e56940d6dfebc041cacb1f1d7adbd44e3177927c2b90d620c2e3fc13e4eb6",
+      "schemas": [
+        "number"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"number\",\"0\"]]",
+      "id": "number_0",
+      "independent_sha256": "e3a4a789f49a710e26e99b266b08c5cf731500a4376d7dd2e43fa0b9ce6e2ce1",
+      "primary_sha256": "e3a4a789f49a710e26e99b266b08c5cf731500a4376d7dd2e43fa0b9ce6e2ce1",
+      "schemas": [
+        "number"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"number\",\"0\"]]",
+      "id": "number_0.0",
+      "independent_sha256": "e3a4a789f49a710e26e99b266b08c5cf731500a4376d7dd2e43fa0b9ce6e2ce1",
+      "primary_sha256": "e3a4a789f49a710e26e99b266b08c5cf731500a4376d7dd2e43fa0b9ce6e2ce1",
+      "schemas": [
+        "number"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"number\",\"0\"]]",
+      "id": "number_-0",
+      "independent_sha256": "e3a4a789f49a710e26e99b266b08c5cf731500a4376d7dd2e43fa0b9ce6e2ce1",
+      "primary_sha256": "e3a4a789f49a710e26e99b266b08c5cf731500a4376d7dd2e43fa0b9ce6e2ce1",
+      "schemas": [
+        "number"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"number\",\"0\"]]",
+      "id": "number_-0.0",
+      "independent_sha256": "e3a4a789f49a710e26e99b266b08c5cf731500a4376d7dd2e43fa0b9ce6e2ce1",
+      "primary_sha256": "e3a4a789f49a710e26e99b266b08c5cf731500a4376d7dd2e43fa0b9ce6e2ce1",
+      "schemas": [
+        "number"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"number\",\"0.5\"]]",
+      "id": "number_0.50",
+      "independent_sha256": "ddbca39f361060f87038eaf5abb2286e8872824c8f692d3c2b3f735262cebc12",
+      "primary_sha256": "ddbca39f361060f87038eaf5abb2286e8872824c8f692d3c2b3f735262cebc12",
+      "schemas": [
+        "number"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"number\",\"-12.34\"]]",
+      "id": "number_-12.3400",
+      "independent_sha256": "a4a77442ee849688102a1a4d1d48558e2add540e6979f7078ff6d6f7da8920f0",
+      "primary_sha256": "a4a77442ee849688102a1a4d1d48558e2add540e6979f7078ff6d6f7da8920f0",
+      "schemas": [
+        "number"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"number\",\"0.125\"]]",
+      "id": "number_125e-3",
+      "independent_sha256": "4ed9665a6093c39808ecf1fe8037b1ad91fee94cafafa7fffb11b77c454342b1",
+      "primary_sha256": "4ed9665a6093c39808ecf1fe8037b1ad91fee94cafafa7fffb11b77c454342b1",
+      "schemas": [
+        "number"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"number\",\"10000000000000000000000000000000000000000\"]]",
+      "id": "number_1e40",
+      "independent_sha256": "fd57b47e1210d9885c0ccf884f93084100420ff0cdee302fbfa9cac83895da0c",
+      "primary_sha256": "fd57b47e1210d9885c0ccf884f93084100420ff0cdee302fbfa9cac83895da0c",
+      "schemas": [
+        "number"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"boolean\",\"true\"]]",
+      "id": "boolean_true",
+      "independent_sha256": "38ebb67ac1fc5a2045fcf9a0e4dbecc57e9583047e7eb38628c5a4c8efb28d04",
+      "primary_sha256": "38ebb67ac1fc5a2045fcf9a0e4dbecc57e9583047e7eb38628c5a4c8efb28d04",
+      "schemas": [
+        "boolean"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"boolean\",\"false\"]]",
+      "id": "boolean_false",
+      "independent_sha256": "360aecec1b44b413a20a115e32e46f95c28ccb12f9cf50f5312d268aecfc804a",
+      "primary_sha256": "360aecec1b44b413a20a115e32e46f95c28ccb12f9cf50f5312d268aecfc804a",
+      "schemas": [
+        "boolean"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"YYYY-MM-DD\",\"2039-10-05\"]]",
+      "id": "temporal_2039-10-05",
+      "independent_sha256": "6da27b67b8f449814b07de18c21b6857139811116064891b6f8f13a356db9d9c",
+      "primary_sha256": "6da27b67b8f449814b07de18c21b6857139811116064891b6f8f13a356db9d9c",
+      "schemas": [
+        "YYYY-MM-DD"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"YYYY-MM-DD\",\"2032-02-29\"]]",
+      "id": "temporal_2032-02-29",
+      "independent_sha256": "611c32bfd3af81e5da63ea143c183620299a949e00166c87d6489edaf6013bc7",
+      "primary_sha256": "611c32bfd3af81e5da63ea143c183620299a949e00166c87d6489edaf6013bc7",
+      "schemas": [
+        "YYYY-MM-DD"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"HH:MM\",\"00:00\"]]",
+      "id": "temporal_00:00",
+      "independent_sha256": "90be33292f162c997be4fc1cb49cbe805b7b0b9c08f9015f9195094eb13f5267",
+      "primary_sha256": "90be33292f162c997be4fc1cb49cbe805b7b0b9c08f9015f9195094eb13f5267",
+      "schemas": [
+        "HH:MM"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"HH:MM\",\"23:45\"]]",
+      "id": "temporal_23:45",
+      "independent_sha256": "557d6c81685223855bc94552b3aef3f6d809870043315a5ea94fad6410221381",
+      "primary_sha256": "557d6c81685223855bc94552b3aef3f6d809870043315a5ea94fad6410221381",
+      "schemas": [
+        "HH:MM"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"string\",\"label_001_01\"]]",
+      "id": "string_23",
+      "independent_sha256": "c57bf2ce981d1af3e961388afeefa325f0b3acc431cb11f25d7c153cf98926fd",
+      "primary_sha256": "c57bf2ce981d1af3e961388afeefa325f0b3acc431cb11f25d7c153cf98926fd",
+      "schemas": [
+        "string"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"string\",\"code_002_02\"]]",
+      "id": "string_24",
+      "independent_sha256": "b9c42f59556e22190d14afa8c8e092098d6f4cdbc74fe2482b3d4b1cfed25afc",
+      "primary_sha256": "b9c42f59556e22190d14afa8c8e092098d6f4cdbc74fe2482b3d4b1cfed25afc",
+      "schemas": [
+        "string"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"string\",\"id_003_03\"]]",
+      "id": "string_25",
+      "independent_sha256": "48b8e91c9513fcdea3de72f239318c67ff9939024907c5237ff3d4b47c80827b",
+      "primary_sha256": "48b8e91c9513fcdea3de72f239318c67ff9939024907c5237ff3d4b47c80827b",
+      "schemas": [
+        "string"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"string\",\"  Exact Value  \"]]",
+      "id": "string_26",
+      "independent_sha256": "9cc32bd1114d97a94c343322dc6e9073d81b307e7102689108008bd570a6741e",
+      "primary_sha256": "9cc32bd1114d97a94c343322dc6e9073d81b307e7102689108008bd570a6741e",
+      "schemas": [
+        "string"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"string\",\"Cafe\u0301\"]]",
+      "id": "string_27",
+      "independent_sha256": "d73162bb5ae64246dd693462850a7bdce4b8125c20c03bc04d2f6039ec8605e2",
+      "primary_sha256": "d73162bb5ae64246dd693462850a7bdce4b8125c20c03bc04d2f6039ec8605e2",
+      "schemas": [
+        "string"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"string\",\"\u00e9\"]]",
+      "id": "string_28",
+      "independent_sha256": "ec6bd7f62029471cfad9fda42d546d9d94e848734a987498ee75d638f7a27e7c",
+      "primary_sha256": "ec6bd7f62029471cfad9fda42d546d9d94e848734a987498ee75d638f7a27e7c",
+      "schemas": [
+        "string"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"string\",\"Line\\nQuote\\\"\\\\End\"]]",
+      "id": "string_29",
+      "independent_sha256": "628194d2533cb24cc4b334a438d3c93d3d1235610587b85b81524de545156d08",
+      "primary_sha256": "628194d2533cb24cc4b334a438d3c93d3d1235610587b85b81524de545156d08",
+      "schemas": [
+        "string"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"option_a|option_b\",\"option_a\"]]",
+      "id": "enum_option_a|option_b_option_a",
+      "independent_sha256": "bd7be03d62ef14b5cafe44f4e4feec2eb5b95d63ed61400b72ac96ba4d14a2de",
+      "primary_sha256": "bd7be03d62ef14b5cafe44f4e4feec2eb5b95d63ed61400b72ac96ba4d14a2de",
+      "schemas": [
+        "option_a|option_b"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"option_a|option_b\",\"option_b\"]]",
+      "id": "enum_option_a|option_b_option_b",
+      "independent_sha256": "8e1063d07d1721abc111828add79de00025ae0ac089d8a2755ccec3ad42d6f62",
+      "primary_sha256": "8e1063d07d1721abc111828add79de00025ae0ac089d8a2755ccec3ad42d6f62",
+      "schemas": [
+        "option_a|option_b"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"option_a|option_b|option_c\",\"option_a\"]]",
+      "id": "enum_option_a|option_b|option_c_option_a",
+      "independent_sha256": "18da516baa64f53c453b510f73a410f66085222c96e6e1881415ef8d7a78fe30",
+      "primary_sha256": "18da516baa64f53c453b510f73a410f66085222c96e6e1881415ef8d7a78fe30",
+      "schemas": [
+        "option_a|option_b|option_c"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"option_a|option_b|option_c\",\"option_b\"]]",
+      "id": "enum_option_a|option_b|option_c_option_b",
+      "independent_sha256": "07b3d57e2117ba1d216d13c977afe91476078a496c03b66b917837f6a31099e0",
+      "primary_sha256": "07b3d57e2117ba1d216d13c977afe91476078a496c03b66b917837f6a31099e0",
+      "schemas": [
+        "option_a|option_b|option_c"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"option_a|option_b|option_c\",\"option_c\"]]",
+      "id": "enum_option_a|option_b|option_c_option_c",
+      "independent_sha256": "6a24bd58d08cd163457b45f3e2decfef94c4eb35e3787987950dd134b9163bf6",
+      "primary_sha256": "6a24bd58d08cd163457b45f3e2decfef94c4eb35e3787987950dd134b9163bf6",
+      "schemas": [
+        "option_a|option_b|option_c"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"provided|not_provided\",\"provided\"]]",
+      "id": "enum_provided|not_provided_provided",
+      "independent_sha256": "d71a6d46d365da4d3ff5153c4858c8f43c44cfbabc56072f1a614daf777f16ab",
+      "primary_sha256": "d71a6d46d365da4d3ff5153c4858c8f43c44cfbabc56072f1a614daf777f16ab",
+      "schemas": [
+        "provided|not_provided"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"provided|not_provided\",\"not_provided\"]]",
+      "id": "enum_provided|not_provided_not_provided",
+      "independent_sha256": "ad994937f4f796e598d8e9cf2b8e86ced05b7a11a9ba6ee4ebb27fa1a070a41f",
+      "primary_sha256": "ad994937f4f796e598d8e9cf2b8e86ced05b7a11a9ba6ee4ebb27fa1a070a41f",
+      "schemas": [
+        "provided|not_provided"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"integer\",\"42\"],[\"string\",\"label_001_01\"],[\"integer\",\"42\"],[\"number\",\"5\"]]",
+      "id": "source_order_and_duplicates",
+      "independent_sha256": "b3cabeff83c383e7612a39eecbe6b76b67a9518028b1125aa834456c22447077",
+      "primary_sha256": "b3cabeff83c383e7612a39eecbe6b76b67a9518028b1125aa834456c22447077",
+      "schemas": [
+        "integer",
+        "string",
+        "integer",
+        "number"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"YYYY-MM-DD\",\"2039-10-05\"],[\"integer\",\"0\"]]",
+      "id": "original_failure",
+      "independent_sha256": "1ee6e4c39b0d8b3f533f852212dab4df097a0796945b1a0bbadcbbd1d8986329",
+      "primary_sha256": "1ee6e4c39b0d8b3f533f852212dab4df097a0796945b1a0bbadcbbd1d8986329",
+      "schemas": [
+        "YYYY-MM-DD",
+        "integer"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"integer\",\"0\"]]",
+      "id": "integer_negative_zero",
+      "independent_sha256": "e9fba33c37d48f2b3105d44e504e146db9f0d778e43fda03c9b40a9302d1c6a0",
+      "primary_sha256": "e9fba33c37d48f2b3105d44e504e146db9f0d778e43fda03c9b40a9302d1c6a0",
+      "schemas": [
+        "integer"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"number\",\"0.000000000000000000000000000001\"]]",
+      "id": "number_small_exact",
+      "independent_sha256": "1a622105cbe471d63b82d5e40ea1c7c954abae6a64fd6dd9dda5e2cd059780df",
+      "primary_sha256": "1a622105cbe471d63b82d5e40ea1c7c954abae6a64fd6dd9dda5e2cd059780df",
+      "schemas": [
+        "number"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"number\",\"123456789012345678901234567890.125\"]]",
+      "id": "number_large_exact",
+      "independent_sha256": "875f21f5bb9adb4635a851c6e5afc1af8417f4d7b197e930feee53ff59e2a73f",
+      "primary_sha256": "875f21f5bb9adb4635a851c6e5afc1af8417f4d7b197e930feee53ff59e2a73f",
+      "schemas": [
+        "number"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"number\",\"0.5\"]]",
+      "id": "number_0.5",
+      "independent_sha256": "ddbca39f361060f87038eaf5abb2286e8872824c8f692d3c2b3f735262cebc12",
+      "primary_sha256": "ddbca39f361060f87038eaf5abb2286e8872824c8f692d3c2b3f735262cebc12",
+      "schemas": [
+        "number"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"number\",\"0.05\"]]",
+      "id": "number_0.05",
+      "independent_sha256": "3f4aeaee57d344bb75ec0af7634583485e8e76080eaa58dea6c2d35d7106f4ca",
+      "primary_sha256": "3f4aeaee57d344bb75ec0af7634583485e8e76080eaa58dea6c2d35d7106f4ca",
+      "schemas": [
+        "number"
+      ]
+    },
+    {
+      "agreement": true,
+      "expected_utf8": "[[\"number\",\"-12.34\"]]",
+      "id": "number_-12.34",
+      "independent_sha256": "a4a77442ee849688102a1a4d1d48558e2add540e6979f7078ff6d6f7da8920f0",
+      "primary_sha256": "a4a77442ee849688102a1a4d1d48558e2add540e6979f7078ff6d6f7da8920f0",
+      "schemas": [
+        "number"
+      ]
+    }
+  ],
+  "schema_version": "g-extract1.freshness-checker-repair-report.v1",
+  "scope_audit": {
+    "independent_contamination.py": {
+      "integration_changed_only_in_freshness": true,
+      "new_local_freshness_functions": [
+        "freshness_from_source_facts",
+        "freshness_sequence_bytes",
+        "freshness_text",
+        "freshness_type",
+        "require_freshness_bytes"
+      ],
+      "unchanged_existing_functions": [
+        "dump",
+        "decimal",
+        "schema_tag",
+        "canon",
+        "ordered_nodes",
+        "evaluate",
+        "fingerprint",
+        "payload",
+        "grams",
+        "projection",
+        "independent_pair"
+      ]
+    },
+    "validate_corpus.py": {
+      "integration_changed_only_in_freshness": true,
+      "new_local_freshness_functions": [
+        "freshness_from_source_facts",
+        "freshness_schema",
+        "freshness_semantic_text",
+        "freshness_sequence_bytes",
+        "require_freshness_bytes"
+      ],
+      "unchanged_existing_functions": [
+        "compact",
+        "digest",
+        "save",
+        "fixed",
+        "tag",
+        "decode",
+        "canonical",
+        "independent_gold",
+        "literal",
+        "make_candidate",
+        "check_fixture",
+        "request",
+        "ratio",
+        "pair_decision",
+        "historical_rows",
+        "historical_decision",
+        "author"
+      ]
+    }
+  },
+  "shared_freshness_helper": false,
+  "specification_commits": {
+    "blueprint": "3bf939ea3160596d89c64f1feef790477991cf8a",
+    "contamination_repair": "62c783bd8be708a86c82a9e00c80b0fa6fb5b459",
+    "freshness_amendment": "e12484224cd11cf9c84026eb7deadf8c4eb9bab8"
+  },
+  "status": "READY_TO_RESUME_G_EXTRACT1_CORPUS_FINALIZATION",
+  "test_artifact_sha256": "9d66678d1fa8b62e820b25cc50305ba91ed112d6add57d63f9f5dc734bea70ae",
+  "validation_scope": "narrow deterministic freshness compatibility only; no final corpus acceptance",
+  "variant_results": [
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "7bfef4d066bcbed4866be7e8db8e19554d79fff0c444e9225e057ed696b38323",
+      "logical_base_id": "A:R2:E1-01:PRIMARY",
+      "primary_bytes_sha256": "7bfef4d066bcbed4866be7e8db8e19554d79fff0c444e9225e057ed696b38323",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "ff6b9117d32bfcd29fec2d056189a5bca3f3087629a313a53e54ab1fc23c9b1f",
+      "logical_base_id": "A:R2:E1-02:PRIMARY",
+      "primary_bytes_sha256": "ff6b9117d32bfcd29fec2d056189a5bca3f3087629a313a53e54ab1fc23c9b1f",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "b8bd54eec96510607feb8a51cbd93c99e64272a5d7173fc670bb4b558b1a4f49",
+      "logical_base_id": "A:R2:E1-03:PRIMARY",
+      "primary_bytes_sha256": "b8bd54eec96510607feb8a51cbd93c99e64272a5d7173fc670bb4b558b1a4f49",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "62d69849f1f84d6aeb17ea16f5fa172e3af5af0b8209b76310ac9b29c9cd4896",
+      "logical_base_id": "A:R2:E1-04:PRIMARY",
+      "primary_bytes_sha256": "62d69849f1f84d6aeb17ea16f5fa172e3af5af0b8209b76310ac9b29c9cd4896",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "1ee6e4c39b0d8b3f533f852212dab4df097a0796945b1a0bbadcbbd1d8986329",
+      "logical_base_id": "A:R2:E1-05:PRIMARY",
+      "primary_bytes_sha256": "1ee6e4c39b0d8b3f533f852212dab4df097a0796945b1a0bbadcbbd1d8986329",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "ceec65a151fbe85f94f561ed3219ed0e553c981e1169d0e90872fd1f8944d761",
+      "logical_base_id": "A:R2:E2-01:PRIMARY",
+      "primary_bytes_sha256": "ceec65a151fbe85f94f561ed3219ed0e553c981e1169d0e90872fd1f8944d761",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "d15ae0a45b3ecb6e4e21cccee696db09d85a3ae14134f20f36ac0b7aa4b93ac5",
+      "logical_base_id": "A:R2:E2-02:PRIMARY",
+      "primary_bytes_sha256": "d15ae0a45b3ecb6e4e21cccee696db09d85a3ae14134f20f36ac0b7aa4b93ac5",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "3d463b876646973318b1ee8150cd7180c7c357dbc1826aa7e137e85c570167f7",
+      "logical_base_id": "A:R2:E2-03:PRIMARY",
+      "primary_bytes_sha256": "3d463b876646973318b1ee8150cd7180c7c357dbc1826aa7e137e85c570167f7",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "fd85137d1e01bb9d036fc17e0cd5afbe657dc8b66e6ca01264b63aec900c1c88",
+      "logical_base_id": "A:R2:E2-04:PRIMARY",
+      "primary_bytes_sha256": "fd85137d1e01bb9d036fc17e0cd5afbe657dc8b66e6ca01264b63aec900c1c88",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "316b7fd69cce5329a269a6caddf561313c5804c7c4193a0988829e8e562cafa6",
+      "logical_base_id": "A:R2:E2-05:PRIMARY",
+      "primary_bytes_sha256": "316b7fd69cce5329a269a6caddf561313c5804c7c4193a0988829e8e562cafa6",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "0badba5085b87acab3cf9f989c9a2811567175eb8394fbebb0c0e8919ef6ab96",
+      "logical_base_id": "A:R2:E3-01:PRIMARY",
+      "primary_bytes_sha256": "0badba5085b87acab3cf9f989c9a2811567175eb8394fbebb0c0e8919ef6ab96",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "052579cdda14e073ae33f9a9b1f304a72e55fc67f7a2b8fe83c5b788d59c1af0",
+      "logical_base_id": "A:R2:E3-02:PRIMARY",
+      "primary_bytes_sha256": "052579cdda14e073ae33f9a9b1f304a72e55fc67f7a2b8fe83c5b788d59c1af0",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "dacccc4318854e21b4e8469d3c52576ffa5ce0747ecc93cc3443da83d57151b1",
+      "logical_base_id": "A:R2:E3-03:PRIMARY",
+      "primary_bytes_sha256": "dacccc4318854e21b4e8469d3c52576ffa5ce0747ecc93cc3443da83d57151b1",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "b69916574317a31b14ea3584cd1408d7635e48d0bbfe3129f2c6a02a761e7514",
+      "logical_base_id": "A:R2:E3-04:PRIMARY",
+      "primary_bytes_sha256": "b69916574317a31b14ea3584cd1408d7635e48d0bbfe3129f2c6a02a761e7514",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "620e1b97242d7bbbe3eb2c0c20dd1ea6bcc5b05ab6cc4f6bbbdc7552ae70d001",
+      "logical_base_id": "A:R2:E3-05:PRIMARY",
+      "primary_bytes_sha256": "620e1b97242d7bbbe3eb2c0c20dd1ea6bcc5b05ab6cc4f6bbbdc7552ae70d001",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "65a6775a61438dbd9a700a597e59a85172e0853b293d6ca714cf8ff1fc4394b5",
+      "logical_base_id": "A:R2:E4-01:PRIMARY",
+      "primary_bytes_sha256": "65a6775a61438dbd9a700a597e59a85172e0853b293d6ca714cf8ff1fc4394b5",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "b4af4ee90406ca2b6fca76a15e30b7236daf15292847dc4b73e44e1a8a8635c0",
+      "logical_base_id": "A:R2:E4-02:PRIMARY",
+      "primary_bytes_sha256": "b4af4ee90406ca2b6fca76a15e30b7236daf15292847dc4b73e44e1a8a8635c0",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "3a7caa378942e90b87a2ffb7d4ee8769013d164216e1a3b904b11b7be3c84529",
+      "logical_base_id": "A:R2:E4-03:PRIMARY",
+      "primary_bytes_sha256": "3a7caa378942e90b87a2ffb7d4ee8769013d164216e1a3b904b11b7be3c84529",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "db6094a363f76374698f482f7d3aea1bd745e70218a972979769f10f2cfee79e",
+      "logical_base_id": "A:R2:E4-04:PRIMARY",
+      "primary_bytes_sha256": "db6094a363f76374698f482f7d3aea1bd745e70218a972979769f10f2cfee79e",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "eb704418d31935929d6d2ce092ae38a4ec5e9a955e3c64e3cf5bc208c8e5981d",
+      "logical_base_id": "A:R2:E4-05:PRIMARY",
+      "primary_bytes_sha256": "eb704418d31935929d6d2ce092ae38a4ec5e9a955e3c64e3cf5bc208c8e5981d",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "17ce2df7f764a51c1d6537eb6241fff492b2667622eece0e398f5507cc49e348",
+      "logical_base_id": "A:R2:E5-01:PRIMARY",
+      "primary_bytes_sha256": "17ce2df7f764a51c1d6537eb6241fff492b2667622eece0e398f5507cc49e348",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "17ce2df7f764a51c1d6537eb6241fff492b2667622eece0e398f5507cc49e348",
+      "logical_base_id": "A:R2:E5-01:PRIMARY",
+      "primary_bytes_sha256": "17ce2df7f764a51c1d6537eb6241fff492b2667622eece0e398f5507cc49e348",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "c176370879ed38ca56c730d01f3a93f87e6c611dc7b73207886049e9d2cf58e2",
+      "logical_base_id": "A:R2:E5-02:PRIMARY",
+      "primary_bytes_sha256": "c176370879ed38ca56c730d01f3a93f87e6c611dc7b73207886049e9d2cf58e2",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "c176370879ed38ca56c730d01f3a93f87e6c611dc7b73207886049e9d2cf58e2",
+      "logical_base_id": "A:R2:E5-02:PRIMARY",
+      "primary_bytes_sha256": "c176370879ed38ca56c730d01f3a93f87e6c611dc7b73207886049e9d2cf58e2",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "32c502206cc1ef475df710b232c6ee9efbcf30dfd134b125a43653f26ecc2bf2",
+      "logical_base_id": "A:R2:E5-03:PRIMARY",
+      "primary_bytes_sha256": "32c502206cc1ef475df710b232c6ee9efbcf30dfd134b125a43653f26ecc2bf2",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "32c502206cc1ef475df710b232c6ee9efbcf30dfd134b125a43653f26ecc2bf2",
+      "logical_base_id": "A:R2:E5-03:PRIMARY",
+      "primary_bytes_sha256": "32c502206cc1ef475df710b232c6ee9efbcf30dfd134b125a43653f26ecc2bf2",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "45ea847b967a9bd5f6e0c3264fd0ae2a5aa632b69213a3eff1863379164c9217",
+      "logical_base_id": "A:R2:E5-04:PRIMARY",
+      "primary_bytes_sha256": "45ea847b967a9bd5f6e0c3264fd0ae2a5aa632b69213a3eff1863379164c9217",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "45ea847b967a9bd5f6e0c3264fd0ae2a5aa632b69213a3eff1863379164c9217",
+      "logical_base_id": "A:R2:E5-04:PRIMARY",
+      "primary_bytes_sha256": "45ea847b967a9bd5f6e0c3264fd0ae2a5aa632b69213a3eff1863379164c9217",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "a63c305a8cab213f51e117fe305474fadaff6768b4e00d20040d0a914906cdd5",
+      "logical_base_id": "A:R2:E5-05:PRIMARY",
+      "primary_bytes_sha256": "a63c305a8cab213f51e117fe305474fadaff6768b4e00d20040d0a914906cdd5",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "a63c305a8cab213f51e117fe305474fadaff6768b4e00d20040d0a914906cdd5",
+      "logical_base_id": "A:R2:E5-05:PRIMARY",
+      "primary_bytes_sha256": "a63c305a8cab213f51e117fe305474fadaff6768b4e00d20040d0a914906cdd5",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "f30a5bfc2e4ec757672786e90f6e8ac8d208be50bf4e9fb00959f484f31ba703",
+      "logical_base_id": "A:R2:E6-01:PRIMARY",
+      "primary_bytes_sha256": "f30a5bfc2e4ec757672786e90f6e8ac8d208be50bf4e9fb00959f484f31ba703",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "9bfc203dc7c04ae707cc1456ba3658611005d9bf9d37055fa396d709e4013384",
+      "logical_base_id": "A:R2:E6-02:PRIMARY",
+      "primary_bytes_sha256": "9bfc203dc7c04ae707cc1456ba3658611005d9bf9d37055fa396d709e4013384",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "25b6cafd9deffe02c5ce63bd41e9d7bc02a76777d7abbe98d6405dbcfaba1e16",
+      "logical_base_id": "A:R2:E6-03:PRIMARY",
+      "primary_bytes_sha256": "25b6cafd9deffe02c5ce63bd41e9d7bc02a76777d7abbe98d6405dbcfaba1e16",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "a67d70340c6a2052deb9749a33a3dab4ede2fd4676a9352f5acb07b319211f6e",
+      "logical_base_id": "A:R2:E6-04:PRIMARY",
+      "primary_bytes_sha256": "a67d70340c6a2052deb9749a33a3dab4ede2fd4676a9352f5acb07b319211f6e",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "557d6c81685223855bc94552b3aef3f6d809870043315a5ea94fad6410221381",
+      "logical_base_id": "A:R2:E6-05:PRIMARY",
+      "primary_bytes_sha256": "557d6c81685223855bc94552b3aef3f6d809870043315a5ea94fad6410221381",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "278a372307651620007aece67f6d4ebc94cee6bb6c009f91b27804174f9b8535",
+      "logical_base_id": "A:R2:E7-01:PRIMARY",
+      "primary_bytes_sha256": "278a372307651620007aece67f6d4ebc94cee6bb6c009f91b27804174f9b8535",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "db317000f80f165de80744168a366a69f3ba56a8ffc05c9baa3ee19c16243e55",
+      "logical_base_id": "A:R2:E7-02:PRIMARY",
+      "primary_bytes_sha256": "db317000f80f165de80744168a366a69f3ba56a8ffc05c9baa3ee19c16243e55",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "c2d2974d361c2a1956ef7bc76ca17735c8afa05544e140a62fbf5ad4ef54fc83",
+      "logical_base_id": "A:R2:E7-03:PRIMARY",
+      "primary_bytes_sha256": "c2d2974d361c2a1956ef7bc76ca17735c8afa05544e140a62fbf5ad4ef54fc83",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "8c8ca4031e2cb208a00a4c02b969893be206b0517fbffb2b6eea8b072a3d232e",
+      "logical_base_id": "A:R2:E7-04:PRIMARY",
+      "primary_bytes_sha256": "8c8ca4031e2cb208a00a4c02b969893be206b0517fbffb2b6eea8b072a3d232e",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "9ca6e3f56eeeb58b74704d929daad1e5cfb4e8c3c2c8ea97d79f0ba904fa2c15",
+      "logical_base_id": "A:R2:E7-05:PRIMARY",
+      "primary_bytes_sha256": "9ca6e3f56eeeb58b74704d929daad1e5cfb4e8c3c2c8ea97d79f0ba904fa2c15",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "925390d9711a4213f5d8c4e14245342dec4e354a6086b859f46c14a1f37be96e",
+      "logical_base_id": "A:R3:E1-01:PRIMARY",
+      "primary_bytes_sha256": "925390d9711a4213f5d8c4e14245342dec4e354a6086b859f46c14a1f37be96e",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "7a9dd1172540c42172d76ebd057e22f1d87a67a5b65651f3f71502aff293b421",
+      "logical_base_id": "A:R3:E1-02:PRIMARY",
+      "primary_bytes_sha256": "7a9dd1172540c42172d76ebd057e22f1d87a67a5b65651f3f71502aff293b421",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "13e4f24a93e6b20fc3ff801e8a97934db7bac4051406b58ad7bc51bd1e3c2e34",
+      "logical_base_id": "A:R3:E1-03:PRIMARY",
+      "primary_bytes_sha256": "13e4f24a93e6b20fc3ff801e8a97934db7bac4051406b58ad7bc51bd1e3c2e34",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "01b8de473f3e9d6482ec81091852aea644816894da50bb826528e54ffa027681",
+      "logical_base_id": "A:R3:E1-04:PRIMARY",
+      "primary_bytes_sha256": "01b8de473f3e9d6482ec81091852aea644816894da50bb826528e54ffa027681",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "e60f110e578d41d5d842c311d23d9c3cbafa9985e89e25d7ea1d18886124440c",
+      "logical_base_id": "A:R3:E1-05:PRIMARY",
+      "primary_bytes_sha256": "e60f110e578d41d5d842c311d23d9c3cbafa9985e89e25d7ea1d18886124440c",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "413578724424786ae1823984c4249c4b746c27cb3c8e78d6933be33251b2ba48",
+      "logical_base_id": "A:R3:E2-01:PRIMARY",
+      "primary_bytes_sha256": "413578724424786ae1823984c4249c4b746c27cb3c8e78d6933be33251b2ba48",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "b0881a7925ac2796a76ed9a815fc50920463ffb1ab24fd01341d41778fa85991",
+      "logical_base_id": "A:R3:E2-02:PRIMARY",
+      "primary_bytes_sha256": "b0881a7925ac2796a76ed9a815fc50920463ffb1ab24fd01341d41778fa85991",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "6d70d04e5e3bc43876a4f5b0ab49632bbc12ee46ff8e76c24e5a1a500bdf2dfc",
+      "logical_base_id": "A:R3:E2-03:PRIMARY",
+      "primary_bytes_sha256": "6d70d04e5e3bc43876a4f5b0ab49632bbc12ee46ff8e76c24e5a1a500bdf2dfc",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "1ecb414a01fcd11989ee1fd4208b2d291a9b5547d891feebee7f87e86fb92e61",
+      "logical_base_id": "A:R3:E2-04:PRIMARY",
+      "primary_bytes_sha256": "1ecb414a01fcd11989ee1fd4208b2d291a9b5547d891feebee7f87e86fb92e61",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "802a6c8860d1db1968f23fd80766ba6a5d297c157bb329a99f80c873a4c91ad5",
+      "logical_base_id": "A:R3:E2-05:PRIMARY",
+      "primary_bytes_sha256": "802a6c8860d1db1968f23fd80766ba6a5d297c157bb329a99f80c873a4c91ad5",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "4184501ad998a7a5c2dc3a686f525c20f5eb969778ed1b632d06dc6ef4690db4",
+      "logical_base_id": "A:R3:E3-01:PRIMARY",
+      "primary_bytes_sha256": "4184501ad998a7a5c2dc3a686f525c20f5eb969778ed1b632d06dc6ef4690db4",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "d76709091588a50907f7c758e82079c7ac65cf1941ad9a57189184d49308b136",
+      "logical_base_id": "A:R3:E3-02:PRIMARY",
+      "primary_bytes_sha256": "d76709091588a50907f7c758e82079c7ac65cf1941ad9a57189184d49308b136",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "df76aaf1e4ee17f16c58aa32f6504d6fe8d7d2474dcc07e90200295d01651db1",
+      "logical_base_id": "A:R3:E3-03:PRIMARY",
+      "primary_bytes_sha256": "df76aaf1e4ee17f16c58aa32f6504d6fe8d7d2474dcc07e90200295d01651db1",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "7e3224e1e5580c84c5e5bdd94b58210155aae84b330fe87a428f0fc5638d31fe",
+      "logical_base_id": "A:R3:E3-04:PRIMARY",
+      "primary_bytes_sha256": "7e3224e1e5580c84c5e5bdd94b58210155aae84b330fe87a428f0fc5638d31fe",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "09a502edce0e9c45913a3a132e3e3a0a29037cbb1be15c2596157434a3f7e18d",
+      "logical_base_id": "A:R3:E3-05:PRIMARY",
+      "primary_bytes_sha256": "09a502edce0e9c45913a3a132e3e3a0a29037cbb1be15c2596157434a3f7e18d",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "9d009996a85273645b417234b8eb6539650ef2b56ae1d4d6d02974b6f593605d",
+      "logical_base_id": "A:R3:E4-01:PRIMARY",
+      "primary_bytes_sha256": "9d009996a85273645b417234b8eb6539650ef2b56ae1d4d6d02974b6f593605d",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "f38fe678c68b66f40b82b40334b8ca1c3da6e0d2ff02b3f05f42b88fd30dbb23",
+      "logical_base_id": "A:R3:E4-02:PRIMARY",
+      "primary_bytes_sha256": "f38fe678c68b66f40b82b40334b8ca1c3da6e0d2ff02b3f05f42b88fd30dbb23",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "c4fc69dca901d5311b214467325fdf9e7747fc732ed50f8a7bb4cb9e74125379",
+      "logical_base_id": "A:R3:E4-03:PRIMARY",
+      "primary_bytes_sha256": "c4fc69dca901d5311b214467325fdf9e7747fc732ed50f8a7bb4cb9e74125379",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "4c5699faa288af8c25bf01a75b007549021c08765e18420977401494e10cb969",
+      "logical_base_id": "A:R3:E4-04:PRIMARY",
+      "primary_bytes_sha256": "4c5699faa288af8c25bf01a75b007549021c08765e18420977401494e10cb969",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "8df50f99fe5731aed2746ab672108ba3d7ef052d9ef690769edd1c9a643a8c8d",
+      "logical_base_id": "A:R3:E4-05:PRIMARY",
+      "primary_bytes_sha256": "8df50f99fe5731aed2746ab672108ba3d7ef052d9ef690769edd1c9a643a8c8d",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "b42e96cb887c9974d5083051df0480b717670efd8f75be0f45f7b468794d7658",
+      "logical_base_id": "A:R3:E5-01:PRIMARY",
+      "primary_bytes_sha256": "b42e96cb887c9974d5083051df0480b717670efd8f75be0f45f7b468794d7658",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "b42e96cb887c9974d5083051df0480b717670efd8f75be0f45f7b468794d7658",
+      "logical_base_id": "A:R3:E5-01:PRIMARY",
+      "primary_bytes_sha256": "b42e96cb887c9974d5083051df0480b717670efd8f75be0f45f7b468794d7658",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "1a8d890229fa3248d0e7f2f24bc7d8c10aa90de45d974c52136aea2d19aa2921",
+      "logical_base_id": "A:R3:E5-02:PRIMARY",
+      "primary_bytes_sha256": "1a8d890229fa3248d0e7f2f24bc7d8c10aa90de45d974c52136aea2d19aa2921",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "1a8d890229fa3248d0e7f2f24bc7d8c10aa90de45d974c52136aea2d19aa2921",
+      "logical_base_id": "A:R3:E5-02:PRIMARY",
+      "primary_bytes_sha256": "1a8d890229fa3248d0e7f2f24bc7d8c10aa90de45d974c52136aea2d19aa2921",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "861ba14e5363b8f4b7bc89714ae8cb577e75498b83188cd1e6f814768ee0b4ff",
+      "logical_base_id": "A:R3:E5-03:PRIMARY",
+      "primary_bytes_sha256": "861ba14e5363b8f4b7bc89714ae8cb577e75498b83188cd1e6f814768ee0b4ff",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "861ba14e5363b8f4b7bc89714ae8cb577e75498b83188cd1e6f814768ee0b4ff",
+      "logical_base_id": "A:R3:E5-03:PRIMARY",
+      "primary_bytes_sha256": "861ba14e5363b8f4b7bc89714ae8cb577e75498b83188cd1e6f814768ee0b4ff",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "79f8dbcb9f531f7f7e09875aba06b44d3678752fc20eef527dc6f16308d81b51",
+      "logical_base_id": "A:R3:E5-04:PRIMARY",
+      "primary_bytes_sha256": "79f8dbcb9f531f7f7e09875aba06b44d3678752fc20eef527dc6f16308d81b51",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "79f8dbcb9f531f7f7e09875aba06b44d3678752fc20eef527dc6f16308d81b51",
+      "logical_base_id": "A:R3:E5-04:PRIMARY",
+      "primary_bytes_sha256": "79f8dbcb9f531f7f7e09875aba06b44d3678752fc20eef527dc6f16308d81b51",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "615b54d515394700773e9f1bf0870ecc69f0e250c662d971ee7d74f50f1488db",
+      "logical_base_id": "A:R3:E5-05:PRIMARY",
+      "primary_bytes_sha256": "615b54d515394700773e9f1bf0870ecc69f0e250c662d971ee7d74f50f1488db",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "615b54d515394700773e9f1bf0870ecc69f0e250c662d971ee7d74f50f1488db",
+      "logical_base_id": "A:R3:E5-05:PRIMARY",
+      "primary_bytes_sha256": "615b54d515394700773e9f1bf0870ecc69f0e250c662d971ee7d74f50f1488db",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "a5754b1ec6b82db44c58d46dd044e652eecacba22a3b0e7362ad1f0c02359433",
+      "logical_base_id": "A:R3:E6-01:PRIMARY",
+      "primary_bytes_sha256": "a5754b1ec6b82db44c58d46dd044e652eecacba22a3b0e7362ad1f0c02359433",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "f4e621d43ea47cfd01ba19412a2c753b93ff33105b7325282c6fec799062fdcd",
+      "logical_base_id": "A:R3:E6-02:PRIMARY",
+      "primary_bytes_sha256": "f4e621d43ea47cfd01ba19412a2c753b93ff33105b7325282c6fec799062fdcd",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "399e08c8f751da7d372bc8f5697107ec81a114ec97bfbeb9513327874105f010",
+      "logical_base_id": "A:R3:E6-03:PRIMARY",
+      "primary_bytes_sha256": "399e08c8f751da7d372bc8f5697107ec81a114ec97bfbeb9513327874105f010",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "21af841ffa1604465b4ee441c26e34e91ecb7c91117b1b9e5d53ca596e7a8ac3",
+      "logical_base_id": "A:R3:E6-04:PRIMARY",
+      "primary_bytes_sha256": "21af841ffa1604465b4ee441c26e34e91ecb7c91117b1b9e5d53ca596e7a8ac3",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "72e4f3980cf2e5e1ad0bb72f0813589bedb9d3795b8d5171823b9e2d248e96fd",
+      "logical_base_id": "A:R3:E6-05:PRIMARY",
+      "primary_bytes_sha256": "72e4f3980cf2e5e1ad0bb72f0813589bedb9d3795b8d5171823b9e2d248e96fd",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "0309bbf9c2f53da24c63946663c8855c147730b23ad238b4ad72695368ec1e2d",
+      "logical_base_id": "A:R3:E7-01:PRIMARY",
+      "primary_bytes_sha256": "0309bbf9c2f53da24c63946663c8855c147730b23ad238b4ad72695368ec1e2d",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "ae30543e82880345b3c8e7dbafc7c9c41fe8be6240e03f542082e94e81dfca00",
+      "logical_base_id": "A:R3:E7-02:PRIMARY",
+      "primary_bytes_sha256": "ae30543e82880345b3c8e7dbafc7c9c41fe8be6240e03f542082e94e81dfca00",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "791b256ffee9becb156f236a8de4d66c6673b12d49567053ab7589e64dfb6f9c",
+      "logical_base_id": "A:R3:E7-03:PRIMARY",
+      "primary_bytes_sha256": "791b256ffee9becb156f236a8de4d66c6673b12d49567053ab7589e64dfb6f9c",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "67e06743501ac2ba88034877cf085c947a465026a207476c59bc68e7371c3b69",
+      "logical_base_id": "A:R3:E7-04:PRIMARY",
+      "primary_bytes_sha256": "67e06743501ac2ba88034877cf085c947a465026a207476c59bc68e7371c3b69",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "7c5ca90b7c57891dc1b4381a354d935fa9756c41dc72695e80a5e417674eeb7d",
+      "logical_base_id": "A:R3:E7-05:PRIMARY",
+      "primary_bytes_sha256": "7c5ca90b7c57891dc1b4381a354d935fa9756c41dc72695e80a5e417674eeb7d",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "1b43a5010dd40b183cd885929b50e107f182c97a46c631a5857e5b75692ecf09",
+      "logical_base_id": "A:R2:E1-01:RESERVE",
+      "primary_bytes_sha256": "1b43a5010dd40b183cd885929b50e107f182c97a46c631a5857e5b75692ecf09",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "26b8bd4e3834724a2510b8665dc536a61afc4b15c1dd608f08e3c45c25444842",
+      "logical_base_id": "A:R2:E2-01:RESERVE",
+      "primary_bytes_sha256": "26b8bd4e3834724a2510b8665dc536a61afc4b15c1dd608f08e3c45c25444842",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "7f6e3bded60d63594896caa45ad81f10118672a1cfef73c4720ef3c9bf1b135d",
+      "logical_base_id": "A:R2:E3-01:RESERVE",
+      "primary_bytes_sha256": "7f6e3bded60d63594896caa45ad81f10118672a1cfef73c4720ef3c9bf1b135d",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "146ba1490f94e3f0dea87d673f27505ee92018d0270519fe6b63059c7cc7cacd",
+      "logical_base_id": "A:R2:E4-01:RESERVE",
+      "primary_bytes_sha256": "146ba1490f94e3f0dea87d673f27505ee92018d0270519fe6b63059c7cc7cacd",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "1a37b8db7cb944e1b0b234fe86d424542910888e30d099e1f47fdac79081fc67",
+      "logical_base_id": "A:R2:E5-01:RESERVE",
+      "primary_bytes_sha256": "1a37b8db7cb944e1b0b234fe86d424542910888e30d099e1f47fdac79081fc67",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "1a37b8db7cb944e1b0b234fe86d424542910888e30d099e1f47fdac79081fc67",
+      "logical_base_id": "A:R2:E5-01:RESERVE",
+      "primary_bytes_sha256": "1a37b8db7cb944e1b0b234fe86d424542910888e30d099e1f47fdac79081fc67",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "627660b71b987a0f87e1847095bbf44b971ddef7e912b454fbbef362dd6dcf1b",
+      "logical_base_id": "A:R2:E6-01:RESERVE",
+      "primary_bytes_sha256": "627660b71b987a0f87e1847095bbf44b971ddef7e912b454fbbef362dd6dcf1b",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "ec39acf48117ec0470036b939e0808c06e0e355b277bd95db1e9843ba4a3e32b",
+      "logical_base_id": "A:R2:E7-01:RESERVE",
+      "primary_bytes_sha256": "ec39acf48117ec0470036b939e0808c06e0e355b277bd95db1e9843ba4a3e32b",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "67d8d5c239f11b74dd161a80dd9b78bac39e2446b9c13abb4474518653d9abd9",
+      "logical_base_id": "A:R3:E1-01:RESERVE",
+      "primary_bytes_sha256": "67d8d5c239f11b74dd161a80dd9b78bac39e2446b9c13abb4474518653d9abd9",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "4c87c23dbaff1283281be0c322ba4dde1c42d33aee9daa42e1d4bb3a78df9b8a",
+      "logical_base_id": "A:R3:E2-01:RESERVE",
+      "primary_bytes_sha256": "4c87c23dbaff1283281be0c322ba4dde1c42d33aee9daa42e1d4bb3a78df9b8a",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "edc2092706e2671b382991dd6488651131e35289eeae17aff348f2332dbfff53",
+      "logical_base_id": "A:R3:E3-01:RESERVE",
+      "primary_bytes_sha256": "edc2092706e2671b382991dd6488651131e35289eeae17aff348f2332dbfff53",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "a90c1830252970d7f53d2b05e67ffb25a8ce1e2b4b98b62a6cda8480b7f16458",
+      "logical_base_id": "A:R3:E4-01:RESERVE",
+      "primary_bytes_sha256": "a90c1830252970d7f53d2b05e67ffb25a8ce1e2b4b98b62a6cda8480b7f16458",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "9f61aeab81b55c07139c3d1ff7921c3e3d6c68b9e75e5ae5ee0bd10ba38d4709",
+      "logical_base_id": "A:R3:E5-01:RESERVE",
+      "primary_bytes_sha256": "9f61aeab81b55c07139c3d1ff7921c3e3d6c68b9e75e5ae5ee0bd10ba38d4709",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "9f61aeab81b55c07139c3d1ff7921c3e3d6c68b9e75e5ae5ee0bd10ba38d4709",
+      "logical_base_id": "A:R3:E5-01:RESERVE",
+      "primary_bytes_sha256": "9f61aeab81b55c07139c3d1ff7921c3e3d6c68b9e75e5ae5ee0bd10ba38d4709",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "f0a294c43d6ef82ab3daf0b801bafbb8276d2efdbe2dde632d3af3847493fa9c",
+      "logical_base_id": "A:R3:E6-01:RESERVE",
+      "primary_bytes_sha256": "f0a294c43d6ef82ab3daf0b801bafbb8276d2efdbe2dde632d3af3847493fa9c",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "810ce7aa529de1e35e66825ac74a8e1d53dbdeedb17ded80041edbf6b305c721",
+      "logical_base_id": "A:R3:E7-01:RESERVE",
+      "primary_bytes_sha256": "810ce7aa529de1e35e66825ac74a8e1d53dbdeedb17ded80041edbf6b305c721",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "7bc6e69beeb129e71de46927d750ecfa1780bdae093d68b5d6e03c4341191f41",
+      "logical_base_id": "B:R2:E1-01:PRIMARY",
+      "primary_bytes_sha256": "7bc6e69beeb129e71de46927d750ecfa1780bdae093d68b5d6e03c4341191f41",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "817d64275c4a1ee9ae52a91679daaaf6b673f284b05dabb4da33482ae6844a45",
+      "logical_base_id": "B:R2:E1-02:PRIMARY",
+      "primary_bytes_sha256": "817d64275c4a1ee9ae52a91679daaaf6b673f284b05dabb4da33482ae6844a45",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "4aee6288b68dcbc367903c545cb08a5fca537be7c73eec71629018a64dd74796",
+      "logical_base_id": "B:R2:E1-03:PRIMARY",
+      "primary_bytes_sha256": "4aee6288b68dcbc367903c545cb08a5fca537be7c73eec71629018a64dd74796",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "9bdd33cb78b9b8c934569286d944f4b814e76a9bceeacd39987fb009b18afa54",
+      "logical_base_id": "B:R2:E1-04:PRIMARY",
+      "primary_bytes_sha256": "9bdd33cb78b9b8c934569286d944f4b814e76a9bceeacd39987fb009b18afa54",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "914d2fd9a2d30071bd08739935dd7219f2989147ab5cd8229e4828190df018e8",
+      "logical_base_id": "B:R2:E1-05:PRIMARY",
+      "primary_bytes_sha256": "914d2fd9a2d30071bd08739935dd7219f2989147ab5cd8229e4828190df018e8",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "4d751dd7f5815106c4f844c1e63825bf5f094e3c8025d46dadbf1960c1b47fe0",
+      "logical_base_id": "B:R2:E2-01:PRIMARY",
+      "primary_bytes_sha256": "4d751dd7f5815106c4f844c1e63825bf5f094e3c8025d46dadbf1960c1b47fe0",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "1716e9568cb4392ec359d677f581a82aa6bbfbc4839d8fcadb57a084f20df72b",
+      "logical_base_id": "B:R2:E2-02:PRIMARY",
+      "primary_bytes_sha256": "1716e9568cb4392ec359d677f581a82aa6bbfbc4839d8fcadb57a084f20df72b",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "f6b1c28a2f88d54deacc597498a15dafa884337e1c6a3647a11b76ca7349baab",
+      "logical_base_id": "B:R2:E2-03:PRIMARY",
+      "primary_bytes_sha256": "f6b1c28a2f88d54deacc597498a15dafa884337e1c6a3647a11b76ca7349baab",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "a7cefe90b5842f8492482f2e14449089c14be1686f8ce09a84a258f1cab0be6e",
+      "logical_base_id": "B:R2:E2-04:PRIMARY",
+      "primary_bytes_sha256": "a7cefe90b5842f8492482f2e14449089c14be1686f8ce09a84a258f1cab0be6e",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "476e69dbb403d00dfaae114b432008542f36f0b5d69e800cb637b165c76c5b80",
+      "logical_base_id": "B:R2:E2-05:PRIMARY",
+      "primary_bytes_sha256": "476e69dbb403d00dfaae114b432008542f36f0b5d69e800cb637b165c76c5b80",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "9cd99041456500ddc982a3b9e7a2f97333898d3069e31ad02e04b2433321b670",
+      "logical_base_id": "B:R2:E3-01:PRIMARY",
+      "primary_bytes_sha256": "9cd99041456500ddc982a3b9e7a2f97333898d3069e31ad02e04b2433321b670",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "1d9303487885872014f1401cb824c3e6c91724d8a185e3d3245e1d69627f92f3",
+      "logical_base_id": "B:R2:E3-02:PRIMARY",
+      "primary_bytes_sha256": "1d9303487885872014f1401cb824c3e6c91724d8a185e3d3245e1d69627f92f3",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "2872ada0dfec3b0b193d82ede7eb8a8072ba59b2463bebbd75beecc0714cdd7f",
+      "logical_base_id": "B:R2:E3-03:PRIMARY",
+      "primary_bytes_sha256": "2872ada0dfec3b0b193d82ede7eb8a8072ba59b2463bebbd75beecc0714cdd7f",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "e875b303cdc56c0c7c5a3d4117d59531ea7f71e5edf76b7da6a3dc3d2840be1e",
+      "logical_base_id": "B:R2:E3-04:PRIMARY",
+      "primary_bytes_sha256": "e875b303cdc56c0c7c5a3d4117d59531ea7f71e5edf76b7da6a3dc3d2840be1e",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "80e07c51174eb63498f7f8a119d7ebef7ce2a46ee995fbb384a1e555105d0f5d",
+      "logical_base_id": "B:R2:E3-05:PRIMARY",
+      "primary_bytes_sha256": "80e07c51174eb63498f7f8a119d7ebef7ce2a46ee995fbb384a1e555105d0f5d",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "cc42e0f38c1913bcbc70ae2fc242f09ee1c6a20d31a1d88721524ae3a4e7f97e",
+      "logical_base_id": "B:R2:E4-01:PRIMARY",
+      "primary_bytes_sha256": "cc42e0f38c1913bcbc70ae2fc242f09ee1c6a20d31a1d88721524ae3a4e7f97e",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "ca6c38dad99192c849e8bc9aa93e71118cb8ff42589d22f910729c8f823c828e",
+      "logical_base_id": "B:R2:E4-02:PRIMARY",
+      "primary_bytes_sha256": "ca6c38dad99192c849e8bc9aa93e71118cb8ff42589d22f910729c8f823c828e",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "e231ca84cd360ff69daf7623e4587c712c21dc228d533ab0ee88cfc1aec85616",
+      "logical_base_id": "B:R2:E4-03:PRIMARY",
+      "primary_bytes_sha256": "e231ca84cd360ff69daf7623e4587c712c21dc228d533ab0ee88cfc1aec85616",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "aa17a7855883a51ffb526fa821d3e7a0e31529a5a4a7afb9183b9d2cbdf3a166",
+      "logical_base_id": "B:R2:E4-04:PRIMARY",
+      "primary_bytes_sha256": "aa17a7855883a51ffb526fa821d3e7a0e31529a5a4a7afb9183b9d2cbdf3a166",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "fe204811a01c687cad19361df7ee2243cc4c4c049c7da04962db6bac83d23f5d",
+      "logical_base_id": "B:R2:E4-05:PRIMARY",
+      "primary_bytes_sha256": "fe204811a01c687cad19361df7ee2243cc4c4c049c7da04962db6bac83d23f5d",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "2720a3493d1d9739286067c8fec3b0e26308eab8daa802604eea0a91d6c3753a",
+      "logical_base_id": "B:R2:E5-01:PRIMARY",
+      "primary_bytes_sha256": "2720a3493d1d9739286067c8fec3b0e26308eab8daa802604eea0a91d6c3753a",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "2720a3493d1d9739286067c8fec3b0e26308eab8daa802604eea0a91d6c3753a",
+      "logical_base_id": "B:R2:E5-01:PRIMARY",
+      "primary_bytes_sha256": "2720a3493d1d9739286067c8fec3b0e26308eab8daa802604eea0a91d6c3753a",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "7331c7b22c7f30a67df6a0a4f2cfa717c42995bf40c32c03b0075de28364c24f",
+      "logical_base_id": "B:R2:E5-02:PRIMARY",
+      "primary_bytes_sha256": "7331c7b22c7f30a67df6a0a4f2cfa717c42995bf40c32c03b0075de28364c24f",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "7331c7b22c7f30a67df6a0a4f2cfa717c42995bf40c32c03b0075de28364c24f",
+      "logical_base_id": "B:R2:E5-02:PRIMARY",
+      "primary_bytes_sha256": "7331c7b22c7f30a67df6a0a4f2cfa717c42995bf40c32c03b0075de28364c24f",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "693d7ecf4b13cd15db78a9dbecfa477fa8bb2768b7b7899b3d27b7945cff64b4",
+      "logical_base_id": "B:R2:E5-03:PRIMARY",
+      "primary_bytes_sha256": "693d7ecf4b13cd15db78a9dbecfa477fa8bb2768b7b7899b3d27b7945cff64b4",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "693d7ecf4b13cd15db78a9dbecfa477fa8bb2768b7b7899b3d27b7945cff64b4",
+      "logical_base_id": "B:R2:E5-03:PRIMARY",
+      "primary_bytes_sha256": "693d7ecf4b13cd15db78a9dbecfa477fa8bb2768b7b7899b3d27b7945cff64b4",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "cc23e51cd4351ae6326fe83036cdcade9c1b1d93d03ab3a6730687f485337e53",
+      "logical_base_id": "B:R2:E5-04:PRIMARY",
+      "primary_bytes_sha256": "cc23e51cd4351ae6326fe83036cdcade9c1b1d93d03ab3a6730687f485337e53",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "cc23e51cd4351ae6326fe83036cdcade9c1b1d93d03ab3a6730687f485337e53",
+      "logical_base_id": "B:R2:E5-04:PRIMARY",
+      "primary_bytes_sha256": "cc23e51cd4351ae6326fe83036cdcade9c1b1d93d03ab3a6730687f485337e53",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "5d85e7be2932810629b72c532c4fe9ba33b2e463761afdadd4a43c1411576c97",
+      "logical_base_id": "B:R2:E5-05:PRIMARY",
+      "primary_bytes_sha256": "5d85e7be2932810629b72c532c4fe9ba33b2e463761afdadd4a43c1411576c97",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "5d85e7be2932810629b72c532c4fe9ba33b2e463761afdadd4a43c1411576c97",
+      "logical_base_id": "B:R2:E5-05:PRIMARY",
+      "primary_bytes_sha256": "5d85e7be2932810629b72c532c4fe9ba33b2e463761afdadd4a43c1411576c97",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "e3d5050fdfec4b4c7f0e6b51d7d877361cd1cffe2b0d1359b1fe9cc375846bf5",
+      "logical_base_id": "B:R2:E6-01:PRIMARY",
+      "primary_bytes_sha256": "e3d5050fdfec4b4c7f0e6b51d7d877361cd1cffe2b0d1359b1fe9cc375846bf5",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "7059cdbf4a0a7990461f1b0c5e969eb74bfffba2ae32d6ef14c7752636514b3c",
+      "logical_base_id": "B:R2:E6-02:PRIMARY",
+      "primary_bytes_sha256": "7059cdbf4a0a7990461f1b0c5e969eb74bfffba2ae32d6ef14c7752636514b3c",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "c39406c86f39fb6aea794cbb7f58015c3ebcecbcf7c8c0157731556b61b06431",
+      "logical_base_id": "B:R2:E6-03:PRIMARY",
+      "primary_bytes_sha256": "c39406c86f39fb6aea794cbb7f58015c3ebcecbcf7c8c0157731556b61b06431",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "7fb6f73b176bbff8efa307743b3511bd07ab7d3a16611b00964d15b747f4a3fa",
+      "logical_base_id": "B:R2:E6-04:PRIMARY",
+      "primary_bytes_sha256": "7fb6f73b176bbff8efa307743b3511bd07ab7d3a16611b00964d15b747f4a3fa",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "b299ef678956ee806b033455a729f509f26f41aac849079ae1ee6fc57309a15f",
+      "logical_base_id": "B:R2:E6-05:PRIMARY",
+      "primary_bytes_sha256": "b299ef678956ee806b033455a729f509f26f41aac849079ae1ee6fc57309a15f",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "67f60be77e5e27b38db0754776eea659ab3484b7df53f89189197593a3739c8f",
+      "logical_base_id": "B:R2:E7-01:PRIMARY",
+      "primary_bytes_sha256": "67f60be77e5e27b38db0754776eea659ab3484b7df53f89189197593a3739c8f",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "4203beecc1d0c140a5f9f46487312eb16ad2f206b016ea570bbf962993434723",
+      "logical_base_id": "B:R2:E7-02:PRIMARY",
+      "primary_bytes_sha256": "4203beecc1d0c140a5f9f46487312eb16ad2f206b016ea570bbf962993434723",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "f76c405a8cdac59e732f7a9fc843da0ad04fff6767b214dee186b7cbac411d51",
+      "logical_base_id": "B:R2:E7-03:PRIMARY",
+      "primary_bytes_sha256": "f76c405a8cdac59e732f7a9fc843da0ad04fff6767b214dee186b7cbac411d51",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "ae5ced205a6c9daba0ef6ba0288b2015138c9238a74e44b3fc0a52dce4d7824a",
+      "logical_base_id": "B:R2:E7-04:PRIMARY",
+      "primary_bytes_sha256": "ae5ced205a6c9daba0ef6ba0288b2015138c9238a74e44b3fc0a52dce4d7824a",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "002794b4bb4d0ea9eebdcebc81ebcdb403844120ea618a26afbea786abaf4d9b",
+      "logical_base_id": "B:R2:E7-05:PRIMARY",
+      "primary_bytes_sha256": "002794b4bb4d0ea9eebdcebc81ebcdb403844120ea618a26afbea786abaf4d9b",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "8417ca66304c9a46f0604cd5eaf99c19056f1e787378af3913e3e975dd522801",
+      "logical_base_id": "B:R3:E1-01:PRIMARY",
+      "primary_bytes_sha256": "8417ca66304c9a46f0604cd5eaf99c19056f1e787378af3913e3e975dd522801",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "550dd164fa7cdbc6ae17564b071cd7dfeac67896460b5ce269d7205815f46dbb",
+      "logical_base_id": "B:R3:E1-02:PRIMARY",
+      "primary_bytes_sha256": "550dd164fa7cdbc6ae17564b071cd7dfeac67896460b5ce269d7205815f46dbb",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "00a339341fbf306532450abfa88544bfb5672b624b9d5d43dad4453c139ee4f4",
+      "logical_base_id": "B:R3:E1-03:PRIMARY",
+      "primary_bytes_sha256": "00a339341fbf306532450abfa88544bfb5672b624b9d5d43dad4453c139ee4f4",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "9afedeafae07f98cb6f51ba9146ad1b0b6ee109757255fad773b04be0175a26c",
+      "logical_base_id": "B:R3:E1-04:PRIMARY",
+      "primary_bytes_sha256": "9afedeafae07f98cb6f51ba9146ad1b0b6ee109757255fad773b04be0175a26c",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "f190f824bc197cade16bdae05b99f22e8608db268833ee722dfed48400ebc16a",
+      "logical_base_id": "B:R3:E1-05:PRIMARY",
+      "primary_bytes_sha256": "f190f824bc197cade16bdae05b99f22e8608db268833ee722dfed48400ebc16a",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "58263fb117ccefaf6fa1659e93e2499e91eb0d6030cc6b43135258534dd04634",
+      "logical_base_id": "B:R3:E2-01:PRIMARY",
+      "primary_bytes_sha256": "58263fb117ccefaf6fa1659e93e2499e91eb0d6030cc6b43135258534dd04634",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "8f482bbdf60649eb14dc08873a481ed4406afe2e89c20d9e0290b4d316bb6d04",
+      "logical_base_id": "B:R3:E2-02:PRIMARY",
+      "primary_bytes_sha256": "8f482bbdf60649eb14dc08873a481ed4406afe2e89c20d9e0290b4d316bb6d04",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "33178c42d6c457e001a610866fc9890a7603caf0179dbcc6c133e3bd5a645453",
+      "logical_base_id": "B:R3:E2-03:PRIMARY",
+      "primary_bytes_sha256": "33178c42d6c457e001a610866fc9890a7603caf0179dbcc6c133e3bd5a645453",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "0a5d94799d6eca2e4c6779989bea7f1e5cfdfed77e718193f4ad8e95a3b911a0",
+      "logical_base_id": "B:R3:E2-04:PRIMARY",
+      "primary_bytes_sha256": "0a5d94799d6eca2e4c6779989bea7f1e5cfdfed77e718193f4ad8e95a3b911a0",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "efcf8f748147356afe2c4ac0b92d3b174ec4e5f3cd9d008330c20d12f13ba768",
+      "logical_base_id": "B:R3:E2-05:PRIMARY",
+      "primary_bytes_sha256": "efcf8f748147356afe2c4ac0b92d3b174ec4e5f3cd9d008330c20d12f13ba768",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "87e68046dcadb34e65c9abe0a3615aca774c309f9c7de8a6cd3b02541ad2677d",
+      "logical_base_id": "B:R3:E3-01:PRIMARY",
+      "primary_bytes_sha256": "87e68046dcadb34e65c9abe0a3615aca774c309f9c7de8a6cd3b02541ad2677d",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "0fb55aa7e1182cf8f46086aa6b97bfbf05dcda37d36087e8404fb79666af81f1",
+      "logical_base_id": "B:R3:E3-02:PRIMARY",
+      "primary_bytes_sha256": "0fb55aa7e1182cf8f46086aa6b97bfbf05dcda37d36087e8404fb79666af81f1",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "9161232598cb7f38e2c162250e1a133a168c4a33944f20e50dbf57790a3ae26d",
+      "logical_base_id": "B:R3:E3-03:PRIMARY",
+      "primary_bytes_sha256": "9161232598cb7f38e2c162250e1a133a168c4a33944f20e50dbf57790a3ae26d",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "46e02fc52a9987b1f1398008d7e28a5b3b5be00fc41016e285b865f0e9085128",
+      "logical_base_id": "B:R3:E3-04:PRIMARY",
+      "primary_bytes_sha256": "46e02fc52a9987b1f1398008d7e28a5b3b5be00fc41016e285b865f0e9085128",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "436e2a7e262b538eefcfb1d8b9cf14c242d942e234d11088d8cbba258c2461c8",
+      "logical_base_id": "B:R3:E3-05:PRIMARY",
+      "primary_bytes_sha256": "436e2a7e262b538eefcfb1d8b9cf14c242d942e234d11088d8cbba258c2461c8",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "7c942703ae6673fe9b373d0fb12ff031f110685792d92fefb0c0506ecf6faf01",
+      "logical_base_id": "B:R3:E4-01:PRIMARY",
+      "primary_bytes_sha256": "7c942703ae6673fe9b373d0fb12ff031f110685792d92fefb0c0506ecf6faf01",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "23e07441a5b367612c85b782b764e9fbf7e80a9791cf82733646008e624a9209",
+      "logical_base_id": "B:R3:E4-02:PRIMARY",
+      "primary_bytes_sha256": "23e07441a5b367612c85b782b764e9fbf7e80a9791cf82733646008e624a9209",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "cdb6771b9af36777e6f4fc06b647907a6ca0f96d4ebf2204dc43099510cc7629",
+      "logical_base_id": "B:R3:E4-03:PRIMARY",
+      "primary_bytes_sha256": "cdb6771b9af36777e6f4fc06b647907a6ca0f96d4ebf2204dc43099510cc7629",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "18095cb4442f27ee6f4eb2a7eb4a50ad8a66213f06ec80904e0f42a53f3093f4",
+      "logical_base_id": "B:R3:E4-04:PRIMARY",
+      "primary_bytes_sha256": "18095cb4442f27ee6f4eb2a7eb4a50ad8a66213f06ec80904e0f42a53f3093f4",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "7cc67e49d4d34b532f5a0d5f55bb4a0c20e1af7ae6b0252e14d188342cc5b875",
+      "logical_base_id": "B:R3:E4-05:PRIMARY",
+      "primary_bytes_sha256": "7cc67e49d4d34b532f5a0d5f55bb4a0c20e1af7ae6b0252e14d188342cc5b875",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "699b5f964a3c9906b7c7d3ff0cf5dffd7c12b60bad25dca0131a7d3d1e5c5ca1",
+      "logical_base_id": "B:R3:E5-01:PRIMARY",
+      "primary_bytes_sha256": "699b5f964a3c9906b7c7d3ff0cf5dffd7c12b60bad25dca0131a7d3d1e5c5ca1",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "699b5f964a3c9906b7c7d3ff0cf5dffd7c12b60bad25dca0131a7d3d1e5c5ca1",
+      "logical_base_id": "B:R3:E5-01:PRIMARY",
+      "primary_bytes_sha256": "699b5f964a3c9906b7c7d3ff0cf5dffd7c12b60bad25dca0131a7d3d1e5c5ca1",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "e3edfc3de6ac4362efd3a449d8d6aed4ae5cd7dd6bbd0b912a8c6b413b355985",
+      "logical_base_id": "B:R3:E5-02:PRIMARY",
+      "primary_bytes_sha256": "e3edfc3de6ac4362efd3a449d8d6aed4ae5cd7dd6bbd0b912a8c6b413b355985",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "e3edfc3de6ac4362efd3a449d8d6aed4ae5cd7dd6bbd0b912a8c6b413b355985",
+      "logical_base_id": "B:R3:E5-02:PRIMARY",
+      "primary_bytes_sha256": "e3edfc3de6ac4362efd3a449d8d6aed4ae5cd7dd6bbd0b912a8c6b413b355985",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "7357e0af85665a2652aed3d1907988bec284d3b05ff75eb771d3ab2821c91f79",
+      "logical_base_id": "B:R3:E5-03:PRIMARY",
+      "primary_bytes_sha256": "7357e0af85665a2652aed3d1907988bec284d3b05ff75eb771d3ab2821c91f79",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "7357e0af85665a2652aed3d1907988bec284d3b05ff75eb771d3ab2821c91f79",
+      "logical_base_id": "B:R3:E5-03:PRIMARY",
+      "primary_bytes_sha256": "7357e0af85665a2652aed3d1907988bec284d3b05ff75eb771d3ab2821c91f79",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "41c6fbe78e7620fc4072d0173777330fc6ea6d38aeacbfaeffc06e35e43127e0",
+      "logical_base_id": "B:R3:E5-04:PRIMARY",
+      "primary_bytes_sha256": "41c6fbe78e7620fc4072d0173777330fc6ea6d38aeacbfaeffc06e35e43127e0",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "41c6fbe78e7620fc4072d0173777330fc6ea6d38aeacbfaeffc06e35e43127e0",
+      "logical_base_id": "B:R3:E5-04:PRIMARY",
+      "primary_bytes_sha256": "41c6fbe78e7620fc4072d0173777330fc6ea6d38aeacbfaeffc06e35e43127e0",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "a450093feb56f30b07fef0663a2ce5067d40a81f8048ee14bb5d1dbbb93d37d7",
+      "logical_base_id": "B:R3:E5-05:PRIMARY",
+      "primary_bytes_sha256": "a450093feb56f30b07fef0663a2ce5067d40a81f8048ee14bb5d1dbbb93d37d7",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "a450093feb56f30b07fef0663a2ce5067d40a81f8048ee14bb5d1dbbb93d37d7",
+      "logical_base_id": "B:R3:E5-05:PRIMARY",
+      "primary_bytes_sha256": "a450093feb56f30b07fef0663a2ce5067d40a81f8048ee14bb5d1dbbb93d37d7",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "6a33e997dd4ffaa417e530d627b529d982664e99ad7e178b1f9de36c9eca1682",
+      "logical_base_id": "B:R3:E6-01:PRIMARY",
+      "primary_bytes_sha256": "6a33e997dd4ffaa417e530d627b529d982664e99ad7e178b1f9de36c9eca1682",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "b5ec971873b5e54fdbdbac9781f7382aa0d8ae3b3a360831cf943058870c0917",
+      "logical_base_id": "B:R3:E6-02:PRIMARY",
+      "primary_bytes_sha256": "b5ec971873b5e54fdbdbac9781f7382aa0d8ae3b3a360831cf943058870c0917",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "d0d387ac60ff7eb145cab99aa9be05c138c9190a59dcc5a61b6e1f1c36fb8ff5",
+      "logical_base_id": "B:R3:E6-03:PRIMARY",
+      "primary_bytes_sha256": "d0d387ac60ff7eb145cab99aa9be05c138c9190a59dcc5a61b6e1f1c36fb8ff5",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "0def77d0861debcfd6f730c421a3d29b436f7b144f48aa087f5469a30fb92286",
+      "logical_base_id": "B:R3:E6-04:PRIMARY",
+      "primary_bytes_sha256": "0def77d0861debcfd6f730c421a3d29b436f7b144f48aa087f5469a30fb92286",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "0721447a800cc7aeee688e9347133c15b1f155bc9c55c9ff867b88b037e79a84",
+      "logical_base_id": "B:R3:E6-05:PRIMARY",
+      "primary_bytes_sha256": "0721447a800cc7aeee688e9347133c15b1f155bc9c55c9ff867b88b037e79a84",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "a885eaa49cf2d2f37cc79b4b742e5ee6ea2ee319c8f676ea03dadac6fad25ca8",
+      "logical_base_id": "B:R3:E7-01:PRIMARY",
+      "primary_bytes_sha256": "a885eaa49cf2d2f37cc79b4b742e5ee6ea2ee319c8f676ea03dadac6fad25ca8",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "2708a7409a33875eb3b38ac54c5cc011d443aebcee8713aadc5bae00b2461ab5",
+      "logical_base_id": "B:R3:E7-02:PRIMARY",
+      "primary_bytes_sha256": "2708a7409a33875eb3b38ac54c5cc011d443aebcee8713aadc5bae00b2461ab5",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "d0a08c880f0a27b1fae7a869d4735f37034b309c7826c229d998643f556b122d",
+      "logical_base_id": "B:R3:E7-03:PRIMARY",
+      "primary_bytes_sha256": "d0a08c880f0a27b1fae7a869d4735f37034b309c7826c229d998643f556b122d",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "333a6e4f65a9b529790f69f22c571516243d8c472aaebbb413a71ee587b33a56",
+      "logical_base_id": "B:R3:E7-04:PRIMARY",
+      "primary_bytes_sha256": "333a6e4f65a9b529790f69f22c571516243d8c472aaebbb413a71ee587b33a56",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "abe314bcb9093762d836056e4cc5c0604ed17bf77b30324244dde00593a906c1",
+      "logical_base_id": "B:R3:E7-05:PRIMARY",
+      "primary_bytes_sha256": "abe314bcb9093762d836056e4cc5c0604ed17bf77b30324244dde00593a906c1",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "2f33d5c93b61300e8e90b5b2b200de91dd0e474696682bfb29afccaaae93df24",
+      "logical_base_id": "B:R2:E1-01:RESERVE",
+      "primary_bytes_sha256": "2f33d5c93b61300e8e90b5b2b200de91dd0e474696682bfb29afccaaae93df24",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "ac26b9c9111c741dcecef62e3c7828fb8c93314d44cb75e7640722505eb528f1",
+      "logical_base_id": "B:R2:E2-01:RESERVE",
+      "primary_bytes_sha256": "ac26b9c9111c741dcecef62e3c7828fb8c93314d44cb75e7640722505eb528f1",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "f2ab7e2c5ccd3ee1b0242a99b676fcd42b9f81a6e989b3e0e30a0abfbf97cfc0",
+      "logical_base_id": "B:R2:E3-01:RESERVE",
+      "primary_bytes_sha256": "f2ab7e2c5ccd3ee1b0242a99b676fcd42b9f81a6e989b3e0e30a0abfbf97cfc0",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "e6225009b02d3d1216f32f612d60bfe78a43e6a9f543b3e52e2f2d1649c9398b",
+      "logical_base_id": "B:R2:E4-01:RESERVE",
+      "primary_bytes_sha256": "e6225009b02d3d1216f32f612d60bfe78a43e6a9f543b3e52e2f2d1649c9398b",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "0cc6f7f8fed38cea63524ee1e028a1903adf0c7764c2f70740d6a795f612c938",
+      "logical_base_id": "B:R2:E5-01:RESERVE",
+      "primary_bytes_sha256": "0cc6f7f8fed38cea63524ee1e028a1903adf0c7764c2f70740d6a795f612c938",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "0cc6f7f8fed38cea63524ee1e028a1903adf0c7764c2f70740d6a795f612c938",
+      "logical_base_id": "B:R2:E5-01:RESERVE",
+      "primary_bytes_sha256": "0cc6f7f8fed38cea63524ee1e028a1903adf0c7764c2f70740d6a795f612c938",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "769c13d768cd21c7b34467ca944c7a68cc85283df66243c5e09db9067ef3d81f",
+      "logical_base_id": "B:R2:E6-01:RESERVE",
+      "primary_bytes_sha256": "769c13d768cd21c7b34467ca944c7a68cc85283df66243c5e09db9067ef3d81f",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "8cce09b1e0fb3e50c26c0d6ecf2117d2c962b56b2729485d0dce16aacff4a21a",
+      "logical_base_id": "B:R2:E7-01:RESERVE",
+      "primary_bytes_sha256": "8cce09b1e0fb3e50c26c0d6ecf2117d2c962b56b2729485d0dce16aacff4a21a",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "1d2b0c076a04dc07ddc72c23e2279882b30d3940749e8ea94878573e2774651b",
+      "logical_base_id": "B:R3:E1-01:RESERVE",
+      "primary_bytes_sha256": "1d2b0c076a04dc07ddc72c23e2279882b30d3940749e8ea94878573e2774651b",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "102faf66dc092ab62f21d6561e75787d1df44b2edfec1f8768432f9a964974e7",
+      "logical_base_id": "B:R3:E2-01:RESERVE",
+      "primary_bytes_sha256": "102faf66dc092ab62f21d6561e75787d1df44b2edfec1f8768432f9a964974e7",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "c684280ff903c38b1e7102adece99a4d844ab58931905c5cd538d927b8e58628",
+      "logical_base_id": "B:R3:E3-01:RESERVE",
+      "primary_bytes_sha256": "c684280ff903c38b1e7102adece99a4d844ab58931905c5cd538d927b8e58628",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "b39641365b599d9e4eb32ad4c2e5f6461c85a7534ee6e6f94abf0eacf4f23390",
+      "logical_base_id": "B:R3:E4-01:RESERVE",
+      "primary_bytes_sha256": "b39641365b599d9e4eb32ad4c2e5f6461c85a7534ee6e6f94abf0eacf4f23390",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "4621812e593d292744bf26325cb2e579e79cb62d736f888242667221ece8be12",
+      "logical_base_id": "B:R3:E5-01:RESERVE",
+      "primary_bytes_sha256": "4621812e593d292744bf26325cb2e579e79cb62d736f888242667221ece8be12",
+      "variant_id": "CF1"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "4621812e593d292744bf26325cb2e579e79cb62d736f888242667221ece8be12",
+      "logical_base_id": "B:R3:E5-01:RESERVE",
+      "primary_bytes_sha256": "4621812e593d292744bf26325cb2e579e79cb62d736f888242667221ece8be12",
+      "variant_id": "CF2"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "f35bdf663f093698bf66e325d0957458a377ea19629f648bb35d44b0bd5ba089",
+      "logical_base_id": "B:R3:E6-01:RESERVE",
+      "primary_bytes_sha256": "f35bdf663f093698bf66e325d0957458a377ea19629f648bb35d44b0bd5ba089",
+      "variant_id": "SINGLE"
+    },
+    {
+      "agreement": true,
+      "independent_bytes_sha256": "fee66ff0f413aa6303c7908a0f4efbf64ec28c2c94c74a70d7b680f9e3f5b628",
+      "logical_base_id": "B:R3:E7-01:RESERVE",
+      "primary_bytes_sha256": "fee66ff0f413aa6303c7908a0f4efbf64ec28c2c94c74a70d7b680f9e3f5b628",
+      "variant_id": "SINGLE"
+    }
+  ],
+  "verdict": "PASS"
+}

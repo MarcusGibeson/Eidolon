@@ -1,0 +1,36 @@
+{
+  "reviewed_commit": "a276c73ba5b89d944997a6a82cba4508729653c8",
+  "original_verdict": "NOT_READY_FOR_NEXT_G_EXTRACT1_STAGE",
+  "preservation": "Historical external rereview findings retained separately; closure never rewrites this verdict.",
+  "findings": [
+    {
+      "priority": "P1",
+      "finding": "Elapsed-time requests omit the forward-within-24-hours, next-day and equal-time-zero convention used by the frozen evaluator.",
+      "affected": "12 E2-03/04/05 scored requests",
+      "examples": ["23:25 to 00:53: gold 88, additional-day interpretation 1528 not excluded by the old prompt", "equal times: 0 versus 1440 not explicitly distinguished"]
+    },
+    {
+      "priority": "P2",
+      "finding": "Empty content views lack required explicit NOT_APPLICABLE reporting.",
+      "same_subtype_both_empty": 60,
+      "scaffold_both_empty": 64,
+      "scope": "Reporting nonconformance; no contaminated fixture or threshold violation demonstrated."
+    },
+    {
+      "priority": "P2",
+      "finding": "Differential certification omits normalized payload and token-sequence intermediates; punctuation can change normalized bytes while coarse evidence remains equal.",
+      "current_records_observed_agreeing": 298
+    }
+  ],
+  "mutation_observation": "Scaffold and recurrence test-local equality guards do not prove rejection through the complete finalizer; labels or coverage must be repaired.",
+  "verified_before_closure": {
+    "logical_bases": 168,
+    "rendered_variants": 192,
+    "rendered_gold_values": 244,
+    "new_new_comparisons": 18336,
+    "historical_new_comparisons": 20352,
+    "byte_identical_publication_replay_artifacts": 8,
+    "experimental_provider_model_calls": 0,
+    "G_ROUTE4": "CLOSED FAILED unchanged"
+  }
+}

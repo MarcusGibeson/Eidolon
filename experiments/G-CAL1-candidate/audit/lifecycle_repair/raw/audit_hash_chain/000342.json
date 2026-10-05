@@ -1,0 +1,1 @@
+{"payload":{"category":"generic-append-checkpoint-resume-receipt-no-retry-replay","detail":"same terminal event in memory and durable chain","passed":true},"previous_sha256":"1f975dca3218c2cc33dfe98d22d966dcd70774b0776631fc02d2462a49f18a9e","sequence":342,"sha256":"c2a8f17ac3d50b52f6ed5b05bd599123b8c46ad8f68d7096544a268b8a130910"}

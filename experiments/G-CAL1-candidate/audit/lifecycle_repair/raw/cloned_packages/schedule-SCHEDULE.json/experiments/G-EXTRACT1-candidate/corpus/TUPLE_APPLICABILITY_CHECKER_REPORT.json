@@ -1,0 +1,159 @@
+{
+  "after": {
+    "checkers_sha256": {
+      "independent_contamination.py": "ec950c94bca5254fce7a962fdcbe4193239d0aff431df3ed6fd8c3c5fbf0dc80",
+      "validate_corpus.py": "90bcf2117c98b8d17ec4e4536111818eda8148adca98af54620e1c822ed6d60b"
+    },
+    "corrected_authority_sha256": {
+      "experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.json": "3916a713f0b6a220679174a147ca455d14f0bd8f0d6cb75096c9d8aed978b6ae",
+      "experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.md": "ebf344ab9c3f386691fde05f690be60f2270dd2e61b3a4135afac5d75997d457",
+      "experiments/G-EXTRACT1-candidate/DESIGN_REVISION_CHANGELOG.md": "43e418a709981c90f47f1f0c659231c2312077970e699ea26721362cb031e504",
+      "experiments/G-EXTRACT1-candidate/DESIGN_VALIDATION_REPORT.json": "1ad57989fa8f10252405a6682af669369b884f00d03e7114c5adbf27b3350c3a",
+      "experiments/G-EXTRACT1-candidate/HUMAN_MACHINE_EQUIVALENCE_CHECKLIST.md": "bfe53e96ccd397a7a933ad5ef036955ea06175141cd5102d02fee768681ccae5",
+      "experiments/G-EXTRACT1-candidate/TUPLE_APPLICABILITY_AUDIT.json": "b74fba0c68c7f9bb47eaea6e032337b09f517ec698e80a201e29977fcff84257",
+      "experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.json": "5635018b7572441c47ee30e8d4ea4ea28d6372b6646a10f0b034ad856fe39e8f",
+      "experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.md": "a9ba9ff78f4c47db7f48194ecbf8db4df68d0f69eaf1cf885edb01cfaba86d50",
+      "experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT_VALIDATION_REPORT.json": "13a0ac95075513bc871fd265560389dcb16d7b1b5eee34b4917621632af319e5",
+      "experiments/G-EXTRACT1-candidate/blueprint/validate_blueprint.py": "17ae0a1b1af094356592076f5a4c2601aa4cc94447bc03488fec1483dfb822f9",
+      "experiments/G-EXTRACT1-candidate/validate_design.py": "5a18f89d701e827058d1d22b96ff8821e88aa005f62ec9545f193b11e268c440"
+    },
+    "gold_projection_sha256": "803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec",
+    "preserved": {
+      "AUTHORING_ATTEMPTS.json": "b9860b6bd4f662c46935773463bf6caf78035a1c2aa01c0b6a55e5100b9aa8da",
+      "AUTHORING_CANDIDATES.json": "f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068",
+      "AUTHORING_FEASIBILITY_REPORT.json": "8767a025c1123541cc858873aff41b60ecc1f8b0186d72ccc738761a24771433",
+      "FINALIZATION_CONTAMINATION_DISAGREEMENT_REPORT.json": "d9ff96223d36cd2c92d92361be028820d6955b82712f1ed2152178958c8765dc",
+      "FINALIZATION_FAILURE_REPORT.json": "588b6141e3c25b561dff49d7b004ca508468ed39f4dbef8a8e16c54f69918730",
+      "FINALIZATION_HISTORICAL_REUSE_CONTRACT_STOP_REPORT.json": "a011317172165d16569a78a975b861e8ccb7c374a68248da23f9c47498a8984d",
+      "FRESHNESS_CANONICALIZATION_DIAGNOSIS_REPORT.json": "7395408dcf283821d19ed81f6986d64c47b4d31f9dd76d1c72481f7dff48a442",
+      "FRESHNESS_CHECKER_REPAIR_REPORT.json": "3c57078b5ea88b5fc994252cec52307e5b213969797eaa222bb623ef989e262f",
+      "WHOLE_ANSWER_CHECKER_REPAIR_REPORT.json": "a9c5bc5533b2e3d61025576fd91b1f1e57cd2d74c4db675147e3df7a9a2e94a9",
+      "validate_freshness_repair.py": "9d66678d1fa8b62e820b25cc50305ba91ed112d6add57d63f9f5dc734bea70ae",
+      "validate_whole_answer_repair.py": "a389c97681e9630ea4f0c7aa102a02dff76def320412f0dc455eeeb6ff0ab513"
+    }
+  },
+  "applicability_checks": [
+    "dual_applicability:historical_new",
+    "status:historical_new",
+    "dual_applicability:phase_a_phase_a",
+    "status:phase_a_phase_a",
+    "dual_applicability:phase_a_phase_b",
+    "status:phase_a_phase_b",
+    "dual_applicability:phase_b_phase_b",
+    "status:phase_b_phase_b",
+    "dual_applicability:scored_reserve",
+    "status:scored_reserve",
+    "dual_applicability:reserve_reserve",
+    "status:reserve_reserve",
+    "actual_contract_mutation_rejected:historical_PASS",
+    "actual_contract_mutation_rejected:historical_FAIL",
+    "actual_contract_mutation_rejected:lexical SOURCE_FACT",
+    "actual_contract_mutation_rejected:gold-only tuple",
+    "actual_contract_mutation_rejected:inferred operation node",
+    "actual_contract_mutation_rejected:inferred source type",
+    "actual_contract_mutation_rejected:input.text inference",
+    "actual_contract_mutation_rejected:free-form instruction inference",
+    "actual_contract_mutation_rejected:rationale inference",
+    "actual_contract_mutation_rejected:ledger inference",
+    "actual_contract_mutation_rejected:authoring-expression inference",
+    "actual_contract_mutation_rejected:new_tuple_atom",
+    "actual_contract_mutation_rejected:new_tuple_serialization",
+    "actual_contract_mutation_rejected:new_tuple_match_rule",
+    "actual_contract_mutation_rejected:disabled_phase_a_phase_a",
+    "actual_contract_mutation_rejected:disabled_phase_a_phase_b",
+    "actual_contract_mutation_rejected:disabled_phase_b_phase_b",
+    "actual_contract_mutation_rejected:disabled_scored_reserve",
+    "actual_contract_mutation_rejected:disabled_reserve_reserve",
+    "actual_contract_mutation_rejected:other_historical_disabled",
+    "actual_contract_mutation_rejected:authority_elevated",
+    "plural_tuple_schema_typing_vector"
+  ],
+  "before": {
+    "checkers_sha256": {
+      "independent_contamination.py": "ec950c94bca5254fce7a962fdcbe4193239d0aff431df3ed6fd8c3c5fbf0dc80",
+      "validate_corpus.py": "90bcf2117c98b8d17ec4e4536111818eda8148adca98af54620e1c822ed6d60b"
+    },
+    "corrected_authority_sha256": {
+      "experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.json": "3916a713f0b6a220679174a147ca455d14f0bd8f0d6cb75096c9d8aed978b6ae",
+      "experiments/G-EXTRACT1-candidate/DESIGN_CANDIDATE.md": "ebf344ab9c3f386691fde05f690be60f2270dd2e61b3a4135afac5d75997d457",
+      "experiments/G-EXTRACT1-candidate/DESIGN_REVISION_CHANGELOG.md": "43e418a709981c90f47f1f0c659231c2312077970e699ea26721362cb031e504",
+      "experiments/G-EXTRACT1-candidate/DESIGN_VALIDATION_REPORT.json": "1ad57989fa8f10252405a6682af669369b884f00d03e7114c5adbf27b3350c3a",
+      "experiments/G-EXTRACT1-candidate/HUMAN_MACHINE_EQUIVALENCE_CHECKLIST.md": "bfe53e96ccd397a7a933ad5ef036955ea06175141cd5102d02fee768681ccae5",
+      "experiments/G-EXTRACT1-candidate/TUPLE_APPLICABILITY_AUDIT.json": "b74fba0c68c7f9bb47eaea6e032337b09f517ec698e80a201e29977fcff84257",
+      "experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.json": "5635018b7572441c47ee30e8d4ea4ea28d6372b6646a10f0b034ad856fe39e8f",
+      "experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT.md": "a9ba9ff78f4c47db7f48194ecbf8db4df68d0f69eaf1cf885edb01cfaba86d50",
+      "experiments/G-EXTRACT1-candidate/blueprint/BLUEPRINT_VALIDATION_REPORT.json": "13a0ac95075513bc871fd265560389dcb16d7b1b5eee34b4917621632af319e5",
+      "experiments/G-EXTRACT1-candidate/blueprint/validate_blueprint.py": "17ae0a1b1af094356592076f5a4c2601aa4cc94447bc03488fec1483dfb822f9",
+      "experiments/G-EXTRACT1-candidate/validate_design.py": "5a18f89d701e827058d1d22b96ff8821e88aa005f62ec9545f193b11e268c440"
+    },
+    "gold_projection_sha256": "803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec",
+    "preserved": {
+      "AUTHORING_ATTEMPTS.json": "b9860b6bd4f662c46935773463bf6caf78035a1c2aa01c0b6a55e5100b9aa8da",
+      "AUTHORING_CANDIDATES.json": "f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068",
+      "AUTHORING_FEASIBILITY_REPORT.json": "8767a025c1123541cc858873aff41b60ecc1f8b0186d72ccc738761a24771433",
+      "FINALIZATION_CONTAMINATION_DISAGREEMENT_REPORT.json": "d9ff96223d36cd2c92d92361be028820d6955b82712f1ed2152178958c8765dc",
+      "FINALIZATION_FAILURE_REPORT.json": "588b6141e3c25b561dff49d7b004ca508468ed39f4dbef8a8e16c54f69918730",
+      "FINALIZATION_HISTORICAL_REUSE_CONTRACT_STOP_REPORT.json": "a011317172165d16569a78a975b861e8ccb7c374a68248da23f9c47498a8984d",
+      "FRESHNESS_CANONICALIZATION_DIAGNOSIS_REPORT.json": "7395408dcf283821d19ed81f6986d64c47b4d31f9dd76d1c72481f7dff48a442",
+      "FRESHNESS_CHECKER_REPAIR_REPORT.json": "3c57078b5ea88b5fc994252cec52307e5b213969797eaa222bb623ef989e262f",
+      "WHOLE_ANSWER_CHECKER_REPAIR_REPORT.json": "a9c5bc5533b2e3d61025576fd91b1f1e57cd2d74c4db675147e3df7a9a2e94a9",
+      "validate_freshness_repair.py": "9d66678d1fa8b62e820b25cc50305ba91ed112d6add57d63f9f5dc734bea70ae",
+      "validate_whole_answer_repair.py": "a389c97681e9630ea4f0c7aa102a02dff76def320412f0dc455eeeb6ff0ab513"
+    }
+  },
+  "corpus_finalized": false,
+  "final_contamination_campaign_run": false,
+  "governance": {
+    "G_ROUTE4": "CLOSED FAILED unchanged",
+    "autonomy": false,
+    "belief_effects": "none",
+    "corpus_regeneration": 0,
+    "execution": "none",
+    "execution_freeze_authorized": false,
+    "external_gold_review": "NOT YET PERFORMED",
+    "gold_modifications": 0,
+    "mechanical_pilot_authorized": false,
+    "phase_a_authorized": false,
+    "phase_b_authorized": false,
+    "provider_model_calls": 0,
+    "runtime_implementation": false
+  },
+  "repair_replay": {
+    "all_prior_behavioral_results_exact": true,
+    "disagreements": 0,
+    "freshness_checks": 811,
+    "historical_answers": 106,
+    "lineage_method": "Original behavioral bodies unchanged; obsolete authority snapshots rebound in memory after exact design/blueprint projection validation and addition-only checker AST audit.",
+    "logical_bases": 168,
+    "original_failure_replay": {
+      "after_independent_utf8": "[[\"d016_02\",\"boolean\",[\"BOOLEAN\",\"true\"]]]",
+      "after_primary_utf8": "[[\"d016_02\",\"boolean\",[\"BOOLEAN\",\"true\"]]]",
+      "agreement": true,
+      "before_independent_utf8": "[[\"d016_02\",\"boolean\",[\"BOOLEAN\",true]]]",
+      "before_primary_utf8": "[[\"d016_02\",\"boolean\",[\"BOOLEAN\",\"true\"]]]",
+      "logical_base_id": "A:R2:E4-01:PRIMARY"
+    },
+    "rendered_variants": 192,
+    "whole_answer_checks": 1828
+  },
+  "scientific_correction_commit": "62de5dbdb6a646e21640f55e1565e1121ce675a3",
+  "scope": {
+    "independent_contamination.py": {
+      "every_prior_AST_node_unchanged": true,
+      "only_added_functions": [
+        "historical_pair_result",
+        "historical_record",
+        "tuple_scope_record"
+      ]
+    },
+    "validate_corpus.py": {
+      "every_prior_AST_node_unchanged": true,
+      "only_added_functions": [
+        "historical_evidence",
+        "historical_pair",
+        "tuple_applicability"
+      ]
+    }
+  },
+  "verdict": "PASS"
+}

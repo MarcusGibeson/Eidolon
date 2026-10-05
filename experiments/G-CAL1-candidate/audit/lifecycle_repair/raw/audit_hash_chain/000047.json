@@ -1,0 +1,1 @@
+{"payload":{"category":"P1-A-separate-process-lock","data":{"event":"CORRUPTED_CHECKPOINT"},"detail":"caught exception cannot continue","passed":true},"previous_sha256":"bf3c8f6fc630dc3b80383ffeeb11acf0e9eb86147d3b302de74057fa2dd69b74","sequence":47,"sha256":"da3aff940e00a05a494e6472756317359dd7243ea51a09a01fd993da526e6ac6"}

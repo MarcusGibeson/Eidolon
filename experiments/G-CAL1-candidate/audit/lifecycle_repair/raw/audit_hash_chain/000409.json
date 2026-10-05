@@ -1,0 +1,1 @@
+{"payload":{"category":"generic-append-checkpoint-resume-receipt-no-retry-replay","data":{"event":"PROVIDER_FAILURE_WITHOUT_RECEIPT"},"detail":"caught exception cannot continue","passed":true},"previous_sha256":"31f7274f77654499d312098ce21a2ec9274b4161be6f3f700a69711c0279f443","sequence":409,"sha256":"3c5d1bdb6b36dc6778babc693c6db471ac3e617c0709cc9fd6e5aa369a94292a"}

@@ -1,0 +1,1 @@
+{"payload":{"category":"P1-C-authoritative-memory-cache","data":{"event":"PRE_ARTIFACT_DIGEST_MISMATCH"},"detail":"cache mutation offset","passed":true},"previous_sha256":"1ac8fdd9e7f72220edbd8ce7aa5575c0a66f030f57b60d443a0172f089c65e2d","sequence":275,"sha256":"0d9a877397ea9f275f6c4d85fae2be4253de1222d2498e08b7256852fa4561ea"}

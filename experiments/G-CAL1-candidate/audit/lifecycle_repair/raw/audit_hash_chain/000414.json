@@ -1,0 +1,1 @@
+{"payload":{"category":"generic-append-checkpoint-resume-receipt-no-retry-replay","detail":"one attempt durable FAILURE, no retry/fallback","passed":true},"previous_sha256":"c9d902eb4abcaf050d9ad630d9198018135d5ae264bbb2a2be58f6e449a57e28","sequence":414,"sha256":"ab91f9415ee72da3320cfbbc21c734c96eed204b5b76d49df58590b63896c02c"}

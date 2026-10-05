@@ -1,0 +1,1 @@
+{"payload":{"category":"generic-append-checkpoint-resume-receipt-no-retry-replay","data":{"event":"CORRUPTED_CHECKPOINT"},"detail":"checkpoint envelope/payload malformed","passed":true},"previous_sha256":"f535e75fff59b94c4a1b87371b4b18396991df8aa11075c04e34f10c46a41796","sequence":354,"sha256":"4e4577952169f22d2921ebad21ea8012ee34910dbe610679d3bb126200a890b5"}

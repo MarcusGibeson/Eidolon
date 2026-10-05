@@ -1,0 +1,149 @@
+# G-EXTRACT1 v10 Human/Machine Equivalence Checklist
+
+## Whole-Answer Canonicalization Amendment
+
+- Human normative whole-answer annex parses identically to `whole_answer_canonicalization_contract`.
+- Four leaf strings in each row; exact schema and derived uppercase tag, never exchanged.
+- Seven semantic texts have exact rules; scalar/array/object/null values reject.
+- INTEGER/NUMBER signed zero and NUMBER lexical equivalence normalize without floats or rounding.
+- Whole-answer byte contract retains ensure_ascii=True; freshness remains ensure_ascii=False.
+- Multi-field golden vectors exercise unsigned UTF-8 sorting, bindings and duplicate-field rejection.
+- Mutation catalog rejects native scalars, wrong tags/schemas, numeric spellings, altered strings/dates/times/enums, sorting and JSON formatting.
+- Full prior machine contract equality is checked after removing this additive contract and restoring review status.
+- Historical adaptation and its digest remain 106/106; no historical/new whole-answer campaign is claimed.
+- Ten corpus/tooling hashes, gold projection, five accepted blueprint files and legacy helper ASTs are unchanged.
+- No corpus checker imports or calls the new isolated whole-answer test helper.
+- No corpus/gold alteration, provider call, runtime/execution or finalization authority is granted.
+- Independent amendment review and separate blueprint rebind/rereview/checker repair remain required.
+
+This checklist is supporting evidence. Deterministic PASS does not prove scientific
+validity or substitute for independent adversarial review.
+
+
+## Freshness Canonicalization Amendment
+
+- Parsed human normative freshness annex equals `freshness_canonicalization_contract` exactly.
+- First element is exact validated schema_type, not a semantic tag; second is always canonical semantic text. Both are JSON strings.
+- INTEGER minimal signed decimal/zero and NUMBER exact plain terminating-decimal/no-rounding rules tested; signed zero and numeric equivalence preserved.
+- Boolean lowercase, DATE/TIME exact forms, STRING no normalization and finite ENUM exact schema/option preservation tested.
+- Full primitive and blueprint-used enum schema surface checked; semantic vectors are isolated tests, not authored fixture or gold changes.
+- VALUE-only scope, source order, duplicate preservation and field/ID/output exclusion behaviorally checked.
+- Compact UTF-8/ensure_ascii=false/no-newline bytes verified; adversarial alternate encodings reject.
+- Parent projection to 01aafde permits only new contract and review-status paths; all unrelated representations, thresholds, gates, seeds, schedules and authorities unchanged.
+- Architecture168/192/reserves28 and comparison partition24/906/518/16888 checked; scaffold14/234 logical/906 rendered preserved.
+- Historical adapter106/106 remains separately tested under unchanged historical contract, not converted to NEW freshness rows.
+- All seven existing corpus files retain their pre-edit hashes; complete candidates byte identity also proves embedded gold byte identity. Corpus checkers and failure/diagnosis evidence unchanged.
+- Five blueprint files remain byte-identical to accepted01aafde. Separate independent amendment rereview and authorized blueprint rebind remain required.
+- No candidate contamination rescoring, checker repair, fixture regeneration, corpus finalization, provider calls or execution authorized/performed.
+- PASS means deterministic structural/cross-representation consistency only; it is not scientific approval or future authority.
+
+Earlier checklists below retain their historical checkpoint scope and identities.
+
+## Contamination-Feasibility Amendment
+
+- Exact `declared_scaffold_overlap_contract` is parsed from the human normative annex.
+- Machine-only allowed paths: new contract, `experiment.status`, `final_verdict`.
+  Projecting these away reproduces parent 28fb6bbd exactly; all science/governance preserved.
+- Full 168-position/192-variant scope, 14,028 logical/18,312 rendered comparisons,
+  24 separate E5 same-base scopes, all minima/views and 14 impossible classes checked.
+- Exact 234 eligible logical pair memberships, fingerprint class IDs, forced five-grams
+  and strict residual <3/25 match the generated value-free proposal without author discretion.
+- Both actual slot/value/lexical/type/gold/output/fingerprint checks remain required.
+- Cross-subtype identity retained; two same-subtype E1 fixed-boundary corrections explicitly separate.
+- Existing ordinary/near-replay thresholds and all historical/exact reuse objects unchanged.
+- Residual removal affects only frozen windows, never token joins or freely chosen literals;
+  either residual empty is authoring error; finite empty old content is not independence evidence.
+- Raw sequence, identity, answer, tuple, payload and generated-identity freshness unchanged;
+  copied content/undeclared/unrelated/replay mutations rejected in deterministic checks.
+- Historical adapter106/106, blueprint five-file byte preservation and recurrence membership rechecked.
+- Post repair no planned pair has a forced violation; this is not proof of concrete acceptance
+  or scientific validity, and does not grant corpus, blueprint, provider or execution authority.
+- Blueprint contamination bindings need a separate future reviewed/authorized update; not done here.
+
+The earlier amendment checklists below are retained as checkpoint history.
+
+Both design files are co-normative. The v10 human annex embeds exact structured normative objects; the validator parses them and compares them with the machine contract. This checklist is an index of checks and reviewer obligations, not a proof of complete prose equivalence or scientific validity.
+
+## Prospective output-field amendment
+
+The additional parsed amendment annex binds `output_field_amendment_contract`, the complete canonical output-field contract and exact-value semantic rules. Every canonical output has exactly eight keys, `required=true`, `label_removal=false`, and binding-derived source/producer/absence fields. Output roles remain separate. No leading-label stripping is permitted in G-EXTRACT1; the general historical comparator capability remains available outside this experiment.
+
+Design validation derives value-free output metadata across all 168 bases/192 variants, including E5 CF1/CF2 and reserves and every E7 output. It rejects both scoring-flag mutations, missing/extra keys and incompatible bindings, and compares every non-amended machine rule to the accepted V10 commit. The reviewed blueprint is neither changed nor rebound; the inventory check recognizes only its five commit-bound files. PASS remains structural/cross-representation evidence, not scientific approval or later authority.
+
+## Counterfactual extension
+
+Section21 and the parsed exact annex co-normatively bind `e5_counterfactual_selector_contract`, `counterfactual_accounting`, corpus/phases, cell gates, seeds, efficiency, analysis units and repeat reductions. Only E5 scoped sharing/accounting is extended; all cross-base scientific/governance rules remain binding.
+
+| Rule | Behavioral checking |
+|---|---|
+| Same logical IDs/source/schema/record type | Both variants derived from one validated anchor, no other fixture difference allowed |
+| Complete request byte invariance | All models/repeats checked against read-only historical builder definitions; only escaped requested-selector span differs; complete masked bytes equal |
+| Gold and lookup incompatibility | Complete distinct populations and mechanically different gold; invariant key cannot yield both answers; no cognitive inference |
+| Ordered two-of-three transitions | Exact20 scored/four reserve context-slot transitions; no author choice |
+| Pair scoring | Exhaustive Boolean reductions for4 A /2 B observations;5/5 strict semantic pairs; general gates retained |
+| Seeds and journal identity | Shared pair/repeat seed only within model/phase; unique call/variant metadata never transmitted |
+| Pair-local contamination | Only validated CF1/CF2 same base; forged/other-family/cross-phase/primary-reserve membership denied; cross-base recurrence controls retained |
+| Whole reserve pair | Anchor actual semantics/subtype/difficulty profile plus fixed ordered transition; same profile primary/reserve;01-only activation retained |
+| Honest architecture |168 logical bases/192 variants;480/240/720 calls;24 exception scopes/18,312 cross-base variant comparisons |
+| Scientific limits |513 CF1 marginal policies secondary only; request-invariant deterministic incompatibility primary; no population/cognitive proof |
+
+Existing rows below index unchanged mechanics or v9 CF1 anchor diagnostics. Their single-fixture language means logical bases in v10, with section21 E5 reduction taking precedence. The fixed5/5 E5 pair gate is independently required in both phases.
+
+| Normative area | Human location | Machine location | Check |
+|---|---|---|---|
+| 168-position recurrence and scopes | section20 and annex | template_recurrence_contract | 51 exact classes, 35 subtype groups, all 14,028 structural pairs; four E7 reserves |
+| Ordinal-neutral and scoped comparison modes | section20 and annex | ordinal_neutral_similarity_contract | text/schema masking, historical unchanged, ordinary/shape/content probes and prospective exception |
+| Entity CF1 anchor counterbalance | sections20/21 and annex | entity_selection_allocation_contract/e5_counterfactual_selector_contract | bounded secondary mappings only; exact pair invariance is primary protection |
+| Value difficulty and zero distractors | section20 and annex | value_allocation_contract | all 140 primary context-profile expansions; actual magnitude/sign/carry mutations; exact arithmetic/precision |
+| Validated reserve difficulty | sections12/20 and annex | reserve_equivalence_contract.value_shape_profile | actual semantics/slot/profile/ledger validation precedes byte comparison |
+| E7 shifted-order interpretation | section20 | ambiguity_contract.phase_b_interpretation | not freshness-only or identically distributed |
+| Identity, scope, calls and authority | sections 1-2,16 | experiment/corpus/phases/governance | constants, zero authority/calls/fixtures |
+| Historical closure and baseline | sections 1,15 | historical_binding/baseline_binding | literal SHA-256 and Git blobs |
+| Canonical full prompt and literals | section 3 | operation_definition_contract | full bytes/SHA, literal rejects, 2-4 SUM |
+| Neutral record/field/entity/string/enum atoms | section 7 and annex | lexical_neutrality_contract | catalog, generators, coaching rejects, 168 unique ordinals |
+| Schema vocabulary and semantic tags | sections 4-5 | schema_type_contract | primitive/enum parse, exact tags |
+| Typed source references and operations | sections 5-7 | operation_semantics_contract/fact_record_contract | valid/invalid types, cardinality, promotion and domains |
+| Complete entity population | section 5.4 and annex | entity_population_contract | complete 2/3 populations, missing/mismatch/duplicate/unknown mutations |
+| Output shape, binding and roles | section 6 | canonical_output_field_contract | eight exact keys, generated bound names, producer/schema identity |
+| Exact enum identity | annex | exact_schema_identity_for_preserving_operations | wider/narrower/reordered schemas rejected |
+| Family, secondary and composed derivation | section 8 | family_assignment_contract/composed_feature_requirements | mechanical family/features, distinct quota rows |
+| Exact subtype matrix and domain allocations | section 17 and annex | subtype_allocation_contract | 35 slots, 5/family, promotions/operators/boundaries, E7 support distributions |
+| E7 shape, parser and truncation | sections 9-10 and annex | ambiguity_contract/exact_value_contract | complete shape, parser paths, duplicates, accepted truncation false-clean |
+| Exact reuse and atom typing | section 11 and annex | contamination_contract.exact_reuse_contract | whole-answer/identity/tuple bytes, schema-derived and upstream tags |
+| Similarity tokenizer and scopes | section 11 | contamination_contract | frozen regex vectors/constants/six scopes |
+| Fingerprint refinement and independence | sections 11,18 and annex | fingerprint/source_fact_layout_algorithm | end-to-end bytes, reversed node order, typed layout sequence |
+| Reserve mapping and exact equivalence | sections 12,17 and annex | reserve_activation_contract/reserve_equivalence_contract | 28 slots, one claimant, fixed subtype01, byte profiles and mismatches |
+| Repeat reduction and gates | section 13 | phase_a_fixture_reduction_contract/cell_gates | truth tables, thresholds, confidence arithmetic |
+| Cell/integrity/verdict states | section 14 | cell_state_machine/integrity_event_contract/result_state_machine | no pooling/reentry, event/verdict vectors |
+| Provider/model identities and seeds | section 15 | model_provider/sampling | bound identities/configuration/seed formula |
+| Gold review and future authorization | sections 14,16 | gold_adjudication_contract/governance | all pre-contact freeze/review flags |
+
+## Representation decisions
+
+The historical schema reader is generic; the new-fixture lexical overlay is restrictive. Output names equal binding identifiers, so there is no unrendered alias decision. The stable ambiguity_contract container measures only explicit partial absence. Mechanical vectors live in design/checking artifacts and are not corpus or reserve items. The source-layout refinement is an explicit prospective correction recorded in both designs and the changelog.
+
+The validator executes representative mechanics and exact normative-object comparisons. It does not establish author independence, population generalization, scientific validity, complete coverage of every prose claim, or the correctness of future production implementations. Two independently authored contamination implementations and independent corpus/gold reviews remain required before any later freeze.
+
+## Blueprint boundary
+
+The checkpoint permits independent rereview only. A separately authorized blueprint may instantiate frozen IDs, templates, schema/type rules, subtype slots, reserve profiles, schedules and file formats. It may not choose new lexical vocabularies, operation domains, enum compatibility, gold, sampling coverage, contamination semantics, reserve equivalence, thresholds, integrity states or governance authority.
+
+## Candidate v8 exact-object checks
+
+Section19/annex directly encode legacy projection, E4 context matrices, entity discrimination, enum positions, reserve01-only rules, subtype content, identity shape and lexical categories. Behavioral tests cover all 106 historical inputs, constant strategies, wrong entities, uncovered reserves and actual-domain/E7 mutations. Exact normative objects are compared with JSON; no scientific or later authorization claim.
+
+## Candidate v9 validation limits
+
+Section20 and the exact annex freeze the recurrence ledger, comparison decision table, entity matrix and value profiles. Symbolic structural feasibility is not content feasibility or scientific independence. Every future actual fixture must pass semantic/slot/value/wiring checks before claiming ledger compatibility or reserve equivalence. Old isolated test vectors intentionally test historical/individual mechanics, not full v9 corpus conformance. No corpus/reserve content is created by the symbolic ledger or checking probes. The content-view correction and fixed-boundary confounds are explicitly prospective and require adversarial rereview.
+
+## Historical Tuple Applicability
+- [x] Exact status and all five NEW/NEW scopes are co-normative.
+- [x] No surrogate, PASS/FAIL accounting, or inferred provenance.
+- [x] All other supported historical controls and NEW tuple bytes unchanged.
+- [x] Authority remains bounded; audit required before checker update.
+
+## Review Closure Equivalence
+- [x] Exact elapsed convention and byte placement are co-normative.
+- [x] Content applicability, no-credit handling and differential stages are co-normative.
+- [x] Twelve request deltas and all unchanged inputs are mechanically tested.
+- [x] Historical projection boundary and governance remain unchanged.

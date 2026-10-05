@@ -1,0 +1,1 @@
+{"payload":{"category":"generic-append-checkpoint-resume-receipt-no-retry-replay","data":{"event":"CORRUPTED_CHECKPOINT"},"detail":"restart terminal","passed":true},"previous_sha256":"3ea2a9a734cae55f5cee7191bf7b1b2046e672866bf79af8d7625657add5384c","sequence":373,"sha256":"bcf117ce96dc30dc7874669202816c529689728d0751d482aab0d606ecaa7469"}

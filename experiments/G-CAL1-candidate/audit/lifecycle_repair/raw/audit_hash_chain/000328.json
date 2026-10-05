@@ -1,0 +1,1 @@
+{"payload":{"category":"generic-append-checkpoint-resume-receipt-no-retry-replay","data":{"event":"SCHEDULE_POSITION_MISMATCH"},"detail":"stale duplicate/no retry","passed":true},"previous_sha256":"55a301517816165c8222193267e57886f39ae6408aaf28bb14bbb6d0b7417f09","sequence":328,"sha256":"cf564ab649b389de57c54922766215acc6b8496f252d3084b4d790aa1919748b"}

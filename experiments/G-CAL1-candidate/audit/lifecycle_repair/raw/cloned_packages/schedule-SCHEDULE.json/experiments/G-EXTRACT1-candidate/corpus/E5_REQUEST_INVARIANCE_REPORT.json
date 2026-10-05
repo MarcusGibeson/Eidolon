@@ -1,0 +1,4039 @@
+{
+  "logical_pairs": 24,
+  "provider_model_calls": 0,
+  "request_audits": [
+    {
+      "checks": [
+        {
+          "base_fixture_id": "A:R2:E5-01:PRIMARY",
+          "base_position": "A:R2:E5-01:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "9df3f2a355b431cb7939799e7633cb3566caaa2c44b7fd2d8f3987bc5d1c808a",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "8b589d7f7e31c839862efd15244447ee4493714a1ffabbfab55eb255cf6fe709",
+            "57203a3d07d239eb6070909d2aeeb8d8a377a440ff72ec8ce06ab7b7ab3098ca"
+          ],
+          "seed": 610201,
+          "selector_bytes": [
+            "\\\"Entity 021 A\\\"",
+            "\\\"Entity 021 B\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-01:PRIMARY",
+          "base_position": "A:R2:E5-01:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "6ca74e39e16453b4d29b8b476420482dfae6c821e6861f209bc9830e6b3b8c92",
+          "model": "qwen2.5:7b",
+          "repeat": 2,
+          "request_sha256": [
+            "b950cb62af13ed1794feb564b7208137c0613912cda961691ac507908a8ac472",
+            "3771e69fa4eb30cc7b9f5a7270db453fa60704b5f0f79ab2a80bd919419ff38f"
+          ],
+          "seed": 610202,
+          "selector_bytes": [
+            "\\\"Entity 021 A\\\"",
+            "\\\"Entity 021 B\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-01:PRIMARY",
+          "base_position": "A:R2:E5-01:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "c89e00f8cbb2fa4f019df92a59e35c35552ee26bbf6d21a834fccfc1756ca8d1",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "adfe0f77ba18bc0d9ba7eb6bb5110f6afba6bd55285a70bffb937b4e58b2c216",
+            "3505f6aa0c0280f6d1dd71617c3e14596e43c30277502dd1e21cdf5cbbff182b"
+          ],
+          "seed": 610201,
+          "selector_bytes": [
+            "\\\"Entity 021 A\\\"",
+            "\\\"Entity 021 B\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-01:PRIMARY",
+          "base_position": "A:R2:E5-01:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "6f71cc5c2a3457848401733b8bb5c8db3cd719ca9afe482df68effde56badd55",
+          "model": "qwen3:14b",
+          "repeat": 2,
+          "request_sha256": [
+            "a0237401ba78da2798ca7ae50bc8cd4d85453380711278004169145f2e3244f2",
+            "241f08d545e34c5837e44c22c90c47624092bf28d4dd682dca246e6c400483a5"
+          ],
+          "seed": 610202,
+          "selector_bytes": [
+            "\\\"Entity 021 A\\\"",
+            "\\\"Entity 021 B\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-01:PRIMARY",
+          "base_position": "A:R2:E5-01:PRIMARY",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "af1bf8a568ce0487a43f7e4bd8b7658d7083b690d51344f44f601930b13d9492",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "40926fdd2ffa394d7d01eb0edf1e331139b2ce94476fbbb1a85b3cb39eb20dfa",
+            "9981dfd09252e341c84a8cf562962ef52824595bbeb75e98febdff1dd697b446"
+          ],
+          "seed": 610201,
+          "selector_bytes": [
+            "\\\"Entity 021 A\\\"",
+            "\\\"Entity 021 B\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-01:PRIMARY",
+          "base_position": "A:R2:E5-01:PRIMARY",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "795b8f4c1cad22cbd2e565c5202ee35d7391a155aa1022578be2e6f692c43682",
+          "model": "qwen3.8:27b",
+          "repeat": 2,
+          "request_sha256": [
+            "f1b6f76507129a64358c12ce40090f701ff1b9e8dca415304852ff98c0679141",
+            "6ecd4a1ccabee08a71457bbb21d8009308c67341e052406f955597cdb95969a7"
+          ],
+          "seed": 610202,
+          "selector_bytes": [
+            "\\\"Entity 021 A\\\"",
+            "\\\"Entity 021 B\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "A:R2:E5-01:PRIMARY",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "A:R2:E5-02:PRIMARY",
+          "base_position": "A:R2:E5-02:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "394c22dddca2f90774063fc65b1d2322b1412cec58654da0a58e48c90d4e38a8",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "bf2bdc5cfdc00e2fdd5ba4adb0502d8f207223480004c08a11fbf0368291fdb7",
+            "c498a09175371756bc55d7cf9a0d347e71b518dcc628b06e98e5ee3d33f7612a"
+          ],
+          "seed": 610211,
+          "selector_bytes": [
+            "\\\"Entity 022 B\\\"",
+            "\\\"Entity 022 A\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-02:PRIMARY",
+          "base_position": "A:R2:E5-02:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "c13ecd2e0c119be58ad9046ee82abd21fcb2dab0a134587b4ce95b7c9ae3c1a2",
+          "model": "qwen2.5:7b",
+          "repeat": 2,
+          "request_sha256": [
+            "53943d9c9ffa8cee67e6e11687df3b3220d8595b37a9913a87b36aba68773b3b",
+            "84562821f5505406a8955bcb09377245929dedebbaa8e954b664b1d724c2219b"
+          ],
+          "seed": 610212,
+          "selector_bytes": [
+            "\\\"Entity 022 B\\\"",
+            "\\\"Entity 022 A\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-02:PRIMARY",
+          "base_position": "A:R2:E5-02:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "2fddc72f806236e2ac499ad897f832d4cfdba18109d55611fd02a65222c56945",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "1c9b4707fe09aa953c3cd46a77a9595cf870f185ce4a2bea80fb0c0969ec6c55",
+            "9ed2f70941ff440bcdc72fa30f8bcff1df6bc7bc6a4c6d759f8234b0e00aca39"
+          ],
+          "seed": 610211,
+          "selector_bytes": [
+            "\\\"Entity 022 B\\\"",
+            "\\\"Entity 022 A\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-02:PRIMARY",
+          "base_position": "A:R2:E5-02:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "12e9a7cf6dc7ae56e9d0cf1871933bed8b882207d14cf81946dd0dea31aec5f8",
+          "model": "qwen3:14b",
+          "repeat": 2,
+          "request_sha256": [
+            "9e51b84710fce20406dfca6a2e6a964d19f3117f42f975a5e0d0cf994ea61a24",
+            "c53bb60d61d45203aef71137830d854e1dc4c92da9ee120c89c4194b5f044471"
+          ],
+          "seed": 610212,
+          "selector_bytes": [
+            "\\\"Entity 022 B\\\"",
+            "\\\"Entity 022 A\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-02:PRIMARY",
+          "base_position": "A:R2:E5-02:PRIMARY",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "b9d5559d3f1f53eaac514144897341316123fce67a3c41aebcd58483af667531",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "18796dbb6781682a3fcc262f89f288c98b6b24b299a27bc16414ae5b436d9d3c",
+            "963d90700677717efb0cd163ae6e25f23ae65eb11936263efcc83dc1adfc4d77"
+          ],
+          "seed": 610211,
+          "selector_bytes": [
+            "\\\"Entity 022 B\\\"",
+            "\\\"Entity 022 A\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-02:PRIMARY",
+          "base_position": "A:R2:E5-02:PRIMARY",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "b2799ac6b3cf0792fe39d744d5455b8995363036b39410892f299f6cc7dee797",
+          "model": "qwen3.8:27b",
+          "repeat": 2,
+          "request_sha256": [
+            "56fbb0de4bdcb099814f3699b4f7260b81c7f964ed1ae393a6abe19659018743",
+            "28fbe1c76635db00e48ba376986629bab465bb4e58f4d46ba2edfe6bacf61740"
+          ],
+          "seed": 610212,
+          "selector_bytes": [
+            "\\\"Entity 022 B\\\"",
+            "\\\"Entity 022 A\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "A:R2:E5-02:PRIMARY",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "A:R2:E5-03:PRIMARY",
+          "base_position": "A:R2:E5-03:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "3aed2355084177300e27e649351593abea1c0ca2122a18a1a0955328ba59b0c0",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "e969d69985b94581751d52f7a8c362986a279d285b2bb03be1927d74cd460574",
+            "f5eb86baa856a367de9b7f0d816c36417a6ca5f074898f37143be67c57c8a044"
+          ],
+          "seed": 610221,
+          "selector_bytes": [
+            "\\\"Entity 023 A\\\"",
+            "\\\"Entity 023 B\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-03:PRIMARY",
+          "base_position": "A:R2:E5-03:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "115f872f11bb26eaca4727da5b39092aae7e952cf9eefb4088656dbb4c98d9af",
+          "model": "qwen2.5:7b",
+          "repeat": 2,
+          "request_sha256": [
+            "9f4585322a3d35db078290062772eec45454ff77235c5327d6a1c0ce102d4df3",
+            "425c95044cd92ede5c8762e4f23e3af4df48876df82e906fe0ea0649807b57d6"
+          ],
+          "seed": 610222,
+          "selector_bytes": [
+            "\\\"Entity 023 A\\\"",
+            "\\\"Entity 023 B\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-03:PRIMARY",
+          "base_position": "A:R2:E5-03:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "3f07a54d0b6c58b950f3a8f975daf94a74e9626c8910e2145bf0d02956e4ff25",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "96cdc3e3276fcc4142de080bbc1f736b391b4f48f343647cb0590a9725680bdd",
+            "f3e8d1e6dbd95d14c9b2f64c03a3ef1ce36fe966463ed6dcf91bde0f9f312e0f"
+          ],
+          "seed": 610221,
+          "selector_bytes": [
+            "\\\"Entity 023 A\\\"",
+            "\\\"Entity 023 B\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-03:PRIMARY",
+          "base_position": "A:R2:E5-03:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "e659b6c81fb83a5f66213c679b9df629b7ee03ce41f2a4a98e3d60e27e65864d",
+          "model": "qwen3:14b",
+          "repeat": 2,
+          "request_sha256": [
+            "973852d7c30c5c3fcdcfe5ed8808fa00ee7cb71c9df84da881e6bbb63e3fb8f3",
+            "fd4f18ae3a174dbf709cd18ab5ac134741e4964f992bf8675dbbbdb99e83c542"
+          ],
+          "seed": 610222,
+          "selector_bytes": [
+            "\\\"Entity 023 A\\\"",
+            "\\\"Entity 023 B\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-03:PRIMARY",
+          "base_position": "A:R2:E5-03:PRIMARY",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "5e23d4817eae2018426c6ea1063ed9eb12e95784783fd385d89164f7ef3a854e",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "0cc5be2bbbc516827ac9578d9bc19998f927d89d6e63d95205e2f29279154caa",
+            "72fe265e289d4ea93a65eeefbd090a1ab6b0078bc2b8a98e5185ed2b5b4c434c"
+          ],
+          "seed": 610221,
+          "selector_bytes": [
+            "\\\"Entity 023 A\\\"",
+            "\\\"Entity 023 B\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-03:PRIMARY",
+          "base_position": "A:R2:E5-03:PRIMARY",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "9c5353689bdeef7a037d7cdb736c73a887c3ef172a22dc68542208d647e4f416",
+          "model": "qwen3.8:27b",
+          "repeat": 2,
+          "request_sha256": [
+            "c7fe73e2c82bfa98a3efe07fd2f15a89f4474d8e26ecaeff8214ffa8fe31f8be",
+            "f7b27a28b1be82a92f552aef98a387243f60002ead175cabeb9faf225c88bb5b"
+          ],
+          "seed": 610222,
+          "selector_bytes": [
+            "\\\"Entity 023 A\\\"",
+            "\\\"Entity 023 B\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "A:R2:E5-03:PRIMARY",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "A:R2:E5-04:PRIMARY",
+          "base_position": "A:R2:E5-04:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "fe53faf60fd25b8f3b67d1682b411d44c0f7deb594e20bb98d323a825d512704",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "5e2e8fffd0addb1cf7be934f8013ceb3fb4958fab0071c2e848755b555237943",
+            "a95b2170fd94749b7a9833a831dd99fb565b2b09d5b4a299c3c73ec997729ba7"
+          ],
+          "seed": 610231,
+          "selector_bytes": [
+            "\\\"Entity 024 B\\\"",
+            "\\\"Entity 024 A\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-04:PRIMARY",
+          "base_position": "A:R2:E5-04:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "2ef10934d46fbec79ecadd1f9a343cb7e359ef226151e9f8399feb92f4faf46a",
+          "model": "qwen2.5:7b",
+          "repeat": 2,
+          "request_sha256": [
+            "f0b35381023f2f0fbf47310bee4d8902a13e94e890ca39a621776c6c1da22d71",
+            "ada36fd3643a9d60f2654e6f68723d0ff1336cf7367a119ac2a8a5831ad762e8"
+          ],
+          "seed": 610232,
+          "selector_bytes": [
+            "\\\"Entity 024 B\\\"",
+            "\\\"Entity 024 A\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-04:PRIMARY",
+          "base_position": "A:R2:E5-04:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "5b571660b920ad2d21bb838ad78fa0ead0c18a89efa5a6c6b296f56b2033e7cb",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "19f2c0b556f9418b02cc7cccc6429c3592b194854df5af29b52a07a10335ca7a",
+            "92359fc367978aca5bc2062598e22823e5deaa3efe54be1e8130695500bc0c93"
+          ],
+          "seed": 610231,
+          "selector_bytes": [
+            "\\\"Entity 024 B\\\"",
+            "\\\"Entity 024 A\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-04:PRIMARY",
+          "base_position": "A:R2:E5-04:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "09b73ce811f1843fd3ed4ca7c0571b6a124274681b45803fe23ed5dcb29bf651",
+          "model": "qwen3:14b",
+          "repeat": 2,
+          "request_sha256": [
+            "945084074d1fab14022cdac8da338efb02ef7eb88f6cb0c1a8ce81d9cd195679",
+            "ac10df518669877561b162ec0cc72f18d2117bf93bc7c3e30eee64ce1928db1e"
+          ],
+          "seed": 610232,
+          "selector_bytes": [
+            "\\\"Entity 024 B\\\"",
+            "\\\"Entity 024 A\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-04:PRIMARY",
+          "base_position": "A:R2:E5-04:PRIMARY",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "3dbd2810105dfec853664d6b5dde449e8cff01138509bf916eff3ad3d987a7be",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "8d4f354d292809f95aa93e4bda023a2e0f6350c27bbb47cf3e7c0f94eb4ae2ac",
+            "fe32fea9cf6d5d4a8bebf3ae22ff3d8314c032edf565e0c84926b2e350c2b805"
+          ],
+          "seed": 610231,
+          "selector_bytes": [
+            "\\\"Entity 024 B\\\"",
+            "\\\"Entity 024 A\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-04:PRIMARY",
+          "base_position": "A:R2:E5-04:PRIMARY",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "259cc1313095e2660f3a9467e0e3b88aabe99e72ae7157ba6ff6bf9ead06d345",
+          "model": "qwen3.8:27b",
+          "repeat": 2,
+          "request_sha256": [
+            "9ad23dc97886372c4c82d6488b5cb03222ea85f6baec117853a5c35838ff79cc",
+            "55e5b30ab89d9e20ebd8d8c1f8e8c9af9425a4e7270ae99bd9e891f3280e881c"
+          ],
+          "seed": 610232,
+          "selector_bytes": [
+            "\\\"Entity 024 B\\\"",
+            "\\\"Entity 024 A\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "A:R2:E5-04:PRIMARY",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "A:R2:E5-05:PRIMARY",
+          "base_position": "A:R2:E5-05:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "b59d07b32d69055d5238e10496894a18c373b957fc6f8fff553ba73d4f11e113",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "28cedfbc6b325ec38544c7d9abb9fe9164901ccb6078004ce4742a2321eee499",
+            "57483c1ccaf9bd408cbcd81f43f300bb1d4f23571fe77f211ec322ee9d4cc58f"
+          ],
+          "seed": 610241,
+          "selector_bytes": [
+            "\\\"Entity 025 A\\\"",
+            "\\\"Entity 025 B\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-05:PRIMARY",
+          "base_position": "A:R2:E5-05:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "4e972d84e53e6e0fa6b8c3495f8c39d4b045dde305145ae28129eedd2235e12f",
+          "model": "qwen2.5:7b",
+          "repeat": 2,
+          "request_sha256": [
+            "a50ff8668a0b21a4d2a96bdbdcb03045d150ecc063c88fe4b14c5fefc9ac603f",
+            "0285d93caf8d4b8d1cec0e7d80efc442741d78f341b64221d181df7ce2028077"
+          ],
+          "seed": 610242,
+          "selector_bytes": [
+            "\\\"Entity 025 A\\\"",
+            "\\\"Entity 025 B\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-05:PRIMARY",
+          "base_position": "A:R2:E5-05:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "5d15479f6d164d451d709748a2e40eac9501d0f42dc98760e106b62b2e103b96",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "0495fa14f0cf1b44ff68c5e4501f0d2e4ded111fc04ae55e90ba847ca3ca875d",
+            "c21e5ae527a29a64594e2ee1b5081108b8bb2f293ae18890a9d73caee8030715"
+          ],
+          "seed": 610241,
+          "selector_bytes": [
+            "\\\"Entity 025 A\\\"",
+            "\\\"Entity 025 B\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-05:PRIMARY",
+          "base_position": "A:R2:E5-05:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "9f06ec0bec592998e554f6944a3aaecf6a574fddcfdd9eb32e3cca162bc8568a",
+          "model": "qwen3:14b",
+          "repeat": 2,
+          "request_sha256": [
+            "648e1f900b6c602f2ff4fdc450e7d52beb35bd58421e22e36f9bcd888ebb9ef0",
+            "00f84baaedfb9f9c600c8b52d1f409f381e98b04786fd2186363d0df2e7487bb"
+          ],
+          "seed": 610242,
+          "selector_bytes": [
+            "\\\"Entity 025 A\\\"",
+            "\\\"Entity 025 B\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-05:PRIMARY",
+          "base_position": "A:R2:E5-05:PRIMARY",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "8e9dfb7f09b1eb18099afcb90197520eb5df635db3a52034242eb2712924db69",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "149c4daeb61af3d2dacbcd964682978672c2306f82043af6b307083c58a0cb1d",
+            "ff61ee9e915fc9f8b552e37a1b99b466742e252969adebca482ae4b9325f4834"
+          ],
+          "seed": 610241,
+          "selector_bytes": [
+            "\\\"Entity 025 A\\\"",
+            "\\\"Entity 025 B\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-05:PRIMARY",
+          "base_position": "A:R2:E5-05:PRIMARY",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "3a0ffb1e9ddf9468366fd1d172341e7a74c35dbb039b3493f85e09bc9c16a524",
+          "model": "qwen3.8:27b",
+          "repeat": 2,
+          "request_sha256": [
+            "6c1ce5affd4ebad1f7b11442aa33f3de43e3c1151dcdaee15a72259ec7e98e1b",
+            "f7b35a8fa5b04e54ca6e01a24b7c133ad562da11e9676ee5d36d32ef37d49e5e"
+          ],
+          "seed": 610242,
+          "selector_bytes": [
+            "\\\"Entity 025 A\\\"",
+            "\\\"Entity 025 B\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "A:R2:E5-05:PRIMARY",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "A:R3:E5-01:PRIMARY",
+          "base_position": "A:R3:E5-01:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "480f4cd816a2cb82d44dbade50df9bf99e05911f9e57da6d93b4778fc4d410ba",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "a7135cad18e069bfdc0a4b75fb27d933c3078d7ca99bbb2dd048eede6f2f28e8",
+            "5951f8cda2c11d0b24fbd3c203f26ac6ce59b419e4e9488891891c59b17a4b84"
+          ],
+          "seed": 610551,
+          "selector_bytes": [
+            "\\\"Entity 056 B\\\"",
+            "\\\"Entity 056 A\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-01:PRIMARY",
+          "base_position": "A:R3:E5-01:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "c30c3e7e825f5df25dcf2db62968ba4cab05df714321cb458f4d3116d01ac441",
+          "model": "qwen2.5:7b",
+          "repeat": 2,
+          "request_sha256": [
+            "f3cb8412fa3757cbe4fce5615ca995339c8ba695fa4e2f10c9cb17653fc1c806",
+            "5c9eaeb441fd510f7066b509021994c935e9751f1c594dbd678bd4ebda433299"
+          ],
+          "seed": 610552,
+          "selector_bytes": [
+            "\\\"Entity 056 B\\\"",
+            "\\\"Entity 056 A\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-01:PRIMARY",
+          "base_position": "A:R3:E5-01:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "be10cf35d901c89ab139885ddfef09d787d28b36faac6588168f331751eab0af",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "6832c11d31091ab0d49bea793bd2ef86796fc6e77b04eb3db162286c86de09a7",
+            "eab72c92e7bb4b8514baa6989017cc2ead85eb3fbe2986aef45754fd039dd050"
+          ],
+          "seed": 610551,
+          "selector_bytes": [
+            "\\\"Entity 056 B\\\"",
+            "\\\"Entity 056 A\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-01:PRIMARY",
+          "base_position": "A:R3:E5-01:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "6616daf511f83c7c4a6ee433a0bf1e3d3d2fb27a9e0425689b33c9590f8934ef",
+          "model": "qwen3:14b",
+          "repeat": 2,
+          "request_sha256": [
+            "e974aa3112924d3c651ba618d7e3d7ff89380e8bbe921030dbe6fe4a7a3f88c7",
+            "a6e0e534c906ee62026157ebfff470280c0e691257f973a2c5e10423b22e9929"
+          ],
+          "seed": 610552,
+          "selector_bytes": [
+            "\\\"Entity 056 B\\\"",
+            "\\\"Entity 056 A\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-01:PRIMARY",
+          "base_position": "A:R3:E5-01:PRIMARY",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "3345e1e91ff94de4384900f1ac2215f2520f284b9d52107ff36be8012e46a4e4",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "16677ad8b36117289357e46b3028f524d0063909ddb2c702d29c65aa00320d19",
+            "e8015f05baeff7f6fef734b07c030c04146556c0b029a4fbd8cd35f665ef22c6"
+          ],
+          "seed": 610551,
+          "selector_bytes": [
+            "\\\"Entity 056 B\\\"",
+            "\\\"Entity 056 A\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-01:PRIMARY",
+          "base_position": "A:R3:E5-01:PRIMARY",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "2ef18c3cc24915ec5013bcc7862d19734021d11c2ea42d221016b4ed458557f0",
+          "model": "qwen3.8:27b",
+          "repeat": 2,
+          "request_sha256": [
+            "d7c00f9d33171f9e23779fe6f4f994040b15c006acecd59d99484a7d1aa67f73",
+            "b2fb897941bf16e0be5f81e60df7beca3b04b98a4948a88c1fdf9f862ac606d8"
+          ],
+          "seed": 610552,
+          "selector_bytes": [
+            "\\\"Entity 056 B\\\"",
+            "\\\"Entity 056 A\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "A:R3:E5-01:PRIMARY",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "A:R3:E5-02:PRIMARY",
+          "base_position": "A:R3:E5-02:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "9fae269c5f17d38f3cf17f8249b460ad77a7accfd0743522020d737207b6e52e",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "384c8d341468827ee92bbd5ca5354b5b9841dabe2819a111348b497874b4fd4a",
+            "aaaca09b21dc8975d303c529131f2bf06d96504607ae44a4628206a21f41a29f"
+          ],
+          "seed": 610561,
+          "selector_bytes": [
+            "\\\"Entity 057 A\\\"",
+            "\\\"Entity 057 B\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-02:PRIMARY",
+          "base_position": "A:R3:E5-02:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "7e273ce8b9f77fe561d0767aead840463cb7b3009f0978710f8cd536f784ea49",
+          "model": "qwen2.5:7b",
+          "repeat": 2,
+          "request_sha256": [
+            "64c07a657704d501bc3d36688a280687e1b94a6fc76d9854fb0fc391443ad10a",
+            "42696f972a8e4ba94410dc2ffeb12c95a0fd71b76d44090eaa90192d2ae22954"
+          ],
+          "seed": 610562,
+          "selector_bytes": [
+            "\\\"Entity 057 A\\\"",
+            "\\\"Entity 057 B\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-02:PRIMARY",
+          "base_position": "A:R3:E5-02:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "e8f44efa328095c8491a6b612534fd842cbca81ebd8cc95a542e12ba7077e848",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "4aaa3cf2c10629bf2fb342bf8b07bf5053f04ded1dbf53573587f0780208401e",
+            "e43bbf8b8c4314eee46745c0be6f795725824b687fb9fcdae3e2f9cc0907f9ba"
+          ],
+          "seed": 610561,
+          "selector_bytes": [
+            "\\\"Entity 057 A\\\"",
+            "\\\"Entity 057 B\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-02:PRIMARY",
+          "base_position": "A:R3:E5-02:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "2859e590245d3670af5da144da78f24c416cd01ff000ba05d72452e96b2c00cc",
+          "model": "qwen3:14b",
+          "repeat": 2,
+          "request_sha256": [
+            "e1f0091faa45938ed072b8949b9a3d1e6240b9d4184345368b9e501da5ceb32a",
+            "388280c2def9b64a80cb1dbb9692a2ba7f16b9d1ad33f06a484f903cf56b3698"
+          ],
+          "seed": 610562,
+          "selector_bytes": [
+            "\\\"Entity 057 A\\\"",
+            "\\\"Entity 057 B\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-02:PRIMARY",
+          "base_position": "A:R3:E5-02:PRIMARY",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "140756ddcb6b42af774d48063ffe64030295d1446dc6b9f68a388f0e6d57361c",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "1fc08ff28ed6c772ca4eb8a180a7771cb04b9205ee0a17ab7b063df6f528cc5e",
+            "d596da35238b1086bce551062fa9a8388527de4648e7c5646de13e5e2729b996"
+          ],
+          "seed": 610561,
+          "selector_bytes": [
+            "\\\"Entity 057 A\\\"",
+            "\\\"Entity 057 B\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-02:PRIMARY",
+          "base_position": "A:R3:E5-02:PRIMARY",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "8aad5723d912d04e828e85f186fbe09f812ae255ea1cd9f36d96574a38bf6886",
+          "model": "qwen3.8:27b",
+          "repeat": 2,
+          "request_sha256": [
+            "5f097f5c5cf38ab8f73d799c5b993dd4ff11f9b82e82b7b2decba7c9bd845b60",
+            "a776769ae103446c5fb17e73b6103496533bee4094651accef922278acfdb0db"
+          ],
+          "seed": 610562,
+          "selector_bytes": [
+            "\\\"Entity 057 A\\\"",
+            "\\\"Entity 057 B\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "A:R3:E5-02:PRIMARY",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "A:R3:E5-03:PRIMARY",
+          "base_position": "A:R3:E5-03:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "6d334bfd074916ee7172178b83821af757cf1c093bc395d0b89ada33e64f2cef",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "6d408412de96544f7eed8b07d8b88940d9b263400c171d0fd41050fd8f5c9eab",
+            "9a0d1fef422bcdd4cae92d42634de9245eefef6b8eae3c4957dd2996c8f20621"
+          ],
+          "seed": 610571,
+          "selector_bytes": [
+            "\\\"Entity 058 C\\\"",
+            "\\\"Entity 058 A\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-03:PRIMARY",
+          "base_position": "A:R3:E5-03:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "d21ed1f2954b0cac7cdef289fd79208b386eacb66341ca31b9d934e10afdc871",
+          "model": "qwen2.5:7b",
+          "repeat": 2,
+          "request_sha256": [
+            "3583eb2994a562e324846aea36b94f876c0f26783fa0fd9051b932ba51560bc9",
+            "18605b919f3ae9d851ae793fb96b4c54553bc2220059b40b264ee0a7bf826f78"
+          ],
+          "seed": 610572,
+          "selector_bytes": [
+            "\\\"Entity 058 C\\\"",
+            "\\\"Entity 058 A\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-03:PRIMARY",
+          "base_position": "A:R3:E5-03:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "a81e251adbd4224b15fe568edbb8ff723392296cb0fd943acbea27ed1f73dde6",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "9fede837004b0a3c5167ffb7f6de519b7262d8e86a9e2bddb454ccb585cc595d",
+            "82d21a97421c85e8a64f5f4120edd6276cca3e0fe052c0b06680c065fdd20285"
+          ],
+          "seed": 610571,
+          "selector_bytes": [
+            "\\\"Entity 058 C\\\"",
+            "\\\"Entity 058 A\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-03:PRIMARY",
+          "base_position": "A:R3:E5-03:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "110eb9576ea8b67dbf9cef82e734209e2057a4fe734df488ef5188b54beaa6e1",
+          "model": "qwen3:14b",
+          "repeat": 2,
+          "request_sha256": [
+            "8186d40d7f53b553fa25a70c49317d05ba86a5e352c42e528b76804c17593184",
+            "b67814a341c6a7bc0058bd48ab5f2e32a42c80558dbe9d0a813b985b6200b02a"
+          ],
+          "seed": 610572,
+          "selector_bytes": [
+            "\\\"Entity 058 C\\\"",
+            "\\\"Entity 058 A\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-03:PRIMARY",
+          "base_position": "A:R3:E5-03:PRIMARY",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "a07e80b31364bb05e399b9a44f5bc25fc25c153cd66329b2f05713b8cf3bcce4",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "bc937e78446a6817905ce0867f6229175302543f942d097ec9a95b86de592e8c",
+            "092ef55b82b1a3c3f8e3c90a1312cb61382e1cdd7324b9e3ef2847722478f130"
+          ],
+          "seed": 610571,
+          "selector_bytes": [
+            "\\\"Entity 058 C\\\"",
+            "\\\"Entity 058 A\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-03:PRIMARY",
+          "base_position": "A:R3:E5-03:PRIMARY",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "02457a82ac91b73a28e125f12bec7d2fc11b25e05725c4e02cf20faed722d2a4",
+          "model": "qwen3.8:27b",
+          "repeat": 2,
+          "request_sha256": [
+            "f5a5b1d34b9b99eaf2127dee382791e723ca03a42a20daf8c6b2ca8f73f3add4",
+            "2cab4c8861dcc6591119f0d30d528b0c1666f5cbf67960328a89764dff5ca4ed"
+          ],
+          "seed": 610572,
+          "selector_bytes": [
+            "\\\"Entity 058 C\\\"",
+            "\\\"Entity 058 A\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "A:R3:E5-03:PRIMARY",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "A:R3:E5-04:PRIMARY",
+          "base_position": "A:R3:E5-04:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "4ca16e7c3a1413f2df2172fc2da72cff14c8244894dcad1f8c827b11092ba5e5",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "ef138ecdc3265f4136b92eaeb4a5812c13a531edce78d038a2242ce6c89c364d",
+            "b2ac24c3cc928bdc3cf0635ce2fae45d43de02cc5a5603a87b349713b4169c54"
+          ],
+          "seed": 610581,
+          "selector_bytes": [
+            "\\\"Entity 059 A\\\"",
+            "\\\"Entity 059 B\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-04:PRIMARY",
+          "base_position": "A:R3:E5-04:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "fe1e7a028cd2d696a4dbb1b9e94752013dd93b720b2f324189df0b5ef1144ea7",
+          "model": "qwen2.5:7b",
+          "repeat": 2,
+          "request_sha256": [
+            "5c3a5a9f5638c8be8ab9c86749982bad9394dac7e101526756e59ddfa9b57ac0",
+            "d4942238fa3324c5bff87587fcd511917f38b5b14f6b02d6348a39610195e751"
+          ],
+          "seed": 610582,
+          "selector_bytes": [
+            "\\\"Entity 059 A\\\"",
+            "\\\"Entity 059 B\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-04:PRIMARY",
+          "base_position": "A:R3:E5-04:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "54a58fe22fa71a0f33cfdb5eac78e678c0b197bf11251b7e768197fed72b2ba0",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "9af81e0ec2704bd10332ab909799b88c17cdeed5e1d44bae742ae83f280df7e9",
+            "b391d1eb9611402eb313dd30abc3f802082847790d5f6b16c719bf31e6337c0e"
+          ],
+          "seed": 610581,
+          "selector_bytes": [
+            "\\\"Entity 059 A\\\"",
+            "\\\"Entity 059 B\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-04:PRIMARY",
+          "base_position": "A:R3:E5-04:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "4b5946c68f48bbf0c55da4f9ac817b41182bf5063cc6493853834d8fe5e85c09",
+          "model": "qwen3:14b",
+          "repeat": 2,
+          "request_sha256": [
+            "16b8d5efb2bfad8a8b6d4f70b0dca4542e312d330cacd3a91da18e7399a3028f",
+            "de187f2ef2ee2565f1fbb6cb5cfe6d6e197018d963500c34e20dcccecb2ed865"
+          ],
+          "seed": 610582,
+          "selector_bytes": [
+            "\\\"Entity 059 A\\\"",
+            "\\\"Entity 059 B\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-04:PRIMARY",
+          "base_position": "A:R3:E5-04:PRIMARY",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "911d327ef704ce5e85ccbec1cf809f48cc2b295eeffcbe0c618119279d747523",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "f4047ebb102a83379fd6778bce9b2ca0c846c20f8b6930421ecb84b1ac0f7d13",
+            "b950822c76fc9d1bb35c2988171aa73bf8337c54cafcb83799a540f882467d54"
+          ],
+          "seed": 610581,
+          "selector_bytes": [
+            "\\\"Entity 059 A\\\"",
+            "\\\"Entity 059 B\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-04:PRIMARY",
+          "base_position": "A:R3:E5-04:PRIMARY",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "7a97a73db9841f1bbc60cf573a74ccaad10fbe349debd2307fbedd4d94c6ed78",
+          "model": "qwen3.8:27b",
+          "repeat": 2,
+          "request_sha256": [
+            "f79a516ddeb6a578f83b50cf57d683a54e189733923d5d4aed784eceac1c51db",
+            "4825305249e44690e0ebd5f121534013bc3944ebc0baa84b5c5d542be29867b5"
+          ],
+          "seed": 610582,
+          "selector_bytes": [
+            "\\\"Entity 059 A\\\"",
+            "\\\"Entity 059 B\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "A:R3:E5-04:PRIMARY",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "A:R3:E5-05:PRIMARY",
+          "base_position": "A:R3:E5-05:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "4de28aa4f43d5e054d0d3bbba850f50f0094ce65bd17d2f99475442512d15573",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "7b96bd5dd4f2d221d7aa5359b885ce6f0a05b6df9dce9e73cc35aef6a0be77a6",
+            "4789259b33d5f8b9e4785291fc300c690bf9f04109d646b546bdda734d14bebc"
+          ],
+          "seed": 610591,
+          "selector_bytes": [
+            "\\\"Entity 060 C\\\"",
+            "\\\"Entity 060 A\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-05:PRIMARY",
+          "base_position": "A:R3:E5-05:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "4159fee1b325974f356864851e136755f014a6874f68f64795c478fad22fc9fb",
+          "model": "qwen2.5:7b",
+          "repeat": 2,
+          "request_sha256": [
+            "2a5a797c0674151affb9f54291d21ecb0c48a441c1a72acdd9a49d7f2d18d26d",
+            "6693a775260cd9311f6040e78162be156ab6e49e11819a2d2401908fa51b7121"
+          ],
+          "seed": 610592,
+          "selector_bytes": [
+            "\\\"Entity 060 C\\\"",
+            "\\\"Entity 060 A\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-05:PRIMARY",
+          "base_position": "A:R3:E5-05:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "09085681fa0cbbe25bebe1b52ca7183b4926ca8c821818987df9b5311baae3b5",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "ddddc1fcd07a370760c62c730a10d2a531d2ab970e60a6ab9fe061f0b256a0cc",
+            "fda480f416cace2ebd1320ef8ad9bb166143875e7a4017099ddea6bd2497b3fd"
+          ],
+          "seed": 610591,
+          "selector_bytes": [
+            "\\\"Entity 060 C\\\"",
+            "\\\"Entity 060 A\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-05:PRIMARY",
+          "base_position": "A:R3:E5-05:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "9d85ce756d53c2e8ed62e38120410edab32821f55bd9c45ed210a672ee9f1458",
+          "model": "qwen3:14b",
+          "repeat": 2,
+          "request_sha256": [
+            "48b0f2d3181cb5fc0b71cafd36fea7dd865930cb0f4e43b3d9655d7c72254ec6",
+            "7fffcff3a83fdd327984cf22601bf12aa907fe4884139bd0af87771c75e81a8b"
+          ],
+          "seed": 610592,
+          "selector_bytes": [
+            "\\\"Entity 060 C\\\"",
+            "\\\"Entity 060 A\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-05:PRIMARY",
+          "base_position": "A:R3:E5-05:PRIMARY",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "d1d8c503706af6644a16e5d65bd988022af12d9dfc5a6d9dc7c3b94358c44b97",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "e6a21c3e9b3b0d732a1bffa911cb455cf0b3b3779038f996f1a0379de8aa3d42",
+            "f3eab68e2afe85abbfa7b825025fe2d079db075da47e80aaf6f18727a05f9f4f"
+          ],
+          "seed": 610591,
+          "selector_bytes": [
+            "\\\"Entity 060 C\\\"",
+            "\\\"Entity 060 A\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-05:PRIMARY",
+          "base_position": "A:R3:E5-05:PRIMARY",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "c300d19765f03f906b0d79b8195cda318708192be14f693ad3ae7522b2cc5a74",
+          "model": "qwen3.8:27b",
+          "repeat": 2,
+          "request_sha256": [
+            "f5a8dc4d806985035cd7899df91625ec21723f24640a7480da87c127409b4580",
+            "0534a0f2c64492a1636cc8748d5f2dd45200dfe622e2bdac69c5e69f3958979a"
+          ],
+          "seed": 610592,
+          "selector_bytes": [
+            "\\\"Entity 060 C\\\"",
+            "\\\"Entity 060 A\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "A:R3:E5-05:PRIMARY",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "A:R2:E5-01:RESERVE",
+          "base_position": "A:R2:E5-01:RESERVE",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "fae87e147ee088d1caa290a0a19032028bcc9213b89f672c737066c789d04017",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "55c63cdcebbb2c7d72e1e305c7e1d744ccc2903189a5cb656a0d4bec8a7c52b8",
+            "b53485930072e7af8463e5080fbac414ff5bfc35aedf6d8743a21c35a402b05f"
+          ],
+          "seed": 610741,
+          "selector_bytes": [
+            "\\\"Entity 075 A\\\"",
+            "\\\"Entity 075 B\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-01:RESERVE",
+          "base_position": "A:R2:E5-01:RESERVE",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "920e4f6c7872273bf0fdf1cffe1f25c5e3fa7342c7f2d36198844902cc54a260",
+          "model": "qwen2.5:7b",
+          "repeat": 2,
+          "request_sha256": [
+            "ac67b961ef01905db4368c4b1e2f611bfe04cca77410b36a2a5878d02a90bff0",
+            "9e1dce3f2e3a85a2e086aff1220bd2a3a7994adabff0db7b6b7b9c9746e5504a"
+          ],
+          "seed": 610742,
+          "selector_bytes": [
+            "\\\"Entity 075 A\\\"",
+            "\\\"Entity 075 B\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-01:RESERVE",
+          "base_position": "A:R2:E5-01:RESERVE",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "165ea86c7b30fa75c00c61666522297807c5b011e188405089902d0f61e61105",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "61df648074c38558054accf33686718302e15d39bf2a41d643fa25dc2e3d751c",
+            "32c555e770c5b90e52d73f119f441256c4c3a097af454b862242be5adbe175ed"
+          ],
+          "seed": 610741,
+          "selector_bytes": [
+            "\\\"Entity 075 A\\\"",
+            "\\\"Entity 075 B\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-01:RESERVE",
+          "base_position": "A:R2:E5-01:RESERVE",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "577b7de3360d4a7d0a9887befb0952c03e5f57a6f9836af551ed81cbb8019f1e",
+          "model": "qwen3:14b",
+          "repeat": 2,
+          "request_sha256": [
+            "30164b5bb5cf4436fd61934234a7a493243fd179add7c68826f2b5e96282c250",
+            "8b280b98a02f078c213e649479a0f2fa6ddd62007e669b37330521e1b060c2f9"
+          ],
+          "seed": 610742,
+          "selector_bytes": [
+            "\\\"Entity 075 A\\\"",
+            "\\\"Entity 075 B\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-01:RESERVE",
+          "base_position": "A:R2:E5-01:RESERVE",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "bef764576dbe5777d9ed1e49e28de8c82ec69718d63de8b2c4c26623173119c3",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "099a881ac5e6af56f6f6c7e662ed11f2afd611cf9d5e868b4d658e2220c98d7a",
+            "b40d4b691c6671633bc441465eabd76e5cebd4730e42ad0c85ac9738a81de97b"
+          ],
+          "seed": 610741,
+          "selector_bytes": [
+            "\\\"Entity 075 A\\\"",
+            "\\\"Entity 075 B\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R2:E5-01:RESERVE",
+          "base_position": "A:R2:E5-01:RESERVE",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "cc3274276f5dc6eb7032f397b06ef8c42146b56c6e25ef8dd8e15abba4191b1b",
+          "model": "qwen3.8:27b",
+          "repeat": 2,
+          "request_sha256": [
+            "956de3819955deaec7bc6d0ad6b8953b325bbdd1b858a86a02a5c5ea26c07453",
+            "81d4588adbd3a11ca6138470bc4fd7fbbbb999b0d4a366fd3f79c092ee07d9d3"
+          ],
+          "seed": 610742,
+          "selector_bytes": [
+            "\\\"Entity 075 A\\\"",
+            "\\\"Entity 075 B\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "A:R2:E5-01:RESERVE",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "A:R3:E5-01:RESERVE",
+          "base_position": "A:R3:E5-01:RESERVE",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "04170cd14be95fa83b0c2f7b6c43e61c75e9510742980abd0ab88c2b9c13fe10",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "8edfa386b66ae474e8458cbe104d716f3a668491449cca6608661dc9f34a94fb",
+            "2a8188ab35c374169bab54f3de7cc3cc56279ec129744a7792814280a20cc984"
+          ],
+          "seed": 610811,
+          "selector_bytes": [
+            "\\\"Entity 082 B\\\"",
+            "\\\"Entity 082 A\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-01:RESERVE",
+          "base_position": "A:R3:E5-01:RESERVE",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "e7bfb569dfae2bb0126e5563fe920de5ea5e4071686d0c6af7b43d580f7d7a54",
+          "model": "qwen2.5:7b",
+          "repeat": 2,
+          "request_sha256": [
+            "7857ed13df970837f5b9e5bba240b4ca7f4d1b4fe66b0f6e14f40b3740e1cf8b",
+            "21f4e3420d13a5c461f9c3db67d242b00c914f6ca77a4a66961e4cd9b82b34f6"
+          ],
+          "seed": 610812,
+          "selector_bytes": [
+            "\\\"Entity 082 B\\\"",
+            "\\\"Entity 082 A\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-01:RESERVE",
+          "base_position": "A:R3:E5-01:RESERVE",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "aada81ad595954876e3eb708ec02407167c5a3127e21817554b87ad7c8cb7f5b",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "6ea5f49b98765b00943520e54b04d426a0365946bd1dec342c0b578f4ded0f77",
+            "28939a4daeab0924dd8552a6d7ddea0d393a6ec031d3f58c972330def343676f"
+          ],
+          "seed": 610811,
+          "selector_bytes": [
+            "\\\"Entity 082 B\\\"",
+            "\\\"Entity 082 A\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-01:RESERVE",
+          "base_position": "A:R3:E5-01:RESERVE",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "0a36bed50a6a00a82f1fe861d8e614a39a7b4a76e3e0b89da7c48dcd84c8e403",
+          "model": "qwen3:14b",
+          "repeat": 2,
+          "request_sha256": [
+            "36a86bd4e3c19ede0a7555cc9e830fd67d4088bf500cbd05747d3e4d06a3dd01",
+            "131111fb90b3d0bc13c1c14090bed67d5c0a897543b42e075746c7049d52ba9a"
+          ],
+          "seed": 610812,
+          "selector_bytes": [
+            "\\\"Entity 082 B\\\"",
+            "\\\"Entity 082 A\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-01:RESERVE",
+          "base_position": "A:R3:E5-01:RESERVE",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "fcef51f7fc7a2f97b158e3d4d668b90501d72b20bc8577ac5db60c14b5441003",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "619d294365b94847cb7988f15a67b8aed9c61a01d1a99ccedcf3486cf5c6aa16",
+            "48e622726f77c98d3109924b90e1f120026e297d8736f0afde40a20316423b2d"
+          ],
+          "seed": 610811,
+          "selector_bytes": [
+            "\\\"Entity 082 B\\\"",
+            "\\\"Entity 082 A\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "A:R3:E5-01:RESERVE",
+          "base_position": "A:R3:E5-01:RESERVE",
+          "differing_byte_offsets": [
+            250
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "ea4bf5c337bb70e2b26859848a9888ca293810a3cee2901a0bd627ee589f6972",
+          "model": "qwen3.8:27b",
+          "repeat": 2,
+          "request_sha256": [
+            "4426a56cf78d3f4f4958a1c813e5d6221ce84f7d91e43f6164b12dd1d4a34977",
+            "095191a673a387deab3e48b0e670da100fe5794592e8a5a7d5a95d085e5bce75"
+          ],
+          "seed": 610812,
+          "selector_bytes": [
+            "\\\"Entity 082 B\\\"",
+            "\\\"Entity 082 A\\\""
+          ],
+          "selector_spans": [
+            [
+              237,
+              253
+            ],
+            [
+              237,
+              253
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "A:R3:E5-01:RESERVE",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "B:R2:E5-01:PRIMARY",
+          "base_position": "B:R2:E5-01:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "c8671125423382dabe6e5fb2feae1af0d1381e9aec78d4002698d7fe269c3521",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "eefb03cbeb2b8622fddf1fd6a1008c8cc6a3a354a63e87da349d3d323b9d3e8f",
+            "ed9b50157bf76e0093222f70d86611a4d11793989dc501f6ef238a7247dac07d"
+          ],
+          "seed": 621041,
+          "selector_bytes": [
+            "\\\"Entity 105 B\\\"",
+            "\\\"Entity 105 A\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R2:E5-01:PRIMARY",
+          "base_position": "B:R2:E5-01:PRIMARY",
+          "differing_byte_offsets": [
+            247
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "5ea9adc95de6cc4f80919ec4798f017fe4e347bfaa8e176afefa4b34a82c17eb",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "9f442231c506315ae43a99b3b9e946caa9301dcf51384ed50fb15a5a852b66f9",
+            "fc0b50e4d52b72f4dc1bb482f09cf7b2f3e4d4f5e6dc0efee42deeb9a5d10afa"
+          ],
+          "seed": 621041,
+          "selector_bytes": [
+            "\\\"Entity 105 B\\\"",
+            "\\\"Entity 105 A\\\""
+          ],
+          "selector_spans": [
+            [
+              234,
+              250
+            ],
+            [
+              234,
+              250
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R2:E5-01:PRIMARY",
+          "base_position": "B:R2:E5-01:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "4d873b20b8ba2559f595cf6f2b402acfeb90f4fdca8a6267af341b94b5d40e0c",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "46875dca2b9603d14666b790834a426260f956456e08022708b5fb5bbc93420b",
+            "ee5d0812c90234b6721e53015633d382e179471e849896372e49c00fe71910c6"
+          ],
+          "seed": 621041,
+          "selector_bytes": [
+            "\\\"Entity 105 B\\\"",
+            "\\\"Entity 105 A\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "B:R2:E5-01:PRIMARY",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "B:R2:E5-02:PRIMARY",
+          "base_position": "B:R2:E5-02:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "852a580bf13207d553923b2802c34b01ed0c3390c4ef0b0cd2990b45a9819752",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "063d9da4ead05d18181e41882552aaf1dfa001e8efde6ed4934052b567d33cf0",
+            "c97e44626af4292ef4027a35ba154bfe55f14771cd160d57e7e4b507f9b00684"
+          ],
+          "seed": 621051,
+          "selector_bytes": [
+            "\\\"Entity 106 A\\\"",
+            "\\\"Entity 106 B\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R2:E5-02:PRIMARY",
+          "base_position": "B:R2:E5-02:PRIMARY",
+          "differing_byte_offsets": [
+            247
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "1a60bb1608ca75dde04389e368f64b0bd4e678e9b2f857a22a8ae96b867196de",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "5e165174d28a4b5a337cdff38b99fd66541f6be74a6621384808375213996a1d",
+            "1525100f78cc65f3838e50753d4357d25c9b263c13cb781e7eac60996f3aa631"
+          ],
+          "seed": 621051,
+          "selector_bytes": [
+            "\\\"Entity 106 A\\\"",
+            "\\\"Entity 106 B\\\""
+          ],
+          "selector_spans": [
+            [
+              234,
+              250
+            ],
+            [
+              234,
+              250
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R2:E5-02:PRIMARY",
+          "base_position": "B:R2:E5-02:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "8e20b1dae0737a6fbdde3f3acd877859a60081a74b354b2e29703e12a663d632",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "17b601614afb8a837ff95ff7128816a2d785662f0f626eb31a6d158dcfc14ccb",
+            "98cdef6be86594bcf80413dc2409580b98d649c968004331c6b8056a610072c5"
+          ],
+          "seed": 621051,
+          "selector_bytes": [
+            "\\\"Entity 106 A\\\"",
+            "\\\"Entity 106 B\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "B:R2:E5-02:PRIMARY",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "B:R2:E5-03:PRIMARY",
+          "base_position": "B:R2:E5-03:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "2170edfeccf09611a3f84e631e1d46c769c3842a2ed6df6e034965293dfcbd15",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "91263af0422104ebcff3ea5d6f6358e600600b9c310b1c7066da582de916ec36",
+            "f98b06f0ec31c877b3fcc8125071bf0c7060ead8a5f7c184bf9a2f4210ea563a"
+          ],
+          "seed": 621061,
+          "selector_bytes": [
+            "\\\"Entity 107 B\\\"",
+            "\\\"Entity 107 C\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R2:E5-03:PRIMARY",
+          "base_position": "B:R2:E5-03:PRIMARY",
+          "differing_byte_offsets": [
+            247
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "33670f350981974b5885371b799a5f30c493b338129541e4cfc160d8d80d3af2",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "dd9b8b438017165fc8e52c7ab0fd9276189a89cb3b4a40677e837c07dc34a16e",
+            "726d7878f4f56a7e81a847b08de111d9f16db059f35ea71a2c877fa3c52bdd72"
+          ],
+          "seed": 621061,
+          "selector_bytes": [
+            "\\\"Entity 107 B\\\"",
+            "\\\"Entity 107 C\\\""
+          ],
+          "selector_spans": [
+            [
+              234,
+              250
+            ],
+            [
+              234,
+              250
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R2:E5-03:PRIMARY",
+          "base_position": "B:R2:E5-03:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "c7b78cd176379d000eda819c30c35ffcccb7e5f26c0ac96d80f90adf86293cae",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "6cdbb8efeb98611439cf79a1e8c2ca3f4ecaa2ebda344bbf37520299055496c4",
+            "d2854798abb460d90a9bfb812afc09d6366c9fafcdcbfcc351a9cf915d336779"
+          ],
+          "seed": 621061,
+          "selector_bytes": [
+            "\\\"Entity 107 B\\\"",
+            "\\\"Entity 107 C\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "B:R2:E5-03:PRIMARY",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "B:R2:E5-04:PRIMARY",
+          "base_position": "B:R2:E5-04:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "5dc5099c0cb65936dcf8f85ee822f125d67abdce44bcfb33e1e74f3f1155076d",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "6f8efee5a7b9d8a4081eb17b63b8bf61cb354a4b7cd885b497a22a3f09cd1caa",
+            "1a65e7e322e3848383e2b793b98d3f0933b9d513b8459c63c8ce2173948a063a"
+          ],
+          "seed": 621071,
+          "selector_bytes": [
+            "\\\"Entity 108 A\\\"",
+            "\\\"Entity 108 B\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R2:E5-04:PRIMARY",
+          "base_position": "B:R2:E5-04:PRIMARY",
+          "differing_byte_offsets": [
+            247
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "672e1160809acb0888e153bdab23eb2d5cd454fafa568d05061cebf5e1e78681",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "1fe3615c3067aa02067b5bae1f458cb12fdc34df4c5755e7d08f323b8b8b6373",
+            "da680400e0fd4c9fcd6675cf52f9915823d5d53b1085b4a7124f727f94e894ba"
+          ],
+          "seed": 621071,
+          "selector_bytes": [
+            "\\\"Entity 108 A\\\"",
+            "\\\"Entity 108 B\\\""
+          ],
+          "selector_spans": [
+            [
+              234,
+              250
+            ],
+            [
+              234,
+              250
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R2:E5-04:PRIMARY",
+          "base_position": "B:R2:E5-04:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "7b035f63bd72b04bf14f336f2f590a24df92947cefc785dfddc2a1869a63cdd0",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "cd9670c933e2ed3cc26a37de6c248bf016eed10cd2795c8dd06d5787c6af5dfb",
+            "7b4ce5cf3f653ea05f7dccb058f99aa2599e344e7d27f70baa93b23cc30b5a7b"
+          ],
+          "seed": 621071,
+          "selector_bytes": [
+            "\\\"Entity 108 A\\\"",
+            "\\\"Entity 108 B\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "B:R2:E5-04:PRIMARY",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "B:R2:E5-05:PRIMARY",
+          "base_position": "B:R2:E5-05:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "5a1ff361d6d46621522d060a2f21d5633c4d9cccd79e9b712bc8417f9ad8aed3",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "c2657fee585530626e71fff03c3a697dfcac2ee3d3d115d7a70562bc8f9c2581",
+            "d769e0416a3da37c5b9ea6fc85515cab2b2818324611840f7d13ac89328c82ba"
+          ],
+          "seed": 621081,
+          "selector_bytes": [
+            "\\\"Entity 109 B\\\"",
+            "\\\"Entity 109 C\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R2:E5-05:PRIMARY",
+          "base_position": "B:R2:E5-05:PRIMARY",
+          "differing_byte_offsets": [
+            247
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "16ebb78b06cfccb5c8e2041d39acc2c61a5a1951378e30c27ac974c580392b56",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "04dea4f15cae903e10087e37e4e8b7c9594d76cf4ac8f67ebf897661b806a536",
+            "3ceffe3be508b180317d21e352a4c84ddd977b2ac6f24fb36c97387ed60c46b9"
+          ],
+          "seed": 621081,
+          "selector_bytes": [
+            "\\\"Entity 109 B\\\"",
+            "\\\"Entity 109 C\\\""
+          ],
+          "selector_spans": [
+            [
+              234,
+              250
+            ],
+            [
+              234,
+              250
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R2:E5-05:PRIMARY",
+          "base_position": "B:R2:E5-05:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "610a169c3e57957cc20346a36b0c3692352b220880d9634c7d8d0c548d497b61",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "29b0905793bd7925512e410120a27ede0f30512863430fb01f623653a5289195",
+            "af61319390540720e6a457f0feaacd309de5c42b708579fbc6cd36da4c641d57"
+          ],
+          "seed": 621081,
+          "selector_bytes": [
+            "\\\"Entity 109 B\\\"",
+            "\\\"Entity 109 C\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "B:R2:E5-05:PRIMARY",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "B:R3:E5-01:PRIMARY",
+          "base_position": "B:R3:E5-01:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "8233f244c6c7f5275513c292a4687c358af4f47a06d486bfd95f804373abcb8b",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "284807e4d42d8cdfb7c7752d3245e7f2c3b3ee711bc44a71bbcb86094a558da5",
+            "5e84670c017201dd42feddeea1728b8c63f1cdca3cb6c1ecc2ceb9d2d5096e51"
+          ],
+          "seed": 621391,
+          "selector_bytes": [
+            "\\\"Entity 140 A\\\"",
+            "\\\"Entity 140 B\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R3:E5-01:PRIMARY",
+          "base_position": "B:R3:E5-01:PRIMARY",
+          "differing_byte_offsets": [
+            247
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "d76bcb271c4c8b37a9636f7267ea7b3ab417c7826898e5152731d5959cd068ac",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "d17064fbe7f0644ed1bbda77a5a6a8a099b5193d7d0c6ea0286e9c5c7850e85c",
+            "252e7a60c097f806746c2eeb013200b9ba16b19c218257ff4d0cd2a2a09b5e3c"
+          ],
+          "seed": 621391,
+          "selector_bytes": [
+            "\\\"Entity 140 A\\\"",
+            "\\\"Entity 140 B\\\""
+          ],
+          "selector_spans": [
+            [
+              234,
+              250
+            ],
+            [
+              234,
+              250
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R3:E5-01:PRIMARY",
+          "base_position": "B:R3:E5-01:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "47b934a44116c68382dfd51867ac5d2fa92aa71cee2363a6bd4797e0d9080cba",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "457562fc4a8c1228d1e370b7a4b6226a7ba6c1733b155fad650abcee994abf6d",
+            "30c86e2f2bf5d9144f2f91db48e80a255b0e0b781d52e0d01a9344173bc88559"
+          ],
+          "seed": 621391,
+          "selector_bytes": [
+            "\\\"Entity 140 A\\\"",
+            "\\\"Entity 140 B\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "B:R3:E5-01:PRIMARY",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "B:R3:E5-02:PRIMARY",
+          "base_position": "B:R3:E5-02:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "7bf1dd92953dbfe4eea2a83245d0229eb7fc9a38c0d5e4ee9f3104865b07123d",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "84d24c911df4172a152e6eaa5e33cc6af556872b5bf3cc31ba626e241186fbcc",
+            "8b7d7ba5b55549aa3588bf02b19bf648f858d1c7bf99eda2c8de99625fca84f0"
+          ],
+          "seed": 621401,
+          "selector_bytes": [
+            "\\\"Entity 141 B\\\"",
+            "\\\"Entity 141 A\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R3:E5-02:PRIMARY",
+          "base_position": "B:R3:E5-02:PRIMARY",
+          "differing_byte_offsets": [
+            247
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "2cfc34c7c12a61c0a2597de3f272d5c87fe6ffcd8a87dcab4972a17cd1e9e5f7",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "168082af560bd57fe75f3f687e4a7a6c5ce57c96ed4254e56fe669cf8ea9559c",
+            "a0f48b84144d817bc44bf9c6d06b449c944cbdb82d3ea4e16a478ca57a82ca75"
+          ],
+          "seed": 621401,
+          "selector_bytes": [
+            "\\\"Entity 141 B\\\"",
+            "\\\"Entity 141 A\\\""
+          ],
+          "selector_spans": [
+            [
+              234,
+              250
+            ],
+            [
+              234,
+              250
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R3:E5-02:PRIMARY",
+          "base_position": "B:R3:E5-02:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "d20126c14febba11b6878fb5422df6284e36e7077f14b579a3fd4bd7504d120f",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "b6f4c435ed9a8698e12be004000853d76630a747235371f684a4e24e35fd21f5",
+            "4e5a432a96f0b490b89390274991095b90d3daf64a605480651502f94dad99d1"
+          ],
+          "seed": 621401,
+          "selector_bytes": [
+            "\\\"Entity 141 B\\\"",
+            "\\\"Entity 141 A\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "B:R3:E5-02:PRIMARY",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "B:R3:E5-03:PRIMARY",
+          "base_position": "B:R3:E5-03:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "10f9870da477b1135a0bb3379de0aa0adf863883ff845f44f432ae27a6d017d8",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "df9925687a854ff6f8ad3cf3174cf721bb74ab3d1357a82898c8faa70d2e4879",
+            "ab4b2e362f1854eb09dc34491441bbeacd26109d6b9b24252d34989789937cfc"
+          ],
+          "seed": 621411,
+          "selector_bytes": [
+            "\\\"Entity 142 A\\\"",
+            "\\\"Entity 142 B\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R3:E5-03:PRIMARY",
+          "base_position": "B:R3:E5-03:PRIMARY",
+          "differing_byte_offsets": [
+            247
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "83adeea7441cccebf6c2b551525dae78b1f78bfc169185d26063f65aecbc570a",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "daf456273fc77eb7a1f8621dce17daddeaca935a9e3dbd28db399983dc67e845",
+            "77d0fd6bccbec255d890cce31dba9ebea2b8f2889c417ee68b36a3af3b69ae63"
+          ],
+          "seed": 621411,
+          "selector_bytes": [
+            "\\\"Entity 142 A\\\"",
+            "\\\"Entity 142 B\\\""
+          ],
+          "selector_spans": [
+            [
+              234,
+              250
+            ],
+            [
+              234,
+              250
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R3:E5-03:PRIMARY",
+          "base_position": "B:R3:E5-03:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "e80ef5f2828759912e8fc61e5015fe41d72941b2a2ae471664a1732439fee70c",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "d44e01356316a39a727877de4be5f0c4f590fd6243da3fd57f7bcf7cfec51627",
+            "d341310f326843f48c5f757c8eab8b62a1b0de719e781a5eedb0423621cedf1e"
+          ],
+          "seed": 621411,
+          "selector_bytes": [
+            "\\\"Entity 142 A\\\"",
+            "\\\"Entity 142 B\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "B:R3:E5-03:PRIMARY",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "B:R3:E5-04:PRIMARY",
+          "base_position": "B:R3:E5-04:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "a0d4fe943eac2c036351f777672c0d157aa9e45baf6cf587c416d88243fd1246",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "0cd4968bd2e4699758a9e3df39243139c4e77d7404669d23075b8b95fb182326",
+            "42a2456cba328c7585e1a142aa4b40745816187f0cbd745aa261e9b9ad1049b1"
+          ],
+          "seed": 621421,
+          "selector_bytes": [
+            "\\\"Entity 143 B\\\"",
+            "\\\"Entity 143 A\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R3:E5-04:PRIMARY",
+          "base_position": "B:R3:E5-04:PRIMARY",
+          "differing_byte_offsets": [
+            247
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "0233108c940d0c390716bb74c61ed974d453db992a8ccf0d58138b15a65b5cfa",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "6ff31c32989a24d36728927921e0f94084f6947957f7f8a63cc9b7fea16a13c8",
+            "ee51808829c233ac1a19942519c40a5715d09e31dfe3cd808c37390fade62e78"
+          ],
+          "seed": 621421,
+          "selector_bytes": [
+            "\\\"Entity 143 B\\\"",
+            "\\\"Entity 143 A\\\""
+          ],
+          "selector_spans": [
+            [
+              234,
+              250
+            ],
+            [
+              234,
+              250
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R3:E5-04:PRIMARY",
+          "base_position": "B:R3:E5-04:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "c50c8dad1b7541641cf4730cece2bfbc9dd436af11565b29a0828b1414c030d3",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "8aeba8eefbaabd344ce79351188b29c6bc2e0cb380177a4d4ca1eb0a7cf38e2f",
+            "65612980b05a3bfdbbc69f109ce453b702e59c60fc46b968cc6d1887ff2cfa41"
+          ],
+          "seed": 621421,
+          "selector_bytes": [
+            "\\\"Entity 143 B\\\"",
+            "\\\"Entity 143 A\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "B:R3:E5-04:PRIMARY",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "B:R3:E5-05:PRIMARY",
+          "base_position": "B:R3:E5-05:PRIMARY",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "161e48f5c8ae4568f4a15f5d3911219b829f9a1b60053f545e8d1e84c684ffcf",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "c53d763e98f0f4733da8c6b5a08237eeea716b7b1e0df652b3c6acfeea9c2e70",
+            "255e04394ff14b73593e0b826d6082e5522bd3df5e80593f8d913ef5fc9e00a0"
+          ],
+          "seed": 621431,
+          "selector_bytes": [
+            "\\\"Entity 144 A\\\"",
+            "\\\"Entity 144 B\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R3:E5-05:PRIMARY",
+          "base_position": "B:R3:E5-05:PRIMARY",
+          "differing_byte_offsets": [
+            247
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "7de4cb8365c7e6ba879b943e4d52d0b019afd7f94684906b7a9a5e1ea9df2bc9",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "4bb830a39ba2be647c5b4c4e5b4049d07a4bcf6cd489f6915d20af63751edff0",
+            "5dd535d95fe2ed1a0cc35364db5136c613c7f8ed093de4e09a065a7030755ec8"
+          ],
+          "seed": 621431,
+          "selector_bytes": [
+            "\\\"Entity 144 A\\\"",
+            "\\\"Entity 144 B\\\""
+          ],
+          "selector_spans": [
+            [
+              234,
+              250
+            ],
+            [
+              234,
+              250
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R3:E5-05:PRIMARY",
+          "base_position": "B:R3:E5-05:PRIMARY",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "e8e7cc02e38864012abc0c492b4756ad55a564905e761f74926f74838f33554c",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "774a52d1103fbe14531730baa827d9367472d5702202cd7ff237952071ea9fc6",
+            "39b5ba403050aabd16f0f4427141dabda3d3160d589711ebe8cdafad4b53694c"
+          ],
+          "seed": 621431,
+          "selector_bytes": [
+            "\\\"Entity 144 A\\\"",
+            "\\\"Entity 144 B\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "B:R3:E5-05:PRIMARY",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "B:R2:E5-01:RESERVE",
+          "base_position": "B:R2:E5-01:RESERVE",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "0afceef7779c440af64799af0974b74a6e271c4555911a759ff22b5241471d65",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "3d02cb724ed30a5e79f422bdd8c174094c5032757db4ab694e3daa4beac80d49",
+            "2c8f0c20d558447563589a0eeb60239bb4d13d367dd09e98de16af42c4eb94db"
+          ],
+          "seed": 621581,
+          "selector_bytes": [
+            "\\\"Entity 159 B\\\"",
+            "\\\"Entity 159 A\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R2:E5-01:RESERVE",
+          "base_position": "B:R2:E5-01:RESERVE",
+          "differing_byte_offsets": [
+            247
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "1d6404c3c341419b984c125dd2a24ab4ff59ae52d528465d5e7e317a6b6a5bc7",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "4de156ffa6b4c6777ad591cec92d52ec52ae9e9a95c1da1a8020e1bd118a760e",
+            "d73fd9ef56662e61ac2eb5eb354c4fa3d30c9d5afe2cf50afba04e8ed3a7d680"
+          ],
+          "seed": 621581,
+          "selector_bytes": [
+            "\\\"Entity 159 B\\\"",
+            "\\\"Entity 159 A\\\""
+          ],
+          "selector_spans": [
+            [
+              234,
+              250
+            ],
+            [
+              234,
+              250
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R2:E5-01:RESERVE",
+          "base_position": "B:R2:E5-01:RESERVE",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "13882a026a2a0aa6fe985ebc442a6e2cc765d5b227d32724d483e6878e82e3b7",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "352d6843c373deefd632d8eecc12f0d55f201328faa570d48d51dfc5c0b90c92",
+            "551c03987c8964a74055259f60b72a0032a46050591e4db37f4d1d91b2003e6d"
+          ],
+          "seed": 621581,
+          "selector_bytes": [
+            "\\\"Entity 159 B\\\"",
+            "\\\"Entity 159 A\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "B:R2:E5-01:RESERVE",
+      "verdict": "PASS"
+    },
+    {
+      "checks": [
+        {
+          "base_fixture_id": "B:R3:E5-01:RESERVE",
+          "base_position": "B:R3:E5-01:RESERVE",
+          "differing_byte_offsets": [
+            248
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "f8d58590f3c29a97e81375987b183768201fd8086de16877350225209c734eba",
+          "model": "qwen2.5:7b",
+          "repeat": 1,
+          "request_sha256": [
+            "03a7e35100cee2e81b81518ca27219de69581017d1b169911aef4c9417b67a34",
+            "ccb14fd1c051cb75789563bb0269f29924f2752d1d628b7c412bc86f1c5970de"
+          ],
+          "seed": 621651,
+          "selector_bytes": [
+            "\\\"Entity 166 A\\\"",
+            "\\\"Entity 166 B\\\""
+          ],
+          "selector_spans": [
+            [
+              235,
+              251
+            ],
+            [
+              235,
+              251
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R3:E5-01:RESERVE",
+          "base_position": "B:R3:E5-01:RESERVE",
+          "differing_byte_offsets": [
+            247
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "6e01135f95b8885ab826221735475d11eb4410721306b46091076395b7ba788e",
+          "model": "qwen3:14b",
+          "repeat": 1,
+          "request_sha256": [
+            "aad375e82ac7325dcc83afa728acc4d8a03e4cfe74ccccf953808a1b5d9e0094",
+            "cfb6d542679812eee287586792615534981f2c28c927397181238180c833b200"
+          ],
+          "seed": 621651,
+          "selector_bytes": [
+            "\\\"Entity 166 A\\\"",
+            "\\\"Entity 166 B\\\""
+          ],
+          "selector_spans": [
+            [
+              234,
+              250
+            ],
+            [
+              234,
+              250
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        },
+        {
+          "base_fixture_id": "B:R3:E5-01:RESERVE",
+          "base_position": "B:R3:E5-01:RESERVE",
+          "differing_byte_offsets": [
+            249
+          ],
+          "exact_diff_only_selector": true,
+          "gold_distinct": true,
+          "masked_bytes_equal": true,
+          "masked_sha256": "be47bfcc391a13511d25a5ffa39a672f9e116ddc40bf9ede038a878065c5c13b",
+          "model": "qwen3.8:27b",
+          "repeat": 1,
+          "request_sha256": [
+            "880673702d01e47d4b788c965e4313f726815303afaa63deebb3e8fa03fd7b76",
+            "cdc15cf8f89a417eb65bbb44ac527686065dbb7e6d4c88b58938999456da6189"
+          ],
+          "seed": 621651,
+          "selector_bytes": [
+            "\\\"Entity 166 A\\\"",
+            "\\\"Entity 166 B\\\""
+          ],
+          "selector_spans": [
+            [
+              236,
+              252
+            ],
+            [
+              236,
+              252
+            ]
+          ],
+          "variant_ids": [
+            "CF1",
+            "CF2"
+          ]
+        }
+      ],
+      "logical_base_id": "B:R3:E5-01:RESERVE",
+      "verdict": "PASS"
+    }
+  ],
+  "verdict": "PASS"
+}

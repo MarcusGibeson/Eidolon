@@ -1,0 +1,1 @@
+{"payload":{"category":"P1-A-stale-public-paths","data":{"event":"CORRUPTED_CHECKPOINT"},"detail":"A persists terminal INVALID through public resume","passed":true},"previous_sha256":"0000000000000000000000000000000000000000000000000000000000000000","sequence":1,"sha256":"7d0ecb720ea9d6efab4d951ea49fd19e979c3ee130b3f2491b8551d72c2d1520"}

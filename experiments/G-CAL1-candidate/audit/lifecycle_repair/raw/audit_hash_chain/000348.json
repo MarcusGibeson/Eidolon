@@ -1,0 +1,1 @@
+{"payload":{"category":"generic-append-checkpoint-resume-receipt-no-retry-replay","data":{"event":"UNVERIFIABLE_INTERRUPTION_CHECKPOINT"},"detail":"restart terminal","passed":true},"previous_sha256":"910db10c68d5fa037bb52e0712d54cb59a46c5124f555ee29b4b34dc572dddb0","sequence":348,"sha256":"2d4c5502d89741552f468c0ed14277df73d15376860d4c3fb56b8fac33618815"}

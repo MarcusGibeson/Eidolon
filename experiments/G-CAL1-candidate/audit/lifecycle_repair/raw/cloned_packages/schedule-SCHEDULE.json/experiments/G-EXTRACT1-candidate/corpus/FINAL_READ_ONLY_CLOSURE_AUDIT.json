@@ -1,0 +1,164 @@
+{
+  "schema_version": "g-extract1.final-read-only-review-closure-audit.v1",
+  "verdict": "PASS",
+  "readiness": "READY_FOR_NEXT_G_EXTRACT1_STAGE",
+  "scope": "One independent read-only post-republication closure audit of the three external corpus/gold blockers, mutation-certification labeling and regressions; not a new design/blueprint rereview chain.",
+  "independent": true,
+  "reviewer": {
+    "name": "Halley",
+    "agent_id": "01a1047a-b19e-7512-8cf1-e98fdb8166f9",
+    "files_written_by_reviewer": 0,
+    "method": "Independent source inspection and recomputation, real-path mutation replay and full in-memory finalization compared with exact disk bytes and published Git blobs."
+  },
+  "recorded_by": "Primary assistant records the independent verdict separately; no republished artifact is rewritten.",
+  "republished_package_commit": "81dc9d05f49e9c1310bb38676bfd7cf6a8620cf7",
+  "prospective_design_blueprint_correction_commit": "7b80ae041c74af9965662ea1aaf0d374950640f4",
+  "implementation_correction_commit": "d137a912b987575d1b39ba1eaa2bde3ba617fc15",
+  "prior_package_commit": "a276c73ba5b89d944997a6a82cba4508729653c8",
+  "prior_review_verdict_preserved": "NOT_READY_FOR_NEXT_G_EXTRACT1_STAGE",
+  "closure_matrix": [
+    {
+      "finding": "P1 elapsed-time entailment",
+      "status": "RESOLVED",
+      "evidence": "ELAPSED_REQUEST_ENTAILMENT_REPORT.json;12 exact corrections,180 byte-identical unaffected requests;all244 gold values unchanged."
+    },
+    {
+      "finding": "P2 content applicability reporting",
+      "status": "RESOLVED",
+      "evidence": "CONTAMINATION_REPORT.json;276 both-empty explicitly NOT_APPLICABLE_BOTH_EMPTY/null similarity/no credit;4032 one-empty APPLIES/zero similarity."
+    },
+    {
+      "finding": "P2 intermediate differential certification",
+      "status": "RESOLVED",
+      "evidence": "INTERMEDIATE_DIFFERENTIAL_REPORT.json;298 direct payload/token equalities,192 full NEW fingerprints,106 historical projections;zero disagreements."
+    },
+    {
+      "finding": "Mutation-certification labeling",
+      "status": "RESOLVED",
+      "evidence": "MUTATION_CERTIFICATION_REPORT.json;7 real-finalization rejections,3 local guards,40 component tests and21 contract-local guards labeled separately."
+    }
+  ],
+  "independent_verification": {
+    "actual_check_count": 41420,
+    "all_12_packed_artifacts_equal_to_disk_and_git_blobs": true,
+    "freshness": 811,
+    "whole_answer": 1828,
+    "historical_adapter": {
+      "adapted": 106,
+      "rejected": 0
+    },
+    "gold_logical": 168,
+    "gold_rendered": 192,
+    "gold_values": 244,
+    "reserves": 28,
+    "E4_truth_each_context": {
+      "true": 3,
+      "false": 2
+    },
+    "E5_pairs": 24,
+    "E5_wire_audits": 108,
+    "E7_integrated_checks": 24,
+    "new_new_comparisons": 18336,
+    "branches": {
+      "SCAFFOLD": 906,
+      "CONTENT": 518,
+      "ORDINARY": 16888,
+      "SAME_BASE_E5": 24
+    },
+    "historical_new_supported_comparisons": 20352,
+    "new_new_eligible_date_number_comparisons": 2016,
+    "content_both_empty": {
+      "CONTENT": 60,
+      "SCAFFOLD": 64,
+      "ORDINARY": 144,
+      "SAME_BASE_E5": 8,
+      "TOTAL": 276
+    },
+    "content_applies": 18060,
+    "one_empty_applies_zero": 4032,
+    "normalized_payload_equalities": 298,
+    "ordered_token_sequence_equalities": 298,
+    "new_full_fingerprint_equalities": 192,
+    "historical_projection_equalities": 106,
+    "disagreements": 0,
+    "real_path_mutations": {
+      "normalized_punctuation": "TARGETED_REJECTION",
+      "token_sequence": "TARGETED_REJECTION",
+      "fingerprint_bytes": "TARGETED_REJECTION",
+      "scaffold_class": "TARGETED_REJECTION",
+      "scaffold_member": "TARGETED_REJECTION",
+      "scaffold_invariant": "TARGETED_REJECTION",
+      "recurrence_member": "TARGETED_REJECTION"
+    },
+    "local_guard_tests": 3,
+    "checker_component_tests": 40,
+    "contract_local_guard_tests": 21,
+    "historical_surface_diagnostic_delta": {
+      "total": 648,
+      "one_to_zero": 504,
+      "zero_to_one": 144,
+      "authorized_elapsed_requests_only": 12,
+      "all_other_historical_fields_and_dispositions_unchanged": true,
+      "adapter_and_thresholds_unchanged": true
+    },
+    "candidate_before_after_identical": true,
+    "gold_before_after_identical": true,
+    "GOLD_and_RESERVE_and_E5_request_report_byte_identical_to_prior_package": true,
+    "regressions": [],
+    "blockers": [],
+    "stop_conditions": []
+  },
+  "candidate_source_sha256_before": "f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068",
+  "candidate_source_sha256_after": "f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068",
+  "gold_projection_sha256_before": "803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec",
+  "gold_projection_sha256_after": "803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec",
+  "final_artifacts_sha256": {
+    "CONTAMINATION_REPORT.json": "b4ddb8a30e306ad407c867db1220d70856ec87244df1b04a02a0cb227c967ee2",
+    "CORPUS_GOLD_REVIEW_CLOSURE.json": "d594e19ae62ec2512bd20b026799f2263c0b9b17d6f7844dca29bc868635f21b",
+    "CORPUS_VALIDATION_REPORT.json": "3b85cb640f5fe473e041de07b884ec4b6e20a5c261abba4f449ebd6650de6dc4",
+    "E5_REQUEST_INVARIANCE_REPORT.json": "9607283730609446a99ffcb4dc326b87cf025e92ca537a9bf8011ff7bd327635",
+    "ELAPSED_REQUEST_ENTAILMENT_REPORT.json": "b22632df44c361b9819e777710f35d4eb6cd992b6f814e26a3255b264bc3dbd7",
+    "GOLD.json": "53da54b9c6726108b8520f62b3b2ea894f54b856577d4baf9c058c798a4d31c9",
+    "GOLD_DERIVATION_REPORT.json": "4d0da75c06d1dfff5d6daef04ab9fd25b45d23fe0e67a90823937b54e2f0e13e",
+    "INTERMEDIATE_DIFFERENTIAL_REPORT.json": "dc8ec5d82c31dce8a3d2bf6776fdf238a8d954308253b79af7fd52bcdb7555db",
+    "MUTATION_CERTIFICATION_REPORT.json": "764a6748a9fb1f31c9e094f360dec7dc5893c5180e006957422aa97bcddf9c3d",
+    "RESERVE_CORPUS.json": "2d314e73af1cc164286fd4cc5c4f15d5f2cd65facbdea3c38cd60edc3af4ae90",
+    "SCORED_CORPUS.json": "7ff3cdb26d3afcb2db3a4b8084e24001071318ca54a7c876c55f59874fb2c702",
+    "CORPUS_MANIFEST.json": "aad9f460edd373f5ce3a0b5469449e4b6df918081c956ca819c1b515f8ca1042"
+  },
+  "preserved_authoring_and_failure_sha256": {
+    "AUTHORING_ATTEMPTS.json": "b9860b6bd4f662c46935773463bf6caf78035a1c2aa01c0b6a55e5100b9aa8da",
+    "AUTHORING_CANDIDATES.json": "f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068",
+    "AUTHORING_FEASIBILITY_REPORT.json": "8767a025c1123541cc858873aff41b60ecc1f8b0186d72ccc738761a24771433",
+    "FINALIZATION_FAILURE_REPORT.json": "588b6141e3c25b561dff49d7b004ca508468ed39f4dbef8a8e16c54f69918730",
+    "FRESHNESS_CANONICALIZATION_DIAGNOSIS_REPORT.json": "7395408dcf283821d19ed81f6986d64c47b4d31f9dd76d1c72481f7dff48a442",
+    "FINALIZATION_CONTAMINATION_DISAGREEMENT_REPORT.json": "d9ff96223d36cd2c92d92361be028820d6955b82712f1ed2152178958c8765dc",
+    "FINALIZATION_HISTORICAL_REUSE_CONTRACT_STOP_REPORT.json": "a011317172165d16569a78a975b861e8ccb7c374a68248da23f9c47498a8984d",
+    "FRESHNESS_CHECKER_REPAIR_REPORT.json": "3c57078b5ea88b5fc994252cec52307e5b213969797eaa222bb623ef989e262f",
+    "WHOLE_ANSWER_CHECKER_REPAIR_REPORT.json": "a9c5bc5533b2e3d61025576fd91b1f1e57cd2d74c4db675147e3df7a9a2e94a9",
+    "validate_freshness_repair.py": "9d66678d1fa8b62e820b25cc50305ba91ed112d6add57d63f9f5dc734bea70ae",
+    "validate_whole_answer_repair.py": "a389c97681e9630ea4f0c7aa102a02dff76def320412f0dc455eeeb6ff0ab513"
+  },
+  "gold_projection_sha256": "803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec",
+  "prepublication_audit_sha256": "33b45ba71a41ca2262e029e1bed009e2c78aa6c888ac1a46913014bbaf45beeb",
+  "review_history_sha256": "d29178b5ea10d7ba0054dae9f2ef4e99967a676d7ed253aa889a964a110a0628",
+  "historical_closure_sha256": {
+    "experiments/G-ROUTE4-candidate/closure/G_ROUTE4_CLOSURE.json": "d992a169a2be293909f0fe0f1b39720656f40a09dc4f6b4e9c53449110cef8be",
+    "experiments/G-ROUTE4-candidate/closure/PHASE_B_UNSAFE_STOP_DIAGNOSTIC.json": "461a85368a6cbbd39429bebbae883c0b17be614db52e343150b23051041b4868"
+  },
+  "commit_binding": "This separate audit commit pins the literal republished package commit and all12artifact digests, avoiding circular self-digests or post-audit republication.",
+  "governance": {
+    "provider_model_calls": 0,
+    "candidate_value_regeneration": 0,
+    "gold_semantic_modification": 0,
+    "runtime_implementation": false,
+    "execution": "none",
+    "mechanical_pilot_authorized": false,
+    "execution_freeze_authorized": false,
+    "phase_a_authorized": false,
+    "phase_b_authorized": false,
+    "autonomy": false,
+    "G_ROUTE4": "CLOSED FAILED unchanged",
+    "belief_effects": "none"
+  }
+}

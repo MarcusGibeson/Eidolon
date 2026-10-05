@@ -1,0 +1,23 @@
+{
+  "schema_version": "g-extract1.tuple-applicability-independent-audit.v1",
+  "verdict": "PASS_BOUNDED_CORRECTION_ONLY",
+  "auditor": "independent read-only subagent 01a10462-94f7-7d80-8edb-21b1cefbd8e9",
+  "design_parent": "d1b9e2aa5dbe0aeebb74f8226ca8033182f7b3c1",
+  "blueprint_parent": "d8396179204411da15c2dfc330666a490a2287e8",
+  "performed_before_corpus_checker_edits": true,
+  "historical_fixtures_joined_to_gold": 106,
+  "historical_artifact_counts": [16,55,16,19],
+  "projection_evidence_sha256": "a14935bf93e8932854b545cacd638daf869d67d8742826887f187956b75e0810",
+  "findings": [
+    "Exact parent projection: only universal tuple scope claim and explicit applicability annex change semantically; blueprint adds only binding plan.",
+    "All historical exports lack canonical ordered typed source facts, operation graphs and argument provenance. Typed gold is insufficient.",
+    "Human, machine and blueprint agree: historical/new date-number is NOT_APPLICABLE_UNREPRESENTABLE_HISTORICAL_PROVENANCE, neither PASS nor FAIL, without surrogate bytes.",
+    "All five NEW/NEW scopes and entire tuple rule unchanged; other historical controls, thresholds, allocations, gates, reserves, model-facing behavior and governance unchanged.",
+    "Candidate and gold projection hashes preserved; checkers byte-identical before audit."
+  ],
+  "validator_limits": "188/191 checks are narrow consistency, not full checkpoint or scientific approval. Initial mutation assertions compare inequality and plural tuple vector is not replayed there; final certification must exercise rejection behavior.",
+  "corpus_approved": false,
+  "execution_authorized": false,
+  "provider_model_calls": 0,
+  "belief_effects": "none"
+}

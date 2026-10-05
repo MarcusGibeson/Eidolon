@@ -1,0 +1,138 @@
+{
+  "schema_version": "g-extract1.corpus-finalization-stop.v1",
+  "status": "G_EXTRACT1_CORPUS_FINALIZATION_INCOMPLETE",
+  "head": "b7fd33eacbd46df7be5274a0e3d5e2dbe34efe1a",
+  "branch": "g-extract1/design",
+  "accepted_commits": {
+    "contamination_repair": "62c783bd8be708a86c82a9e00c80b0fa6fb5b459",
+    "freshness_amendment": "e12484224cd11cf9c84026eb7deadf8c4eb9bab8",
+    "whole_answer_amendment": "d1b9e2aa5dbe0aeebb74f8226ca8033182f7b3c1",
+    "blueprint": "d8396179204411da15c2dfc330666a490a2287e8",
+    "freshness_checker_repair": "6fb3f2af5806760c034006a8561ce08e938c210a",
+    "whole_answer_checker_repair": "b7fd33eacbd46df7be5274a0e3d5e2dbe34efe1a"
+  },
+  "stop_reason": "HISTORICAL_DATE_NUMBER_TUPLE_DERIVATION_NOT_FROZEN",
+  "stage": "historical exact-reuse coverage audit after read-only similarity/projection and reserve preflight",
+  "corpus_failure_proven": false,
+  "scientific_interpretation_selected": false,
+  "contract_gap": {
+    "required_scope_pointer": "DESIGN_CANDIDATE.json#/contamination_contract/exact_reuse_contract",
+    "scope_names_contains": "historical_new",
+    "all_rules_apply_to_every_scope": true,
+    "tuple_pointer": "DESIGN_CANDIDATE.json#/contamination_contract/exact_reuse_contract/date_number_tuple",
+    "tuple_sources_in_order": [
+      "source_fact_records array order",
+      "operation_nodes stable topological order then catalog argument order and SUM operand order",
+      "gold output fields sorted by unsigned UTF-8 field name"
+    ],
+    "semantic_type_requirement": "SOURCE_FACT tags derive from source schema; OPERATION_ARGUMENT field/derived references resolve source/upstream semantic types. Token shape is not a substitute.",
+    "actual_historical_fixture_keys": [
+      "consequence_risk", "fixture_id", "input", "prompt", "task_class", "title", "validator_profile"
+    ],
+    "actual_historical_input_keys": ["schema", "text"],
+    "historical_typed_source_fact_records_present": 0,
+    "historical_operation_nodes_present": 0,
+    "historical_extraction_fixtures_examined_for_representation": 106,
+    "historical_projection_pointer": "DESIGN_CANDIDATE.json#/historical_fingerprint_adapter_contract",
+    "historical_projection_components": [
+      "output_schema_signature", "source_token_kind_sequence", "instruction_surface_sequence"
+    ],
+    "adapter_limitation": "The accepted adapter prohibits fabricated graphs/entity/fact roles and omits unavailable components. It does not prescribe a historical typed date-number tuple adapter or a handling rule for this exact-reuse control.",
+    "concrete_example": {
+      "path": "experiments/G-ROUTE4-candidate/sealed/corpus_a.json",
+      "fixture_id": "A4-EXTR-R1-02",
+      "schema": {
+        "variety": "string", "seeds_sown": "integer", "tray_litres": "number",
+        "lid_on": "boolean", "expected_sprout": "YYYY-MM-DD"
+      },
+      "source_text": "Sowed 24 pepper seeds of the variety Wogali on 2031-03-09 in the heated propagator. The packet gives a germination time of 11 days. The tray holds 1.5 litres of compost, and the propagator lid stays on until the first shoots appear.",
+      "issue": "Output schema/gold and lexical date/number tokens are available, but typed source-record order and typed operation arguments are not represented. Gold-only or lexical-token tuples would change the frozen tuple definition. Eligibility cannot simply be declared false because metadata is missing."
+    },
+    "checker_coverage_evidence": {
+      "primary_historical_rows": "validate_corpus.py historical_rows returns fixture/projection/grams only; no typed historical tuple.",
+      "primary_historical_decision": "validate_corpus.py historical_decision checks ordinary Jaccard and three-component projection only, not historical exact-reuse controls.",
+      "new_primary_tuple_extractor": "validate_design.py extract_date_number_atoms requires source_fact_records and typed operation_nodes.",
+      "new_independent_tuple_extractor": "independent_contamination.py evidence evaluates typed fixture metadata and builds SOURCE_FACT/OPERATION_ARGUMENT/GOLD atoms. It is not a historical adapter."
+    },
+    "freshness_distinction": "freshness_canonicalization_contract.separation.historical explicitly retains NEW freshness only; this is not authority to exempt a separately historical-scoped date-number tuple control.",
+    "unselected_alternatives": [
+      "recover typed source facts/operations by an unfrozen prose parser",
+      "compare only historical gold atoms",
+      "replace historical semantic tags with lexical tokenizer classes",
+      "skip or mark historical tuple control ineligible solely because metadata is absent"
+    ],
+    "needed_before_resume": "Separately authorize and review a prospective historical exact-reuse derivation/handling closure. This task does not choose or implement it."
+  },
+  "repair_certification_precheck": {
+    "whole_answer": {
+      "verdict": "PASS", "checks": 1828, "logical_bases": 168, "rendered_variants": 192,
+      "historical_encodings": 106, "disagreements": 0, "stored_report_replay": "PASS"
+    },
+    "freshness": {
+      "verdict": "PASS", "checks": 811, "rendered_variants": 192, "disagreements": 0,
+      "method": "Preserved behavioral suite replayed by accepted whole-answer repair validator under audited in-memory lineage/scope wrappers; script and prior report unchanged."
+    }
+  },
+  "read_only_preflight_results": {
+    "actual_anchor_fixture_checks": 168,
+    "rendered_primary_independent_evidence_agreements": 192,
+    "new_new_cross_base_comparisons": 18312,
+    "new_new_branch_counts": {"scaffold": 906, "same_subtype_content": 518, "ordinary": 16888},
+    "new_new_existing_decision_results": "PASS with zero primary/independent disagreements",
+    "new_new_exact_checks_in_decision": [
+      "raw_payload", "freshness_sequence", "whole_answer", "identity_intersection", "eligible_date_number_tuple"
+    ],
+    "same_base_e5_scopes_enumerated": 24,
+    "same_base_e5_caveat": "Existing pair checkers return SAME_BASE_E5; final full request/pair exception certification was not completed. No 24/24 request-invariance PASS claim.",
+    "historical_new_similarity_projection_comparisons": 20352,
+    "historical_new_similarity_projection_result": "PASS with zero primary/independent disagreements; not complete historical/new contamination certification",
+    "historical_adaptation": {
+      "examined": 106, "adapted": 106, "rejected": 0,
+      "projection_evidence_sha256": "a14935bf93e8932854b545cacd638daf869d67d8742826887f187956b75e0810"
+    },
+    "reserve_profile_byte_comparisons": 28,
+    "reserve_profile_byte_result": "PASS; actual slot/value semantics checked before profile derivation; E5 complete pair profiles used",
+    "final_validation_check_count": null,
+    "final_mutation_certification": "NOT COMPLETED",
+    "final_historical_exact_reuse_certification": "NOT COMPLETED",
+    "full_e5_request_certification": "NOT COMPLETED",
+    "final_recurrence_certification": "NOT COMPLETED",
+    "final_corpus_projection_certification": "NOT COMPLETED",
+    "external_corpus_gold_review": "NOT YET PERFORMED"
+  },
+  "preservation": {
+    "all_existing_corpus_tooling_files_equal_accepted_repair_snapshot": true,
+    "before_sha256": {
+      "AUTHORING_ATTEMPTS.json": "b9860b6bd4f662c46935773463bf6caf78035a1c2aa01c0b6a55e5100b9aa8da",
+      "AUTHORING_CANDIDATES.json": "f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068",
+      "AUTHORING_FEASIBILITY_REPORT.json": "8767a025c1123541cc858873aff41b60ecc1f8b0186d72ccc738761a24771433",
+      "FINALIZATION_FAILURE_REPORT.json": "588b6141e3c25b561dff49d7b004ca508468ed39f4dbef8a8e16c54f69918730",
+      "FINALIZATION_CONTAMINATION_DISAGREEMENT_REPORT.json": "d9ff96223d36cd2c92d92361be028820d6955b82712f1ed2152178958c8765dc",
+      "FRESHNESS_CANONICALIZATION_DIAGNOSIS_REPORT.json": "7395408dcf283821d19ed81f6986d64c47b4d31f9dd76d1c72481f7dff48a442",
+      "FRESHNESS_CHECKER_REPAIR_REPORT.json": "3c57078b5ea88b5fc994252cec52307e5b213969797eaa222bb623ef989e262f",
+      "WHOLE_ANSWER_CHECKER_REPAIR_REPORT.json": "a9c5bc5533b2e3d61025576fd91b1f1e57cd2d74c4db675147e3df7a9a2e94a9"
+    },
+    "after_equals_before": true,
+    "gold_projection_before_sha256": "803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec",
+    "gold_projection_after_sha256": "803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec",
+    "accepted_design_unchanged": true,
+    "accepted_blueprint_unchanged": true,
+    "checker_files_unchanged": true,
+    "historical_corpora_and_gold_unchanged": true,
+    "historical_closure_sha256": "d992a169a2be293909f0fe0f1b39720656f40a09dc4f6b4e9c53449110cef8be",
+    "historical_diagnostic_sha256": "461a85368a6cbbd39429bebbae883c0b17be614db52e343150b23051041b4868"
+  },
+  "publication": {
+    "final_artifacts_created": [], "manifest_created": false, "corpus_finalized": false,
+    "commit_created": false, "push_performed": false,
+    "new_evidence_only": "FINALIZATION_HISTORICAL_REUSE_CONTRACT_STOP_REPORT.json"
+  },
+  "governance": {
+    "provider_model_calls": 0, "corpus_regeneration": 0, "gold_modifications": 0,
+    "design_changes": 0, "blueprint_changes": 0, "threshold_changes": 0,
+    "runtime_implementation": false, "experiment_execution": "none",
+    "mechanical_pilot": "unauthorized", "execution_freeze": "unauthorized",
+    "phase_a": "unauthorized", "phase_b": "unauthorized",
+    "G_ROUTE4": "CLOSED FAILED unchanged", "belief_effects": "none"
+  }
+}

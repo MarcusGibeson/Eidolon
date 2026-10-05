@@ -1,0 +1,128 @@
+{
+  "schema_version": "g-extract1.corpus-finalization-stop.v1",
+  "status": "G_EXTRACT1_CORPUS_FINALIZATION_FAILED",
+  "accepted_commits": {
+    "contamination_repair": "62c783bd8be708a86c82a9e00c80b0fa6fb5b459",
+    "freshness_amendment": "e12484224cd11cf9c84026eb7deadf8c4eb9bab8",
+    "blueprint": "3bf939ea3160596d89c64f1feef790477991cf8a",
+    "checker_repair": "6fb3f2af5806760c034006a8561ce08e938c210a"
+  },
+  "stop_reason": "INDEPENDENT_CONTAMINATION_EVIDENCE_DISAGREEMENT",
+  "stage": "per-variant evidence comparison, before pairwise contamination decisions",
+  "checker_repair_precondition": {
+    "verdict": "PASS",
+    "check_count": 811,
+    "rendered_variants": 192,
+    "freshness_disagreements": 0,
+    "schema_vector_count": 45,
+    "byte_mutation_count": 35,
+    "stored_report_replay": "PASS"
+  },
+  "disagreement": {
+    "logical_base_id": "A:R2:E4-01:PRIMARY",
+    "variant_id": "SINGLE",
+    "field": "answer",
+    "primary_bytes_utf8": "[[\"d016_02\",\"boolean\",[\"BOOLEAN\",\"true\"]]]",
+    "independent_bytes_utf8": "[[\"d016_02\",\"boolean\",[\"BOOLEAN\",true]]]",
+    "observation": "Primary whole-answer BOOLEAN value is JSON text; independent whole-answer BOOLEAN value is a JSON Boolean scalar.",
+    "complete_prior_variant_evidence_agreements": 15,
+    "prior_complete_agreement_fields_per_variant": 10,
+    "current_variant_prior_agreed_fields": [
+      "raw_payload",
+      "raw_values",
+      "identities"
+    ],
+    "winner_selected": false,
+    "checker_repair_performed": false,
+    "scientific_adjudication_performed": false
+  },
+  "progress": {
+    "anchor_structure_and_existing_gold_checks_completed": 16,
+    "complete_variant_evidence_comparisons_passed": 15,
+    "variant_evidence_disagreements": 1,
+    "pairwise_contamination_decisions_evaluated": 0,
+    "scaffold_comparisons_certified": 0,
+    "same_subtype_comparisons_certified": 0,
+    "ordinary_comparisons_certified": 0,
+    "same_base_e5_invariance_scopes_certified": 0,
+    "historical_new_comparisons_certified": 0,
+    "final_mutation_certification_completed": false,
+    "final_reserve_compatibility_completed": false,
+    "final_recurrence_certification_completed": false,
+    "full_independent_gold_agreement_certified": false
+  },
+  "corpus_conclusion": "No corpus contamination PASS/FAIL conclusion selected. Checker incompatibility stops certification before the final campaign.",
+  "preservation": {
+    "before_sha256": {
+      "AUTHORING_ATTEMPTS.json": "b9860b6bd4f662c46935773463bf6caf78035a1c2aa01c0b6a55e5100b9aa8da",
+      "AUTHORING_CANDIDATES.json": "f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068",
+      "AUTHORING_FEASIBILITY_REPORT.json": "8767a025c1123541cc858873aff41b60ecc1f8b0186d72ccc738761a24771433",
+      "FINALIZATION_FAILURE_REPORT.json": "588b6141e3c25b561dff49d7b004ca508468ed39f4dbef8a8e16c54f69918730",
+      "FRESHNESS_CANONICALIZATION_DIAGNOSIS_REPORT.json": "7395408dcf283821d19ed81f6986d64c47b4d31f9dd76d1c72481f7dff48a442",
+      "FRESHNESS_CHECKER_REPAIR_REPORT.json": "3c57078b5ea88b5fc994252cec52307e5b213969797eaa222bb623ef989e262f",
+      "independent_contamination.py": "c2a8221a37057a3433e2314a7c63fd57aac1cafe3038ba67ec9952eaf9894ef7",
+      "validate_corpus.py": "27cda5efa4856b6fb3b33a46d1daa712cc019213632dfe789686330183f22114",
+      "validate_freshness_repair.py": "9d66678d1fa8b62e820b25cc50305ba91ed112d6add57d63f9f5dc734bea70ae"
+    },
+    "after_sha256": {
+      "AUTHORING_ATTEMPTS.json": "b9860b6bd4f662c46935773463bf6caf78035a1c2aa01c0b6a55e5100b9aa8da",
+      "AUTHORING_CANDIDATES.json": "f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068",
+      "AUTHORING_FEASIBILITY_REPORT.json": "8767a025c1123541cc858873aff41b60ecc1f8b0186d72ccc738761a24771433",
+      "FINALIZATION_FAILURE_REPORT.json": "588b6141e3c25b561dff49d7b004ca508468ed39f4dbef8a8e16c54f69918730",
+      "FRESHNESS_CANONICALIZATION_DIAGNOSIS_REPORT.json": "7395408dcf283821d19ed81f6986d64c47b4d31f9dd76d1c72481f7dff48a442",
+      "FRESHNESS_CHECKER_REPAIR_REPORT.json": "3c57078b5ea88b5fc994252cec52307e5b213969797eaa222bb623ef989e262f",
+      "independent_contamination.py": "c2a8221a37057a3433e2314a7c63fd57aac1cafe3038ba67ec9952eaf9894ef7",
+      "validate_corpus.py": "27cda5efa4856b6fb3b33a46d1daa712cc019213632dfe789686330183f22114",
+      "validate_freshness_repair.py": "9d66678d1fa8b62e820b25cc50305ba91ed112d6add57d63f9f5dc734bea70ae"
+    },
+    "before_evidence_basis": "Accepted checker-repair artifact hashes; read-only repair certification reproduced before finalization.",
+    "gold_projection_sha256_before": "803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec",
+    "gold_projection_sha256_after": "803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec",
+    "candidate_byte_identical": true,
+    "embedded_gold_byte_identical": true,
+    "authoring_and_failure_history_unchanged": true,
+    "checker_files_unchanged": true,
+    "accepted_design_blueprint_unchanged": true,
+    "historical_sha256": {
+      "G_ROUTE4_CLOSURE.json": "d992a169a2be293909f0fe0f1b39720656f40a09dc4f6b4e9c53449110cef8be",
+      "PHASE_B_UNSAFE_STOP_DIAGNOSTIC.json": "461a85368a6cbbd39429bebbae883c0b17be614db52e343150b23051041b4868"
+    }
+  },
+  "final_publication": {
+    "performed": false,
+    "scored_corpus_created": false,
+    "reserve_corpus_created": false,
+    "gold_file_created": false,
+    "manifest_created": false,
+    "review_package_created": false,
+    "projection_equivalence_certified": false,
+    "commit_created": false,
+    "push_performed": false
+  },
+  "unfinished": [
+    "Complete 192-variant non-freshness evidence agreement",
+    "All 18,312 cross-base and 24 pair-local scopes",
+    "All 20,352 historical/new comparisons",
+    "Final independent gold and rendered-output certification",
+    "Reserve compatibility and recurrence certification",
+    "E4/E5/E7 final allocation and request-byte audits",
+    "Complete mutation certification",
+    "Deterministic final projections, review package and manifest",
+    "Independent external scientific/gold review"
+  ],
+  "governance": {
+    "provider_model_calls": 0,
+    "corpus_regeneration": 0,
+    "gold_modifications": 0,
+    "checker_modifications": 0,
+    "runtime_implementation": false,
+    "mechanical_pilot": false,
+    "execution_freeze": false,
+    "experiment_execution": "none",
+    "phase_a_authority": false,
+    "phase_b_authority": false,
+    "gold_external_review": "NOT YET PERFORMED",
+    "G_ROUTE4": "CLOSED FAILED unchanged",
+    "belief_effects": "none"
+  }
+}

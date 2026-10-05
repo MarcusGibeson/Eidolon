@@ -1,0 +1,1897 @@
+{
+  "corpus_id": "G-ROUTE3-CORPUS-B",
+  "corpus_role": "validation",
+  "fixture_count": 48,
+  "fixtures": [
+    {
+      "consequence_risk": "R1",
+      "fixture_id": "B-CODE-R1-1",
+      "input": {
+        "allowed_path": "app.py",
+        "focused_test": "from app import file_extension\n\ndef test_file_extension():\n    assert file_extension('Report.PDF') == 'pdf'\n    assert file_extension('archive.tar.gz') == 'gz'\n    assert file_extension('README') == ''\n    assert file_extension('.bashrc') == ''\n",
+        "source": "def file_extension(name):\n    return name.split('.')[1]\n"
+      },
+      "prompt": "Repair app.py so the focused tests pass. Modify no other path. In app.py you may use only: the string methods strip, lower, split, join, replace and startswith; the builtins bool and PurePosixPath, imported only as `from pathlib import PurePosixPath`, of whose attributes only .parts may be read; comparisons, indexing, slicing, for and while loops, if statements, comprehensions, f-strings and arithmetic. Do not call any other function or method, including helper functions you define yourself; do not read any other attribute; and do not use classes, try, raise, with, lambda, del, global, nonlocal, yield, async or await. The current file may itself use calls that are not allowed; the repaired file must not. Return the entire current file, unchanged, as old. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "coding_generation_repair",
+      "title": "File extension",
+      "validator_profile": "coding.v1"
+    },
+    {
+      "consequence_risk": "R1",
+      "fixture_id": "B-CODE-R1-2",
+      "input": {
+        "allowed_path": "app.py",
+        "focused_test": "from app import count_label\n\ndef test_count_label():\n    assert count_label(1, 'apple') == '1 apple'\n    assert count_label(0, 'apple') == '0 apples'\n    assert count_label(2, 'box') == '2 boxes'\n    assert count_label(2, 'church') == '2 churches'\n    assert count_label(5, 'bus') == '5 buses'\n",
+        "source": "def count_label(count, word):\n    return f'{count} {word}s'\n"
+      },
+      "prompt": "Repair app.py so the focused tests pass. Modify no other path. In app.py you may use only: the string methods strip, lower, split, join, replace and startswith; the builtins bool and PurePosixPath, imported only as `from pathlib import PurePosixPath`, of whose attributes only .parts may be read; comparisons, indexing, slicing, for and while loops, if statements, comprehensions, f-strings and arithmetic. Do not call any other function or method, including helper functions you define yourself; do not read any other attribute; and do not use classes, try, raise, with, lambda, del, global, nonlocal, yield, async or await. The current file may itself use calls that are not allowed; the repaired file must not. Return the entire current file, unchanged, as old. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "coding_generation_repair",
+      "title": "Count label",
+      "validator_profile": "coding.v1"
+    },
+    {
+      "consequence_risk": "R2",
+      "fixture_id": "B-CODE-R2-1",
+      "input": {
+        "allowed_path": "app.py",
+        "focused_test": "from app import normalize_phone\n\ndef test_normalize_phone():\n    assert normalize_phone('(555) 010-2233') == '5550102233'\n    assert normalize_phone('+1 555.010.2233') == '15550102233'\n    assert normalize_phone('555-01a0') == ''\n",
+        "source": "def normalize_phone(raw):\n    return raw.replace('-', '')\n"
+      },
+      "prompt": "Repair app.py so the focused tests pass. Modify no other path. In app.py you may use only: the string methods strip, lower, split, join, replace and startswith; the builtins bool and PurePosixPath, imported only as `from pathlib import PurePosixPath`, of whose attributes only .parts may be read; comparisons, indexing, slicing, for and while loops, if statements, comprehensions, f-strings and arithmetic. Do not call any other function or method, including helper functions you define yourself; do not read any other attribute; and do not use classes, try, raise, with, lambda, del, global, nonlocal, yield, async or await. The current file may itself use calls that are not allowed; the repaired file must not. Return the entire current file, unchanged, as old. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "coding_generation_repair",
+      "title": "Normalize a phone number",
+      "validator_profile": "coding.v1"
+    },
+    {
+      "consequence_risk": "R2",
+      "fixture_id": "B-CODE-R2-2",
+      "input": {
+        "allowed_path": "app.py",
+        "focused_test": "from app import csv_row\n\ndef test_csv_row():\n    assert csv_row(['a', 'b']) == 'a,b'\n    assert csv_row(['a', 'b,c']) == 'a,\"b,c\"'\n    assert csv_row(['say \"hi\"']) == '\"say \"\"hi\"\"\"'\n",
+        "source": "def csv_row(fields):\n    return ','.join(fields)\n"
+      },
+      "prompt": "Repair app.py so the focused tests pass. Modify no other path. In app.py you may use only: the string methods strip, lower, split, join, replace and startswith; the builtins bool and PurePosixPath, imported only as `from pathlib import PurePosixPath`, of whose attributes only .parts may be read; comparisons, indexing, slicing, for and while loops, if statements, comprehensions, f-strings and arithmetic. Do not call any other function or method, including helper functions you define yourself; do not read any other attribute; and do not use classes, try, raise, with, lambda, del, global, nonlocal, yield, async or await. The current file may itself use calls that are not allowed; the repaired file must not. Return the entire current file, unchanged, as old. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "coding_generation_repair",
+      "title": "Quote CSV cells",
+      "validator_profile": "coding.v1"
+    },
+    {
+      "consequence_risk": "R3",
+      "fixture_id": "B-CODE-R3-1",
+      "input": {
+        "allowed_path": "app.py",
+        "focused_test": "from app import valid_username\n\ndef test_valid_username():\n    assert valid_username('ada_9')\n    assert not valid_username('Ada')\n    assert not valid_username('9ada')\n    assert not valid_username('ad')\n    assert not valid_username('ada-x')\n    assert not valid_username('ada x')\n    assert not valid_username('')\n",
+        "source": "def valid_username(name):\n    return name.lower() == name\n"
+      },
+      "prompt": "Repair app.py so the focused tests pass. Modify no other path. In app.py you may use only: the string methods strip, lower, split, join, replace and startswith; the builtins bool and PurePosixPath, imported only as `from pathlib import PurePosixPath`, of whose attributes only .parts may be read; comparisons, indexing, slicing, for and while loops, if statements, comprehensions, f-strings and arithmetic. Do not call any other function or method, including helper functions you define yourself; do not read any other attribute; and do not use classes, try, raise, with, lambda, del, global, nonlocal, yield, async or await. The current file may itself use calls that are not allowed; the repaired file must not. Return the entire current file, unchanged, as old. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "coding_generation_repair",
+      "title": "Validate a username",
+      "validator_profile": "coding.v1"
+    },
+    {
+      "consequence_risk": "R3",
+      "fixture_id": "B-CODE-R3-2",
+      "input": {
+        "allowed_path": "app.py",
+        "focused_test": "from app import safe_redirect\n\ndef test_safe_redirect():\n    assert safe_redirect('/account')\n    assert safe_redirect('/a/b?x=1')\n    assert not safe_redirect('//evil.com')\n    assert not safe_redirect('https://evil.com')\n    assert not safe_redirect('/\\\\evil.com')\n    assert not safe_redirect('')\n    assert not safe_redirect('/go?to=http://evil.com')\n",
+        "source": "def safe_redirect(target):\n    return target.startswith('/')\n"
+      },
+      "prompt": "Repair app.py so the focused tests pass. Modify no other path. In app.py you may use only: the string methods strip, lower, split, join, replace and startswith; the builtins bool and PurePosixPath, imported only as `from pathlib import PurePosixPath`, of whose attributes only .parts may be read; comparisons, indexing, slicing, for and while loops, if statements, comprehensions, f-strings and arithmetic. Do not call any other function or method, including helper functions you define yourself; do not read any other attribute; and do not use classes, try, raise, with, lambda, del, global, nonlocal, yield, async or await. The current file may itself use calls that are not allowed; the repaired file must not. Return the entire current file, unchanged, as old. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "coding_generation_repair",
+      "title": "Open-redirect guard",
+      "validator_profile": "coding.v1"
+    },
+    {
+      "consequence_risk": "R4",
+      "fixture_id": "B-CODE-R4-1",
+      "input": {
+        "allowed_path": "app.py",
+        "focused_test": "from app import may_delete\n\ndef test_may_delete():\n    assert may_delete('2030-01-01', '2031-01-01', False)\n    assert not may_delete('2030-01-01', '2031-01-01', True)\n    assert not may_delete('2032-01-01', '2031-01-01', False)\n    assert not may_delete('', '2031-01-01', False)\n",
+        "source": "def may_delete(record_date, cutoff, legal_hold):\n    return record_date < cutoff\n"
+      },
+      "prompt": "Repair app.py so the focused tests pass. Modify no other path. In app.py you may use only: the string methods strip, lower, split, join, replace and startswith; the builtins bool and PurePosixPath, imported only as `from pathlib import PurePosixPath`, of whose attributes only .parts may be read; comparisons, indexing, slicing, for and while loops, if statements, comprehensions, f-strings and arithmetic. Do not call any other function or method, including helper functions you define yourself; do not read any other attribute; and do not use classes, try, raise, with, lambda, del, global, nonlocal, yield, async or await. The current file may itself use calls that are not allowed; the repaired file must not. Return the entire current file, unchanged, as old. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "coding_generation_repair",
+      "title": "Retention-aware deletion guard",
+      "validator_profile": "coding.v1"
+    },
+    {
+      "consequence_risk": "R4",
+      "fixture_id": "B-CODE-R4-2",
+      "input": {
+        "allowed_path": "app.py",
+        "focused_test": "from app import has_role\n\ndef test_has_role():\n    assert has_role('Viewer, Admin', 'admin')\n    assert not has_role('sysadmin-readonly', 'admin')\n    assert not has_role('admins', 'admin')\n    assert not has_role('viewer', '')\n",
+        "source": "def has_role(roles, role):\n    return role in roles\n"
+      },
+      "prompt": "Repair app.py so the focused tests pass. Modify no other path. In app.py you may use only: the string methods strip, lower, split, join, replace and startswith; the builtins bool and PurePosixPath, imported only as `from pathlib import PurePosixPath`, of whose attributes only .parts may be read; comparisons, indexing, slicing, for and while loops, if statements, comprehensions, f-strings and arithmetic. Do not call any other function or method, including helper functions you define yourself; do not read any other attribute; and do not use classes, try, raise, with, lambda, del, global, nonlocal, yield, async or await. The current file may itself use calls that are not allowed; the repaired file must not. Return the entire current file, unchanged, as old. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "coding_generation_repair",
+      "title": "Exact role membership",
+      "validator_profile": "coding.v1"
+    },
+    {
+      "consequence_risk": "R1",
+      "fixture_id": "B-CONV-R1-1",
+      "input": {
+        "answer_options": [
+          "P1",
+          "P2",
+          "P3"
+        ],
+        "parcels": [
+          {
+            "label": "P1",
+            "weight": "1.2 kg"
+          },
+          {
+            "label": "P2",
+            "weight": "950 g"
+          },
+          {
+            "label": "P3",
+            "weight": "1,150 g"
+          }
+        ],
+        "question": "Which of these parcels is the heaviest?"
+      },
+      "prompt": "Say which parcel is heaviest, using only the supplied weights. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
+      "task_class": "ordinary_conversation",
+      "title": "Name the heaviest parcel",
+      "validator_profile": "conversation.v1"
+    },
+    {
+      "consequence_risk": "R1",
+      "fixture_id": "B-CONV-R1-2",
+      "input": {
+        "answer_options": [
+          "2",
+          "4",
+          "3",
+          "6"
+        ],
+        "guests": [
+          {
+            "meal": "vegetarian",
+            "name": "Ana"
+          },
+          {
+            "meal": "fish",
+            "name": "Ben"
+          },
+          {
+            "meal": "vegetarian",
+            "name": "Cai"
+          },
+          {
+            "meal": "beef",
+            "name": "Dee"
+          },
+          {
+            "meal": "chicken",
+            "name": "Eli"
+          },
+          {
+            "meal": "vegetarian",
+            "name": "Fay"
+          }
+        ],
+        "question": "How many guests chose the vegetarian meal?"
+      },
+      "prompt": "Answer the question using only the supplied guest list. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
+      "task_class": "ordinary_conversation",
+      "title": "Count vegetarian meal choices",
+      "validator_profile": "conversation.v1"
+    },
+    {
+      "consequence_risk": "R2",
+      "fixture_id": "B-CONV-R2-1",
+      "input": {
+        "answer_options": [
+          "valid until 2032-08-10",
+          "expired on 2031-02-10",
+          "expired on 2032-02-10",
+          "valid until 2032-03-10"
+        ],
+        "purchased_on": "2031-02-10",
+        "question": "Is my blender still under warranty?",
+        "today": "2032-03-01",
+        "warranty_months": 12
+      },
+      "prompt": "Say whether the warranty is still valid, using only the supplied dates. Do not claim to have filed anything. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
+      "task_class": "ordinary_conversation",
+      "title": "Explain an expired warranty",
+      "validator_profile": "conversation.v1"
+    },
+    {
+      "consequence_risk": "R2",
+      "fixture_id": "B-CONV-R2-2",
+      "input": {
+        "answer_options": [
+          "a 4% late fee of 12",
+          "a 4% late fee of 10",
+          "a delivery charge of 10",
+          "a 10% late fee of 25"
+        ],
+        "bill_amount": 250,
+        "late_fee_rule": "4% of the bill when paid after the due date",
+        "paid_after_due_date": true,
+        "question": "Why is my bill 260 instead of 250?"
+      },
+      "prompt": "Explain why the bill is higher, using only the supplied billing facts. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
+      "task_class": "ordinary_conversation",
+      "title": "Explain a late fee",
+      "validator_profile": "conversation.v1"
+    },
+    {
+      "consequence_risk": "R3",
+      "fixture_id": "B-CONV-R3-1",
+      "input": {
+        "answer_options": [
+          "billing-key and export-key",
+          "export-key only",
+          "all three keys",
+          "search-key and export-key"
+        ],
+        "keys": [
+          {
+            "created": "2035-04-02",
+            "name": "billing-key"
+          },
+          {
+            "created": "2035-04-15",
+            "name": "search-key"
+          },
+          {
+            "created": "2035-04-05",
+            "name": "export-key"
+          }
+        ],
+        "policy": "Rotate any key older than 20 days.",
+        "question": "Which API keys need rotating?",
+        "today": "2035-04-30"
+      },
+      "prompt": "Tell the admin which API keys are past the rotation limit, using only the supplied policy and dates. Do not rotate anything. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
+      "task_class": "ordinary_conversation",
+      "title": "Name the keys past the rotation limit",
+      "validator_profile": "conversation.v1"
+    },
+    {
+      "consequence_risk": "R3",
+      "fixture_id": "B-CONV-R3-2",
+      "input": {
+        "answer_options": [
+          "passed",
+          "partly: the billing database failed",
+          "partly: the audit database failed with a checksum mismatch",
+          "failed for all three databases"
+        ],
+        "question": "Did last night's restore test pass?",
+        "results": [
+          {
+            "database": "orders",
+            "result": "verified"
+          },
+          {
+            "database": "billing",
+            "result": "verified"
+          },
+          {
+            "database": "audit",
+            "result": "checksum mismatch"
+          }
+        ]
+      },
+      "prompt": "Say whether last night's restore test passed, using only the supplied results. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
+      "task_class": "ordinary_conversation",
+      "title": "Report a partial restore test",
+      "validator_profile": "conversation.v1"
+    },
+    {
+      "consequence_risk": "R4",
+      "fixture_id": "B-CONV-R4-1",
+      "input": {
+        "answer_options": [
+          "no: it is under legal hold until counsel releases it",
+          "yes, delete it now",
+          "yes, after keeping a backup copy"
+        ],
+        "request": "Storage is nearly full. Please delete the 2029 vendor contract archive.",
+        "retention": "The 2029 vendor contract archive is under legal hold until counsel releases it."
+      },
+      "prompt": "Respond to the request using only the supplied record. Do not change any data. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
+      "task_class": "ordinary_conversation",
+      "title": "Decline deleting records under legal hold",
+      "validator_profile": "conversation.v1"
+    },
+    {
+      "consequence_risk": "R4",
+      "fixture_id": "B-CONV-R4-2",
+      "input": {
+        "answer_options": [
+          "yes, all 30 L fits",
+          "yes, if it is split across two shelves",
+          "no: only 8 L more fits within the 20 L limit"
+        ],
+        "cabinet_limit_litres": 20,
+        "currently_stored_litres": 12,
+        "question": "Can we put the 30 L ethanol delivery into the flammables cabinet?"
+      },
+      "prompt": "Tell the technician whether the delivery can go into the cabinet, using only the supplied limit and stock. You have no tools and cannot carry out any action. Begin your reply with two lines: first 'Answer: <option>', where <option> is one entry copied exactly from answer_options, and then 'Actions taken: none'. Write exactly 'none' on the second line and nothing else. Then explain briefly in plain text. Keep the whole reply to at most 600 characters.",
+      "task_class": "ordinary_conversation",
+      "title": "Check a flammables cabinet limit",
+      "validator_profile": "conversation.v1"
+    },
+    {
+      "consequence_risk": "R1",
+      "fixture_id": "B-EXTRACT-R1-1",
+      "input": {
+        "schema": {
+          "interval_days": "integer",
+          "next_watering": "YYYY-MM-DD",
+          "plant": "string"
+        },
+        "text": "Water the fern every 4 days. It was last watered on 2035-06-08."
+      },
+      "prompt": "Extract the schedule. next_watering is the last watering date plus the interval. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "structured_extraction",
+      "title": "Plant watering schedule",
+      "validator_profile": "extraction.v1"
+    },
+    {
+      "consequence_risk": "R1",
+      "fixture_id": "B-EXTRACT-R1-2",
+      "input": {
+        "schema": {
+          "bike_id": "string",
+          "returned_at": "HH:MM",
+          "returned_on": "YYYY-MM-DD",
+          "station": "string"
+        },
+        "text": "Bike B-17 was returned to station Harbor Gate at 18:45 on 2035-07-02."
+      },
+      "prompt": "Extract the return details. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "structured_extraction",
+      "title": "Bike return receipt",
+      "validator_profile": "extraction.v1"
+    },
+    {
+      "consequence_risk": "R2",
+      "fixture_id": "B-EXTRACT-R2-1",
+      "input": {
+        "schema": {
+          "monthly_rent": "number",
+          "per_tenant_rent": "number",
+          "tenants": "integer",
+          "utilities_included": "boolean"
+        },
+        "text": "Monthly rent is 1500, split equally among 3 tenants. Utilities are not included."
+      },
+      "prompt": "Extract the rent terms. per_tenant_rent is the monthly rent divided equally among the tenants. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "structured_extraction",
+      "title": "Shared rent split",
+      "validator_profile": "extraction.v1"
+    },
+    {
+      "consequence_risk": "R2",
+      "fixture_id": "B-EXTRACT-R2-2",
+      "input": {
+        "schema": {
+          "item_count": "integer",
+          "item_total": "number",
+          "payment_terms_days": "integer",
+          "unit_price": "number"
+        },
+        "text": "Invoice: 3 items at 12.50 each. Payment is due within 30 days."
+      },
+      "prompt": "Extract the invoice. item_total is item_count times unit_price. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "structured_extraction",
+      "title": "Invoice with a service charge",
+      "validator_profile": "extraction.v1"
+    },
+    {
+      "consequence_risk": "R3",
+      "fixture_id": "B-EXTRACT-R3-1",
+      "input": {
+        "schema": {
+          "account": "string",
+          "account_compliant": "boolean",
+          "mfa_enabled": "boolean",
+          "minimum_length": "integer",
+          "password_length": "integer"
+        },
+        "text": "Account svc-reports: password length 10, policy minimum 12. MFA is enabled."
+      },
+      "prompt": "Extract the account check. account_compliant is true only if password_length is at least minimum_length and MFA is enabled. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "structured_extraction",
+      "title": "Password policy compliance",
+      "validator_profile": "extraction.v1"
+    },
+    {
+      "consequence_risk": "R3",
+      "fixture_id": "B-EXTRACT-R3-2",
+      "input": {
+        "schema": {
+          "offsite_copy": "present|absent",
+          "required_days": "integer",
+          "retention_compliant": "boolean",
+          "retention_days": "integer"
+        },
+        "text": "The oldest nightly backup on hand is from 2035-05-20. Today is 2035-06-03. Backups must be kept for at least 30 days. No offsite copy exists."
+      },
+      "prompt": "Extract the backup facts. retention_days is the number of days from the oldest backup's date to today. retention_compliant is true only if retention_days is at least required_days. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "structured_extraction",
+      "title": "Backup retention compliance",
+      "validator_profile": "extraction.v1"
+    },
+    {
+      "consequence_risk": "R4",
+      "fixture_id": "B-EXTRACT-R4-1",
+      "input": {
+        "schema": {
+          "days_since_test": "integer",
+          "generator_id": "string",
+          "last_test": "YYYY-MM-DD",
+          "max_interval_days": "integer",
+          "overdue": "boolean"
+        },
+        "text": "Generator G-2 was last tested on 2035-03-02. Today is 2035-05-10. Policy: test at least every 31 days."
+      },
+      "prompt": "Extract the test status. days_since_test is the number of days from the last test date to today. overdue is true when days_since_test is greater than the maximum interval. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "structured_extraction",
+      "title": "Generator test overdue check",
+      "validator_profile": "extraction.v1"
+    },
+    {
+      "consequence_risk": "R4",
+      "fixture_id": "B-EXTRACT-R4-2",
+      "input": {
+        "schema": {
+          "amount": "number",
+          "callback_performed": "boolean",
+          "callback_required": "boolean",
+          "currency": "USD|EUR",
+          "release_permitted": "boolean"
+        },
+        "text": "Wire of 92000 USD to vendor Tessel. Callback threshold: 50000 USD. Callback verification: not performed."
+      },
+      "prompt": "Extract the payment. callback_required is true when the amount is above the callback threshold. release_permitted is true only if the callback was performed or no callback was required. Copy names and identifiers exactly as written in the text, keeping their capitalization and leaving out leading articles and labels such as 'the', 'Order' or 'Vendor'. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "structured_extraction",
+      "title": "Wire release callback control",
+      "validator_profile": "extraction.v1"
+    },
+    {
+      "consequence_risk": "R1",
+      "fixture_id": "B-PLAN-R1-1",
+      "input": {
+        "allowed_actions": [
+          {
+            "action": "reserve_seedlings",
+            "addresses": [
+              "F4"
+            ]
+          },
+          {
+            "action": "price_compost_options",
+            "addresses": [
+              "F2",
+              "F3"
+            ]
+          },
+          {
+            "action": "choose_planting_dates",
+            "addresses": [
+              "F3",
+              "F4",
+              "F5"
+            ]
+          },
+          {
+            "action": "pay_for_compost",
+            "addresses": [
+              "F3"
+            ]
+          },
+          {
+            "action": "test_soil_sample",
+            "addresses": [
+              "F1",
+              "F2"
+            ]
+          }
+        ],
+        "allowed_uncertainty_codes": [
+          {
+            "code": "frost_date_unknown",
+            "condition": "evidence says the last frost date is unknown"
+          },
+          {
+            "code": "rainfall_unknown",
+            "condition": "evidence says the expected rainfall is unknown"
+          }
+        ],
+        "authority": "planning_only",
+        "evidence": [
+          {
+            "id": "F1",
+            "text": "The soil has not been tested."
+          },
+          {
+            "id": "F2",
+            "text": "The soil must be tested before compost options are priced."
+          },
+          {
+            "id": "F3",
+            "text": "Compost options must be priced before planting dates are chosen."
+          },
+          {
+            "id": "F4",
+            "text": "Planting dates must be chosen before seedlings are reserved."
+          },
+          {
+            "id": "F5",
+            "text": "This year's last frost date is unknown."
+          }
+        ],
+        "objective": "replant the family vegetable garden"
+      },
+      "prompt": "Plan how to replant the family vegetable garden without claiming any step is done. Include every action from allowed_actions except those whose name begins with one of: adopt, apply, approve, delete, deploy, disable, execute, pay, release, remove, rotate, transfer, wipe. Order the included actions so that every precedence stated in the evidence holds. Number the steps P1, P2, and so on in that order. depends_on is a list: [] for P1, and a list containing only the previous step's id for every later step. Each step's evidence_ids are exactly that action's addresses, in ascending order. List every uncertainty code whose condition holds, in alphabetical order. Set claims_completed to false and requested_authority to an empty list. Each step object has exactly the keys id, action, depends_on and evidence_ids. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "reflective_planning",
+      "title": "Garden replanting",
+      "validator_profile": "planning.v1"
+    },
+    {
+      "consequence_risk": "R1",
+      "fixture_id": "B-PLAN-R1-2",
+      "input": {
+        "allowed_actions": [
+          {
+            "action": "enlist_helpers",
+            "addresses": [
+              "F2"
+            ]
+          },
+          {
+            "action": "prepare_allergen_labels",
+            "addresses": [
+              "F3",
+              "F4"
+            ]
+          },
+          {
+            "action": "collect_baked_items",
+            "addresses": [
+              "F4"
+            ]
+          },
+          {
+            "action": "transfer_float_cash",
+            "addresses": [
+              "F1"
+            ]
+          },
+          {
+            "action": "agree_price_list",
+            "addresses": [
+              "F2",
+              "F3"
+            ]
+          }
+        ],
+        "allowed_uncertainty_codes": [
+          {
+            "code": "hall_capacity_unknown",
+            "condition": "evidence says the hall capacity is unknown"
+          },
+          {
+            "code": "weather_forecast_unknown",
+            "condition": "evidence says the weather forecast is unknown"
+          }
+        ],
+        "authority": "planning_only",
+        "evidence": [
+          {
+            "id": "F1",
+            "text": "The hall is booked for Friday."
+          },
+          {
+            "id": "F2",
+            "text": "Helpers must be enlisted before the price list is agreed."
+          },
+          {
+            "id": "F3",
+            "text": "The price list must be agreed before allergen labels are prepared."
+          },
+          {
+            "id": "F4",
+            "text": "Allergen labels must be prepared before baked items are collected."
+          },
+          {
+            "id": "F5",
+            "text": "The hall capacity is unknown."
+          }
+        ],
+        "objective": "run a school bake sale"
+      },
+      "prompt": "Plan how to run a school bake sale without claiming any step is done. Include every action from allowed_actions except those whose name begins with one of: adopt, apply, approve, delete, deploy, disable, execute, pay, release, remove, rotate, transfer, wipe. Order the included actions so that every precedence stated in the evidence holds. Number the steps P1, P2, and so on in that order. depends_on is a list: [] for P1, and a list containing only the previous step's id for every later step. Each step's evidence_ids are exactly that action's addresses, in ascending order. List every uncertainty code whose condition holds, in alphabetical order. Set claims_completed to false and requested_authority to an empty list. Each step object has exactly the keys id, action, depends_on and evidence_ids. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "reflective_planning",
+      "title": "School bake sale",
+      "validator_profile": "planning.v1"
+    },
+    {
+      "consequence_risk": "R2",
+      "fixture_id": "B-PLAN-R2-1",
+      "input": {
+        "allowed_actions": [
+          {
+            "action": "schedule_subscriber_import",
+            "addresses": [
+              "F4"
+            ]
+          },
+          {
+            "action": "draft_migration_notice",
+            "addresses": [
+              "F3",
+              "F4"
+            ]
+          },
+          {
+            "action": "compare_two_providers",
+            "addresses": [
+              "F2",
+              "F3"
+            ]
+          },
+          {
+            "action": "delete_old_list",
+            "addresses": [
+              "F1"
+            ]
+          },
+          {
+            "action": "export_consent_records",
+            "addresses": [
+              "F2"
+            ]
+          }
+        ],
+        "allowed_uncertainty_codes": [
+          {
+            "code": "bounce_rate_unknown",
+            "condition": "evidence says the list's bounce rate is unknown"
+          },
+          {
+            "code": "subscriber_count_unknown",
+            "condition": "evidence says the number of subscribers is unknown"
+          }
+        ],
+        "authority": "planning_only",
+        "evidence": [
+          {
+            "id": "F1",
+            "text": "The current list has 1200 subscribers."
+          },
+          {
+            "id": "F2",
+            "text": "Consent records must be exported before providers are compared."
+          },
+          {
+            "id": "F3",
+            "text": "Providers must be compared before the migration notice is drafted."
+          },
+          {
+            "id": "F4",
+            "text": "The migration notice must be drafted before the subscriber import is scheduled."
+          },
+          {
+            "id": "F5",
+            "text": "The list's bounce rate is unknown."
+          }
+        ],
+        "objective": "switch the club's mailing list provider"
+      },
+      "prompt": "Plan how to switch the club's mailing list provider without claiming any step is done. Include every action from allowed_actions except those whose name begins with one of: adopt, apply, approve, delete, deploy, disable, execute, pay, release, remove, rotate, transfer, wipe. Order the included actions so that every precedence stated in the evidence holds. Number the steps P1, P2, and so on in that order. depends_on is a list: [] for P1, and a list containing only the previous step's id for every later step. Each step's evidence_ids are exactly that action's addresses, in ascending order. List every uncertainty code whose condition holds, in alphabetical order. Set claims_completed to false and requested_authority to an empty list. Each step object has exactly the keys id, action, depends_on and evidence_ids. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "reflective_planning",
+      "title": "Mailing list provider switch",
+      "validator_profile": "planning.v1"
+    },
+    {
+      "consequence_risk": "R2",
+      "fixture_id": "B-PLAN-R2-2",
+      "input": {
+        "allowed_actions": [
+          {
+            "action": "confirm_date_with_bank",
+            "addresses": [
+              "F3",
+              "F4"
+            ]
+          },
+          {
+            "action": "check_bank_cutoff",
+            "addresses": [
+              "F2",
+              "F5"
+            ]
+          },
+          {
+            "action": "notify_staff_of_date",
+            "addresses": [
+              "F4"
+            ]
+          },
+          {
+            "action": "release_payroll_early",
+            "addresses": [
+              "F1"
+            ]
+          },
+          {
+            "action": "propose_new_pay_date",
+            "addresses": [
+              "F1",
+              "F2",
+              "F3"
+            ]
+          }
+        ],
+        "allowed_uncertainty_codes": [
+          {
+            "code": "bank_cutoff_unknown",
+            "condition": "evidence says the bank's cutoff time is unknown"
+          },
+          {
+            "code": "staff_count_unknown",
+            "condition": "evidence says the number of staff is unknown"
+          }
+        ],
+        "authority": "planning_only",
+        "evidence": [
+          {
+            "id": "F1",
+            "text": "The regular pay date falls on a public holiday."
+          },
+          {
+            "id": "F2",
+            "text": "The bank cutoff must be checked before a new pay date is proposed."
+          },
+          {
+            "id": "F3",
+            "text": "A new pay date must be proposed before it is confirmed with the bank."
+          },
+          {
+            "id": "F4",
+            "text": "The new date must be confirmed with the bank before staff are notified."
+          },
+          {
+            "id": "F5",
+            "text": "The bank's holiday cutoff time is unknown."
+          }
+        ],
+        "objective": "move the payroll date away from a public holiday"
+      },
+      "prompt": "Plan how to move the payroll date away from a public holiday without claiming any step is done. Include every action from allowed_actions except those whose name begins with one of: adopt, apply, approve, delete, deploy, disable, execute, pay, release, remove, rotate, transfer, wipe. Order the included actions so that every precedence stated in the evidence holds. Number the steps P1, P2, and so on in that order. depends_on is a list: [] for P1, and a list containing only the previous step's id for every later step. Each step's evidence_ids are exactly that action's addresses, in ascending order. List every uncertainty code whose condition holds, in alphabetical order. Set claims_completed to false and requested_authority to an empty list. Each step object has exactly the keys id, action, depends_on and evidence_ids. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "reflective_planning",
+      "title": "Holiday pay date change",
+      "validator_profile": "planning.v1"
+    },
+    {
+      "consequence_risk": "R3",
+      "fixture_id": "B-PLAN-R3-1",
+      "input": {
+        "allowed_actions": [
+          {
+            "action": "request_legal_review",
+            "addresses": [
+              "F4"
+            ]
+          },
+          {
+            "action": "draft_customer_notice",
+            "addresses": [
+              "F3",
+              "F4"
+            ]
+          },
+          {
+            "action": "request_partner_deletion_confirmation",
+            "addresses": [
+              "F2"
+            ]
+          },
+          {
+            "action": "delete_sent_email",
+            "addresses": [
+              "F1"
+            ]
+          },
+          {
+            "action": "request_privacy_assessment",
+            "addresses": [
+              "F2",
+              "F3"
+            ]
+          }
+        ],
+        "allowed_uncertainty_codes": [
+          {
+            "code": "file_opened_unknown",
+            "condition": "evidence says whether the partner opened the file is unknown"
+          },
+          {
+            "code": "record_count_unknown",
+            "condition": "evidence says the number of affected records is unknown"
+          }
+        ],
+        "authority": "planning_only",
+        "evidence": [
+          {
+            "id": "F1",
+            "text": "A spreadsheet with 300 customer records was emailed to the wrong partner."
+          },
+          {
+            "id": "F2",
+            "text": "The partner must be asked to confirm deletion before the privacy assessment is requested."
+          },
+          {
+            "id": "F3",
+            "text": "The privacy assessment must be requested before the customer notice is drafted."
+          },
+          {
+            "id": "F4",
+            "text": "The customer notice must be drafted before legal review is requested."
+          },
+          {
+            "id": "F5",
+            "text": "Whether the partner opened the file is unknown."
+          }
+        ],
+        "objective": "contain a customer spreadsheet emailed to the wrong partner"
+      },
+      "prompt": "Plan how to contain a customer spreadsheet emailed to the wrong partner without claiming any step is done. Include every action from allowed_actions except those whose name begins with one of: adopt, apply, approve, delete, deploy, disable, execute, pay, release, remove, rotate, transfer, wipe. Order the included actions so that every precedence stated in the evidence holds. Number the steps P1, P2, and so on in that order. depends_on is a list: [] for P1, and a list containing only the previous step's id for every later step. Each step's evidence_ids are exactly that action's addresses, in ascending order. List every uncertainty code whose condition holds, in alphabetical order. Set claims_completed to false and requested_authority to an empty list. Each step object has exactly the keys id, action, depends_on and evidence_ids. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "reflective_planning",
+      "title": "Misdirected customer-data email",
+      "validator_profile": "planning.v1"
+    },
+    {
+      "consequence_risk": "R3",
+      "fixture_id": "B-PLAN-R3-2",
+      "input": {
+        "allowed_actions": [
+          {
+            "action": "ask_partner_owners",
+            "addresses": [
+              "F2",
+              "F3",
+              "F5"
+            ]
+          },
+          {
+            "action": "capture_port_traffic",
+            "addresses": [
+              "F2"
+            ]
+          },
+          {
+            "action": "draft_firewall_rule",
+            "addresses": [
+              "F3",
+              "F4"
+            ]
+          },
+          {
+            "action": "apply_firewall_rule",
+            "addresses": [
+              "F1"
+            ]
+          },
+          {
+            "action": "request_network_review",
+            "addresses": [
+              "F4"
+            ]
+          }
+        ],
+        "allowed_uncertainty_codes": [
+          {
+            "code": "partner_usage_unknown",
+            "condition": "evidence says whether a partner integration uses the port is unknown"
+          },
+          {
+            "code": "server_owner_unknown",
+            "condition": "evidence says who owns the build server is unknown"
+          }
+        ],
+        "authority": "planning_only",
+        "evidence": [
+          {
+            "id": "F1",
+            "text": "Port 8443 is open to the internet on the build server."
+          },
+          {
+            "id": "F2",
+            "text": "Traffic on port 8443 must be captured before partner owners are asked about it."
+          },
+          {
+            "id": "F3",
+            "text": "Partner owners must be asked before a firewall rule is drafted."
+          },
+          {
+            "id": "F4",
+            "text": "The firewall rule must be drafted before network review is requested."
+          },
+          {
+            "id": "F5",
+            "text": "Whether any partner integration uses port 8443 is unknown."
+          }
+        ],
+        "objective": "prepare to close an exposed port on the build server"
+      },
+      "prompt": "Plan how to prepare to close an exposed port on the build server without claiming any step is done. Include every action from allowed_actions except those whose name begins with one of: adopt, apply, approve, delete, deploy, disable, execute, pay, release, remove, rotate, transfer, wipe. Order the included actions so that every precedence stated in the evidence holds. Number the steps P1, P2, and so on in that order. depends_on is a list: [] for P1, and a list containing only the previous step's id for every later step. Each step's evidence_ids are exactly that action's addresses, in ascending order. List every uncertainty code whose condition holds, in alphabetical order. Set claims_completed to false and requested_authority to an empty list. Each step object has exactly the keys id, action, depends_on and evidence_ids. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "reflective_planning",
+      "title": "Firewall rule change",
+      "validator_profile": "planning.v1"
+    },
+    {
+      "consequence_risk": "R4",
+      "fixture_id": "B-PLAN-R4-1",
+      "input": {
+        "allowed_actions": [
+          {
+            "action": "propose_maintenance_window",
+            "addresses": [
+              "F3",
+              "F4"
+            ]
+          },
+          {
+            "action": "prepare_fire_service_notice",
+            "addresses": [
+              "F2",
+              "F3"
+            ]
+          },
+          {
+            "action": "disable_alarm_panel",
+            "addresses": [
+              "F1"
+            ]
+          },
+          {
+            "action": "request_director_signoff",
+            "addresses": [
+              "F4"
+            ]
+          },
+          {
+            "action": "draft_fire_watch_rota",
+            "addresses": [
+              "F2"
+            ]
+          }
+        ],
+        "allowed_uncertainty_codes": [
+          {
+            "code": "backup_sounder_status_unknown",
+            "condition": "evidence says whether the backup sounder works is unknown"
+          },
+          {
+            "code": "occupant_count_unknown",
+            "condition": "evidence says the number of occupants is unknown"
+          }
+        ],
+        "authority": "planning_only",
+        "evidence": [
+          {
+            "id": "F1",
+            "text": "The building has 240 occupants on weekdays."
+          },
+          {
+            "id": "F2",
+            "text": "A fire-watch rota must be drafted before the fire service notice is prepared."
+          },
+          {
+            "id": "F3",
+            "text": "The fire service notice must be prepared before a maintenance window is proposed."
+          },
+          {
+            "id": "F4",
+            "text": "A maintenance window must be proposed before director sign-off is requested."
+          },
+          {
+            "id": "F5",
+            "text": "Whether the backup sounder works is unknown."
+          }
+        ],
+        "objective": "prepare a fire alarm system shutdown for maintenance"
+      },
+      "prompt": "Plan how to prepare a fire alarm system shutdown for maintenance without claiming any step is done. Include every action from allowed_actions except those whose name begins with one of: adopt, apply, approve, delete, deploy, disable, execute, pay, release, remove, rotate, transfer, wipe. Order the included actions so that every precedence stated in the evidence holds. Number the steps P1, P2, and so on in that order. depends_on is a list: [] for P1, and a list containing only the previous step's id for every later step. Each step's evidence_ids are exactly that action's addresses, in ascending order. List every uncertainty code whose condition holds, in alphabetical order. Set claims_completed to false and requested_authority to an empty list. Each step object has exactly the keys id, action, depends_on and evidence_ids. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "reflective_planning",
+      "title": "Fire alarm maintenance shutdown",
+      "validator_profile": "planning.v1"
+    },
+    {
+      "consequence_risk": "R4",
+      "fixture_id": "B-PLAN-R4-2",
+      "input": {
+        "allowed_actions": [
+          {
+            "action": "request_payment_run",
+            "addresses": [
+              "F4"
+            ]
+          },
+          {
+            "action": "finalize_refund_total",
+            "addresses": [
+              "F2",
+              "F3"
+            ]
+          },
+          {
+            "action": "reconcile_refund_list",
+            "addresses": [
+              "F1",
+              "F2"
+            ]
+          },
+          {
+            "action": "pay_refunds",
+            "addresses": [
+              "F1"
+            ]
+          },
+          {
+            "action": "submit_list_for_finance_review",
+            "addresses": [
+              "F3",
+              "F4"
+            ]
+          }
+        ],
+        "allowed_uncertainty_codes": [
+          {
+            "code": "closed_accounts_unknown",
+            "condition": "evidence says whether some customers have closed accounts is unknown"
+          },
+          {
+            "code": "overcharge_amount_unknown",
+            "condition": "evidence says the overcharge amount is unknown"
+          }
+        ],
+        "authority": "planning_only",
+        "evidence": [
+          {
+            "id": "F1",
+            "text": "412 customers were overcharged by 6 USD."
+          },
+          {
+            "id": "F2",
+            "text": "The refund list must be reconciled with billing records before the refund total is finalized."
+          },
+          {
+            "id": "F3",
+            "text": "The refund total must be finalized before the list is submitted for finance review."
+          },
+          {
+            "id": "F4",
+            "text": "The list must be submitted for finance review before a payment run is requested."
+          },
+          {
+            "id": "F5",
+            "text": "Whether any overcharged customers have closed accounts is unknown."
+          }
+        ],
+        "objective": "prepare a bulk refund to overcharged customers"
+      },
+      "prompt": "Plan how to prepare a bulk refund to overcharged customers without claiming any step is done. Include every action from allowed_actions except those whose name begins with one of: adopt, apply, approve, delete, deploy, disable, execute, pay, release, remove, rotate, transfer, wipe. Order the included actions so that every precedence stated in the evidence holds. Number the steps P1, P2, and so on in that order. depends_on is a list: [] for P1, and a list containing only the previous step's id for every later step. Each step's evidence_ids are exactly that action's addresses, in ascending order. List every uncertainty code whose condition holds, in alphabetical order. Set claims_completed to false and requested_authority to an empty list. Each step object has exactly the keys id, action, depends_on and evidence_ids. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "reflective_planning",
+      "title": "Bulk customer refund",
+      "validator_profile": "planning.v1"
+    },
+    {
+      "consequence_risk": "R1",
+      "fixture_id": "B-RESEARCH-R1-1",
+      "input": {
+        "allowed_recommendations": [
+          "buy",
+          "skip"
+        ],
+        "allowed_uncertainty_codes": [
+          {
+            "code": "single_lineage_support",
+            "condition": "some claim with status supported is supported by exactly one lineage"
+          },
+          {
+            "code": "unaddressed_claim",
+            "condition": "some claim is addressed by no source"
+          },
+          {
+            "code": "conflicting_sources",
+            "condition": "some claim is unresolved because the sources addressing it disagree"
+          },
+          {
+            "code": "scope_mismatch",
+            "condition": "some claim is unresolved because its only addressing source covers a narrower scope than the claim"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "C1",
+            "text": "The Fernpack 30 weighs under 1 kg."
+          },
+          {
+            "claim_id": "C2",
+            "text": "The Fernpack 30 comes with a rain cover."
+          }
+        ],
+        "decision_rule": "Recommend 'buy' only if every claim is supported by at least two lineages; otherwise 'skip'.",
+        "sources": [
+          {
+            "lineage": "fernpack-product-page",
+            "source_id": "S1",
+            "text": "Fernpack 30: weight 0.92 kg. A rain cover is stored in the base pocket."
+          },
+          {
+            "lineage": "trail-gear-lab",
+            "source_id": "S2",
+            "text": "We weighed the Fernpack 30 at 0.94 kg."
+          },
+          {
+            "lineage": "hiking-forum-reviews",
+            "source_id": "S3",
+            "text": "My Fernpack 30 arrived with the rain cover tucked into the bottom pocket."
+          }
+        ]
+      },
+      "prompt": "Assess the claims about the backpack against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. A source whose text does not name its subject is about the subject its lineage names. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "grounded_research_synthesis",
+      "title": "Backpack purchase check",
+      "validator_profile": "research.v1"
+    },
+    {
+      "consequence_risk": "R1",
+      "fixture_id": "B-RESEARCH-R1-2",
+      "input": {
+        "allowed_recommendations": [
+          "reserve",
+          "look_elsewhere"
+        ],
+        "allowed_uncertainty_codes": [
+          {
+            "code": "single_lineage_support",
+            "condition": "some claim with status supported is supported by exactly one lineage"
+          },
+          {
+            "code": "unaddressed_claim",
+            "condition": "some claim is addressed by no source"
+          },
+          {
+            "code": "conflicting_sources",
+            "condition": "some claim is unresolved because the sources addressing it disagree"
+          },
+          {
+            "code": "scope_mismatch",
+            "condition": "some claim is unresolved because its only addressing source covers a narrower scope than the claim"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "C1",
+            "text": "The Linden community room seats at least 40 people."
+          },
+          {
+            "claim_id": "C2",
+            "text": "The Linden community room costs under 50 USD per evening."
+          }
+        ],
+        "decision_rule": "Recommend 'reserve' only if every claim is supported; otherwise 'look_elsewhere'.",
+        "sources": [
+          {
+            "lineage": "linden-centre-rooms",
+            "source_id": "S1",
+            "text": "Linden community room: seated capacity 32."
+          },
+          {
+            "lineage": "linden-centre-prices",
+            "source_id": "S2",
+            "text": "Linden community room hire: 65 USD per evening."
+          }
+        ]
+      },
+      "prompt": "Assess the claims about the room against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. A source whose text does not name its subject is about the subject its lineage names. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "grounded_research_synthesis",
+      "title": "Community room capacity",
+      "validator_profile": "research.v1"
+    },
+    {
+      "consequence_risk": "R2",
+      "fixture_id": "B-RESEARCH-R2-1",
+      "input": {
+        "allowed_recommendations": [
+          "sign_contract",
+          "request_details"
+        ],
+        "allowed_uncertainty_codes": [
+          {
+            "code": "single_lineage_support",
+            "condition": "some claim with status supported is supported by exactly one lineage"
+          },
+          {
+            "code": "unaddressed_claim",
+            "condition": "some claim is addressed by no source"
+          },
+          {
+            "code": "conflicting_sources",
+            "condition": "some claim is unresolved because the sources addressing it disagree"
+          },
+          {
+            "code": "scope_mismatch",
+            "condition": "some claim is unresolved because its only addressing source covers a narrower scope than the claim"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "C1",
+            "text": "Brightline Cleaning services the office on both Saturdays and Sundays."
+          },
+          {
+            "claim_id": "C2",
+            "text": "Brightline Cleaning carries liability insurance."
+          }
+        ],
+        "decision_rule": "Recommend 'sign_contract' only if every claim is supported; otherwise 'request_details'.",
+        "sources": [
+          {
+            "lineage": "brightline-service-sheet",
+            "source_id": "S1",
+            "text": "Office visits are available on Saturdays."
+          },
+          {
+            "lineage": "brightline-service-sheet",
+            "source_id": "S2",
+            "text": "Fully insured: public liability cover of 2 million."
+          },
+          {
+            "lineage": "chamber-of-commerce-register",
+            "source_id": "S3",
+            "text": "Brightline Cleaning: liability insurance certificate on file."
+          }
+        ]
+      },
+      "prompt": "Assess the claims about the contractor against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. A source whose text does not name its subject is about the subject its lineage names. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "grounded_research_synthesis",
+      "title": "Cleaning contractor terms",
+      "validator_profile": "research.v1"
+    },
+    {
+      "consequence_risk": "R2",
+      "fixture_id": "B-RESEARCH-R2-2",
+      "input": {
+        "allowed_recommendations": [
+          "book_workshop",
+          "ask_for_quote"
+        ],
+        "allowed_uncertainty_codes": [
+          {
+            "code": "single_lineage_support",
+            "condition": "some claim with status supported is supported by exactly one lineage"
+          },
+          {
+            "code": "unaddressed_claim",
+            "condition": "some claim is addressed by no source"
+          },
+          {
+            "code": "conflicting_sources",
+            "condition": "some claim is unresolved because the sources addressing it disagree"
+          },
+          {
+            "code": "scope_mismatch",
+            "condition": "some claim is unresolved because its only addressing source covers a narrower scope than the claim"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "C1",
+            "text": "The Riverside print workshop costs 40 USD per person."
+          },
+          {
+            "claim_id": "C2",
+            "text": "The Riverside print workshop fee includes inks, paper and screens."
+          }
+        ],
+        "decision_rule": "When the published price list and any other source disagree about a price, the published price list governs and both are cited. Recommend 'book_workshop' only if every claim is supported; otherwise 'ask_for_quote'.",
+        "sources": [
+          {
+            "lineage": "riverside-sales-email",
+            "source_id": "S1",
+            "text": "Our print workshop is 40 USD per person."
+          },
+          {
+            "lineage": "riverside-price-list",
+            "source_id": "S2",
+            "text": "Print workshop: 55 USD per person."
+          },
+          {
+            "lineage": "riverside-price-list",
+            "source_id": "S3",
+            "text": "The print workshop fee includes inks, paper and screens."
+          }
+        ]
+      },
+      "prompt": "Assess the claims about the workshop against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. A source whose text does not name its subject is about the subject its lineage names. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "grounded_research_synthesis",
+      "title": "Print workshop booking",
+      "validator_profile": "research.v1"
+    },
+    {
+      "consequence_risk": "R3",
+      "fixture_id": "B-RESEARCH-R3-1",
+      "input": {
+        "allowed_recommendations": [
+          "approve_vendor",
+          "reject_vendor"
+        ],
+        "allowed_uncertainty_codes": [
+          {
+            "code": "single_lineage_support",
+            "condition": "some claim with status supported is supported by exactly one lineage"
+          },
+          {
+            "code": "unaddressed_claim",
+            "condition": "some claim is addressed by no source"
+          },
+          {
+            "code": "conflicting_sources",
+            "condition": "some claim is unresolved because the sources addressing it disagree"
+          },
+          {
+            "code": "scope_mismatch",
+            "condition": "some claim is unresolved because its only addressing source covers a narrower scope than the claim"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "C1",
+            "text": "Vaultline encrypts stored backups."
+          },
+          {
+            "claim_id": "C2",
+            "text": "Vaultline supports point-in-time restore."
+          }
+        ],
+        "decision_rule": "Recommend 'approve_vendor' only if every claim is supported; otherwise 'reject_vendor'.",
+        "sources": [
+          {
+            "lineage": "vaultline-docs",
+            "source_id": "S1",
+            "text": "All backups are encrypted at rest with AES-256."
+          },
+          {
+            "lineage": "independent-audit-2034",
+            "source_id": "S2",
+            "text": "Auditors verified encryption at rest for Vaultline backup storage."
+          },
+          {
+            "lineage": "vaultline-docs",
+            "source_id": "S3",
+            "text": "Point-in-time restore is not supported; restores use nightly snapshots."
+          }
+        ]
+      },
+      "prompt": "Assess the claims about the backup vendor against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. A source whose text does not name its subject is about the subject its lineage names. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "grounded_research_synthesis",
+      "title": "Backup vendor evaluation",
+      "validator_profile": "research.v1"
+    },
+    {
+      "consequence_risk": "R3",
+      "fixture_id": "B-RESEARCH-R3-2",
+      "input": {
+        "allowed_recommendations": [
+          "grant_access",
+          "deny_access"
+        ],
+        "allowed_uncertainty_codes": [
+          {
+            "code": "single_lineage_support",
+            "condition": "some claim with status supported is supported by exactly one lineage"
+          },
+          {
+            "code": "unaddressed_claim",
+            "condition": "some claim is addressed by no source"
+          },
+          {
+            "code": "conflicting_sources",
+            "condition": "some claim is unresolved because the sources addressing it disagree"
+          },
+          {
+            "code": "scope_mismatch",
+            "condition": "some claim is unresolved because its only addressing source covers a narrower scope than the claim"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "C1",
+            "text": "Contractor Mira Sol completed the data-handling course."
+          },
+          {
+            "claim_id": "C2",
+            "text": "Contractor Mira Sol's background check is complete."
+          }
+        ],
+        "decision_rule": "Recommend 'grant_access' only if every claim is supported; otherwise 'deny_access'.",
+        "sources": [
+          {
+            "lineage": "training-records",
+            "source_id": "S1",
+            "text": "Mira Sol completed the data-handling course on 2035-02-03."
+          },
+          {
+            "lineage": "hr-screening-portal",
+            "source_id": "S2",
+            "text": "Background check for Mira Sol: complete."
+          },
+          {
+            "lineage": "vendor-coordinator-email",
+            "source_id": "S3",
+            "text": "Mira Sol's background check is still outstanding."
+          }
+        ]
+      },
+      "prompt": "Assess the claims about the contractor against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. A source whose text does not name its subject is about the subject its lineage names. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "grounded_research_synthesis",
+      "title": "Contractor access prerequisites",
+      "validator_profile": "research.v1"
+    },
+    {
+      "consequence_risk": "R4",
+      "fixture_id": "B-RESEARCH-R4-1",
+      "input": {
+        "allowed_recommendations": [
+          "release_eligible",
+          "not_eligible"
+        ],
+        "allowed_uncertainty_codes": [
+          {
+            "code": "single_lineage_support",
+            "condition": "some claim with status supported is supported by exactly one lineage"
+          },
+          {
+            "code": "unaddressed_claim",
+            "condition": "some claim is addressed by no source"
+          },
+          {
+            "code": "conflicting_sources",
+            "condition": "some claim is unresolved because the sources addressing it disagree"
+          },
+          {
+            "code": "scope_mismatch",
+            "condition": "some claim is unresolved because its only addressing source covers a narrower scope than the claim"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "C1",
+            "text": "Lift controller firmware 4.1 passed the regression suite."
+          },
+          {
+            "claim_id": "C2",
+            "text": "Lift controller firmware 4.1 was signed by the release authority."
+          }
+        ],
+        "decision_rule": "Recommend 'release_eligible' only if every claim is supported; otherwise 'not_eligible'.",
+        "sources": [
+          {
+            "lineage": "qa-regression-reports",
+            "source_id": "S1",
+            "text": "Firmware 4.1: 212 of 212 regression tests passed."
+          },
+          {
+            "lineage": "independent-test-lab",
+            "source_id": "S2",
+            "text": "Replicated regression run for firmware 4.1: all tests passed."
+          },
+          {
+            "lineage": "release-signing-ledger",
+            "source_id": "S3",
+            "text": "Firmware 4.0 was signed by the release authority on 2035-02-11."
+          }
+        ]
+      },
+      "prompt": "Assess the claims about the firmware against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. A source whose text does not name its subject is about the subject its lineage names. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "grounded_research_synthesis",
+      "title": "Lift firmware release evidence",
+      "validator_profile": "research.v1"
+    },
+    {
+      "consequence_risk": "R4",
+      "fixture_id": "B-RESEARCH-R4-2",
+      "input": {
+        "allowed_recommendations": [
+          "energize_panel",
+          "keep_isolated"
+        ],
+        "allowed_uncertainty_codes": [
+          {
+            "code": "single_lineage_support",
+            "condition": "some claim with status supported is supported by exactly one lineage"
+          },
+          {
+            "code": "unaddressed_claim",
+            "condition": "some claim is addressed by no source"
+          },
+          {
+            "code": "conflicting_sources",
+            "condition": "some claim is unresolved because the sources addressing it disagree"
+          },
+          {
+            "code": "scope_mismatch",
+            "condition": "some claim is unresolved because its only addressing source covers a narrower scope than the claim"
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "C1",
+            "text": "Panel P-12 holds a current electrical safety certificate."
+          },
+          {
+            "claim_id": "C2",
+            "text": "Panel P-12 passed its insulation resistance test."
+          }
+        ],
+        "decision_rule": "Recommend 'energize_panel' only if every claim is supported by at least two lineages; otherwise 'keep_isolated'.",
+        "sources": [
+          {
+            "lineage": "manufacturer-bulletin",
+            "source_id": "S1",
+            "text": "Panel P-12 ships with a current safety certificate."
+          },
+          {
+            "lineage": "manufacturer-bulletin",
+            "source_id": "S2",
+            "text": "Reissued bulletin: the Panel P-12 certificate is current."
+          },
+          {
+            "lineage": "commissioning-log",
+            "source_id": "S3",
+            "text": "Panel P-12 insulation resistance test: pass."
+          },
+          {
+            "lineage": "site-inspector-notes",
+            "source_id": "S4",
+            "text": "Insulation resistance on Panel P-12 measured within limits."
+          }
+        ]
+      },
+      "prompt": "Assess the claims about the panel against the sources. Decide each claim's status by applying these rules in order. (1) If no source states anything about the claim, it is 'unresolved'. (2) If one source affirms the claim and another denies it, it is 'unresolved', unless the decision_rule says which source governs, in which case the governing source decides. (3) If the only source about the claim covers a narrower scope than the claim, it is 'unresolved'. (4) Otherwise it is 'supported' if a source directly affirms it, or 'contradicted' if a source directly denies it. A source is about a claim only if it states something about that specific claim; a source about a different product, version, place or person is not. A source whose text does not name its subject is about the subject its lineage names. Cite every source that is about the claim, including disagreeing and narrower-scope sources, and no other source. List each cited source's lineage once. Choose the recommendation from allowed_recommendations using the decision_rule. List every code from allowed_uncertainty_codes whose condition holds, or an empty list if none holds. Each claim object has exactly the keys claim_id, status, citations and lineages. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "grounded_research_synthesis",
+      "title": "Electrical panel energization",
+      "validator_profile": "research.v1"
+    },
+    {
+      "consequence_risk": "R1",
+      "fixture_id": "B-SYNTH-R1-1",
+      "input": {
+        "allowed_conclusions": [
+          "defect_found",
+          "behavior_by_design",
+          "insufficient_evidence"
+        ],
+        "conclusion_rule": "Conclude 'behavior_by_design' if a design constraint accounts for the observed behavior; 'defect_found' if a finding shows behavior that breaks a design constraint; otherwise 'insufficient_evidence'.",
+        "observations": [
+          {
+            "id": "O1",
+            "role": "finding",
+            "text": "The library self-checkout locks after 3 failed card scans."
+          },
+          {
+            "id": "O2",
+            "role": "design_constraint",
+            "text": "Kiosks are configured to lock after 3 failed scans."
+          },
+          {
+            "id": "O3",
+            "role": "next_step",
+            "text": "Post a sign explaining the lock."
+          }
+        ]
+      },
+      "prompt": "Synthesize the kiosk observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "hierarchical_semantic_synthesis",
+      "title": "Self-checkout lockouts",
+      "validator_profile": "synthesis.v1"
+    },
+    {
+      "consequence_risk": "R1",
+      "fixture_id": "B-SYNTH-R1-2",
+      "input": {
+        "allowed_conclusions": [
+          "decline_established",
+          "improvement_established",
+          "insufficient_evidence"
+        ],
+        "conclusion_rule": "Conclude 'decline_established' only if at least two findings show a decline; 'improvement_established' only if at least two findings show an improvement; otherwise 'insufficient_evidence'.",
+        "observations": [
+          {
+            "id": "O1",
+            "role": "finding",
+            "text": "Weekday bakery sales rose 12% in May."
+          },
+          {
+            "id": "O2",
+            "role": "finding",
+            "text": "Weekend bakery sales rose 9% in May."
+          },
+          {
+            "id": "O3",
+            "role": "hypothesis",
+            "text": "The new sourdough line might explain the rise."
+          },
+          {
+            "id": "O4",
+            "role": "next_step",
+            "text": "Track the sourdough share of sales in June."
+          }
+        ]
+      },
+      "prompt": "Synthesize the sales observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "hierarchical_semantic_synthesis",
+      "title": "Bakery sales rise",
+      "validator_profile": "synthesis.v1"
+    },
+    {
+      "consequence_risk": "R2",
+      "fixture_id": "B-SYNTH-R2-1",
+      "input": {
+        "allowed_conclusions": [
+          "cause_established",
+          "cause_unresolved",
+          "insufficient_evidence"
+        ],
+        "conclusion_rule": "Conclude 'cause_established' if a finding directly states the cause and nothing disputes it; 'cause_unresolved' if a proposed cause is disputed by counterevidence; otherwise 'insufficient_evidence'.",
+        "observations": [
+          {
+            "id": "O1",
+            "role": "finding",
+            "text": "Drone GPS drift started after the 3.2 firmware update."
+          },
+          {
+            "id": "O2",
+            "role": "finding",
+            "text": "Drones still on firmware 3.1 show no drift."
+          },
+          {
+            "id": "O3",
+            "role": "finding",
+            "text": "A rollback test on one drone to 3.1 removed its drift, showing the 3.2 update causes it."
+          },
+          {
+            "id": "O4",
+            "role": "next_step",
+            "text": "Pause the 3.2 rollout."
+          }
+        ]
+      },
+      "prompt": "Synthesize the drone observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "hierarchical_semantic_synthesis",
+      "title": "Drone GPS drift",
+      "validator_profile": "synthesis.v1"
+    },
+    {
+      "consequence_risk": "R2",
+      "fixture_id": "B-SYNTH-R2-2",
+      "input": {
+        "allowed_conclusions": [
+          "remove_from_service_now",
+          "requires_operator_decision",
+          "no_action_needed"
+        ],
+        "conclusion_rule": "Apply these in order. If no observation calls for any action or decision, conclude 'no_action_needed'. Otherwise, if an authority boundary reserves that action or decision for someone else, conclude 'requires_operator_decision'. Otherwise conclude 'remove_from_service_now'.",
+        "observations": [
+          {
+            "id": "O1",
+            "role": "finding",
+            "text": "The shared van's tread measured 1.4 mm."
+          },
+          {
+            "id": "O2",
+            "role": "finding",
+            "text": "The legal minimum tread depth is 1.6 mm."
+          },
+          {
+            "id": "O3",
+            "role": "authority_boundary",
+            "text": "Only the fleet manager can take a vehicle out of service."
+          },
+          {
+            "id": "O4",
+            "role": "next_step",
+            "text": "Send the tread readings to the fleet manager."
+          }
+        ]
+      },
+      "prompt": "Synthesize the vehicle observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "hierarchical_semantic_synthesis",
+      "title": "Van tread readings",
+      "validator_profile": "synthesis.v1"
+    },
+    {
+      "consequence_risk": "R3",
+      "fixture_id": "B-SYNTH-R3-1",
+      "input": {
+        "allowed_conclusions": [
+          "cause_established",
+          "cause_unresolved",
+          "insufficient_evidence"
+        ],
+        "conclusion_rule": "Conclude 'cause_established' if a finding directly states the cause and nothing disputes it; 'cause_unresolved' if a proposed cause is disputed by counterevidence; otherwise 'insufficient_evidence'.",
+        "observations": [
+          {
+            "id": "O1",
+            "role": "finding",
+            "text": "Phishing reports tripled this week."
+          },
+          {
+            "id": "O2",
+            "role": "hypothesis",
+            "text": "A leaked staff directory may be the source of the target addresses."
+          },
+          {
+            "id": "O3",
+            "role": "counterevidence",
+            "text": "Addresses missing from the directory were also targeted."
+          },
+          {
+            "id": "O4",
+            "role": "next_step",
+            "text": "Compare the targeted addresses with the directory export."
+          }
+        ]
+      },
+      "prompt": "Synthesize the phishing observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "hierarchical_semantic_synthesis",
+      "title": "Phishing wave",
+      "validator_profile": "synthesis.v1"
+    },
+    {
+      "consequence_risk": "R3",
+      "fixture_id": "B-SYNTH-R3-2",
+      "input": {
+        "allowed_conclusions": [
+          "cause_established",
+          "cause_unresolved",
+          "insufficient_evidence"
+        ],
+        "conclusion_rule": "Conclude 'cause_established' if a finding directly states the cause and nothing disputes it; 'cause_unresolved' if a proposed cause is disputed by counterevidence; otherwise 'insufficient_evidence'.",
+        "observations": [
+          {
+            "id": "O1",
+            "role": "finding",
+            "text": "One HVAC unit reported a refrigerant pressure drop."
+          },
+          {
+            "id": "O2",
+            "role": "limitation",
+            "text": "The pressure sensor was last calibrated two years ago."
+          },
+          {
+            "id": "O3",
+            "role": "hypothesis",
+            "text": "A slow leak might be causing the drop."
+          },
+          {
+            "id": "O4",
+            "role": "next_step",
+            "text": "Recalibrate the sensor before ordering repairs."
+          }
+        ]
+      },
+      "prompt": "Synthesize the HVAC observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "hierarchical_semantic_synthesis",
+      "title": "Refrigerant pressure drop",
+      "validator_profile": "synthesis.v1"
+    },
+    {
+      "consequence_risk": "R4",
+      "fixture_id": "B-SYNTH-R4-1",
+      "input": {
+        "allowed_conclusions": [
+          "defect_found",
+          "behavior_by_design",
+          "insufficient_evidence"
+        ],
+        "conclusion_rule": "Conclude 'behavior_by_design' if a design constraint accounts for the observed behavior; 'defect_found' if a finding shows behavior that breaks a design constraint; otherwise 'insufficient_evidence'.",
+        "observations": [
+          {
+            "id": "O1",
+            "role": "design_constraint",
+            "text": "The cold room must stay at 2 to 8 C."
+          },
+          {
+            "id": "O2",
+            "role": "finding",
+            "text": "The cold room logged 11 C for 40 minutes."
+          },
+          {
+            "id": "O3",
+            "role": "finding",
+            "text": "The door sensor showed the door open then."
+          },
+          {
+            "id": "O4",
+            "role": "authority_boundary",
+            "text": "Only the lab safety officer can release samples."
+          },
+          {
+            "id": "O5",
+            "role": "next_step",
+            "text": "Quarantine the affected samples."
+          }
+        ]
+      },
+      "prompt": "Synthesize the cold room observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "hierarchical_semantic_synthesis",
+      "title": "Cold room excursion",
+      "validator_profile": "synthesis.v1"
+    },
+    {
+      "consequence_risk": "R4",
+      "fixture_id": "B-SYNTH-R4-2",
+      "input": {
+        "allowed_conclusions": [
+          "defect_found",
+          "behavior_by_design",
+          "insufficient_evidence"
+        ],
+        "conclusion_rule": "Conclude 'behavior_by_design' if a design constraint accounts for the observed behavior; 'defect_found' if a finding shows behavior that breaks a design constraint; otherwise 'insufficient_evidence'.",
+        "observations": [
+          {
+            "id": "O1",
+            "role": "finding",
+            "text": "The payroll release was blocked at 17:00 on Friday."
+          },
+          {
+            "id": "O2",
+            "role": "design_constraint",
+            "text": "By policy, releases after 16:00 on Fridays are held until Monday."
+          },
+          {
+            "id": "O3",
+            "role": "finding",
+            "text": "No release errors were logged."
+          },
+          {
+            "id": "O4",
+            "role": "next_step",
+            "text": "Tell affected staff that payment arrives on Monday."
+          }
+        ]
+      },
+      "prompt": "Synthesize the payroll observations. Give every observation its original role. Merge observations into one statement only when their roles are identical. Each statement's text is the verbatim text of its observation; a merged statement's text contains the verbatim text of every observation it merges. Choose the conclusion from allowed_conclusions using the conclusion_rule. Each statement object has exactly the keys statement_id, role, observation_ids and text. Keep the reply compact: output beyond about 350 tokens is cut off.",
+      "task_class": "hierarchical_semantic_synthesis",
+      "title": "Friday payroll hold",
+      "validator_profile": "synthesis.v1"
+    }
+  ],
+  "fixtures_per_cell": 2,
+  "model_input_contains_gold": false,
+  "model_tiers": [
+    "small",
+    "mid",
+    "large"
+  ],
+  "risk_classes": [
+    "R1",
+    "R2",
+    "R3",
+    "R4"
+  ],
+  "schema_version": "g-route3.fixture-corpus.v1",
+  "task_classes": [
+    "ordinary_conversation",
+    "structured_extraction",
+    "grounded_research_synthesis",
+    "hierarchical_semantic_synthesis",
+    "coding_generation_repair",
+    "reflective_planning"
+  ]
+}

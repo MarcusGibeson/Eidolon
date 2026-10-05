@@ -1,4 +1,33 @@
-# G-CAL1: Pre-Execution Stage Blocked
+# G-CAL1: Pre-Execution Repair Incomplete
+
+## Latest separately authorized lifecycle repair
+
+The implementation repair and new two-pilot evidence are local commits
+`b64f0e46d4287a92a8723e8873007c5ee795534e` and
+`499b7b0d8db625dc13ecdab32f0723ae21bca20a`. Producer checks pass 25,375/25,375;
+two clean 80-observation synthetic trees match across 327 files each.
+
+The single new independent audit's core report passes 28,209 assertions,
+including all four former findings, cross-object/process serialization,
+pre/post-COMPLETE control flow, cache/disk integrity and synthetic transport
+boundaries. Its fresh pilots, science, requests and contamination checks pass.
+The immutable report and evidence are in `audit/lifecycle_repair/`.
+
+Overall readiness is nevertheless INCOMPLETE. A supplementary question about
+lock-timeout INVALID-event retention was not executed before the review tool
+errored. The core PASS is not promoted into final approval. See
+`audit/lifecycle_repair/REVIEW_COMPLETION_STATUS.json` for the distinction.
+No product fix or second independent audit followed that interruption.
+
+New candidate `f45825a0165f23b78da13fb0fec8dcade010b37fadbe7cdc8c2020a05b0f0336`
+remains candidate-only/unactivated, held pending complete review. No commits
+were pushed. The prior three local commits and blocked audit/candidate bytes
+remain intact. No science, corpus, gold, request, schedule or old experiment
+file changed; real observations/provider calls remain zero. No activation or
+execution is authorized. `STAGE_STATUS.json` records the current incomplete
+state; its prior version is also retained with the repair evidence and Git history.
+
+## Original blocked stage (preserved history)
 
 G-CAL1 is a new, descriptive calendar diagnostic for the frozen qwen3.8:27b
 structured-extraction configuration. It has no real observations or scientific

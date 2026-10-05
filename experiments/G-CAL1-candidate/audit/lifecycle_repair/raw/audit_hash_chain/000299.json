@@ -1,0 +1,1 @@
+{"payload":{"category":"P1-C-actual-external-disk-drift","data":{"event":"PRE_ARTIFACT_DIGEST_MISMATCH"},"detail":"actual disk drift DESIGN.json","passed":true},"previous_sha256":"1db083fb59d01b5d087ec00621a4733c7179f1a19f2cefb70c832092fcc4a128","sequence":299,"sha256":"e8cb53e78597266ae670dc81751935b9f5e6d8ec1b88dd4ea389d1556c1b7792"}

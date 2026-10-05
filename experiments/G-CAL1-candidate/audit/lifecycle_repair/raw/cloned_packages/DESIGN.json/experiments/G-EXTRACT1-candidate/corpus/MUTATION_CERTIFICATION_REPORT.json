@@ -1,0 +1,365 @@
+{
+  "all_real_path_mutations_rejected": true,
+  "checker_component_count": 40,
+  "checker_component_tests": [
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "wrong_gold",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "wrong_schema",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "wrong_family",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "wrong_subtype",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "wrong_operation",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "wrong_E4_truth",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "wrong_E5_selector",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "wrong_E7_absence_placement",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "wrong_absence_gold",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "value_shape_mismatch",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "label_removal_true",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "required_false",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "wrong_fingerprint",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "identical_E5_gold",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "nonselector_E5_request_difference",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "dual_checker": true,
+      "mutation": "raw_payload_replay",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "dual_checker": true,
+      "mutation": "freshness_replay",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "dual_checker": true,
+      "mutation": "whole_answer_replay",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "dual_checker": true,
+      "mutation": "date_number_replay",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "dual_checker": true,
+      "mutation": "identity_replay",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "dual_checker": true,
+      "mutation": "empty_residual",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "dual_checker": true,
+      "mutation": "residual_at_threshold",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "dual_checker": true,
+      "mutation": "contamination_collision",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "wrong_reserve_profile",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "primary_wrong_freshness_schema_type",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "independent_wrong_freshness_schema_type",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "primary_wrong_freshness_canonical_text",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "independent_wrong_freshness_canonical_text",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "primary_freshness_scalar",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "independent_freshness_scalar",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "primary_freshness_ensure_ascii_drift",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "independent_freshness_ensure_ascii_drift",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "primary_whole_answer_Boolean_scalar",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "independent_whole_answer_Boolean_scalar",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "primary_wrong_whole_answer_tag",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "independent_wrong_whole_answer_tag",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "primary_wrong_whole_answer_text",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "independent_wrong_whole_answer_text",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "primary_whole_ensure_ascii_drift",
+      "rejected": true
+    },
+    {
+      "classification": "CHECKER_COMPONENT_PATH",
+      "mutation": "independent_whole_ensure_ascii_drift",
+      "rejected": true
+    }
+  ],
+  "contract_local_guard_count": 21,
+  "contract_local_guard_tests": [
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "test": "actual_contract_mutation_rejected:historical_PASS"
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "test": "actual_contract_mutation_rejected:historical_FAIL"
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "test": "actual_contract_mutation_rejected:lexical SOURCE_FACT"
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "test": "actual_contract_mutation_rejected:gold-only tuple"
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "test": "actual_contract_mutation_rejected:inferred operation node"
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "test": "actual_contract_mutation_rejected:inferred source type"
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "test": "actual_contract_mutation_rejected:input.text inference"
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "test": "actual_contract_mutation_rejected:free-form instruction inference"
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "test": "actual_contract_mutation_rejected:rationale inference"
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "test": "actual_contract_mutation_rejected:ledger inference"
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "test": "actual_contract_mutation_rejected:authoring-expression inference"
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "test": "actual_contract_mutation_rejected:new_tuple_atom"
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "test": "actual_contract_mutation_rejected:new_tuple_serialization"
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "test": "actual_contract_mutation_rejected:new_tuple_match_rule"
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "test": "actual_contract_mutation_rejected:disabled_phase_a_phase_a"
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "test": "actual_contract_mutation_rejected:disabled_phase_a_phase_b"
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "test": "actual_contract_mutation_rejected:disabled_phase_b_phase_b"
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "test": "actual_contract_mutation_rejected:disabled_scored_reserve"
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "test": "actual_contract_mutation_rejected:disabled_reserve_reserve"
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "test": "actual_contract_mutation_rejected:other_historical_disabled"
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "test": "actual_contract_mutation_rejected:authority_elevated"
+    }
+  ],
+  "local_guard_count": 3,
+  "local_guard_tests": [
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "mutation": "wrong_scaffold_class",
+      "rejected": true
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "mutation": "wrong_invariant_gram",
+      "rejected": true
+    },
+    {
+      "classification": "TEST_LOCAL_GUARD",
+      "mutation": "recurrence_overflow",
+      "rejected": true
+    }
+  ],
+  "local_tests_are_not_real_finalizer_certification": true,
+  "real_path_count": 7,
+  "real_path_mutations": [
+    {
+      "classification": "REAL_FINALIZATION_PATH",
+      "mutation": "normalized_punctuation",
+      "rejected": true,
+      "targeted_rejection": "differential_normalized_payload:A:R2:E1-01:PRIMARY:SINGLE"
+    },
+    {
+      "classification": "REAL_FINALIZATION_PATH",
+      "mutation": "token_sequence",
+      "rejected": true,
+      "targeted_rejection": "differential_token_sequence:A:R2:E1-01:PRIMARY:SINGLE"
+    },
+    {
+      "classification": "REAL_FINALIZATION_PATH",
+      "mutation": "fingerprint_bytes",
+      "rejected": true,
+      "targeted_rejection": "differential_fingerprint_bytes:A:R2:E1-01:PRIMARY:SINGLE"
+    },
+    {
+      "classification": "REAL_FINALIZATION_PATH",
+      "mutation": "scaffold_class",
+      "rejected": true,
+      "targeted_rejection": "bound_scaffold_memory_drift"
+    },
+    {
+      "classification": "REAL_FINALIZATION_PATH",
+      "mutation": "scaffold_member",
+      "rejected": true,
+      "targeted_rejection": "bound_scaffold_memory_drift"
+    },
+    {
+      "classification": "REAL_FINALIZATION_PATH",
+      "mutation": "scaffold_invariant",
+      "rejected": true,
+      "targeted_rejection": "bound_scaffold_memory_drift"
+    },
+    {
+      "classification": "REAL_FINALIZATION_PATH",
+      "mutation": "recurrence_member",
+      "rejected": true,
+      "targeted_rejection": "bound_recurrence_memory_drift"
+    }
+  ]
+}

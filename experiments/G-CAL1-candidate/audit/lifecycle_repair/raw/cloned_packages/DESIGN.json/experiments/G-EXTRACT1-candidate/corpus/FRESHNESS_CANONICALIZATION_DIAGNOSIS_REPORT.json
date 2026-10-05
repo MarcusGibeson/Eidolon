@@ -1,0 +1,116 @@
+{
+  "status": "G_EXTRACT1_FRESHNESS_CANONICALIZATION_DESIGN_AMBIGUITY",
+  "authority": {
+    "head": "01aafde7410a44085999aa4aa39f883618e78799",
+    "accepted_contamination_repair": "62c783bd8be708a86c82a9e00c80b0fa6fb5b459"
+  },
+  "normative_derivation": [
+    {
+      "path": "DESIGN_CANDIDATE.json#/template_recurrence_contract/freshness_sequence",
+      "text": "source-record order [schema_type,canonical schema semantic value] including VALUE only; no field names/fixture IDs; preserve duplicates and numeric equivalence"
+    },
+    {
+      "path": "DESIGN_CANDIDATE.md:1961",
+      "text": "Raw VALUE freshness is source-order [schema_type,canonical semantic value], preserving generated string bytes, duplicates and numerical equivalence but not field names."
+    },
+    {
+      "path": "DESIGN_CANDIDATE.json#/schema_type_contract/primitive_schemas/integer",
+      "semantic_tag": "INTEGER",
+      "operational_interpretation": "JSON lexical integer, excluding Boolean",
+      "canonical_gold": "canonical base-10 integer",
+      "limitation": "Operational outputs/gold have typing requirements, but no freshness-specific JSON scalar representation or normative freshness serialization inheritance is explicit."
+    },
+    {
+      "path": "DESIGN_CANDIDATE.json#/exact_value_contract/semantic_rules",
+      "integer": "JSON lexical integer only; 5 passes; 5.0 and 5e0 fail; -0 equals 0",
+      "number": "exact decimal value; 5, 5.0, 5.00 and 5e0 are equivalent; no binary-float tolerance"
+    },
+    {
+      "path": "DESIGN_CANDIDATE.json#/contamination_contract/exact_reuse_contract/date_number_tuple",
+      "limitation": "Separately specifies typed atoms/serialization; it does not explicitly supply the freshness sequence JSON scalar contract."
+    },
+    {
+      "path": "DESIGN_CANDIDATE.json#/operation_semantics_contract/gold_derivation",
+      "limitation": "Explicitly binds gold serialization through schema_type_contract canonical_gold; no equivalently explicit freshness serialization rule found."
+    }
+  ],
+  "semantic_vs_bytes": {
+    "semantic_value": "INTEGER zero; exact equality also collapses integer negative zero. NUMBER equivalent exact decimal values must compare equally. Source schema bytes are retained by the declared freshness row shape.",
+    "unresolved_freshness_bytes": "Contract does not explicitly say whether the INTEGER canonical semantic value is encoded as a JSON integer 0 or canonical numeric text string \"0\" inside freshness rows, nor freeze a complete schema-wide freshness JSON scalar map.",
+    "display_formatting": "A formatter used for typed atom/debug representation is not automatically normative for freshness.",
+    "no_interpretation_selected": true,
+    "required_authorized_resolution": "Freeze or explicitly bind the complete freshness serialization: row schema identity, INTEGER/NUMBER/BOOLEAN JSON scalar representation, DATE/TIME/ENUM/STRING representation, exact canonical numeric equivalence, compact JSON encoding and byte rules. No proposed rule was implemented."
+  },
+  "root_cause": {
+    "primary": "validate_corpus.py::cache calls canonical(decode(value),schema); canonical INTEGER returns int(value), so compact JSON emits unquoted 0.",
+    "independent": "independent_contamination.py::evidence uses canon for both raw freshness and atom values; canon INTEGER returns str(int(x)), so compact JSON emits quoted \"0\".",
+    "additional_definite_shape_issue": "Both existing paths put semantic tags (DATE/INTEGER/etc.) in freshness rows rather than the declared schema_type bytes (YYYY-MM-DD/integer/etc.). No implementation was changed because the scalar serialization question remains unresolved.",
+    "number_current_paths": "Both format NUMBER as exact decimal text; agreement alone cannot establish that JSON text storage is the frozen freshness representation.",
+    "implementation_change": "none"
+  },
+  "original_failure": {
+    "logical_base_id": "A:R2:E1-05:PRIMARY",
+    "primary_recorded": "[[\"DATE\",\"2039-10-05\"],[\"INTEGER\",0]]",
+    "independent_recorded": "[[\"DATE\",\"2039-10-05\"],[\"INTEGER\",\"0\"]]",
+    "original_failure_record_preserved": true,
+    "after_repair": "NOT_APPLICABLE_NO_REPAIR",
+    "replay": "NOT_RUN_AFTER_CONTRACT_AMBIGUITY_STOP"
+  },
+  "tests": {
+    "schema_wide_differential_suite": "NOT_ADDED_OR_RUN: would require choosing disputed expected byte rules",
+    "variants_192_comparison": "NOT_RUN_NO_REPAIR",
+    "gold_agreement_reexecution": "NOT_RUN_AFTER_STOP; prior agreement claim neither extended nor rescored",
+    "immutability_checks": {
+      "protected_files": 10,
+      "all_byte_identical": true,
+      "gold_projection_identical": true
+    },
+    "broader_contamination": "NOT_RUN",
+    "corpus_pass": false
+  },
+  "immutability": {
+    "hashes_before": {
+      "corpus/AUTHORING_CANDIDATES.json": "f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068",
+      "corpus/AUTHORING_ATTEMPTS.json": "b9860b6bd4f662c46935773463bf6caf78035a1c2aa01c0b6a55e5100b9aa8da",
+      "corpus/AUTHORING_FEASIBILITY_REPORT.json": "8767a025c1123541cc858873aff41b60ecc1f8b0186d72ccc738761a24771433",
+      "corpus/FINALIZATION_FAILURE_REPORT.json": "588b6141e3c25b561dff49d7b004ca508468ed39f4dbef8a8e16c54f69918730",
+      "corpus/independent_contamination.py": "8bc9d4eee55cbd91aebfb82f9d77bb74592db92e7ba0df9b62f111899d6533b4",
+      "corpus/validate_corpus.py": "8ff1a923c914e31c42121903b9763fd1e9b97a8b01f6b19b7f35a1de4ce2273d",
+      "DESIGN_CANDIDATE.json": "b74eed2faa0f26350556881fa993b945f8da77afdd97494cd734ca4921d77949",
+      "DESIGN_CANDIDATE.md": "78857b26070659027fcc831923553d66a8cb85cf5c5adf8b783bfee46068d998",
+      "blueprint/BLUEPRINT.json": "a3fde5f1004e6ab6b171f35336d1e50845e4f2ca154ac14cf33a3f438c71be7a",
+      "blueprint/BLUEPRINT.md": "619a2258fd0c2b22e4535c45f1514b112900460e5a1ddc19e66ee8f09a80d0e9"
+    },
+    "hashes_after": {
+      "corpus/AUTHORING_CANDIDATES.json": "f575c8d86ca82f2c5ea7727404d0c8bbb5a72f7b472abfd244471edb3180d068",
+      "corpus/AUTHORING_ATTEMPTS.json": "b9860b6bd4f662c46935773463bf6caf78035a1c2aa01c0b6a55e5100b9aa8da",
+      "corpus/AUTHORING_FEASIBILITY_REPORT.json": "8767a025c1123541cc858873aff41b60ecc1f8b0186d72ccc738761a24771433",
+      "corpus/FINALIZATION_FAILURE_REPORT.json": "588b6141e3c25b561dff49d7b004ca508468ed39f4dbef8a8e16c54f69918730",
+      "corpus/independent_contamination.py": "8bc9d4eee55cbd91aebfb82f9d77bb74592db92e7ba0df9b62f111899d6533b4",
+      "corpus/validate_corpus.py": "8ff1a923c914e31c42121903b9763fd1e9b97a8b01f6b19b7f35a1de4ce2273d",
+      "DESIGN_CANDIDATE.json": "b74eed2faa0f26350556881fa993b945f8da77afdd97494cd734ca4921d77949",
+      "DESIGN_CANDIDATE.md": "78857b26070659027fcc831923553d66a8cb85cf5c5adf8b783bfee46068d998",
+      "blueprint/BLUEPRINT.json": "a3fde5f1004e6ab6b171f35336d1e50845e4f2ca154ac14cf33a3f438c71be7a",
+      "blueprint/BLUEPRINT.md": "619a2258fd0c2b22e4535c45f1514b112900460e5a1ddc19e66ee8f09a80d0e9"
+    },
+    "gold_projection_sha256_before": "803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec",
+    "gold_projection_sha256_after": "803e8e4c57b63c7edb22f02194cbefdbf6be3fc964a0d77f65faa658f8904aec",
+    "gold_projection_serialization": "candidate accepted-array order; [logical_base_id,gold_values]; JSON ensure_ascii=true,sort_keys=true,compact,no newline; diagnostic only",
+    "gold_objects": 168,
+    "gold_outputs": 220,
+    "candidate_or_gold_rewritten": false
+  },
+  "governance": {
+    "provider_model_calls": 0,
+    "runtime_implementation": false,
+    "experiment_execution": "none",
+    "scientific_design_unchanged": true,
+    "blueprint_unchanged": true,
+    "corpus_finalization": false,
+    "fixture_regeneration": false,
+    "belief_effects": "none",
+    "G_ROUTE4": "CLOSED FAILED; protected hashes checked separately",
+    "commit_created": false,
+    "push_performed": false
+  }
+}

@@ -1,0 +1,1 @@
+{"payload":{"category":"P1-C-actual-external-disk-drift","data":{"event":"PRE_ARTIFACT_DIGEST_MISMATCH"},"detail":"actual disk drift corpus/CORPUS.json","passed":true},"previous_sha256":"be7d78f274f11e441d5770579ee1e4c47d67c0c13ad1d787bf6b8671b0e11b5a","sequence":293,"sha256":"ff505b38a6df0cf9e862aa3018679fe27e604c267ba36e93659e4bdb9999f4ed"}

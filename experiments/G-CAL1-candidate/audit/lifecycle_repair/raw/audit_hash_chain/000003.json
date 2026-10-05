@@ -1,0 +1,1 @@
+{"payload":{"category":"P1-A-stale-public-paths","data":{"event":"CORRUPTED_CHECKPOINT"},"detail":"stale B perform synchronizes terminal","passed":true},"previous_sha256":"d9773d56dce67f37ffc0e48e774cde21c3a06a14740b0511c282f7ad9e713bd3","sequence":3,"sha256":"5d16a73440b19e867fdc23f5d2424bf57db10811958944207406b536d6dd5d55"}

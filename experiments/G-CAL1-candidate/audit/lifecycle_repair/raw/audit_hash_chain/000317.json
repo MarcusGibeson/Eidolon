@@ -1,0 +1,1 @@
+{"payload":{"category":"live-authority-inactive-no-grant","data":{"event":"PROVENANCE_MISMATCH"},"detail":"live public constructor denies inactive/no-grant","passed":true},"previous_sha256":"9cc8a8b09d1ca76c1e0f22e9538ea77ba5508ef40d1d604861965e45def18d3a","sequence":317,"sha256":"c93b72ac3a136c3a7c8a847e370bd39acebb36942b6c772ef334b8cd9b545bb6"}

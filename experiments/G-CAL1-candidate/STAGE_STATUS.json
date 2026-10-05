@@ -1,45 +1,90 @@
 {
   "schema_version": "g-cal1.design-stage-status.v1",
   "experiment": "G-CAL1",
-  "status": "PREEXECUTION_IMPLEMENTATION_BLOCKED",
-  "readiness": "G_CAL1_DESIGN_STAGE_FAILED",
+  "status": "PREEXECUTION_REPAIR_INCOMPLETE",
+  "readiness": "G_CAL1_IMPLEMENTATION_REPAIR_INCOMPLETE",
   "scientific_observations": 0,
   "scientific_result": "NOT_OBSERVED",
   "authoring_commit": "0473daf55fde1cb85e54aae1a65987d4a1ed19ac",
   "byte_preservation_commit": "dbea3241abb8e798b62783b7135b74967db924ea",
-  "independent_audit_count": 1,
-  "independent_audit_verdict": "BLOCKED",
-  "blocking_findings": ["F1", "F2", "F3", "F4"],
-  "findings_severity": "P1",
-  "audit_report": "audit/INDEPENDENT_PREREGISTRATION_AUDIT.json",
-  "same_audit_addendum": "audit/INDEPENDENT_AUDIT_ADDENDUM.json",
+  "independent_audit_count": 2,
+  "independent_audit_verdict": "INCOMPLETE_CORE_PASS_SUPPLEMENT_UNAVAILABLE",
+  "blocking_findings": [],
+  "findings_severity": null,
+  "audit_report": "audit/lifecycle_repair/INDEPENDENT_CLOSURE_AUDIT.json",
+  "same_audit_addendum": null,
   "candidate_statuses": [
-    {"path":"preexecution/EXECUTION_FREEZE_CANDIDATE.json","sha256":"9f6288250b79fcb83d7fe5d399283813d4fb5cba9d3e028af218489894ebb94f","status":"SUPERSEDED_UNACTIVATED_INITIAL_DRAFT"},
-    {"path":"preexecution/final/EXECUTION_FREEZE_CANDIDATE.json","sha256":"f036f3380d51dd80d627d2e641ad7e40a123d2ae23d4d472588c3732e61f0692","status":"BLOCKED_UNACTIVATED"}
+    {
+      "path": "preexecution/EXECUTION_FREEZE_CANDIDATE.json",
+      "sha256": "9f6288250b79fcb83d7fe5d399283813d4fb5cba9d3e028af218489894ebb94f",
+      "status": "SUPERSEDED_UNACTIVATED_INITIAL_DRAFT"
+    },
+    {
+      "path": "preexecution/final/EXECUTION_FREEZE_CANDIDATE.json",
+      "sha256": "f036f3380d51dd80d627d2e641ad7e40a123d2ae23d4d472588c3732e61f0692",
+      "status": "BLOCKED_UNACTIVATED"
+    },
+    {
+      "path": "preexecution/lifecycle_repair/EXECUTION_FREEZE_CANDIDATE.json",
+      "sha256": "f45825a0165f23b78da13fb0fec8dcade010b37fadbe7cdc8c2020a05b0f0336",
+      "status": "CANDIDATE_ONLY_HOLD_INCOMPLETE_REVIEW"
+    }
   ],
   "candidate_bytes_unchanged": true,
   "corpus_sha256": "6356ac7e59ff625b7d6c137a1e469c94db4b138dedd99a3e1a6a287e0a928ee8",
   "gold_derivation_report_sha256": "d7185706e142a313c2da4cd6fe41eece4c2f3731bc9608b9a196dd4ef3d9e0d6",
   "canonical_schedule_sha256": "b4d4a5a7ba37961dcfbbe0c6aa6101fbbeb40dcf2dad0c54c8680d216c2e1858",
-  "corpus": {"logical_fixtures":40,"strata":4,"fixtures_each":10,"repeats":2,"maximum_real_calls":80,"reserves":0,"phase_b":false},
-  "completed_offline_work": {
-    "fresh_corpus_constructed":true,"two_gold_paths_agree":40,"wire_requests_materialized":80,
-    "historical_comparisons":12720,"new_pair_comparisons":780,
-    "legacy_tuple_NOT_APPLICABLE_not_pass_credit":5040,"typed_historical_tuple_comparisons":7680,
-    "interpretation":"DESCRIPTIVE_ONLY","producer_deterministic_checks":11586,
-    "final_pilots":2,"synthetic_observations_each":80,"evidence_files_each":327,"pilot_trees_identical":true
+  "corpus": {
+    "logical_fixtures": 40,
+    "strata": 4,
+    "fixtures_each": 10,
+    "repeats": 2,
+    "maximum_real_calls": 80,
+    "reserves": 0,
+    "phase_b": false
   },
-  "post_audit_source_repairs":0,
-  "post_audit_design_corpus_gold_schedule_changes":0,
-  "execution_freeze_active":false,
-  "execution_authorized":false,
-  "provider_model_calls":0,
-  "real_experimental_requests":0,
-  "G_EXTRACT1":"CLOSED VALID NEGATIVE; NO_PHASE_A_CELL_QUALIFIED unchanged",
-  "G_ROUTE4":"CLOSED FAILED unchanged",
-  "preserved_untracked_historical_corpus_artifacts":7,
-  "autonomy":false,
-  "belief_effects":"none",
-  "next_work_authorized":false,
-  "stop_reason":"Independent audit established implementation blockers; no post-audit repair or execution."
+  "completed_offline_work": {
+    "fresh_corpus_constructed": true,
+    "two_gold_paths_agree": 40,
+    "wire_requests_materialized": 80,
+    "historical_comparisons": 12720,
+    "new_pair_comparisons": 780,
+    "legacy_tuple_NOT_APPLICABLE_not_pass_credit": 5040,
+    "typed_historical_tuple_comparisons": 7680,
+    "interpretation": "DESCRIPTIVE_ONLY",
+    "producer_deterministic_checks": 25375,
+    "final_pilots": 2,
+    "synthetic_observations_each": 80,
+    "evidence_files_each": 327,
+    "pilot_trees_identical": true
+  },
+  "post_audit_source_repairs": 0,
+  "post_audit_design_corpus_gold_schedule_changes": 0,
+  "execution_freeze_active": false,
+  "execution_authorized": false,
+  "provider_model_calls": 0,
+  "real_experimental_requests": 0,
+  "G_EXTRACT1": "CLOSED VALID NEGATIVE; NO_PHASE_A_CELL_QUALIFIED unchanged",
+  "G_ROUTE4": "CLOSED FAILED unchanged",
+  "preserved_untracked_historical_corpus_artifacts": 7,
+  "autonomy": false,
+  "belief_effects": "none",
+  "next_work_authorized": false,
+  "stop_reason": "Independent core audit PASS; requested supplementary lock-timeout check unexecuted after review tool error. No readiness promotion or push.",
+  "prior_status_record": "preexecution/lifecycle_repair/PRIOR_STAGE_STATUS.json",
+  "independent_audits_this_task": 1,
+  "independent_core_report_verdict": "PASS",
+  "independent_core_assertions": 28209,
+  "closed_former_findings": [
+    "F1",
+    "F2",
+    "F3",
+    "F4"
+  ],
+  "remaining_verification_gaps": [
+    "lock timeout integrity retention and later continuation"
+  ],
+  "audit_completion_record": "audit/lifecycle_repair/REVIEW_COMPLETION_STATUS.json",
+  "implementation_repair_commit": "b64f0e46d4287a92a8723e8873007c5ee795534e",
+  "repair_pilot_evidence_commit": "499b7b0d8db625dc13ecdab32f0723ae21bca20a"
 }

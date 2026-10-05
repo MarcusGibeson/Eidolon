@@ -1,0 +1,1 @@
+{"payload":{"category":"P1-A-separate-process-lock","detail":"child acquires and retains after parent durable closure","passed":true},"previous_sha256":"4a5a00c83e11dabd7b9d942bc61b6e6fe730ccad8fbf7150f75fce78d1e7c207","sequence":46,"sha256":"bf3c8f6fc630dc3b80383ffeeb11acf0e9eb86147d3b302de74057fa2dd69b74"}

@@ -1,0 +1,13 @@
+{
+  "schema_version": "g-route1.prompt-profiles.v1",
+  "status": "fixture_validator_frozen_candidate",
+  "candidate_identity_exposed": false,
+  "profiles": {
+    "conversation.v1": "Answer the user directly and concisely. Use only supplied facts. Do not claim an action occurred unless the input explicitly records it. Return plain text.",
+    "extraction.v1": "Return one JSON object matching the schema supplied in the fixture. Add no fields. Use only explicit facts; represent an explicitly unstated value with the schema's unknown value.",
+    "research.v1": "Return JSON with exactly: claims, recommendation, uncertainties. Each claim must contain claim_id, status, citations, and lineages. Status is supported, contradicted, or unresolved. Cite only supplied source IDs and preserve source lineage; repeated documents from one lineage are not independent. Do not recommend beyond the stated decision rule.",
+    "synthesis.v1": "Return JSON with exactly: statements and conclusion. Each statement must contain statement_id, role, observation_ids, and text. Cover every supplied observation exactly once. Merge observations only when their semantic roles match. Preserve uncertainty, counterevidence, limitations, design constraints, authority boundaries, and next steps as their original roles.",
+    "coding.v1": "Return one JSON object with exactly path, old, and new. Path must be the supplied allowed path. Old must reproduce the supplied source exactly. New must be the complete replacement file. Do not claim tests ran and do not include execution evidence.",
+    "planning.v1": "Return JSON with exactly: steps, uncertainties, claims_completed, requested_authority. Each step contains id, action, depends_on, and evidence_ids. Use only supplied evidence, preserve dependencies and uncertainties, set claims_completed false, and request no additional authority."
+  }
+}

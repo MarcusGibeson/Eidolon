@@ -1,0 +1,1 @@
+{"payload":{"category":"P1-A-separate-process-lock","detail":"separate process actually blocked on same lock, not Package startup","passed":true},"previous_sha256":"c1cdf99f8bf0c363bbb16def8a601240a4cdd3b925990eaacb05f1d1eb89d04e","sequence":44,"sha256":"2d0387ecadf37b638ec89297ff6eb8728513f968f3bcf88f9c25da2175f45402"}

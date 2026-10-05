@@ -1,0 +1,1 @@
+{"payload":{"category":"generic-append-checkpoint-resume-receipt-no-retry-replay","data":{"event":"CORRUPTED_OR_UNPARSEABLE_JOURNAL"},"detail":"corrupt journal cannot continue","passed":true},"previous_sha256":"b8b121730a8337b143cd0450395b355e7433da33fcc80c58846807f5afbc4c7d","sequence":438,"sha256":"1592e86fb38fbf56e008205147cd4515578e0cc6ba1c30536e4e6069af3ee854"}

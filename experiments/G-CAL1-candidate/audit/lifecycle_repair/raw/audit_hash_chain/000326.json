@@ -1,0 +1,1 @@
+{"payload":{"category":"generic-append-checkpoint-resume-receipt-no-retry-replay","detail":"append-only prefix unchanged across resume and collection","passed":true},"previous_sha256":"2101e23a7ada75946378143d16cc46ece6bbee91796cf716a5383974d36f0816","sequence":326,"sha256":"ee7b8960a999ff3eb44b029f106e4fc569524f6b170b1f8a06065448d9a682c4"}
