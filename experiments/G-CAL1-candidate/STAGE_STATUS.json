@@ -1,18 +1,18 @@
 {
   "schema_version": "g-cal1.design-stage-status.v1",
   "experiment": "G-CAL1",
-  "status": "PREEXECUTION_REPAIR_INCOMPLETE",
-  "readiness": "G_CAL1_IMPLEMENTATION_REPAIR_INCOMPLETE",
+  "status": "LOCK_TIMEOUT_REPAIR_AWAITING_INDEPENDENT_AUDIT",
+  "readiness": "G_CAL1_LOCK_TIMEOUT_REPAIR_INCOMPLETE",
   "scientific_observations": 0,
   "scientific_result": "NOT_OBSERVED",
   "authoring_commit": "0473daf55fde1cb85e54aae1a65987d4a1ed19ac",
   "byte_preservation_commit": "dbea3241abb8e798b62783b7135b74967db924ea",
   "independent_audit_count": 2,
-  "independent_audit_verdict": "INCOMPLETE_CORE_PASS_SUPPLEMENT_UNAVAILABLE",
+  "independent_audit_verdict": "NEW_AUDIT_PENDING; PREVIOUS_REVIEW_BLOCKED",
   "blocking_findings": [],
   "findings_severity": null,
-  "audit_report": "audit/lifecycle_repair/INDEPENDENT_CLOSURE_AUDIT.json",
-  "same_audit_addendum": null,
+  "audit_report": null,
+  "same_audit_addendum": "audit/lifecycle_repair/LOCK_TIMEOUT_REVIEW_COMPLETION.json",
   "candidate_statuses": [
     {
       "path": "preexecution/EXECUTION_FREEZE_CANDIDATE.json",
@@ -27,7 +27,12 @@
     {
       "path": "preexecution/lifecycle_repair/EXECUTION_FREEZE_CANDIDATE.json",
       "sha256": "f45825a0165f23b78da13fb0fec8dcade010b37fadbe7cdc8c2020a05b0f0336",
-      "status": "CANDIDATE_ONLY_HOLD_INCOMPLETE_REVIEW"
+      "status": "BLOCKED_UNACTIVATED_SUPERSEDED"
+    },
+    {
+      "path": "preexecution/lock_timeout_repair/EXECUTION_FREEZE_CANDIDATE.json",
+      "sha256": "59924e2546dc103ed84bc298c489de40e6a63a1815985af0b3b78f0ad7a0dbc9",
+      "status": "EXECUTION_FREEZE_CANDIDATE_ONLY_AUDIT_PENDING"
     }
   ],
   "candidate_bytes_unchanged": true,
@@ -52,7 +57,7 @@
     "legacy_tuple_NOT_APPLICABLE_not_pass_credit": 5040,
     "typed_historical_tuple_comparisons": 7680,
     "interpretation": "DESCRIPTIVE_ONLY",
-    "producer_deterministic_checks": 25375,
+    "producer_deterministic_checks": 25466,
     "final_pilots": 2,
     "synthetic_observations_each": 80,
     "evidence_files_each": 327,
@@ -70,9 +75,9 @@
   "autonomy": false,
   "belief_effects": "none",
   "next_work_authorized": false,
-  "stop_reason": "Independent core audit PASS; requested supplementary lock-timeout check unexecuted after review tool error. No readiness promotion or push.",
-  "prior_status_record": "preexecution/lifecycle_repair/PRIOR_STAGE_STATUS.json",
-  "independent_audits_this_task": 1,
+  "stop_reason": "Previous review BLOCKED on actual lock timeout; newly authorized boundary repair and producer certification PASS, pending one NEW independent audit. No activation or execution authority.",
+  "prior_status_record": "preexecution/lock_timeout_repair/PRIOR_STAGE_STATUS.json",
+  "independent_audits_this_task": 0,
   "independent_core_report_verdict": "PASS",
   "independent_core_assertions": 28209,
   "closed_former_findings": [
@@ -82,9 +87,15 @@
     "F4"
   ],
   "remaining_verification_gaps": [
-    "lock timeout integrity retention and later continuation"
+    "new independent audit of lock timeout repair and full preregistration package"
   ],
-  "audit_completion_record": "audit/lifecycle_repair/REVIEW_COMPLETION_STATUS.json",
-  "implementation_repair_commit": "b64f0e46d4287a92a8723e8873007c5ee795534e",
-  "repair_pilot_evidence_commit": "499b7b0d8db625dc13ecdab32f0723ae21bca20a"
+  "audit_completion_record": "audit/lifecycle_repair/LOCK_TIMEOUT_REVIEW_COMPLETION.json",
+  "implementation_repair_commit": "c01706ca04f14e88819b26bdd148a3d61b5688ec",
+  "repair_pilot_evidence_commit": "COMMIT_CONTAINING_THIS_RECORD",
+  "producer_timeout_assertions": 89,
+  "actual_default_timeout_seconds_observed": 120.00428300001658,
+  "producer_timeout_outcome": "durable INVALID; original exception; all B/C/restart continuations rejected; zero transport/START",
+  "new_protected_file_count": 99,
+  "new_independent_audit_required": true,
+  "historical_failed_review_preserved": true
 }

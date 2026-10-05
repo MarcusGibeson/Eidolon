@@ -1,0 +1,23 @@
+{
+  "schema_version": "g-cal1.candidate-supersession.v1",
+  "experiment": "G-CAL1",
+  "blocked_predecessor": {
+    "path": "preexecution/lifecycle_repair/EXECUTION_FREEZE_CANDIDATE.json",
+    "sha256": "f45825a0165f23b78da13fb0fec8dcade010b37fadbe7cdc8c2020a05b0f0336",
+    "status": "BLOCKED_UNACTIVATED_SUPERSEDED",
+    "finding": "F-ACTUAL-GOVERNED-LOCK-TIMEOUT",
+    "review": "audit/lifecycle_repair/LOCK_TIMEOUT_REVIEW_COMPLETION.json",
+    "historical_bytes_unchanged": true
+  },
+  "superseding_candidate": {
+    "path": "preexecution/lock_timeout_repair/EXECUTION_FREEZE_CANDIDATE.json",
+    "sha256": "59924e2546dc103ed84bc298c489de40e6a63a1815985af0b3b78f0ad7a0dbc9",
+    "status": "EXECUTION_FREEZE_CANDIDATE_ONLY",
+    "activated": false,
+    "independent_audit": "PENDING"
+  },
+  "provider_model_calls": 0,
+  "execution_authorized": false,
+  "autonomy": false,
+  "belief_effects": "none"
+}

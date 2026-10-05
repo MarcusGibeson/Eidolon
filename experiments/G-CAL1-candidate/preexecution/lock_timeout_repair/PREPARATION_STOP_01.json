@@ -1,0 +1,9 @@
+{
+  "status": "PREPARATION_STOP",
+  "reason": "The initial rebind helper compared the original manifest byte hash to the canonical JSON semantic snapshot byte hash; the snapshot serialization differs. The manifest was not modified.",
+  "second_command": "Certification initialization correctly rejected the unrebound runner source hash before creating Package or starting any tests.",
+  "test_operations": 0,
+  "provider_model_calls": 0,
+  "repair": "Verify the original manifest hash against the prior reviewed candidate binding, and verify parsed manifest equality separately; preserve the semantic snapshot unchanged.",
+  "independent_audit_started": false
+}

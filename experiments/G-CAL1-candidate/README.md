@@ -1,4 +1,28 @@
-# G-CAL1: Pre-Execution Repair Incomplete
+# G-CAL1: Lock-Timeout Repair Awaiting Independent Audit
+
+## Current lock-timeout repair
+
+The actual 120-second supplement blocked the previous implementation: it emitted
+INVALID `PROVENANCE_MISMATCH` without retaining an incident. The failed review
+and its evidence remain immutable in `audit/lifecycle_repair/`, including
+`LOCK_TIMEOUT_REVIEW_COMPLETION.json` and `failed_timeout_supplement/`.
+
+New implementation commit `c01706ca04f14e88819b26bdd148a3d61b5688ec` retains
+lock-entry invalidity using independently published sealed, write-once records.
+The producer's unmodified 120-second test retains INVALID before propagating
+the original exception, rejects B/C/reconstruction before and after unlock,
+and invokes zero transports or START records. Certification passes 25,466 checks;
+two new 80-observation pilot trees are byte-identical across 327 files each.
+Science, gold, requests, schedule, contamination and closed histories are unchanged.
+
+Candidate `59924e2546dc103ed84bc298c489de40e6a63a1815985af0b3b78f0ad7a0dbc9`
+is candidate-only/unactivated, pending ONE NEW independent audit. The predecessor
+`f45825a0165f23b78da13fb0fec8dcade010b37fadbe7cdc8c2020a05b0f0336` remains
+BLOCKED/unactivated/superseded; its bytes have not been changed. No provider calls,
+freeze activation or real execution are authorized. No local history is pushed
+unless the new independent audit completes PASS.
+
+## Previous incomplete-stage record (preserved history)
 
 ## Latest separately authorized lifecycle repair
 
