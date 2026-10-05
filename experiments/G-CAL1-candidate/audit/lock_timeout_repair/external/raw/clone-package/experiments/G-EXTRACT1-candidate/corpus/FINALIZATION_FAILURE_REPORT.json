@@ -1,0 +1,56 @@
+{
+  "status": "G_EXTRACT1_CORPUS_GOLD_AUTHORING_INCOMPLETE",
+  "accepted_blueprint_commit": "01aafde7410a44085999aa4aa39f883618e78799",
+  "stop_reason": "INDEPENDENT_CONTAMINATION_EVIDENCE_DISAGREEMENT",
+  "stop_boundary": "No adjudication or correction after independent disagreement; no corpus finalization, commit, push, or further authoring.",
+  "independent_comparison": {
+    "logical_base_id": "A:R2:E1-05:PRIMARY",
+    "rendered_variant_id": "A:R2:E1-05:PRIMARY:SINGLE",
+    "field": "raw_values",
+    "primary_bytes_utf8": "[[\"DATE\",\"2039-10-05\"],[\"INTEGER\",0]]",
+    "independent_bytes_utf8": "[[\"DATE\",\"2039-10-05\"],[\"INTEGER\",\"0\"]]",
+    "complete_prior_variant_evidence_agreements": 4,
+    "complete_pairwise_independent_decision_agreement": "NOT_ESTABLISHED",
+    "winner_selected": false
+  },
+  "construction": {
+    "primary_candidate_search_completed": true,
+    "primary_generation_seed": "G-EXTRACT1-01aafde-corpus-authoring-1",
+    "logical_bases": 168,
+    "scored_logical_bases": 140,
+    "reserve_logical_bases": 28,
+    "rendered_variants_in_primary_check": 192,
+    "scored_rendered_variants": 160,
+    "reserve_rendered_variants": 32,
+    "candidate_artifact": "AUTHORING_CANDIDATES.json",
+    "failed_pass_evidence": "AUTHORING_ATTEMPTS.json",
+    "last_failed_tool_pass_evidence": "AUTHORING_FEASIBILITY_REPORT.json",
+    "final_scored_corpus_file_created": false,
+    "final_reserve_corpus_file_created": false,
+    "final_gold_file_created": false,
+    "final_manifest_created": false,
+    "global_impossibility_claim": false
+  },
+  "unfinished": [
+    "Complete independent contamination evidence and pairwise decision agreement",
+    "Final contamination report and final validation report",
+    "Full reserve-equivalence validation",
+    "Offline E5 complete-request byte invariance report",
+    "Mutation tests",
+    "Gold review package and manifest digest binding",
+    "Independent external gold review"
+  ],
+  "governance": {
+    "provider_model_calls": 0,
+    "runtime_implementation": false,
+    "experiment_execution": false,
+    "mechanical_pilot": false,
+    "execution_freeze": false,
+    "phase_a_authority": false,
+    "phase_b_authority": false,
+    "belief_effects": "none",
+    "G_ROUTE4": "CLOSED FAILED; unchanged",
+    "commit_created": false,
+    "push_performed": false
+  }
+}

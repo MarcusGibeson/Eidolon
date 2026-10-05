@@ -1,0 +1,408 @@
+"""Isolated G-CAL1 laboratory; explicit transport injection, no provider API."""
+from __future__ import annotations
+
+from pathlib import Path
+import copy
+from functools import wraps
+import os
+import re
+import threading
+import uuid
+
+from g_cal1_lock import run_lock
+
+from g_cal1_contract import DATA, ROOT, diagnosis, summarize
+from g_extract1_contract import canonical, digest, file_digest, load, require, IntegrityError
+from g_extract1_journal import Journal, checkpoint_payload, seal_checkpoint, verify_checkpoint, write_once
+from g_extract1_runner import check_call, failure_event, guarded, transport_outcome
+from g_extract1_scoring import evaluate, event_category
+
+VERSION = 'g-cal1.lab.v3'
+BOUNDARY_INCIDENT_SCHEMA = 'g-cal1.lock-boundary-incident.v1'
+
+
+def governed(method):
+    """Retain lock-entry failures without reacquiring the failed lock."""
+    @wraps(method)
+    def call(self,*args,**kwargs):
+        acquired = False
+        if method.__name__ == 'perform':
+            row = args[0] if args else kwargs.get('row')
+            self._error_cell = row.get('cell_id') if type(row) is dict and type(row.get('cell_id')) is str else None
+        try:
+            self._reject_boundary_incidents()
+            with run_lock(self.directory):
+                acquired = True
+                self._lock_local.held = True
+                try:
+                    self._synchronize()
+                    return method(self,*args,**kwargs)
+                except IntegrityError as exc:
+                    self._retain(exc)
+                    raise
+                except Exception as exc:
+                    error = IntegrityError('PROVENANCE_MISMATCH',method.__name__+':'+type(exc).__name__)
+                    self._retain(error)
+                    raise error from exc
+                finally:
+                    self._lock_local.held = False
+        except IntegrityError as exc:
+            if not acquired:
+                self._retain_boundary_incident(exc)
+            raise
+    return call
+
+
+def transport_boundary(transport, mechanical):
+    require(type(mechanical) is bool,'PROVENANCE_MISMATCH','mode must be Boolean')
+    if mechanical:
+        require(getattr(transport,'synthetic_only',None) is True,
+                'PROVENANCE_MISMATCH','mechanical transport must be explicitly synthetic')
+    else:
+        require(getattr(transport,'synthetic_only',True) is False,
+                'PROVENANCE_MISMATCH','synthetic or unmarked transport forbidden in live mode')
+
+
+def authority(package, run_id, activation, authorization, receipts):
+    """No G-EXTRACT1 grant or candidate-only status can authorize G-CAL1."""
+    pointer_path = DATA/'execution/ACTIVE_FREEZE.json'
+    require(pointer_path.is_file(),'PROVENANCE_MISMATCH','no separately active G-CAL1 freeze')
+    pointer = load(pointer_path)
+    require(type(pointer) is dict and set(pointer)=={'activation_path','activation_sha256'},'PROVENANCE_MISMATCH','active pointer')
+    path = DATA/'execution/EXECUTION_FREEZE_ACTIVATION.json'
+    require(pointer['activation_path']=='execution/EXECUTION_FREEZE_ACTIVATION.json' and path.is_file() and
+            file_digest(path)==pointer['activation_sha256'],'PROVENANCE_MISMATCH','activation binding')
+    record = load(path)
+    require(record==activation and record.get('experiment')=='G-CAL1' and record.get('status')=='EXECUTION_FREEZE_ACTIVE' and
+            record.get('binding')==package.binding and record.get('phase_authorized') is False,
+            'PROVENANCE_MISMATCH','active freeze only, no implicit phase authority')
+    candidate_path = DATA/'preexecution/lock_timeout_repair/EXECUTION_FREEZE_CANDIDATE.json'
+    candidate = load(candidate_path)
+    require(file_digest(candidate_path)==record.get('candidate_sha256') and candidate.get('binding')==package.binding and
+            candidate.get('status')=='EXECUTION_FREEZE_CANDIDATE_ONLY' and candidate.get('activated') is False,
+            'PROVENANCE_MISMATCH','reviewed candidate identity')
+    require(type(authorization) is dict and authorization.get('status')=='EXPLICIT_OPERATOR_PHASE_AUTHORIZATION' and
+            authorization.get('experiment')=='G-CAL1' and authorization.get('phase')=='CAL' and
+            authorization.get('run_id')==run_id and authorization.get('freeze_status')=='EXECUTION_FREEZE_ACTIVE' and
+            authorization.get('binding')==package.binding and authorization.get('synthetic_evidence_allowed') is False,
+            'PROVENANCE_MISMATCH','separate CAL grant')
+    expected = candidate['provider_binding']
+    require(type(receipts) is dict and receipts.get('provider')==expected['provider'] and
+            receipts.get('provider_version')==expected['provider_version'],'PRE_PROVIDER_VERSION_MISMATCH')
+    require(receipts.get('models')==expected['models'],'PRE_MODEL_IDENTITY_MISMATCH')
+    require(receipts.get('generation_configuration')==package.design['generation_configuration'],'PRE_GENERATION_CONFIG_MISMATCH')
+    return {'activation_sha256':file_digest(path),'authorization_sha256':digest(canonical(authorization)),
+            'provider_receipts_sha256':digest(canonical(receipts))}
+
+
+class Run:
+    @guarded
+    def __init__(self,package,directory,run_id,*,mechanical=True,resume=False,
+                 activation=None,authorization=None,provider_receipts=None):
+        self.package,self.directory,self.run_id = package,Path(directory),run_id
+        self._lock_local = threading.local()
+        self.mechanical,self._owned = mechanical,False
+        self.events,self.event_scopes = [],[]
+        self._error_cell = None
+        self._checkpoint_verified = not resume
+        self.evidence,self.attempted,self.last_checkpoint = {},set(),None
+        self.binding = dict(package.binding,lab_version=VERSION)
+        self.activation,self.authorization,self.provider_receipts = activation,authorization,provider_receipts
+        require(type(mechanical) is bool,'PROVENANCE_MISMATCH','mode must be Boolean')
+        package.verify()
+        self.authority_evidence = None if mechanical else authority(package,run_id,activation,authorization,provider_receipts)
+        if resume:
+            require(self.directory.is_dir(),'MISSING_CHECKPOINT_AFTER_INTERRUPTION','run directory')
+            self._owned = True
+        else:
+            require(not self.directory.exists(),'PRE_EXISTING_RUN_COLLISION',str(self.directory))
+            self.directory.mkdir(parents=True)
+            self._owned = True
+        self.journal = Journal(self.directory/'journal')
+        self.incidents = Journal(self.directory/'integrity')
+        acquired = False
+        try:
+            self._reject_boundary_incidents()
+            with run_lock(self.directory):
+                acquired = True
+                if resume:
+                    self._synchronize()
+                else:
+                    self.journal.append({'kind':'RUN_CREATED','run_id':run_id,'binding':self.binding,
+                                         'mode':'SYNTHETIC_ONLY' if mechanical else 'LIVE','authority':self.authority_evidence})
+        except IntegrityError as exc:
+            if not acquired:
+                self._retain_boundary_incident(exc)
+            raise
+
+    def _boundary_records(self):
+        records = []
+        directory = self.directory/'lock_boundary_incidents'
+        if not directory.exists():
+            return records
+        for path in sorted(directory.glob('*.json')):
+            try:
+                raw = path.read_bytes()
+                row = load(path)
+                require(type(row) is dict and set(row)=={'schema_version','payload','sha256'} and
+                        row['schema_version']==BOUNDARY_INCIDENT_SCHEMA,
+                        'CORRUPTED_OR_UNPARSEABLE_JOURNAL','lock-boundary incident envelope')
+                p = row['payload']
+                require(type(p) is dict and set(p)=={'event','detail','phase','cell','run_id','binding'} and
+                        p['run_id']==self.run_id and p['binding']==self.binding and p['phase']=='CAL' and
+                        type(p['event']) is str and type(p['detail']) is str and
+                        (p['cell'] is None or type(p['cell']) is str) and
+                        event_category(self.package.historical.design,p['event'])=='INVALID' and
+                        re.fullmatch('[0-9a-f]{32}\\.json',path.name) is not None and
+                        row['sha256']==digest(canonical(p)) and raw==canonical(row),
+                        'CORRUPTED_OR_UNPARSEABLE_JOURNAL','lock-boundary incident seal/binding')
+            except (ValueError, KeyError, UnicodeError, TypeError) as exc:
+                raise IntegrityError('CORRUPTED_OR_UNPARSEABLE_JOURNAL','lock-boundary incident:'+type(exc).__name__) from exc
+            records.append(p)
+        return records
+
+    def _observe_boundary_incidents(self):
+        records = self._boundary_records()
+        for p in records:
+            scope = {'event':p['event'],'phase':p['phase'],'cell':p['cell']}
+            if scope not in self.event_scopes:
+                self.events.append(p['event'])
+                self.event_scopes.append(scope)
+        return records
+
+    def _reject_boundary_incidents(self):
+        records = self._observe_boundary_incidents()
+        if records:
+            p = records[0]
+            self._error_cell = p['cell']
+            raise IntegrityError(p['event'],p['detail'])
+
+    def _retain_boundary_incident(self,error):
+        """Publish complete bytes atomically, independently of the lifecycle lock."""
+        if not self._owned:
+            return
+        scope = {'event':error.event,'phase':'CAL','cell':self._error_cell}
+        # An observed, immutable incident already supplies durable terminality.
+        if any(p['event']==error.event and p['phase']=='CAL' and p['cell']==self._error_cell
+               for p in self._boundary_records()):
+            if scope not in self.event_scopes:
+                self.events.append(error.event)
+                self.event_scopes.append(scope)
+            return
+        require(event_category(self.package.historical.design,error.event)=='INVALID',
+                'PROVENANCE_MISMATCH','lock-boundary incident must be INVALID')
+        payload = dict(scope,detail=error.detail,run_id=self.run_id,binding=copy.deepcopy(self.binding))
+        record = {'schema_version':BOUNDARY_INCIDENT_SCHEMA,'payload':payload,'sha256':digest(canonical(payload))}
+        directory = self.directory/'lock_boundary_incidents'
+        directory.mkdir(exist_ok=True)
+        token = uuid.uuid4().hex
+        pending, published = directory/('.pending-'+token), directory/(token+'.json')
+        write_once(pending,record)
+        # A new hard link exposes only flushed, sealed bytes; never replace an
+        # existing record. Readers ignore uncommitted .pending files.
+        os.link(pending,published)
+        pending.unlink()
+        if scope not in self.event_scopes:
+            self.events.append(error.event)
+            self.event_scopes.append(scope)
+
+    def _retain(self,error):
+        if not hasattr(self,'events'): return
+        scope = {'event':error.event,'phase':'CAL','cell':self._error_cell}
+        if scope in self.event_scopes:
+            return
+        if self._owned and not getattr(self._lock_local,'held',False):
+            with run_lock(self.directory):
+                self._lock_local.held = True
+                try:
+                    self._retain(error)
+                finally:
+                    self._lock_local.held = False
+            return
+        if scope not in self.event_scopes:
+            self.events.append(error.event);self.event_scopes.append(scope)
+            if self._owned:
+                journal = self.incidents if hasattr(self,'incidents') else Journal(self.directory/'integrity')
+                journal.append({'event':error.event,'detail':error.detail,'phase':'CAL','cell':self._error_cell,
+                                'run_id':self.run_id,'binding':self.binding})
+
+    def _synchronize(self):
+        """Authoritative incidents and journal are re-read only under run_lock."""
+        require(self.binding==dict(self.package.binding,lab_version=VERSION),'PROVENANCE_MISMATCH','run binding drift')
+        self.events,self.event_scopes = [],[]
+        for row in self.incidents.read():
+            p = row['payload']
+            require(type(p) is dict and set(p)=={'event','detail','phase','cell','run_id','binding'} and
+                    p['binding']==self.binding and p['run_id']==self.run_id and p['phase']=='CAL' and
+                    type(p['event']) is str and (p['cell'] is None or type(p['cell']) is str),
+                    'CORRUPTED_OR_UNPARSEABLE_JOURNAL','incident binding/shape')
+            self.events.append(p['event'])
+            self.event_scopes.append({'event':p['event'],'phase':'CAL','cell':p['cell']})
+        self._observe_boundary_incidents()
+        require(not self.events,self.events[0] if self.events else 'PROVENANCE_MISMATCH','retained terminal incident')
+        records = self.journal.read()
+        contacted = any(type(r['payload']) is dict and r['payload'].get('kind')=='START' for r in records)
+        self.package.verify(contacted=contacted)
+        self.evidence,self.attempted,self.last_checkpoint = {},set(),None
+        self._replay()
+
+    def state(self):
+        invalid = any(event_category(self.package.historical.design,e)=='INVALID' for e in self.events)
+        pre = any(event_category(self.package.historical.design,e)=='PRE_CONTACT_BLOCKED' for e in self.events)
+        if invalid: verdict='INVALID'
+        elif pre and not self.attempted: verdict='PRE_CONTACT_BLOCKED'
+        elif self.events: verdict='INCOMPLETE'
+        elif len(self.evidence)==80: verdict='VALID_COMPLETE'
+        else: verdict='RUNNING'
+        return {'qualified':[],'integrity_events':list(self.events),'event_scopes':list(self.event_scopes),
+                'verdict':verdict,'completed_observations':len(self.evidence),'attempted_calls':len(self.attempted)}
+
+    def _ready(self):
+        self._reject_boundary_incidents()
+        require(self._checkpoint_verified,'UNVERIFIABLE_INTERRUPTION_CHECKPOINT','verify before collection/report/checkpoint')
+        require(not self.events,self.events[0] if self.events else 'PROVENANCE_MISMATCH','terminal retained incident')
+        self.package.verify(contacted=bool(self.attempted))
+        if not self.mechanical:
+            require(authority(self.package,self.run_id,self.activation,self.authorization,self.provider_receipts)==self.authority_evidence,
+                    'PROVENANCE_MISMATCH','authority drift')
+
+    @governed
+    def perform(self,row,transport):
+        self._error_cell = row.get('cell_id') if type(row) is dict else None
+        self._ready()
+        position = len(self.attempted)
+        require(position<len(self.package.schedule),'UNAUTHORIZED_RETRY','schedule exhausted')
+        expected = copy.deepcopy(self.package.schedule[position])
+        require(type(row) is dict,'PROVENANCE_MISMATCH','schedule object')
+        check_call(expected,row)
+        row = expected
+        require(row['call_id'] not in self.attempted,'UNAUTHORIZED_RETRY')
+        request = self.package.wire(row)
+        require(digest(request)==row['request_sha256'],'UNAUTHORIZED_PROMPT_MUTATION')
+        transport_boundary(transport,self.mechanical)
+        self._reject_boundary_incidents()
+        member = copy.deepcopy(self.package.members[row['fixture_id']])
+        prefix = self.journal.prefix()
+        call_closed = False
+        try:
+            self.journal.append({'kind':'START','row':row,'request_sha256':digest(request),'binding':self.binding,
+                                 'run_id':self.run_id,'mode':'SYNTHETIC_ONLY' if self.mechanical else 'LIVE'})
+            self.attempted.add(row['call_id'])
+            try:
+                result = transport(request,copy.deepcopy(row))
+            except Exception:
+                result = {'failure':'unreceipted','receipt':None}
+            result = transport_outcome(row,result)
+            if 'failure' in result:
+                event = failure_event(row,result['failure'],result['receipt'])
+                self.journal.append({'kind':'FAILURE','call_id':row['call_id'],'failure':result['failure'],
+                                     'receipt':result['receipt'],'event':event})
+                call_closed = True
+                self._retain(IntegrityError(event,'transport failure'))
+                raise IntegrityError(event)
+            require(self.mechanical or result['receipt'].get('synthetic_only') is not True,
+                    'PROVENANCE_MISMATCH','synthetic response in live mode')
+            self.package.verify(contacted=True)
+            score = evaluate(member,result['raw_output'],truncated=result['provider_truncated'])
+            diagnostic = diagnosis(member,result['raw_output'],score)
+            self.journal.append({'kind':'COMPLETE','call_id':row['call_id'],'result':result,'score':score,'diagnostic':diagnostic})
+            call_closed = True
+            self.evidence[row['call_id']] = score
+        except BaseException:
+            # append may persist COMPLETE then be interrupted before returning.
+            # Check the durable tail; never call a closed observation omitted.
+            try:
+                tail = self.journal.read()[prefix['record_count']:]
+                if not call_closed:
+                    call_closed = any(type(r['payload']) is dict and r['payload'].get('kind') in ('COMPLETE','FAILURE') and
+                                      r['payload'].get('call_id')==row['call_id'] for r in tail)
+                started = bool(tail)
+            except BaseException:
+                # Corrupt/unreadable closure cannot be claimed as complete.
+                started = True
+            if not call_closed and started:
+                self._retain(IntegrityError('SCHEDULED_CALL_OMITTED_WITHOUT_FAILURE_RECEIPT','post-START exception before durable closure'))
+            raise
+        self._error_cell = None
+        return score
+
+    @governed
+    def checkpoint(self):
+        self._ready()
+        path = self.directory/'checkpoints'/f'{len(self.journal.read()):06d}.json'
+        payload = checkpoint_payload(self.run_id,self.binding,self.package.schedule,self.journal,len(self.attempted)+1,self.state())
+        seal_checkpoint(path,payload)
+        marker = {'kind':'CHECKPOINT_CREATED','path':path.relative_to(self.directory).as_posix(),
+                  'file_sha256':file_digest(path),'payload':payload}
+        self.journal.append(marker)
+        self.last_checkpoint = marker
+        return path
+
+    def _replay(self):
+        records = self.journal.read()
+        require(records and records[0]['payload']=={'kind':'RUN_CREATED','run_id':self.run_id,'binding':self.binding,
+                'mode':'SYNTHETIC_ONLY' if self.mechanical else 'LIVE','authority':self.authority_evidence},
+                'CORRUPTED_OR_UNPARSEABLE_JOURNAL','run creation')
+        pending = None
+        for index,record in enumerate(records[1:],1):
+            p = record['payload']
+            require(type(p) is dict and type(p.get('kind')) is str,'CORRUPTED_OR_UNPARSEABLE_JOURNAL','payload')
+            if p['kind']=='START':
+                require(pending is None and len(self.attempted)<80,'SCHEDULED_CALL_OMITTED_WITHOUT_FAILURE_RECEIPT')
+                row = self.package.schedule[len(self.attempted)]
+                check_call(row,p['row'])
+                require(p['run_id']==self.run_id and p['binding']==self.binding and
+                        p['mode']==('SYNTHETIC_ONLY' if self.mechanical else 'LIVE') and
+                        p['request_sha256']==digest(self.package.wire(row)), 'PROVENANCE_MISMATCH','START lineage')
+                pending = row;self.attempted.add(row['call_id'])
+            elif p['kind']=='COMPLETE':
+                require(pending is not None and p['call_id']==pending['call_id'],'CORRUPTED_OR_UNPARSEABLE_JOURNAL','completion lineage')
+                result = transport_outcome(pending,p['result'])
+                require('failure' not in result and result==p['result'],'PROVENANCE_MISMATCH','success receipt')
+                member = self.package.members[pending['fixture_id']]
+                score = evaluate(member,result['raw_output'],truncated=result['provider_truncated'])
+                require(score==p['score'] and diagnosis(member,result['raw_output'],score)==p['diagnostic'],
+                        'PROVENANCE_MISMATCH','scorer replay')
+                self.evidence[pending['call_id']]=score;pending=None
+            elif p['kind']=='FAILURE':
+                require(pending is not None and p['call_id']==pending['call_id'],'CORRUPTED_OR_UNPARSEABLE_JOURNAL','failure lineage')
+                require(p['event']==failure_event(pending,p['failure'],p['receipt']),'PROVENANCE_MISMATCH','failure event')
+                raise IntegrityError(p['event'],'failure history terminal')
+            elif p['kind']=='CHECKPOINT_CREATED':
+                require(pending is None,'SCHEDULED_CALL_OMITTED_WITHOUT_FAILURE_RECEIPT')
+                path = self.directory/p['path']
+                require(path.parent==self.directory/'checkpoints' and path.is_file() and file_digest(path)==p['file_sha256'],
+                        'CORRUPTED_CHECKPOINT','marker/file binding')
+                prefix = self.journal.prefix(records[:index])
+                row = verify_checkpoint(path,run_id=self.run_id,binding=self.binding,schedule=self.package.schedule,
+                    journal=self.journal,reconstructed_state=self.state(),next_position=len(self.attempted)+1,prefix=prefix)
+                require(row['payload']==p['payload'],'UNVERIFIABLE_INTERRUPTION_CHECKPOINT','marker payload')
+                self.last_checkpoint = p
+            elif p['kind']=='RESUME_VERIFIED':
+                require(pending is None and self.last_checkpoint is not None and
+                        p=={'kind':'RESUME_VERIFIED','checkpoint':self.last_checkpoint},'UNVERIFIABLE_INTERRUPTION_CHECKPOINT')
+            else:
+                raise IntegrityError('CORRUPTED_OR_UNPARSEABLE_JOURNAL','unknown record type')
+        require(pending is None,'SCHEDULED_CALL_OMITTED_WITHOUT_FAILURE_RECEIPT','open START')
+
+    @governed
+    def verify_resume(self,path):
+        require(self.last_checkpoint is not None,'MISSING_CHECKPOINT_AFTER_INTERRUPTION')
+        # Validate supplied structure before comparing it to the checkpoint marker.
+        verify_checkpoint(path,run_id=self.run_id,binding=self.binding,schedule=self.package.schedule,
+                          journal=self.journal,reconstructed_state=self.state(),next_position=len(self.attempted)+1,
+                          prefix=self.last_checkpoint['payload']['journal_prefix'])
+        require(Path(path)==self.directory/self.last_checkpoint['path'] and file_digest(path)==self.last_checkpoint['file_sha256'],
+                'UNVERIFIABLE_INTERRUPTION_CHECKPOINT','must resume latest original checkpoint')
+        require(not self.events,'PROVENANCE_MISMATCH','terminal incident')
+        self._checkpoint_verified=True
+        self._ready()
+        self.journal.append({'kind':'RESUME_VERIFIED','checkpoint':self.last_checkpoint})
+
+    @governed
+    def final_report(self):
+        self._ready()
+        return {'experiment':'G-CAL1','run_id':self.run_id,'binding':self.binding,'state':self.state(),
+                'mode':'SYNTHETIC_ONLY' if self.mechanical else 'LIVE','summary':summarize(self.package,self.evidence),
+                'provider_model_calls':0 if self.mechanical else len(self.attempted),
+                'autonomy':False,'belief_effects':'none','phase_b':False}

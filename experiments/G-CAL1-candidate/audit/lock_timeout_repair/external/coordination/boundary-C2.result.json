@@ -1,0 +1,1 @@
+{"state":{"attempted_calls":0,"completed_observations":0,"event_scopes":[{"cell":"C2","event":"PROVENANCE_MISMATCH","phase":"CAL"}],"integrity_events":["PROVENANCE_MISMATCH"],"qualified":[],"verdict":"INVALID"}}

@@ -1,0 +1,1 @@
+{"event":"CORRUPTED_CHECKPOINT","state":{"attempted_calls":1,"completed_observations":1,"event_scopes":[{"cell":null,"event":"CORRUPTED_CHECKPOINT","phase":"CAL"}],"integrity_events":["CORRUPTED_CHECKPOINT"],"qualified":[],"verdict":"INVALID"}}

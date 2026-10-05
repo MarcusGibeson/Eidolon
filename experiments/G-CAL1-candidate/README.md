@@ -1,6 +1,6 @@
-# G-CAL1: Lock-Timeout Repair Awaiting Independent Audit
+# G-CAL1: Ready for Execution-Freeze Review Only
 
-## Current lock-timeout repair
+## Current lock-timeout repair and independent closure
 
 The actual 120-second supplement blocked the previous implementation: it emitted
 INVALID `PROVENANCE_MISMATCH` without retaining an incident. The failed review
@@ -15,12 +15,30 @@ and invokes zero transports or START records. Certification passes 25,466 checks
 two new 80-observation pilot trees are byte-identical across 327 files each.
 Science, gold, requests, schedule, contamination and closed histories are unchanged.
 
+Exactly ONE NEW independent audit completed PASS on the repaired implementation
+and candidate at `ae7902c72384a65d65db53a56fc6afc5b119f8d9`. Its first attack used
+the unmodified 120-second timeout, verified durable INVALID while the lock was
+held, and rejected same/stale/reconstructed continuation before and after release.
+P1-A/B/C/D, storage, science and bindings passed. Two independently fresh
+80-observation trees matched each other and both producer trees across 327 files.
+
+Evidence is preserved byte-for-byte in `audit/lock_timeout_repair/external/`:
+1,349 files, including the self-excluded final manifest with 1,348 verified members.
+The audit preserves 28,247 passing assertion rows and three false harness
+expectations, not relabeled as passes. A final ledger writer error occurred after
+the remaining checks saved completion proofs: the additional 37,781 checks are
+explicitly source-derived, with no fabricated per-check ledger. See
+`audit/lock_timeout_repair/INDEPENDENT_REVIEW_COMPLETION.json` and the final report
+for exact accounting, source provenance and limitations. A usage interruption
+resumed the SAME new reviewer; no attacks, pilots or product repairs were repeated.
+
 Candidate `59924e2546dc103ed84bc298c489de40e6a63a1815985af0b3b78f0ad7a0dbc9`
-is candidate-only/unactivated, pending ONE NEW independent audit. The predecessor
+remains byte-identical, candidate-only/unactivated. Its issuance-time audit-pending
+field is not rewritten: the completed audit is bound externally. The predecessor
 `f45825a0165f23b78da13fb0fec8dcade010b37fadbe7cdc8c2020a05b0f0336` remains
 BLOCKED/unactivated/superseded; its bytes have not been changed. No provider calls,
-freeze activation or real execution are authorized. No local history is pushed
-unless the new independent audit completes PASS.
+freeze activation or real execution are authorized. The completed independent
+PASS permits pushing the preserved local history, but grants freeze REVIEW only.
 
 ## Previous incomplete-stage record (preserved history)
 

@@ -1,0 +1,2282 @@
+{
+  "analysis_boundary": {
+    "belief_effects": "none",
+    "historical_artifacts_modified": false,
+    "new_experiment_started": false,
+    "provider_calls": 0,
+    "read_only": true,
+    "runtime_or_input_code_changed": false
+  },
+  "counts": {
+    "by_actual_tier": {
+      "large": 6,
+      "mid": 8,
+      "small": 6
+    },
+    "by_fixture_family": {
+      "CV1": 1,
+      "CV6": 2,
+      "EX1": 3,
+      "EX2": 5,
+      "EX3": 3,
+      "EX4": 2,
+      "EX5": 1,
+      "PL2": 1,
+      "PL5": 1,
+      "SY3": 1
+    },
+    "by_primary_failure_category": {
+      "causal_conclusion_rule_mismatch": 1,
+      "date_or_time_calculation_error": 8,
+      "forbidden_action_included": 1,
+      "numeric_or_threshold_reasoning_error": 6,
+      "qualifier_or_exception_mishandling": 2,
+      "unsupported_uncertainty": 1,
+      "wrong_field_or_entity_binding": 1
+    },
+    "by_round": {
+      "R1": 2,
+      "R2": 10,
+      "R3": 8
+    },
+    "by_starting_tier": {
+      "large": 6,
+      "mid": 7,
+      "small": 7
+    },
+    "by_task_class": {
+      "hierarchical_semantic_synthesis": 1,
+      "ordinary_conversation": 3,
+      "reflective_planning": 2,
+      "structured_extraction": 14
+    }
+  },
+  "epistemic_separation": {
+    "established_facts": [
+      "Phase B execution integrity and scorer reconstruction were clean.",
+      "The router followed the frozen qualification table with no unqualified operational use and no routing-policy violations.",
+      "Twenty structurally valid, operationally accepted semantic failures reached stop dispositions.",
+      "The unsafe-stop gate failed at 20/148 (13.5135 percent).",
+      "No scorer/gold mismatch was found in the 20 reconstructed cases."
+    ],
+    "supported_inferences": [
+      "The primary observed weakness is predictive validity of Phase A qualification, not enforcement of the frozen routing table.",
+      "Structured extraction is the dominant and most bounded target for follow-up because it accounts for 70 percent of unsafe stops and shows repeated fresh-fixture failures in two qualified cells."
+    ],
+    "unresolved_questions": [
+      "The causal contribution of prompt wording, model behavior, fixture diversity, and qualification sample size is not identified by this run.",
+      "The six unsafe stops outside extraction show that extraction-only work cannot establish safety for the other affected classes.",
+      "No alternative qualification rule or threshold has been tested or authorized."
+    ]
+  },
+  "escalation_analysis": {
+    "conclusion": "All three escalations followed the frozen routing policy. The unsafe case was a false-clean mid-tier semantic error after a small-tier structural rejection, not a routing-policy violation.",
+    "correct_outcomes": 2,
+    "escalation_count": 3,
+    "records": [
+      {
+        "case_id": "B4-EXTR-R2-06",
+        "final_semantic_result": "unsafe",
+        "final_tier": "mid",
+        "history": [
+          {
+            "available": true,
+            "model_cell_qualified": true,
+            "model_tier": "small",
+            "next_tier": "mid",
+            "output_accepted": false,
+            "safe_to_stop_escalation": false,
+            "triggers": []
+          },
+          {
+            "available": true,
+            "model_cell_qualified": true,
+            "model_tier": "mid",
+            "next_tier": null,
+            "output_accepted": true,
+            "safe_to_stop_escalation": true,
+            "triggers": []
+          }
+        ],
+        "interpretation": "The small-tier output was structurally rejected; the qualified mid-tier output was accepted but semantically wrong. The frozen routing policy was followed.",
+        "round": "R2",
+        "task_class": "structured_extraction"
+      },
+      {
+        "case_id": "B4-EXTR-R2-11",
+        "final_semantic_result": "correct",
+        "final_tier": "mid",
+        "history": [
+          {
+            "available": true,
+            "model_cell_qualified": true,
+            "model_tier": "small",
+            "next_tier": "mid",
+            "output_accepted": false,
+            "safe_to_stop_escalation": false,
+            "triggers": []
+          },
+          {
+            "available": true,
+            "model_cell_qualified": true,
+            "model_tier": "mid",
+            "next_tier": null,
+            "output_accepted": true,
+            "safe_to_stop_escalation": true,
+            "triggers": []
+          }
+        ],
+        "interpretation": "The small-tier output was structurally rejected; the qualified mid-tier output was accepted and semantically correct.",
+        "round": "R2",
+        "task_class": "structured_extraction"
+      },
+      {
+        "case_id": "B4-EXTR-R2-17",
+        "final_semantic_result": "correct",
+        "final_tier": "mid",
+        "history": [
+          {
+            "available": true,
+            "model_cell_qualified": true,
+            "model_tier": "small",
+            "next_tier": "mid",
+            "output_accepted": false,
+            "safe_to_stop_escalation": false,
+            "triggers": []
+          },
+          {
+            "available": true,
+            "model_cell_qualified": true,
+            "model_tier": "mid",
+            "next_tier": null,
+            "output_accepted": true,
+            "safe_to_stop_escalation": true,
+            "triggers": []
+          }
+        ],
+        "interpretation": "The small-tier output was structurally rejected; the qualified mid-tier output was accepted and semantically correct.",
+        "round": "R2",
+        "task_class": "structured_extraction"
+      }
+    ],
+    "unsafe_outcomes": 1
+  },
+  "experiment_id": "G-ROUTE4",
+  "grounded_research_containment": {
+    "interpretation": "Grounded research remained unqualified from Phase A and was contained in Phase B. This is not a Phase B research-routing failure.",
+    "no_qualified_model_outcomes": 54,
+    "operational_routes": 0,
+    "r4_evidence_only_cases": 1
+  },
+  "other_task_analysis": {
+    "hierarchical_semantic_synthesis": {
+      "summary": "The output selected cause_unresolved without the counterevidence required by the frozen conclusion rule.",
+      "unsafe_stops": 1
+    },
+    "ordinary_conversation": {
+      "summary": "Two CV6 cases mishandled eligibility exceptions or recency conditions; one CV1 case mishandled a cost ceiling.",
+      "unsafe_stops": 3
+    },
+    "reflective_planning": {
+      "summary": "One output invented an unsupported uncertainty; one included an action excluded by the frozen prefix rule.",
+      "unsafe_stops": 2
+    }
+  },
+  "phase_a_vs_phase_b": {
+    "finding": "Phase A qualification did not sufficiently predict Phase B safe operational use, especially for structured extraction.",
+    "phase_a_insufficient_cells": 0,
+    "phase_a_not_qualified_cells": 48,
+    "phase_a_qualified_cells": 12,
+    "qualified_cell_generalization": [
+      {
+        "model_tier": "large",
+        "note": "eligible Phase B cell",
+        "phase_a_false_clean": 0,
+        "phase_a_observations": 8,
+        "phase_a_semantic_passes": 8,
+        "phase_a_verdict": "qualified",
+        "phase_b_attempted_by_router": 18,
+        "phase_b_semantic_pass": {
+          "k": 17,
+          "lower_95_two_sided": 0.727056,
+          "n": 18,
+          "upper_95_two_sided": 0.998594
+        },
+        "phase_b_terminal_stops": 18,
+        "round": "R1",
+        "task_class": "hierarchical_semantic_synthesis"
+      },
+      {
+        "model_tier": "large",
+        "note": "eligible Phase B cell",
+        "phase_a_false_clean": 0,
+        "phase_a_observations": 8,
+        "phase_a_semantic_passes": 8,
+        "phase_a_verdict": "qualified",
+        "phase_b_attempted_by_router": 18,
+        "phase_b_semantic_pass": {
+          "k": 18,
+          "lower_95_two_sided": 0.814698,
+          "n": 18,
+          "upper_95_two_sided": 1.0
+        },
+        "phase_b_terminal_stops": 18,
+        "round": "R2",
+        "task_class": "hierarchical_semantic_synthesis"
+      },
+      {
+        "model_tier": "large",
+        "note": "eligible Phase B cell",
+        "phase_a_false_clean": 0,
+        "phase_a_observations": 8,
+        "phase_a_semantic_passes": 8,
+        "phase_a_verdict": "qualified",
+        "phase_b_attempted_by_router": 18,
+        "phase_b_semantic_pass": {
+          "k": 18,
+          "lower_95_two_sided": 0.814698,
+          "n": 18,
+          "upper_95_two_sided": 1.0
+        },
+        "phase_b_terminal_stops": 18,
+        "round": "R3",
+        "task_class": "hierarchical_semantic_synthesis"
+      },
+      {
+        "model_tier": "large",
+        "note": "R4 is evidence-only in Phase B",
+        "phase_a_false_clean": 0,
+        "phase_a_observations": 8,
+        "phase_a_semantic_passes": 8,
+        "phase_a_verdict": "qualified",
+        "phase_b_attempted_by_router": 0,
+        "phase_b_semantic_pass": null,
+        "phase_b_terminal_stops": 0,
+        "round": "R4",
+        "task_class": "hierarchical_semantic_synthesis"
+      },
+      {
+        "model_tier": "large",
+        "note": "eligible Phase B cell",
+        "phase_a_false_clean": 0,
+        "phase_a_observations": 8,
+        "phase_a_semantic_passes": 8,
+        "phase_a_verdict": "qualified",
+        "phase_b_attempted_by_router": 28,
+        "phase_b_semantic_pass": {
+          "k": 19,
+          "lower_95_two_sided": 0.476484,
+          "n": 28,
+          "upper_95_two_sided": 0.841224
+        },
+        "phase_b_terminal_stops": 22,
+        "round": "R2",
+        "task_class": "ordinary_conversation"
+      },
+      {
+        "model_tier": "large",
+        "note": "eligible Phase B cell",
+        "phase_a_false_clean": 0,
+        "phase_a_observations": 8,
+        "phase_a_semantic_passes": 8,
+        "phase_a_verdict": "qualified",
+        "phase_b_attempted_by_router": 18,
+        "phase_b_semantic_pass": {
+          "k": 17,
+          "lower_95_two_sided": 0.727056,
+          "n": 18,
+          "upper_95_two_sided": 0.998594
+        },
+        "phase_b_terminal_stops": 18,
+        "round": "R1",
+        "task_class": "reflective_planning"
+      },
+      {
+        "model_tier": "large",
+        "note": "eligible Phase B cell",
+        "phase_a_false_clean": 0,
+        "phase_a_observations": 8,
+        "phase_a_semantic_passes": 8,
+        "phase_a_verdict": "qualified",
+        "phase_b_attempted_by_router": 18,
+        "phase_b_semantic_pass": {
+          "k": 17,
+          "lower_95_two_sided": 0.727056,
+          "n": 18,
+          "upper_95_two_sided": 0.998594
+        },
+        "phase_b_terminal_stops": 18,
+        "round": "R3",
+        "task_class": "reflective_planning"
+      },
+      {
+        "model_tier": "large",
+        "note": "R4 is evidence-only in Phase B",
+        "phase_a_false_clean": 0,
+        "phase_a_observations": 8,
+        "phase_a_semantic_passes": 8,
+        "phase_a_verdict": "qualified",
+        "phase_b_attempted_by_router": 0,
+        "phase_b_semantic_pass": null,
+        "phase_b_terminal_stops": 0,
+        "round": "R4",
+        "task_class": "reflective_planning"
+      },
+      {
+        "model_tier": "large",
+        "note": "eligible Phase B cell",
+        "phase_a_false_clean": 0,
+        "phase_a_observations": 8,
+        "phase_a_semantic_passes": 8,
+        "phase_a_verdict": "qualified",
+        "phase_b_attempted_by_router": 0,
+        "phase_b_semantic_pass": {
+          "k": 16,
+          "lower_95_two_sided": 0.65288,
+          "n": 18,
+          "upper_95_two_sided": 0.986249
+        },
+        "phase_b_terminal_stops": 0,
+        "round": "R2",
+        "task_class": "structured_extraction"
+      },
+      {
+        "model_tier": "mid",
+        "note": "eligible Phase B cell",
+        "phase_a_false_clean": 0,
+        "phase_a_observations": 8,
+        "phase_a_semantic_passes": 8,
+        "phase_a_verdict": "qualified",
+        "phase_b_attempted_by_router": 3,
+        "phase_b_semantic_pass": {
+          "k": 15,
+          "lower_95_two_sided": 0.585823,
+          "n": 18,
+          "upper_95_two_sided": 0.964215
+        },
+        "phase_b_terminal_stops": 3,
+        "round": "R2",
+        "task_class": "structured_extraction"
+      },
+      {
+        "model_tier": "small",
+        "note": "eligible Phase B cell",
+        "phase_a_false_clean": 0,
+        "phase_a_observations": 8,
+        "phase_a_semantic_passes": 8,
+        "phase_a_verdict": "qualified",
+        "phase_b_attempted_by_router": 18,
+        "phase_b_semantic_pass": {
+          "k": 9,
+          "lower_95_two_sided": 0.260191,
+          "n": 18,
+          "upper_95_two_sided": 0.739809
+        },
+        "phase_b_terminal_stops": 15,
+        "round": "R2",
+        "task_class": "structured_extraction"
+      },
+      {
+        "model_tier": "mid",
+        "note": "eligible Phase B cell",
+        "phase_a_false_clean": 0,
+        "phase_a_observations": 8,
+        "phase_a_semantic_passes": 8,
+        "phase_a_verdict": "qualified",
+        "phase_b_attempted_by_router": 18,
+        "phase_b_semantic_pass": {
+          "k": 11,
+          "lower_95_two_sided": 0.357451,
+          "n": 18,
+          "upper_95_two_sided": 0.827014
+        },
+        "phase_b_terminal_stops": 18,
+        "round": "R3",
+        "task_class": "structured_extraction"
+      }
+    ]
+  },
+  "phase_b_run_id": "groute4b-001-954e9144ee1ce370",
+  "post_freeze_verification_note": {
+    "closure_builder_compile": "PASS",
+    "closure_builder_deterministic_check": "PASS",
+    "governed_freeze_verifier": "PASS: valid=true, reasons=[]",
+    "historical_47_test_suite": "46/47 in the post-freeze checkout",
+    "historical_test_failure": "FreezeTests.test_no_freeze_before_the_later_step_4_records asserts that EXECUTION_FREEZE_CANDIDATE.json is absent; that pre-freeze assertion is false after the governed freeze was created.",
+    "treatment": "Preserved as a lifecycle-stage limitation. The historical test, freeze implementation, and freeze artifact were not modified."
+  },
+  "reconstruction": {
+    "governed_score_reconstruction_differences": 0,
+    "journal_records": 915,
+    "preserved_representation_differences": [
+      "score.json adds lifecycle fields: orphans_cleared, phase_a_run_id, phase_b_attempts and synthetic_fixture",
+      "score.json preserves a mojibake rendering of the prime mark in generalization.basis; metrics and decisions are unaffected"
+    ],
+    "source_artifacts": {
+      "certification_report": {
+        "path": "experiments/G-ROUTE4-candidate/implementation/CERTIFICATION_REPORT.json",
+        "sha256": "31d187839500570e0a65f3f9212ea682331d2a3bfd9ed87aa71cbd195ba74acf"
+      },
+      "differential_report": {
+        "path": "experiments/G-ROUTE4-candidate/implementation/DIFFERENTIAL_REPORT.json",
+        "sha256": "89aabbfa6e3317cefd695533fc01f32aff1913099729c68d67649c52c9cd23de"
+      },
+      "execution_freeze_manifest": {
+        "path": "experiments/G-ROUTE4-candidate/EXECUTION_FREEZE_CANDIDATE.json",
+        "sha256": "73c91455f93e16b2ac024cf8cd3d7f5cdc0b356332b55c80661a6d15ef67de50"
+      },
+      "phase_a_final_disclosure": {
+        "path": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4\\disclosure\\phase_a\\000003.json",
+        "sha256": "54b9f434a90594fe47e7651b06162e76067b059e380038c1f62b4525aef32007"
+      },
+      "phase_a_receipt": {
+        "path": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4\\phase_a\\runs\\groute4a-001-2f9407b8159dc8ac\\receipt.json",
+        "sha256": "85574883d6d7593d3781e423a386af42f7ef2c7662e0745f228718cdbfcf6ba9"
+      },
+      "phase_a_score": {
+        "path": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4\\phase_a\\runs\\groute4a-001-2f9407b8159dc8ac\\score.json",
+        "sha256": "44d7a2bc62ebb7785b636ba910069e37a89b8ece0973c881164000b3265f18f0"
+      },
+      "phase_a_terminal_journal": {
+        "path": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4\\phase_a\\runs\\groute4a-001-2f9407b8159dc8ac\\journal\\000964.json",
+        "sha256": "74aea5a678d940d6056122f2d84164f7e1700d706f1ba569f45da66fac3a7702"
+      },
+      "phase_b_final_disclosure": {
+        "path": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4\\disclosure\\phase_b\\000003.json",
+        "sha256": "5e295492f130cb3719f4050631d3aaf255b4e3cda5041090dc3c4dfe297b3ecd"
+      },
+      "phase_b_receipt": {
+        "path": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4\\phase_b\\runs\\groute4b-001-954e9144ee1ce370\\receipt.json",
+        "sha256": "8b01ac1512ca5a8b2c106c1b2898e6484f376361d76275587ad6dd11b84b4559"
+      },
+      "phase_b_score": {
+        "path": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4\\phase_b\\runs\\groute4b-001-954e9144ee1ce370\\score.json",
+        "sha256": "1cce9a471cb7be727b83225542cbbb3e7bfded2063605f81984741e8c050db96"
+      },
+      "phase_b_terminal_journal": {
+        "path": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4\\phase_b\\runs\\groute4b-001-954e9144ee1ce370\\journal\\001834.json",
+        "sha256": "9396480655b208e4e48a3d3cc1e04f7286aa74f48bd1cc92b421886409c1500a"
+      },
+      "qualification_audit": {
+        "path": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4\\tables\\QUALIFICATION_AUDIT_DOCUMENT",
+        "sha256": "a8cb66f95079e4454e1a96289dd6ae36adffad55fb32de11cfe8a8d4950cdeb5"
+      },
+      "qualification_table": {
+        "path": "C:\\Users\\marcu\\AppData\\Local\\Eidolon\\research\\g_route4\\tables\\QUALIFICATION_TABLE.json",
+        "sha256": "d0ae0635b44040764ad724e922576c1924e129ac6960b9d6d68a01625432635f"
+      }
+    }
+  },
+  "schema": "g-route4.phase-b-unsafe-stop-diagnostic.v1",
+  "smallest_justified_next_experiment_scope": {
+    "justification": "Structured extraction produced 14 of 20 unsafe stops across five fixture families, with concentrated date/time and numeric/threshold failures after Phase A 8/8 qualifications. A bounded fresh-corpus requalification study can test that gap without reopening unaffected G-ROUTE4 history.",
+    "minimum_evidence_classes_to_cover": [
+      "date and time arithmetic",
+      "numeric aggregation",
+      "threshold booleans",
+      "full entity binding"
+    ],
+    "not_authorized": [
+      "experiment design",
+      "provider contact",
+      "qualification-table modification",
+      "runtime repair",
+      "production routing"
+    ],
+    "scope": "structured-extraction-only prospective requalification"
+  },
+  "structured_extraction_deep_dive": {
+    "by_actual_tier": {
+      "mid": 8,
+      "small": 6
+    },
+    "by_family": {
+      "EX1": 3,
+      "EX2": 5,
+      "EX3": 3,
+      "EX4": 2,
+      "EX5": 1
+    },
+    "by_primary_failure_category": {
+      "date_or_time_calculation_error": 8,
+      "numeric_or_threshold_reasoning_error": 5,
+      "wrong_field_or_entity_binding": 1
+    },
+    "by_round": {
+      "R2": 7,
+      "R3": 7
+    },
+    "established": [
+      "Structured extraction contributed 14 of 20 unsafe stops.",
+      "The failures split evenly between R2 and R3: 7 each.",
+      "All 14 outputs were structurally valid, operationally accepted, semantically wrong, and therefore false-clean.",
+      "Eight failures were date/time calculations, five were numeric or threshold decisions, and one truncated an entity name.",
+      "Phase A qualified small, mid, and large for extraction R2 and mid for extraction R3 at 8/8 semantic passes; the corresponding eligible Phase B semantic pass rates were 9/18, 15/18, 16/18, and 11/18."
+    ],
+    "qualified_cells_and_phase_b_use": [
+      {
+        "model_tier": "large",
+        "note": "eligible Phase B cell",
+        "phase_a_false_clean": 0,
+        "phase_a_observations": 8,
+        "phase_a_semantic_passes": 8,
+        "phase_a_verdict": "qualified",
+        "phase_b_attempted_by_router": 0,
+        "phase_b_semantic_pass": {
+          "k": 16,
+          "lower_95_two_sided": 0.65288,
+          "n": 18,
+          "upper_95_two_sided": 0.986249
+        },
+        "phase_b_terminal_stops": 0,
+        "round": "R2",
+        "task_class": "structured_extraction"
+      },
+      {
+        "model_tier": "mid",
+        "note": "eligible Phase B cell",
+        "phase_a_false_clean": 0,
+        "phase_a_observations": 8,
+        "phase_a_semantic_passes": 8,
+        "phase_a_verdict": "qualified",
+        "phase_b_attempted_by_router": 3,
+        "phase_b_semantic_pass": {
+          "k": 15,
+          "lower_95_two_sided": 0.585823,
+          "n": 18,
+          "upper_95_two_sided": 0.964215
+        },
+        "phase_b_terminal_stops": 3,
+        "round": "R2",
+        "task_class": "structured_extraction"
+      },
+      {
+        "model_tier": "small",
+        "note": "eligible Phase B cell",
+        "phase_a_false_clean": 0,
+        "phase_a_observations": 8,
+        "phase_a_semantic_passes": 8,
+        "phase_a_verdict": "qualified",
+        "phase_b_attempted_by_router": 18,
+        "phase_b_semantic_pass": {
+          "k": 9,
+          "lower_95_two_sided": 0.260191,
+          "n": 18,
+          "upper_95_two_sided": 0.739809
+        },
+        "phase_b_terminal_stops": 15,
+        "round": "R2",
+        "task_class": "structured_extraction"
+      },
+      {
+        "model_tier": "mid",
+        "note": "eligible Phase B cell",
+        "phase_a_false_clean": 0,
+        "phase_a_observations": 8,
+        "phase_a_semantic_passes": 8,
+        "phase_a_verdict": "qualified",
+        "phase_b_attempted_by_router": 18,
+        "phase_b_semantic_pass": {
+          "k": 11,
+          "lower_95_two_sided": 0.357451,
+          "n": 18,
+          "upper_95_two_sided": 0.827014
+        },
+        "phase_b_terminal_stops": 18,
+        "round": "R3",
+        "task_class": "structured_extraction"
+      }
+    ],
+    "share_of_all_unsafe_stops": 0.7,
+    "supported_inferences": [
+      "The Phase A extraction samples did not expose several date/time, arithmetic, threshold, and entity-binding failures that appeared on fresh Phase B fixtures.",
+      "The concentration across multiple fixtures and families indicates a broader generalization problem rather than one isolated bad fixture.",
+      "Expanded prospective fixture diversity is warranted before any extraction tier is requalified."
+    ],
+    "unresolved": [
+      "The evidence does not isolate whether model stochasticity, prompt interpretation, sample composition, or another mechanism caused the Phase A to Phase B gap.",
+      "The clustered failure modes suggest dependence, but one Phase B observation per tier/fixture does not establish statistical error correlation."
+    ],
+    "unsafe_stops": 14
+  },
+  "unsafe_stop_count": 20,
+  "unsafe_stops": [
+    {
+      "actual_model": "qwen3.8:27b",
+      "actual_tier": "large",
+      "call_identity": {
+        "call_id": "GROUTE4-B4-CONV-R2-16-R1-large",
+        "raw_provider_body_sha256": "3b3455733cfb14c52f22d6c5ce80bb747c354eb9f1eeb2a0490cf7b023ffd76c",
+        "request_body_sha256": "3f1d3b5f291a632d0bd227224c2501b7ce11685ccbdc967a21614788f46dbe00",
+        "schedule_position": 655,
+        "seed": 480431
+      },
+      "case_id": "B4-CONV-R2-16",
+      "escalation_history": [
+        {
+          "available": true,
+          "model_cell_qualified": true,
+          "model_tier": "large",
+          "next_tier": null,
+          "output_accepted": true,
+          "safe_to_stop_escalation": true,
+          "triggers": []
+        }
+      ],
+      "exact_unsafe_reason": "Joha met the credit threshold but was excluded by the 180-day conference condition; Detuse was the frozen answer.",
+      "failure_categories": [
+        "qualifier_or_exception_mishandling",
+        "structurally_valid_but_semantically_wrong",
+        "qualification_generalization_failure"
+      ],
+      "false_clean": true,
+      "final_routing_disposition": "stop",
+      "fixture_family": "CV6",
+      "fixture_identity": {
+        "title": "Conference place allocation",
+        "validator_profile": "conversation.v1"
+      },
+      "frozen_expected_output": {
+        "answer": "Detuse",
+        "max_characters": 600
+      },
+      "frozen_rationale": "Detuse is the only option that meets both conditions. Joha meets the first condition but fails the second; the other two fail both.",
+      "malformed": false,
+      "mismatching_fields": [
+        "actions",
+        "answer",
+        "max_characters"
+      ],
+      "operational_acceptance": true,
+      "parsed_model_output": {
+        "actions": "none",
+        "answer": "Joha"
+      },
+      "qualification_status": "qualified",
+      "qualified_tiers": [
+        "large"
+      ],
+      "raw_model_output": "Answer: Joha\nActions taken: none\n\nJoha has 32 total credits (17+15), meeting the minimum of 30. The other employees have fewer than 30 combined credits, so they are ineligible regardless of conference attendance dates. Therefore, Joha is the only one who qualifies based on credit requirements.",
+      "round": "R2",
+      "semantic_scoring": {
+        "contract_version": "g-route3.conversation-frame.v3",
+        "hard_gate_pass": false,
+        "parsed_actions": "none",
+        "parsed_answer": "Joha",
+        "reasons": [
+          "answer_mismatch"
+        ]
+      },
+      "starting_tier": "large",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "actual_model": "qwen3.8:27b",
+      "actual_tier": "large",
+      "call_identity": {
+        "call_id": "GROUTE4-B4-CONV-R2-20-R1-large",
+        "raw_provider_body_sha256": "825b57af95c0e510b435dd98c892ff8b288f41554baabe5262d84227a42178f7",
+        "request_body_sha256": "e18c136227ed47351143462c880b74ffba5235b5853232b4466c4915b3a3ed52",
+        "schedule_position": 669,
+        "seed": 480471
+      },
+      "case_id": "B4-CONV-R2-20",
+      "escalation_history": [
+        {
+          "available": true,
+          "model_cell_qualified": true,
+          "model_tier": "large",
+          "next_tier": null,
+          "output_accepted": true,
+          "safe_to_stop_escalation": true,
+          "triggers": []
+        }
+      ],
+      "exact_unsafe_reason": "Nobizi failed the six-week requirement and the recent-remote-day condition; Higo was the frozen answer.",
+      "failure_categories": [
+        "qualifier_or_exception_mishandling",
+        "structurally_valid_but_semantically_wrong",
+        "qualification_generalization_failure"
+      ],
+      "false_clean": true,
+      "final_routing_disposition": "stop",
+      "fixture_family": "CV6",
+      "fixture_identity": {
+        "title": "Intern remote day",
+        "validator_profile": "conversation.v1"
+      },
+      "frozen_expected_output": {
+        "answer": "Higo",
+        "max_characters": 600
+      },
+      "frozen_rationale": "Higo is the only option that meets both conditions. Wagiyu meets the first condition but fails the second; the other two fail both.",
+      "malformed": false,
+      "mismatching_fields": [
+        "actions",
+        "answer",
+        "max_characters"
+      ],
+      "operational_acceptance": true,
+      "parsed_model_output": {
+        "actions": "none",
+        "answer": "Nobizi"
+      },
+      "qualification_status": "qualified",
+      "qualified_tiers": [
+        "large"
+      ],
+      "raw_model_output": "Answer: Nobizi\nActions taken: none\n\nNobizi qualifies because their remote day (2046-07-08) falls within 10 days before 2046-07-17, exempting them from the 6-week office requirement.",
+      "round": "R2",
+      "semantic_scoring": {
+        "contract_version": "g-route3.conversation-frame.v3",
+        "hard_gate_pass": false,
+        "parsed_actions": "none",
+        "parsed_answer": "Nobizi",
+        "reasons": [
+          "answer_mismatch"
+        ]
+      },
+      "starting_tier": "large",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "actual_model": "qwen3.8:27b",
+      "actual_tier": "large",
+      "call_identity": {
+        "call_id": "GROUTE4-B4-CONV-R2-24-R1-large",
+        "raw_provider_body_sha256": "5704f977719653ff78b89f7921f68fe72b81ee79680637cff6605c90bc5d5e95",
+        "request_body_sha256": "6ab6b4f919efffe95fd93faef0e1cf14fdad01f2b379f2d2a65e6398cd4a15db",
+        "schedule_position": 401,
+        "seed": 480511
+      },
+      "case_id": "B4-CONV-R2-24",
+      "escalation_history": [
+        {
+          "available": true,
+          "model_cell_qualified": true,
+          "model_tier": "large",
+          "next_tier": null,
+          "output_accepted": true,
+          "safe_to_stop_escalation": true,
+          "triggers": []
+        }
+      ],
+      "exact_unsafe_reason": "Kigi's 686 EUR order plus 22 EUR delivery exceeded the 700 EUR ceiling; Fiwipi met both conditions.",
+      "failure_categories": [
+        "numeric_or_threshold_reasoning_error",
+        "structurally_valid_but_semantically_wrong",
+        "qualification_generalization_failure"
+      ],
+      "false_clean": true,
+      "final_routing_disposition": "stop",
+      "fixture_family": "CV1",
+      "fixture_identity": {
+        "title": "Training day lunches",
+        "validator_profile": "conversation.v1"
+      },
+      "frozen_expected_output": {
+        "answer": "Fiwipi",
+        "max_characters": 600
+      },
+      "frozen_rationale": "Fiwipi is the only option that meets both conditions. Kigi meets the first condition but fails the second; the other two fail both.",
+      "malformed": false,
+      "mismatching_fields": [
+        "actions",
+        "answer",
+        "max_characters"
+      ],
+      "operational_acceptance": true,
+      "parsed_model_output": {
+        "actions": "none",
+        "answer": "Kigi"
+      },
+      "qualification_status": "qualified",
+      "qualified_tiers": [
+        "large"
+      ],
+      "raw_model_output": "Answer: Kigi\nActions taken: none\nKigi provides 96 lunches (12 trays x 8) and costs 708 EUR total. This is the only supplier meeting the quantity requirement without exceeding the 700 EUR budget limit, as others either cost more or fail to meet both criteria simultaneously based on the provided quotes.",
+      "round": "R2",
+      "semantic_scoring": {
+        "contract_version": "g-route3.conversation-frame.v3",
+        "hard_gate_pass": false,
+        "parsed_actions": "none",
+        "parsed_answer": "Kigi",
+        "reasons": [
+          "answer_mismatch"
+        ]
+      },
+      "starting_tier": "large",
+      "task_class": "ordinary_conversation"
+    },
+    {
+      "actual_model": "qwen2.5:7b",
+      "actual_tier": "small",
+      "call_identity": {
+        "call_id": "GROUTE4-B4-EXTR-R2-02-R1-small",
+        "raw_provider_body_sha256": "34757f7421847610b604ccb4ebaf1283b98c2493a5c4c49e765fb1f658691f14",
+        "request_body_sha256": "7cd49329671f9357dd76d2001a4b037ff24b3963f4ab7d962ea9b79d9f76e17c",
+        "schedule_position": 802,
+        "seed": 481041
+      },
+      "case_id": "B4-EXTR-R2-02",
+      "escalation_history": [
+        {
+          "available": true,
+          "model_cell_qualified": true,
+          "model_tier": "small",
+          "next_tier": null,
+          "output_accepted": true,
+          "safe_to_stop_escalation": true,
+          "triggers": []
+        }
+      ],
+      "exact_unsafe_reason": "The model returned order_total 50.8 instead of 8 x 4.35 + 3 x 7.2 = 56.4.",
+      "failure_categories": [
+        "numeric_or_threshold_reasoning_error",
+        "structurally_valid_but_semantically_wrong",
+        "qualification_generalization_failure"
+      ],
+      "false_clean": true,
+      "final_routing_disposition": "stop",
+      "fixture_family": "EX3",
+      "fixture_identity": {
+        "title": "Stationery order",
+        "validator_profile": "extraction.v1"
+      },
+      "frozen_expected_output": {
+        "order_total": 56.4,
+        "ordered_on": "2046-02-11",
+        "within_budget": true
+      },
+      "frozen_rationale": "8 x 4.35 + 3 x 7.2 = 56.4, within the 60 remaining.",
+      "malformed": false,
+      "mismatching_fields": [
+        "order_total"
+      ],
+      "operational_acceptance": true,
+      "parsed_model_output": {
+        "order_total": 50.8,
+        "ordered_on": "2046-02-11",
+        "within_budget": true
+      },
+      "qualification_status": "qualified",
+      "qualified_tiers": [
+        "small",
+        "mid",
+        "large"
+      ],
+      "raw_model_output": "{\"order_total\":50.8,\"ordered_on\":\"2046-02-11\",\"within_budget\":true}",
+      "round": "R2",
+      "semantic_scoring": {
+        "belief_effects": "none",
+        "hard_gate_pass": false,
+        "metrics": {
+          "fields": 3
+        },
+        "reasons": [
+          "value_mismatch:order_total"
+        ],
+        "routing_authority": false,
+        "valid": false,
+        "validator_contract": "g-route1.validators.v1"
+      },
+      "starting_tier": "small",
+      "task_class": "structured_extraction"
+    },
+    {
+      "actual_model": "qwen2.5:7b",
+      "actual_tier": "small",
+      "call_identity": {
+        "call_id": "GROUTE4-B4-EXTR-R2-03-R1-small",
+        "raw_provider_body_sha256": "ca02783cc836fb09e39965258f9b911ac9b982b8c86572c08c84760f1fc11566",
+        "request_body_sha256": "d0deb8ec36168fbb6b370c5a0e44592332aebd27a0f6c7472191a2dfe7fc24a8",
+        "schedule_position": 141,
+        "seed": 481051
+      },
+      "case_id": "B4-EXTR-R2-03",
+      "escalation_history": [
+        {
+          "available": true,
+          "model_cell_qualified": true,
+          "model_tier": "small",
+          "next_tier": null,
+          "output_accepted": true,
+          "safe_to_stop_escalation": true,
+          "triggers": []
+        }
+      ],
+      "exact_unsafe_reason": "The model truncated claimant Fovelo Dayuju to Dayuju.",
+      "failure_categories": [
+        "wrong_field_or_entity_binding",
+        "structurally_valid_but_semantically_wrong",
+        "qualification_generalization_failure"
+      ],
+      "false_clean": true,
+      "final_routing_disposition": "stop",
+      "fixture_family": "EX3",
+      "fixture_identity": {
+        "title": "Mileage claim",
+        "validator_profile": "extraction.v1"
+      },
+      "frozen_expected_output": {
+        "claimant": "Fovelo Dayuju",
+        "claimed_miles": 122.5,
+        "receipts": true,
+        "vehicle": "own"
+      },
+      "frozen_rationale": "42 + 17.5 + 63 = 122.5 miles.",
+      "malformed": false,
+      "mismatching_fields": [
+        "claimant"
+      ],
+      "operational_acceptance": true,
+      "parsed_model_output": {
+        "claimant": "Dayuju",
+        "claimed_miles": 122.5,
+        "receipts": true,
+        "vehicle": "own"
+      },
+      "qualification_status": "qualified",
+      "qualified_tiers": [
+        "small",
+        "mid",
+        "large"
+      ],
+      "raw_model_output": "{\"claimant\":\"Dayuju\",\"claimed_miles\":122.5,\"receipts\":true,\"vehicle\":\"own\"}",
+      "round": "R2",
+      "semantic_scoring": {
+        "belief_effects": "none",
+        "hard_gate_pass": false,
+        "metrics": {
+          "fields": 4
+        },
+        "reasons": [
+          "value_mismatch:claimant"
+        ],
+        "routing_authority": false,
+        "valid": false,
+        "validator_contract": "g-route1.validators.v1"
+      },
+      "starting_tier": "small",
+      "task_class": "structured_extraction"
+    },
+    {
+      "actual_model": "qwen3:14b",
+      "actual_tier": "mid",
+      "call_identity": {
+        "call_id": "GROUTE4-B4-EXTR-R2-06-R1-mid",
+        "raw_provider_body_sha256": "c4b97dad0f0f36acd22a3f65b5e26555e4578551a090c68675197fbe8131d952",
+        "request_body_sha256": "16961133bc0abdc9347fd8640618be8f1e39bb2780a40415e9d4c6fbf79cc1be",
+        "schedule_position": 643,
+        "seed": 481081
+      },
+      "case_id": "B4-EXTR-R2-06",
+      "escalation_history": [
+        {
+          "available": true,
+          "model_cell_qualified": true,
+          "model_tier": "small",
+          "next_tier": "mid",
+          "output_accepted": false,
+          "safe_to_stop_escalation": false,
+          "triggers": []
+        },
+        {
+          "available": true,
+          "model_cell_qualified": true,
+          "model_tier": "mid",
+          "next_tier": null,
+          "output_accepted": true,
+          "safe_to_stop_escalation": true,
+          "triggers": []
+        }
+      ],
+      "exact_unsafe_reason": "After escalation, the model returned needs_upgrade=true although 25 + 4 = 29 does not exceed the 30-seat limit.",
+      "failure_categories": [
+        "numeric_or_threshold_reasoning_error",
+        "structurally_valid_but_semantically_wrong",
+        "qualification_generalization_failure"
+      ],
+      "false_clean": true,
+      "final_routing_disposition": "stop",
+      "fixture_family": "EX4",
+      "fixture_identity": {
+        "title": "Software plan renewal",
+        "validator_profile": "extraction.v1"
+      },
+      "frozen_expected_output": {
+        "billing": "yearly",
+        "needs_upgrade": false,
+        "new_hires": 4,
+        "renews_on": "2041-11-08",
+        "seats": 25
+      },
+      "frozen_rationale": "2040-11-08 plus 365 days is 2041-11-08; 25 + 4 = 29 does not exceed 30.",
+      "malformed": false,
+      "mismatching_fields": [
+        "needs_upgrade"
+      ],
+      "operational_acceptance": true,
+      "parsed_model_output": {
+        "billing": "yearly",
+        "needs_upgrade": true,
+        "new_hires": 4,
+        "renews_on": "2041-11-08",
+        "seats": 25
+      },
+      "qualification_status": "qualified",
+      "qualified_tiers": [
+        "small",
+        "mid",
+        "large"
+      ],
+      "raw_model_output": "{\n  \"billing\": \"yearly\",\n  \"needs_upgrade\": true,\n  \"new_hires\": 4,\n  \"renews_on\": \"2041-11-08\",\n  \"seats\": 25\n}",
+      "round": "R2",
+      "semantic_scoring": {
+        "belief_effects": "none",
+        "hard_gate_pass": false,
+        "metrics": {
+          "fields": 5
+        },
+        "reasons": [
+          "value_mismatch:needs_upgrade"
+        ],
+        "routing_authority": false,
+        "valid": false,
+        "validator_contract": "g-route1.validators.v1"
+      },
+      "starting_tier": "small",
+      "task_class": "structured_extraction"
+    },
+    {
+      "actual_model": "qwen2.5:7b",
+      "actual_tier": "small",
+      "call_identity": {
+        "call_id": "GROUTE4-B4-EXTR-R2-14-R1-small",
+        "raw_provider_body_sha256": "fdf12f3f83e0f48ceb059043af029bab1c962d69b79364af97ca4077840f4f4c",
+        "request_body_sha256": "666ea6ff7fed09b5d96be4252e8e557facbc3d5d00d3ab53aa489cf7d5ec8aab",
+        "schedule_position": 512,
+        "seed": 481161
+      },
+      "case_id": "B4-EXTR-R2-14",
+      "escalation_history": [
+        {
+          "available": true,
+          "model_cell_qualified": true,
+          "model_tier": "small",
+          "next_tier": null,
+          "output_accepted": true,
+          "safe_to_stop_escalation": true,
+          "triggers": []
+        }
+      ],
+      "exact_unsafe_reason": "The model returned 2027-11-15 instead of 2027-08-16 plus 90 days = 2027-11-14.",
+      "failure_categories": [
+        "date_or_time_calculation_error",
+        "structurally_valid_but_semantically_wrong",
+        "qualification_generalization_failure"
+      ],
+      "false_clean": true,
+      "final_routing_disposition": "stop",
+      "fixture_family": "EX1",
+      "fixture_identity": {
+        "title": "New starter probation",
+        "validator_profile": "extraction.v1"
+      },
+      "frozen_expected_output": {
+        "long_probation": true,
+        "probation_end": "2027-11-14",
+        "staff_number": "SN-44718"
+      },
+      "frozen_rationale": "2027-08-16 plus 90 days is 2027-11-14; 90 days is longer than 60.",
+      "malformed": false,
+      "mismatching_fields": [
+        "probation_end"
+      ],
+      "operational_acceptance": true,
+      "parsed_model_output": {
+        "long_probation": true,
+        "probation_end": "2027-11-15",
+        "staff_number": "SN-44718"
+      },
+      "qualification_status": "qualified",
+      "qualified_tiers": [
+        "small",
+        "mid",
+        "large"
+      ],
+      "raw_model_output": "{\"long_probation\":true,\"probation_end\":\"2027-11-15\",\"staff_number\":\"SN-44718\"}",
+      "round": "R2",
+      "semantic_scoring": {
+        "belief_effects": "none",
+        "hard_gate_pass": false,
+        "metrics": {
+          "fields": 3
+        },
+        "reasons": [
+          "value_mismatch:probation_end"
+        ],
+        "routing_authority": false,
+        "valid": false,
+        "validator_contract": "g-route1.validators.v1"
+      },
+      "starting_tier": "small",
+      "task_class": "structured_extraction"
+    },
+    {
+      "actual_model": "qwen2.5:7b",
+      "actual_tier": "small",
+      "call_identity": {
+        "call_id": "GROUTE4-B4-EXTR-R2-15-R1-small",
+        "raw_provider_body_sha256": "444f95542b4a3376384df8a31940819df7719d89d9cd517c8d3c40547d833711",
+        "request_body_sha256": "186147590fa9029a35c7709f87a9eb4fe1604a036f5e8cee215a84549df412cf",
+        "schedule_position": 334,
+        "seed": 481171
+      },
+      "case_id": "B4-EXTR-R2-15",
+      "escalation_history": [
+        {
+          "available": true,
+          "model_cell_qualified": true,
+          "model_tier": "small",
+          "next_tier": null,
+          "output_accepted": true,
+          "safe_to_stop_escalation": true,
+          "triggers": []
+        }
+      ],
+      "exact_unsafe_reason": "The model marked 925 monthly and 11100 annually as below the frozen payment thresholds.",
+      "failure_categories": [
+        "numeric_or_threshold_reasoning_error",
+        "structurally_valid_but_semantically_wrong",
+        "qualification_generalization_failure"
+      ],
+      "false_clean": true,
+      "final_routing_disposition": "stop",
+      "fixture_family": "EX1",
+      "fixture_identity": {
+        "title": "Rent standing order",
+        "validator_profile": "extraction.v1"
+      },
+      "frozen_expected_output": {
+        "annual_band": "above_10k",
+        "large_payment": true,
+        "payee": "Mozu Davetu",
+        "payment_ref": "KV-3390"
+      },
+      "frozen_rationale": "925 is above 900; 12 x 925 = 11100, more than 10000.",
+      "malformed": false,
+      "mismatching_fields": [
+        "annual_band",
+        "large_payment"
+      ],
+      "operational_acceptance": true,
+      "parsed_model_output": {
+        "annual_band": "below_10k",
+        "large_payment": false,
+        "payee": "Mozu Davetu",
+        "payment_ref": "KV-3390"
+      },
+      "qualification_status": "qualified",
+      "qualified_tiers": [
+        "small",
+        "mid",
+        "large"
+      ],
+      "raw_model_output": "{\"annual_band\":\"below_10k\",\"large_payment\":false,\"payee\":\"Mozu Davetu\",\"payment_ref\":\"KV-3390\"}",
+      "round": "R2",
+      "semantic_scoring": {
+        "belief_effects": "none",
+        "hard_gate_pass": false,
+        "metrics": {
+          "fields": 4
+        },
+        "reasons": [
+          "value_mismatch:annual_band",
+          "value_mismatch:large_payment"
+        ],
+        "routing_authority": false,
+        "valid": false,
+        "validator_contract": "g-route1.validators.v1"
+      },
+      "starting_tier": "small",
+      "task_class": "structured_extraction"
+    },
+    {
+      "actual_model": "qwen2.5:7b",
+      "actual_tier": "small",
+      "call_identity": {
+        "call_id": "GROUTE4-B4-EXTR-R2-16-R1-small",
+        "raw_provider_body_sha256": "3b2454ccf181feb987496bdddbc7e84b29e679c184390e417fb64922f7883559",
+        "request_body_sha256": "c3580c05502b4ec91687e0734ea13b753057abc2013bc38620880b5158c6e411",
+        "schedule_position": 204,
+        "seed": 481181
+      },
+      "case_id": "B4-EXTR-R2-16",
+      "escalation_history": [
+        {
+          "available": true,
+          "model_cell_qualified": true,
+          "model_tier": "small",
+          "next_tier": null,
+          "output_accepted": true,
+          "safe_to_stop_escalation": true,
+          "triggers": []
+        }
+      ],
+      "exact_unsafe_reason": "The model returned 2028-11-20 instead of 2028-10-05 plus 45 days = 2028-11-19.",
+      "failure_categories": [
+        "date_or_time_calculation_error",
+        "structurally_valid_but_semantically_wrong",
+        "qualification_generalization_failure"
+      ],
+      "false_clean": true,
+      "final_routing_disposition": "stop",
+      "fixture_family": "EX2",
+      "fixture_identity": {
+        "title": "Consulting invoice terms",
+        "validator_profile": "extraction.v1"
+      },
+      "frozen_expected_output": {
+        "due_date": "2028-11-19",
+        "hourly_rate": 87.5,
+        "hours": 12,
+        "late_fees": true,
+        "site_visits": 2
+      },
+      "frozen_rationale": "2028-10-05 plus 45 days is 2028-11-19.",
+      "malformed": false,
+      "mismatching_fields": [
+        "due_date"
+      ],
+      "operational_acceptance": true,
+      "parsed_model_output": {
+        "due_date": "2028-11-20",
+        "hourly_rate": 87.5,
+        "hours": 12,
+        "late_fees": true,
+        "site_visits": 2
+      },
+      "qualification_status": "qualified",
+      "qualified_tiers": [
+        "small",
+        "mid",
+        "large"
+      ],
+      "raw_model_output": "{\n  \"due_date\": \"2028-11-20\",\n  \"hourly_rate\": 87.5,\n  \"hours\": 12,\n  \"late_fees\": true,\n  \"site_visits\": 2\n}",
+      "round": "R2",
+      "semantic_scoring": {
+        "belief_effects": "none",
+        "hard_gate_pass": false,
+        "metrics": {
+          "fields": 5
+        },
+        "reasons": [
+          "value_mismatch:due_date"
+        ],
+        "routing_authority": false,
+        "valid": false,
+        "validator_contract": "g-route1.validators.v1"
+      },
+      "starting_tier": "small",
+      "task_class": "structured_extraction"
+    },
+    {
+      "actual_model": "qwen2.5:7b",
+      "actual_tier": "small",
+      "call_identity": {
+        "call_id": "GROUTE4-B4-EXTR-R2-18-R1-small",
+        "raw_provider_body_sha256": "d9996e8ce47b49431e8f5cf0d82e90922c0dd4ae5b06789f18ef64889ef95d4c",
+        "request_body_sha256": "fad3540463220d025ab0a258bf14f85f045902d2f638e1a4895f8f117fd2125e",
+        "schedule_position": 231,
+        "seed": 481201
+      },
+      "case_id": "B4-EXTR-R2-18",
+      "escalation_history": [
+        {
+          "available": true,
+          "model_cell_qualified": true,
+          "model_tier": "small",
+          "next_tier": null,
+          "output_accepted": true,
+          "safe_to_stop_escalation": true,
+          "triggers": []
+        }
+      ],
+      "exact_unsafe_reason": "The model returned 2029-12-21 instead of 2029-12-20 plus 30 days = 2030-01-19.",
+      "failure_categories": [
+        "date_or_time_calculation_error",
+        "structurally_valid_but_semantically_wrong",
+        "qualification_generalization_failure"
+      ],
+      "false_clean": true,
+      "final_routing_disposition": "stop",
+      "fixture_family": "EX2",
+      "fixture_identity": {
+        "title": "Parking permit",
+        "validator_profile": "extraction.v1"
+      },
+      "frozen_expected_output": {
+        "bay_count": 8,
+        "expires": "2030-01-19",
+        "overnight": true
+      },
+      "frozen_rationale": "2029-12-20 plus 30 days is 2030-01-19; bays 12 to 19 inclusive are 8.",
+      "malformed": false,
+      "mismatching_fields": [
+        "expires"
+      ],
+      "operational_acceptance": true,
+      "parsed_model_output": {
+        "bay_count": 8,
+        "expires": "2029-12-21",
+        "overnight": true
+      },
+      "qualification_status": "qualified",
+      "qualified_tiers": [
+        "small",
+        "mid",
+        "large"
+      ],
+      "raw_model_output": "{\"bay_count\":8,\"expires\":\"2029-12-21\",\"overnight\":true}",
+      "round": "R2",
+      "semantic_scoring": {
+        "belief_effects": "none",
+        "hard_gate_pass": false,
+        "metrics": {
+          "fields": 3
+        },
+        "reasons": [
+          "value_mismatch:expires"
+        ],
+        "routing_authority": false,
+        "valid": false,
+        "validator_contract": "g-route1.validators.v1"
+      },
+      "starting_tier": "small",
+      "task_class": "structured_extraction"
+    },
+    {
+      "actual_model": "qwen3:14b",
+      "actual_tier": "mid",
+      "call_identity": {
+        "call_id": "GROUTE4-B4-EXTR-R3-01-R1-mid",
+        "raw_provider_body_sha256": "807703a7358a5f831e7da3c7e23c7da8da968b963e79256e289c439a1a6e919f",
+        "request_body_sha256": "baf429204ca3bcc90a2bcbf79b4de409490d449e24c039896bded7a6ac77718f",
+        "schedule_position": 884,
+        "seed": 481211
+      },
+      "case_id": "B4-EXTR-R3-01",
+      "escalation_history": [
+        {
+          "available": true,
+          "model_cell_qualified": true,
+          "model_tier": "mid",
+          "next_tier": null,
+          "output_accepted": true,
+          "safe_to_stop_escalation": true,
+          "triggers": []
+        }
+      ],
+      "exact_unsafe_reason": "The model returned 2033-07-14 instead of 2031-09-14 plus 398 days = 2032-10-16.",
+      "failure_categories": [
+        "date_or_time_calculation_error",
+        "structurally_valid_but_semantically_wrong",
+        "qualification_generalization_failure"
+      ],
+      "false_clean": true,
+      "final_routing_disposition": "stop",
+      "fixture_family": "EX5",
+      "fixture_identity": {
+        "title": "Staff portal certificate",
+        "validator_profile": "extraction.v1"
+      },
+      "frozen_expected_output": {
+        "auto_renew": true,
+        "ca_contact": "not_provided",
+        "expires_on": "2032-10-16"
+      },
+      "frozen_rationale": "2031-09-14 plus 398 days is 2032-10-16; the contact is stated as not provided.",
+      "malformed": false,
+      "mismatching_fields": [
+        "expires_on"
+      ],
+      "operational_acceptance": true,
+      "parsed_model_output": {
+        "auto_renew": true,
+        "ca_contact": "not_provided",
+        "expires_on": "2033-07-14"
+      },
+      "qualification_status": "qualified",
+      "qualified_tiers": [
+        "mid"
+      ],
+      "raw_model_output": "{\n  \"auto_renew\": true,\n  \"ca_contact\": \"not_provided\",\n  \"expires_on\": \"2033-07-14\"\n}",
+      "round": "R3",
+      "semantic_scoring": {
+        "belief_effects": "none",
+        "hard_gate_pass": false,
+        "metrics": {
+          "fields": 3
+        },
+        "reasons": [
+          "value_mismatch:expires_on"
+        ],
+        "routing_authority": false,
+        "valid": false,
+        "validator_contract": "g-route1.validators.v1"
+      },
+      "starting_tier": "mid",
+      "task_class": "structured_extraction"
+    },
+    {
+      "actual_model": "qwen3:14b",
+      "actual_tier": "mid",
+      "call_identity": {
+        "call_id": "GROUTE4-B4-EXTR-R3-08-R1-mid",
+        "raw_provider_body_sha256": "5fe5101a15dd2d6a81a5387d6bd0b47a95f4d97f649ec44f5bb0a7ca1683fe4f",
+        "request_body_sha256": "0213452b0d912ef24fcce66c56564bda4e92bcd4fcf0d8a6b453cc858a191950",
+        "schedule_position": 81,
+        "seed": 481281
+      },
+      "case_id": "B4-EXTR-R3-08",
+      "escalation_history": [
+        {
+          "available": true,
+          "model_cell_qualified": true,
+          "model_tier": "mid",
+          "next_tier": null,
+          "output_accepted": true,
+          "safe_to_stop_escalation": true,
+          "triggers": []
+        }
+      ],
+      "exact_unsafe_reason": "The badge expiry was correctly 17:05, but the model returned after_hours=false even though 17:05 is later than 17:00.",
+      "failure_categories": [
+        "numeric_or_threshold_reasoning_error",
+        "structurally_valid_but_semantically_wrong",
+        "qualification_generalization_failure"
+      ],
+      "false_clean": true,
+      "final_routing_disposition": "stop",
+      "fixture_family": "EX1",
+      "fixture_identity": {
+        "title": "Visitor badge",
+        "validator_profile": "extraction.v1"
+      },
+      "frozen_expected_output": {
+        "after_hours": true,
+        "badge_expires": "17:05",
+        "visitor": "Sarumo Suzu"
+      },
+      "frozen_rationale": "13:05 plus 4 hours is 17:05, later than 17:00.",
+      "malformed": false,
+      "mismatching_fields": [
+        "after_hours"
+      ],
+      "operational_acceptance": true,
+      "parsed_model_output": {
+        "after_hours": false,
+        "badge_expires": "17:05",
+        "visitor": "Sarumo Suzu"
+      },
+      "qualification_status": "qualified",
+      "qualified_tiers": [
+        "mid"
+      ],
+      "raw_model_output": "{\n  \"after_hours\": false,\n  \"badge_expires\": \"17:05\",\n  \"visitor\": \"Sarumo Suzu\"\n}",
+      "round": "R3",
+      "semantic_scoring": {
+        "belief_effects": "none",
+        "hard_gate_pass": false,
+        "metrics": {
+          "fields": 3
+        },
+        "reasons": [
+          "value_mismatch:after_hours"
+        ],
+        "routing_authority": false,
+        "valid": false,
+        "validator_contract": "g-route1.validators.v1"
+      },
+      "starting_tier": "mid",
+      "task_class": "structured_extraction"
+    },
+    {
+      "actual_model": "qwen3:14b",
+      "actual_tier": "mid",
+      "call_identity": {
+        "call_id": "GROUTE4-B4-EXTR-R3-10-R1-mid",
+        "raw_provider_body_sha256": "2d08f707ac7b180a550a088e4ea529638d9dd1f06abeb9d86da36888045ec4bc",
+        "request_body_sha256": "69ea8d084db1bc7b2f6571be425bf83596c4838651d2a410f457c55dcb9e19ba",
+        "schedule_position": 850,
+        "seed": 481301
+      },
+      "case_id": "B4-EXTR-R3-10",
+      "escalation_history": [
+        {
+          "available": true,
+          "model_cell_qualified": true,
+          "model_tier": "mid",
+          "next_tier": null,
+          "output_accepted": true,
+          "safe_to_stop_escalation": true,
+          "triggers": []
+        }
+      ],
+      "exact_unsafe_reason": "The model returned 00:17 instead of 22:47 plus 30 minutes = 23:17.",
+      "failure_categories": [
+        "date_or_time_calculation_error",
+        "structurally_valid_but_semantically_wrong",
+        "qualification_generalization_failure"
+      ],
+      "false_clean": true,
+      "final_routing_disposition": "stop",
+      "fixture_family": "EX2",
+      "fixture_identity": {
+        "title": "Account lockout",
+        "validator_profile": "extraction.v1"
+      },
+      "frozen_expected_output": {
+        "attempts_over_limit": 2,
+        "failed_attempts": 5,
+        "unlock_mode": "automatic",
+        "unlocks_at": "23:17"
+      },
+      "frozen_rationale": "22:47 plus 30 minutes is 23:17; 5 - 3 = 2.",
+      "malformed": false,
+      "mismatching_fields": [
+        "unlocks_at"
+      ],
+      "operational_acceptance": true,
+      "parsed_model_output": {
+        "attempts_over_limit": 2,
+        "failed_attempts": 5,
+        "unlock_mode": "automatic",
+        "unlocks_at": "00:17"
+      },
+      "qualification_status": "qualified",
+      "qualified_tiers": [
+        "mid"
+      ],
+      "raw_model_output": "{\n  \"attempts_over_limit\": 2,\n  \"failed_attempts\": 5,\n  \"unlock_mode\": \"automatic\",\n  \"unlocks_at\": \"00:17\"\n}",
+      "round": "R3",
+      "semantic_scoring": {
+        "belief_effects": "none",
+        "hard_gate_pass": false,
+        "metrics": {
+          "fields": 4
+        },
+        "reasons": [
+          "value_mismatch:unlocks_at"
+        ],
+        "routing_authority": false,
+        "valid": false,
+        "validator_contract": "g-route1.validators.v1"
+      },
+      "starting_tier": "mid",
+      "task_class": "structured_extraction"
+    },
+    {
+      "actual_model": "qwen3:14b",
+      "actual_tier": "mid",
+      "call_identity": {
+        "call_id": "GROUTE4-B4-EXTR-R3-11-R1-mid",
+        "raw_provider_body_sha256": "f12d017e19240b6b92cef65cd9200196b70ab3f400c9b82440d7c652bb42deae",
+        "request_body_sha256": "ee528fae348bd22ed654c357bacbd3a9323d53e3210fbb96c6904e586288bc0c",
+        "schedule_position": 776,
+        "seed": 481311
+      },
+      "case_id": "B4-EXTR-R3-11",
+      "escalation_history": [
+        {
+          "available": true,
+          "model_cell_qualified": true,
+          "model_tier": "mid",
+          "next_tier": null,
+          "output_accepted": true,
+          "safe_to_stop_escalation": true,
+          "triggers": []
+        }
+      ],
+      "exact_unsafe_reason": "The model returned 2043-09-01 instead of 2042-03-03 plus 180 days = 2042-08-30.",
+      "failure_categories": [
+        "date_or_time_calculation_error",
+        "structurally_valid_but_semantically_wrong",
+        "qualification_generalization_failure"
+      ],
+      "false_clean": true,
+      "final_routing_disposition": "stop",
+      "fixture_family": "EX2",
+      "fixture_identity": {
+        "title": "Backup key rotation",
+        "validator_profile": "extraction.v1"
+      },
+      "frozen_expected_output": {
+        "backups": 6,
+        "hsm_stored": true,
+        "next_rotation": "2042-08-30",
+        "restore_hours": 2.5,
+        "total_tb": 1.75
+      },
+      "frozen_rationale": "2042-03-03 plus 180 days is 2042-08-30.",
+      "malformed": false,
+      "mismatching_fields": [
+        "next_rotation"
+      ],
+      "operational_acceptance": true,
+      "parsed_model_output": {
+        "backups": 6,
+        "hsm_stored": true,
+        "next_rotation": "2043-09-01",
+        "restore_hours": 2.5,
+        "total_tb": 1.75
+      },
+      "qualification_status": "qualified",
+      "qualified_tiers": [
+        "mid"
+      ],
+      "raw_model_output": "{\n  \"backups\": 6,\n  \"hsm_stored\": true,\n  \"next_rotation\": \"2043-09-01\",\n  \"restore_hours\": 2.5,\n  \"total_tb\": 1.75\n}",
+      "round": "R3",
+      "semantic_scoring": {
+        "belief_effects": "none",
+        "hard_gate_pass": false,
+        "metrics": {
+          "fields": 5
+        },
+        "reasons": [
+          "value_mismatch:next_rotation"
+        ],
+        "routing_authority": false,
+        "valid": false,
+        "validator_contract": "g-route1.validators.v1"
+      },
+      "starting_tier": "mid",
+      "task_class": "structured_extraction"
+    },
+    {
+      "actual_model": "qwen3:14b",
+      "actual_tier": "mid",
+      "call_identity": {
+        "call_id": "GROUTE4-B4-EXTR-R3-12-R1-mid",
+        "raw_provider_body_sha256": "4acbb533c0e8e23dfc6df93bf6179b67b365cb16a564e944e7e49a3b6dbb12e6",
+        "request_body_sha256": "ef4651849302b0987315005b9545bd67b2f18eb0e09d367685ddeb04db29871f",
+        "schedule_position": 11,
+        "seed": 481321
+      },
+      "case_id": "B4-EXTR-R3-12",
+      "escalation_history": [
+        {
+          "available": true,
+          "model_cell_qualified": true,
+          "model_tier": "mid",
+          "next_tier": null,
+          "output_accepted": true,
+          "safe_to_stop_escalation": true,
+          "triggers": []
+        }
+      ],
+      "exact_unsafe_reason": "The model returned 2043-11-01 instead of 2043-10-28 plus three days = 2043-10-31.",
+      "failure_categories": [
+        "date_or_time_calculation_error",
+        "structurally_valid_but_semantically_wrong",
+        "qualification_generalization_failure"
+      ],
+      "false_clean": true,
+      "final_routing_disposition": "stop",
+      "fixture_family": "EX2",
+      "fixture_identity": {
+        "title": "Breach notification",
+        "validator_profile": "extraction.v1"
+      },
+      "frozen_expected_output": {
+        "data_category": "standard",
+        "notifiable": true,
+        "notify_by": "2043-10-31",
+        "records": 1840,
+        "risk_score": 6.4
+      },
+      "frozen_rationale": "2043-10-28 plus 3 days is 2043-10-31; 1840 is more than 500.",
+      "malformed": false,
+      "mismatching_fields": [
+        "notify_by"
+      ],
+      "operational_acceptance": true,
+      "parsed_model_output": {
+        "data_category": "standard",
+        "notifiable": true,
+        "notify_by": "2043-11-01",
+        "records": 1840,
+        "risk_score": 6.4
+      },
+      "qualification_status": "qualified",
+      "qualified_tiers": [
+        "mid"
+      ],
+      "raw_model_output": "{\n  \"data_category\": \"standard\",\n  \"notifiable\": true,\n  \"notify_by\": \"2043-11-01\",\n  \"records\": 1840,\n  \"risk_score\": 6.4\n}",
+      "round": "R3",
+      "semantic_scoring": {
+        "belief_effects": "none",
+        "hard_gate_pass": false,
+        "metrics": {
+          "fields": 5
+        },
+        "reasons": [
+          "value_mismatch:notify_by"
+        ],
+        "routing_authority": false,
+        "valid": false,
+        "validator_contract": "g-route1.validators.v1"
+      },
+      "starting_tier": "mid",
+      "task_class": "structured_extraction"
+    },
+    {
+      "actual_model": "qwen3:14b",
+      "actual_tier": "mid",
+      "call_identity": {
+        "call_id": "GROUTE4-B4-EXTR-R3-15-R1-mid",
+        "raw_provider_body_sha256": "bb3f3f49097fc7aa575afada8ea4a11da47e67ef583efd8797eb22a602da0a4b",
+        "request_body_sha256": "864e8765cd648e9bf0b1b9c2e942828aa860e7e0910f62ed52252406fc8b9d7b",
+        "schedule_position": 697,
+        "seed": 481351
+      },
+      "case_id": "B4-EXTR-R3-15",
+      "escalation_history": [
+        {
+          "available": true,
+          "model_cell_qualified": true,
+          "model_tier": "mid",
+          "next_tier": null,
+          "output_accepted": true,
+          "safe_to_stop_escalation": true,
+          "triggers": []
+        }
+      ],
+      "exact_unsafe_reason": "The model computed 41.75 minutes correctly but returned fits_window=false for a 45-minute window.",
+      "failure_categories": [
+        "numeric_or_threshold_reasoning_error",
+        "structurally_valid_but_semantically_wrong",
+        "qualification_generalization_failure"
+      ],
+      "false_clean": true,
+      "final_routing_disposition": "stop",
+      "fixture_family": "EX3",
+      "fixture_identity": {
+        "title": "Server patch window",
+        "validator_profile": "extraction.v1"
+      },
+      "frozen_expected_output": {
+        "fits_window": true,
+        "host": "Jejo",
+        "patch_count": 3,
+        "patch_minutes": 41.75
+      },
+      "frozen_rationale": "12.5 + 8 + 21.25 = 41.75 minutes, within 45.",
+      "malformed": false,
+      "mismatching_fields": [
+        "fits_window"
+      ],
+      "operational_acceptance": true,
+      "parsed_model_output": {
+        "fits_window": false,
+        "host": "Jejo",
+        "patch_count": 3,
+        "patch_minutes": 41.75
+      },
+      "qualification_status": "qualified",
+      "qualified_tiers": [
+        "mid"
+      ],
+      "raw_model_output": "{\"fits_window\":false,\"host\":\"Jejo\",\"patch_count\":3,\"patch_minutes\":41.75}",
+      "round": "R3",
+      "semantic_scoring": {
+        "belief_effects": "none",
+        "hard_gate_pass": false,
+        "metrics": {
+          "fields": 4
+        },
+        "reasons": [
+          "value_mismatch:fits_window"
+        ],
+        "routing_authority": false,
+        "valid": false,
+        "validator_contract": "g-route1.validators.v1"
+      },
+      "starting_tier": "mid",
+      "task_class": "structured_extraction"
+    },
+    {
+      "actual_model": "qwen3:14b",
+      "actual_tier": "mid",
+      "call_identity": {
+        "call_id": "GROUTE4-B4-EXTR-R3-17-R1-mid",
+        "raw_provider_body_sha256": "ef26808af2c07136df11dfd7af1ddacb5ed122b47eaf1f64921b61143d5ee3e5",
+        "request_body_sha256": "c20b7af209c49600f76ad45ae65e61c2303ab6bb40b8cbbcc4d48c01c8ea1692",
+        "schedule_position": 333,
+        "seed": 481371
+      },
+      "case_id": "B4-EXTR-R3-17",
+      "escalation_history": [
+        {
+          "available": true,
+          "model_cell_qualified": true,
+          "model_tier": "mid",
+          "next_tier": null,
+          "output_accepted": true,
+          "safe_to_stop_escalation": true,
+          "triggers": []
+        }
+      ],
+      "exact_unsafe_reason": "The model returned 2044-03-15 instead of 2044-02-02 plus 21 days = 2044-02-23.",
+      "failure_categories": [
+        "date_or_time_calculation_error",
+        "structurally_valid_but_semantically_wrong",
+        "qualification_generalization_failure"
+      ],
+      "false_clean": true,
+      "final_routing_disposition": "stop",
+      "fixture_family": "EX4",
+      "fixture_identity": {
+        "title": "Background screening",
+        "validator_profile": "extraction.v1"
+      },
+      "frozen_expected_output": {
+        "ready_by": "2044-02-23",
+        "refs_checked": 2,
+        "refs_complete": false,
+        "refs_required": 3,
+        "screening_score": 88.5
+      },
+      "frozen_rationale": "2044-02-02 plus 21 days is 2044-02-23; 2 of 3 references is incomplete.",
+      "malformed": false,
+      "mismatching_fields": [
+        "ready_by"
+      ],
+      "operational_acceptance": true,
+      "parsed_model_output": {
+        "ready_by": "2044-03-15",
+        "refs_checked": 2,
+        "refs_complete": false,
+        "refs_required": 3,
+        "screening_score": 88.5
+      },
+      "qualification_status": "qualified",
+      "qualified_tiers": [
+        "mid"
+      ],
+      "raw_model_output": "{\n  \"ready_by\": \"2044-03-15\",\n  \"refs_checked\": 2,\n  \"refs_complete\": false,\n  \"refs_required\": 3,\n  \"screening_score\": 88.5\n}",
+      "round": "R3",
+      "semantic_scoring": {
+        "belief_effects": "none",
+        "hard_gate_pass": false,
+        "metrics": {
+          "fields": 5
+        },
+        "reasons": [
+          "value_mismatch:ready_by"
+        ],
+        "routing_authority": false,
+        "valid": false,
+        "validator_contract": "g-route1.validators.v1"
+      },
+      "starting_tier": "mid",
+      "task_class": "structured_extraction"
+    },
+    {
+      "actual_model": "qwen3.8:27b",
+      "actual_tier": "large",
+      "call_identity": {
+        "call_id": "GROUTE4-B4-PLAN-R1-04-R1-large",
+        "raw_provider_body_sha256": "dbb76d61cc2e2032c8495ccf8197034f859df8a0e652663c355ecf126bf21a38",
+        "request_body_sha256": "db6fad7f9901271da1810a0b4c8b37be72850705271af5d023c8c9cded612fb0",
+        "schedule_position": 822,
+        "seed": 481431
+      },
+      "case_id": "B4-PLAN-R1-04",
+      "escalation_history": [
+        {
+          "available": true,
+          "model_cell_qualified": true,
+          "model_tier": "large",
+          "next_tier": null,
+          "output_accepted": true,
+          "safe_to_stop_escalation": true,
+          "triggers": []
+        }
+      ],
+      "exact_unsafe_reason": "The model added rain_plan_unknown even though no evidence stated that condition.",
+      "failure_categories": [
+        "unsupported_uncertainty",
+        "structurally_valid_but_semantically_wrong",
+        "qualification_generalization_failure"
+      ],
+      "false_clean": true,
+      "final_routing_disposition": "stop",
+      "fixture_family": "PL2",
+      "fixture_identity": {
+        "title": "Family reunion picnic",
+        "validator_profile": "planning.v1"
+      },
+      "frozen_expected_output": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "list_invited_branches",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "book_shelter_pitch",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "share_dish_rota",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3"
+            ],
+            "id": "P3"
+          }
+        ],
+        "uncertainties": []
+      },
+      "frozen_rationale": "The stated precedences give the order list_invited_branches, book_shelter_pitch, share_dish_rota; pay_ice_cream_van and transfer_kitty_funds are excluded by the forbidden name prefix; no uncertainty condition holds.",
+      "malformed": false,
+      "mismatching_fields": [
+        "uncertainties"
+      ],
+      "operational_acceptance": true,
+      "parsed_model_output": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "list_invited_branches",
+            "depends_on": [],
+            "evidence_ids": [
+              "F1",
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "book_shelter_pitch",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "share_dish_rota",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3"
+            ],
+            "id": "P3"
+          }
+        ],
+        "uncertainties": [
+          "rain_plan_unknown"
+        ]
+      },
+      "qualification_status": "qualified",
+      "qualified_tiers": [
+        "large"
+      ],
+      "raw_model_output": "```json\n{\n  \"steps\": [\n    {\n      \"id\": \"P1\",\n      \"action\": \"list_invited_branches\",\n      \"depends_on\": [],\n      \"evidence_ids\": [\"F1\", \"F2\"]\n    },\n    {\n      \"id\": \"P2\",\n      \"action\": \"book_shelter_pitch\",\n      \"depends_on\": [\"P1\"],\n      \"evidence_ids\": [\"F2\", \"F3\"]\n    },\n    {\n      \"id\": \"P3\",\n      \"action\": \"share_dish_rota\",\n      \"depends_on\": [\"P2\"],\n      \"evidence_ids\": [\"F3\"]\n    }\n  ],\n  \"uncertainties\": [\n    \"rain_plan_unknown\"\n  ],\n  \"claims_completed\": false,\n  \"requested_authority\": []\n}\n```",
+      "round": "R1",
+      "semantic_scoring": {
+        "belief_effects": "none",
+        "hard_gate_pass": false,
+        "metrics": {
+          "steps": 3
+        },
+        "reasons": [
+          "planning_contract_mismatch"
+        ],
+        "routing_authority": false,
+        "valid": false,
+        "validator_contract": "g-route1.validators.v1"
+      },
+      "starting_tier": "large",
+      "task_class": "reflective_planning"
+    },
+    {
+      "actual_model": "qwen3.8:27b",
+      "actual_tier": "large",
+      "call_identity": {
+        "call_id": "GROUTE4-B4-PLAN-R3-01-R1-large",
+        "raw_provider_body_sha256": "f37e3304b6a64a00ed2309706aac7721f284b808436dcd1c931e90b158372142",
+        "request_body_sha256": "d22fb18a334e53fc262a3bb6d86d3d5f7aac927f9a92f071e35633cd4d5c84e9",
+        "schedule_position": 561,
+        "seed": 481761
+      },
+      "case_id": "B4-PLAN-R3-01",
+      "escalation_history": [
+        {
+          "available": true,
+          "model_cell_qualified": true,
+          "model_tier": "large",
+          "next_tier": null,
+          "output_accepted": true,
+          "safe_to_stop_escalation": true,
+          "triggers": []
+        }
+      ],
+      "exact_unsafe_reason": "The model included disable_contractor_logins although the frozen prompt excluded actions beginning with disable.",
+      "failure_categories": [
+        "forbidden_action_included",
+        "structurally_valid_but_semantically_wrong",
+        "qualification_generalization_failure"
+      ],
+      "false_clean": true,
+      "final_routing_disposition": "stop",
+      "fixture_family": "PL5",
+      "fixture_identity": {
+        "title": "Contractor offboarding",
+        "validator_profile": "planning.v1"
+      },
+      "frozen_expected_output": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "list_contractor_accounts",
+            "depends_on": [],
+            "evidence_ids": [
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "collect_access_tokens",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "archive_contractor_files",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3"
+            ],
+            "id": "P3"
+          }
+        ],
+        "uncertainties": [
+          "shared_secret_list_unknown"
+        ]
+      },
+      "frozen_rationale": "The stated precedences give the order list_contractor_accounts, collect_access_tokens, archive_contractor_files; disable_contractor_logins is excluded by the forbidden name prefix; shared_secret_list_unknown holds because the evidence says so.",
+      "malformed": false,
+      "mismatching_fields": [
+        "steps"
+      ],
+      "operational_acceptance": true,
+      "parsed_model_output": {
+        "claims_completed": false,
+        "requested_authority": [],
+        "steps": [
+          {
+            "action": "list_contractor_accounts",
+            "depends_on": [],
+            "evidence_ids": [
+              "F2"
+            ],
+            "id": "P1"
+          },
+          {
+            "action": "collect_access_tokens",
+            "depends_on": [
+              "P1"
+            ],
+            "evidence_ids": [
+              "F2",
+              "F3"
+            ],
+            "id": "P2"
+          },
+          {
+            "action": "archive_contractor_files",
+            "depends_on": [
+              "P2"
+            ],
+            "evidence_ids": [
+              "F3"
+            ],
+            "id": "P3"
+          },
+          {
+            "action": "disable_contractor_logins",
+            "depends_on": [
+              "P3"
+            ],
+            "evidence_ids": [
+              "F1"
+            ],
+            "id": "P4"
+          }
+        ],
+        "uncertainties": [
+          "shared_secret_list_unknown"
+        ]
+      },
+      "qualification_status": "qualified",
+      "qualified_tiers": [
+        "large"
+      ],
+      "raw_model_output": "```json\n{\n  \"steps\": [\n    {\n      \"id\": \"P1\",\n      \"action\": \"list_contractor_accounts\",\n      \"depends_on\": [],\n      \"evidence_ids\": [\"F2\"]\n    },\n    {\n      \"id\": \"P2\",\n      \"action\": \"collect_access_tokens\",\n      \"depends_on\": [\"P1\"],\n      \"evidence_ids\": [\"F2\", \"F3\"]\n    },\n    {\n      \"id\": \"P3\",\n      \"action\": \"archive_contractor_files\",\n      \"depends_on\": [\"P2\"],\n      \"evidence_ids\": [\"F3\"]\n    },\n    {\n      \"id\": \"P4\",\n      \"action\": \"disable_contractor_logins\",\n      \"depends_on\": [\"P3\"],\n      \"evidence_ids\": [\"F1\"]\n    }\n  ],\n  \"uncertainties\": [\n    \"shared_secret_list_unknown\"\n  ],\n  \"claims_completed\": false,\n  \"requested_authority\": []\n}\n```",
+      "round": "R3",
+      "semantic_scoring": {
+        "belief_effects": "none",
+        "hard_gate_pass": false,
+        "metrics": {
+          "steps": 4
+        },
+        "reasons": [
+          "planning_contract_mismatch"
+        ],
+        "routing_authority": false,
+        "valid": false,
+        "validator_contract": "g-route1.validators.v1"
+      },
+      "starting_tier": "large",
+      "task_class": "reflective_planning"
+    },
+    {
+      "actual_model": "qwen3.8:27b",
+      "actual_tier": "large",
+      "call_identity": {
+        "call_id": "GROUTE4-B4-SYNTH-R1-09-R1-large",
+        "raw_provider_body_sha256": "52567467918bf28b759c262ed24e568195ac0107c94069a8e17e9ca2136a6677",
+        "request_body_sha256": "dbe7ef49a5abfb3949970a82e647412cb8020c1d3b71c79111de44c451c599bf",
+        "schedule_position": 48,
+        "seed": 482581
+      },
+      "case_id": "B4-SYNTH-R1-09",
+      "escalation_history": [
+        {
+          "available": true,
+          "model_cell_qualified": true,
+          "model_tier": "large",
+          "next_tier": null,
+          "output_accepted": true,
+          "safe_to_stop_escalation": true,
+          "triggers": []
+        }
+      ],
+      "exact_unsafe_reason": "The model chose cause_unresolved without counterevidence; the frozen rule required insufficient_evidence.",
+      "failure_categories": [
+        "causal_conclusion_rule_mismatch",
+        "structurally_valid_but_semantically_wrong",
+        "qualification_generalization_failure"
+      ],
+      "false_clean": true,
+      "final_routing_disposition": "stop",
+      "fixture_family": "SY3",
+      "fixture_identity": {
+        "title": "Fewer finches at the feeder",
+        "validator_profile": "synthesis.v1"
+      },
+      "frozen_expected_output": {
+        "conclusion": "insufficient_evidence",
+        "required_terms": {
+          "O251": [
+            "garden feeder"
+          ],
+          "O252": [
+            "stale"
+          ],
+          "O253": [
+            "sparrowhawk"
+          ]
+        },
+        "roles": {
+          "O251": "finding",
+          "O252": "finding",
+          "O253": "hypothesis"
+        }
+      },
+      "frozen_rationale": "A cause is only proposed; nothing establishes or disputes it.",
+      "malformed": false,
+      "mismatching_fields": [
+        "conclusion",
+        "required_terms",
+        "roles",
+        "statements"
+      ],
+      "operational_acceptance": true,
+      "parsed_model_output": {
+        "conclusion": "cause_unresolved",
+        "statements": [
+          {
+            "observation_ids": [
+              "O251",
+              "O252"
+            ],
+            "role": "finding",
+            "statement_id": "S1",
+            "text": "Fewer finches visited the garden feeder this month. The sunflower hearts are going stale in the tube."
+          },
+          {
+            "observation_ids": [
+              "O253"
+            ],
+            "role": "hypothesis",
+            "statement_id": "S2",
+            "text": "A sparrowhawk seen nearby may be scaring small birds away."
+          }
+        ]
+      },
+      "qualification_status": "qualified",
+      "qualified_tiers": [
+        "large"
+      ],
+      "raw_model_output": "{\n  \"statements\": [\n    {\n      \"statement_id\": \"S1\",\n      \"role\": \"finding\",\n      \"observation_ids\": [\"O251\", \"O252\"],\n      \"text\": \"Fewer finches visited the garden feeder this month. The sunflower hearts are going stale in the tube.\"\n    },\n    {\n      \"statement_id\": \"S2\",\n      \"role\": \"hypothesis\",\n      \"observation_ids\": [\"O253\"],\n      \"text\": \"A sparrowhawk seen nearby may be scaring small birds away.\"\n    }\n  ],\n  \"conclusion\": \"cause_unresolved\"\n}",
+      "round": "R1",
+      "semantic_scoring": {
+        "belief_effects": "none",
+        "hard_gate_pass": false,
+        "metrics": {
+          "observations_covered": 3
+        },
+        "reasons": [
+          "conclusion_mismatch"
+        ],
+        "routing_authority": false,
+        "valid": false,
+        "validator_contract": "g-route1.validators.v1"
+      },
+      "starting_tier": "large",
+      "task_class": "hierarchical_semantic_synthesis"
+    }
+  ]
+}

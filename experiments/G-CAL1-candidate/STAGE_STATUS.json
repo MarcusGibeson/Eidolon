@@ -1,17 +1,18 @@
 {
   "schema_version": "g-cal1.design-stage-status.v1",
   "experiment": "G-CAL1",
-  "status": "LOCK_TIMEOUT_REPAIR_AWAITING_INDEPENDENT_AUDIT",
-  "readiness": "G_CAL1_LOCK_TIMEOUT_REPAIR_INCOMPLETE",
+  "status": "LOCK_TIMEOUT_REPAIR_AUDITED_READY_FOR_FREEZE_REVIEW",
+  "readiness": "READY_FOR_G_CAL1_EXECUTION_FREEZE_REVIEW",
   "scientific_observations": 0,
   "scientific_result": "NOT_OBSERVED",
   "authoring_commit": "0473daf55fde1cb85e54aae1a65987d4a1ed19ac",
   "byte_preservation_commit": "dbea3241abb8e798b62783b7135b74967db924ea",
-  "independent_audit_count": 2,
-  "independent_audit_verdict": "NEW_AUDIT_PENDING; PREVIOUS_REVIEW_BLOCKED",
+  "independent_audit_count": 3,
+  "independent_audit_verdict": "PASS; PREVIOUS_REVIEW_REMAINS_BLOCKED",
   "blocking_findings": [],
   "findings_severity": null,
-  "audit_report": null,
+  "audit_report": "audit/lock_timeout_repair/external/FINAL_AUDIT_REPORT.md",
+  "audit_report_sha256": "9327fc1082387a0bac2bc6426db62be5c6b936530b3186ff131598d0899e66b6",
   "same_audit_addendum": "audit/lifecycle_repair/LOCK_TIMEOUT_REVIEW_COMPLETION.json",
   "candidate_statuses": [
     {
@@ -32,7 +33,7 @@
     {
       "path": "preexecution/lock_timeout_repair/EXECUTION_FREEZE_CANDIDATE.json",
       "sha256": "59924e2546dc103ed84bc298c489de40e6a63a1815985af0b3b78f0ad7a0dbc9",
-      "status": "EXECUTION_FREEZE_CANDIDATE_ONLY_AUDIT_PENDING"
+      "status": "EXECUTION_FREEZE_CANDIDATE_ONLY_REVIEW_READY"
     }
   ],
   "candidate_bytes_unchanged": true,
@@ -75,27 +76,31 @@
   "autonomy": false,
   "belief_effects": "none",
   "next_work_authorized": false,
-  "stop_reason": "Previous review BLOCKED on actual lock timeout; newly authorized boundary repair and producer certification PASS, pending one NEW independent audit. No activation or execution authority.",
+  "stop_reason": "One NEW independent audit completed PASS after the targeted timeout-boundary repair. Readiness is for freeze review only; no activation or execution authority. Prior BLOCKED reviews and harness-stop evidence remain preserved.",
   "prior_status_record": "preexecution/lock_timeout_repair/PRIOR_STAGE_STATUS.json",
-  "independent_audits_this_task": 0,
+  "independent_audits_this_task": 1,
   "independent_core_report_verdict": "PASS",
-  "independent_core_assertions": 28209,
+  "previous_independent_core_assertions": 28209,
+  "independent_serialized_passing_assertions": 28247,
+  "independent_source_derived_pending_checks": 37781,
+  "independent_valid_executed_checks": 66028,
+  "independent_harness_false_expectations_preserved_not_passes": 3,
+  "independent_accounting_limitation": "Final pending checks completed and saved proofs before an exclusive-create ledger writer error. Their count is source-derived; no missing per-check ledger was fabricated.",
   "closed_former_findings": [
     "F1",
     "F2",
     "F3",
-    "F4"
+    "F4",
+    "F-ACTUAL-GOVERNED-LOCK-TIMEOUT"
   ],
-  "remaining_verification_gaps": [
-    "new independent audit of lock timeout repair and full preregistration package"
-  ],
-  "audit_completion_record": "audit/lifecycle_repair/LOCK_TIMEOUT_REVIEW_COMPLETION.json",
+  "remaining_verification_gaps": [],
+  "audit_completion_record": "audit/lock_timeout_repair/INDEPENDENT_REVIEW_COMPLETION.json",
   "implementation_repair_commit": "c01706ca04f14e88819b26bdd148a3d61b5688ec",
-  "repair_pilot_evidence_commit": "COMMIT_CONTAINING_THIS_RECORD",
+  "repair_pilot_evidence_commit": "ae7902c72384a65d65db53a56fc6afc5b119f8d9",
   "producer_timeout_assertions": 89,
   "actual_default_timeout_seconds_observed": 120.00428300001658,
   "producer_timeout_outcome": "durable INVALID; original exception; all B/C/restart continuations rejected; zero transport/START",
   "new_protected_file_count": 99,
-  "new_independent_audit_required": true,
+  "new_independent_audit_required": false,
   "historical_failed_review_preserved": true
 }
