@@ -4,7 +4,10 @@ from __future__ import annotations
 from pathlib import Path
 import copy
 from functools import wraps
+import os
+import re
 import threading
+import uuid
 
 from g_cal1_lock import run_lock
 
@@ -14,27 +17,39 @@ from g_extract1_journal import Journal, checkpoint_payload, seal_checkpoint, ver
 from g_extract1_runner import check_call, failure_event, guarded, transport_outcome
 from g_extract1_scoring import evaluate, event_category
 
-VERSION = 'g-cal1.lab.v2'
+VERSION = 'g-cal1.lab.v3'
+BOUNDARY_INCIDENT_SCHEMA = 'g-cal1.lock-boundary-incident.v1'
 
 
 def governed(method):
-    """Retain exceptions under the same OS lock as disk synchronization."""
+    """Retain lock-entry failures without reacquiring the failed lock."""
     @wraps(method)
     def call(self,*args,**kwargs):
-        with run_lock(self.directory):
-            self._lock_local.held = True
-            try:
-                self._synchronize()
-                return method(self,*args,**kwargs)
-            except IntegrityError as exc:
-                self._retain(exc)
-                raise
-            except Exception as exc:
-                error = IntegrityError('PROVENANCE_MISMATCH',method.__name__+':'+type(exc).__name__)
-                self._retain(error)
-                raise error from exc
-            finally:
-                self._lock_local.held = False
+        acquired = False
+        if method.__name__ == 'perform':
+            row = args[0] if args else kwargs.get('row')
+            self._error_cell = row.get('cell_id') if type(row) is dict and type(row.get('cell_id')) is str else None
+        try:
+            self._reject_boundary_incidents()
+            with run_lock(self.directory):
+                acquired = True
+                self._lock_local.held = True
+                try:
+                    self._synchronize()
+                    return method(self,*args,**kwargs)
+                except IntegrityError as exc:
+                    self._retain(exc)
+                    raise
+                except Exception as exc:
+                    error = IntegrityError('PROVENANCE_MISMATCH',method.__name__+':'+type(exc).__name__)
+                    self._retain(error)
+                    raise error from exc
+                finally:
+                    self._lock_local.held = False
+        except IntegrityError as exc:
+            if not acquired:
+                self._retain_boundary_incident(exc)
+            raise
     return call
 
 
@@ -61,7 +76,7 @@ def authority(package, run_id, activation, authorization, receipts):
     require(record==activation and record.get('experiment')=='G-CAL1' and record.get('status')=='EXECUTION_FREEZE_ACTIVE' and
             record.get('binding')==package.binding and record.get('phase_authorized') is False,
             'PROVENANCE_MISMATCH','active freeze only, no implicit phase authority')
-    candidate_path = DATA/'preexecution/lifecycle_repair/EXECUTION_FREEZE_CANDIDATE.json'
+    candidate_path = DATA/'preexecution/lock_timeout_repair/EXECUTION_FREEZE_CANDIDATE.json'
     candidate = load(candidate_path)
     require(file_digest(candidate_path)==record.get('candidate_sha256') and candidate.get('binding')==package.binding and
             candidate.get('status')=='EXECUTION_FREEZE_CANDIDATE_ONLY' and candidate.get('activated') is False,
@@ -105,15 +120,97 @@ class Run:
             self._owned = True
         self.journal = Journal(self.directory/'journal')
         self.incidents = Journal(self.directory/'integrity')
-        with run_lock(self.directory):
-            if resume:
-                self._synchronize()
-            else:
-                self.journal.append({'kind':'RUN_CREATED','run_id':run_id,'binding':self.binding,
-                                     'mode':'SYNTHETIC_ONLY' if mechanical else 'LIVE','authority':self.authority_evidence})
+        acquired = False
+        try:
+            self._reject_boundary_incidents()
+            with run_lock(self.directory):
+                acquired = True
+                if resume:
+                    self._synchronize()
+                else:
+                    self.journal.append({'kind':'RUN_CREATED','run_id':run_id,'binding':self.binding,
+                                         'mode':'SYNTHETIC_ONLY' if mechanical else 'LIVE','authority':self.authority_evidence})
+        except IntegrityError as exc:
+            if not acquired:
+                self._retain_boundary_incident(exc)
+            raise
+
+    def _boundary_records(self):
+        records = []
+        directory = self.directory/'lock_boundary_incidents'
+        if not directory.exists():
+            return records
+        for path in sorted(directory.glob('*.json')):
+            try:
+                raw = path.read_bytes()
+                row = load(path)
+                require(type(row) is dict and set(row)=={'schema_version','payload','sha256'} and
+                        row['schema_version']==BOUNDARY_INCIDENT_SCHEMA,
+                        'CORRUPTED_OR_UNPARSEABLE_JOURNAL','lock-boundary incident envelope')
+                p = row['payload']
+                require(type(p) is dict and set(p)=={'event','detail','phase','cell','run_id','binding'} and
+                        p['run_id']==self.run_id and p['binding']==self.binding and p['phase']=='CAL' and
+                        type(p['event']) is str and type(p['detail']) is str and
+                        (p['cell'] is None or type(p['cell']) is str) and
+                        event_category(self.package.historical.design,p['event'])=='INVALID' and
+                        re.fullmatch('[0-9a-f]{32}\\.json',path.name) is not None and
+                        row['sha256']==digest(canonical(p)) and raw==canonical(row),
+                        'CORRUPTED_OR_UNPARSEABLE_JOURNAL','lock-boundary incident seal/binding')
+            except (ValueError, KeyError, UnicodeError, TypeError) as exc:
+                raise IntegrityError('CORRUPTED_OR_UNPARSEABLE_JOURNAL','lock-boundary incident:'+type(exc).__name__) from exc
+            records.append(p)
+        return records
+
+    def _observe_boundary_incidents(self):
+        records = self._boundary_records()
+        for p in records:
+            scope = {'event':p['event'],'phase':p['phase'],'cell':p['cell']}
+            if scope not in self.event_scopes:
+                self.events.append(p['event'])
+                self.event_scopes.append(scope)
+        return records
+
+    def _reject_boundary_incidents(self):
+        records = self._observe_boundary_incidents()
+        if records:
+            p = records[0]
+            self._error_cell = p['cell']
+            raise IntegrityError(p['event'],p['detail'])
+
+    def _retain_boundary_incident(self,error):
+        """Publish complete bytes atomically, independently of the lifecycle lock."""
+        if not self._owned:
+            return
+        scope = {'event':error.event,'phase':'CAL','cell':self._error_cell}
+        # An observed, immutable incident already supplies durable terminality.
+        if any(p['event']==error.event and p['phase']=='CAL' and p['cell']==self._error_cell
+               for p in self._boundary_records()):
+            if scope not in self.event_scopes:
+                self.events.append(error.event)
+                self.event_scopes.append(scope)
+            return
+        require(event_category(self.package.historical.design,error.event)=='INVALID',
+                'PROVENANCE_MISMATCH','lock-boundary incident must be INVALID')
+        payload = dict(scope,detail=error.detail,run_id=self.run_id,binding=copy.deepcopy(self.binding))
+        record = {'schema_version':BOUNDARY_INCIDENT_SCHEMA,'payload':payload,'sha256':digest(canonical(payload))}
+        directory = self.directory/'lock_boundary_incidents'
+        directory.mkdir(exist_ok=True)
+        token = uuid.uuid4().hex
+        pending, published = directory/('.pending-'+token), directory/(token+'.json')
+        write_once(pending,record)
+        # A new hard link exposes only flushed, sealed bytes; never replace an
+        # existing record. Readers ignore uncommitted .pending files.
+        os.link(pending,published)
+        pending.unlink()
+        if scope not in self.event_scopes:
+            self.events.append(error.event)
+            self.event_scopes.append(scope)
 
     def _retain(self,error):
         if not hasattr(self,'events'): return
+        scope = {'event':error.event,'phase':'CAL','cell':self._error_cell}
+        if scope in self.event_scopes:
+            return
         if self._owned and not getattr(self._lock_local,'held',False):
             with run_lock(self.directory):
                 self._lock_local.held = True
@@ -122,7 +219,6 @@ class Run:
                 finally:
                     self._lock_local.held = False
             return
-        scope = {'event':error.event,'phase':'CAL','cell':self._error_cell}
         if scope not in self.event_scopes:
             self.events.append(error.event);self.event_scopes.append(scope)
             if self._owned:
@@ -142,6 +238,7 @@ class Run:
                     'CORRUPTED_OR_UNPARSEABLE_JOURNAL','incident binding/shape')
             self.events.append(p['event'])
             self.event_scopes.append({'event':p['event'],'phase':'CAL','cell':p['cell']})
+        self._observe_boundary_incidents()
         require(not self.events,self.events[0] if self.events else 'PROVENANCE_MISMATCH','retained terminal incident')
         records = self.journal.read()
         contacted = any(type(r['payload']) is dict and r['payload'].get('kind')=='START' for r in records)
@@ -161,6 +258,7 @@ class Run:
                 'verdict':verdict,'completed_observations':len(self.evidence),'attempted_calls':len(self.attempted)}
 
     def _ready(self):
+        self._reject_boundary_incidents()
         require(self._checkpoint_verified,'UNVERIFIABLE_INTERRUPTION_CHECKPOINT','verify before collection/report/checkpoint')
         require(not self.events,self.events[0] if self.events else 'PROVENANCE_MISMATCH','terminal retained incident')
         self.package.verify(contacted=bool(self.attempted))
@@ -182,6 +280,7 @@ class Run:
         request = self.package.wire(row)
         require(digest(request)==row['request_sha256'],'UNAUTHORIZED_PROMPT_MUTATION')
         transport_boundary(transport,self.mechanical)
+        self._reject_boundary_incidents()
         member = copy.deepcopy(self.package.members[row['fixture_id']])
         prefix = self.journal.prefix()
         call_closed = False
