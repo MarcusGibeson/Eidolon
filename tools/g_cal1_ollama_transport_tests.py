@@ -24,6 +24,7 @@ sys.addaudithook(deny_contact)
 import base64
 import copy
 import http.client
+import io
 import json
 from pathlib import Path
 import tempfile
@@ -125,22 +126,40 @@ class TestPackage:
 
 # -- scripted HTTP ----------------------------------------------------------------
 class Script:
-    def __init__(self, body=b'', status=200, reason='OK', headers=None, fail_at=None, error=None, hook=None):
+    def __init__(self, body=b'', status=200, reason='OK', headers=None, fail_at=None, error=None, hook=None,
+                 chunks=None, length=None):
         self.body, self.status, self.reason, self.fail_at, self.error, self.hook = body, status, reason, fail_at, error, hook
         self.headers = [('Content-Type', 'application/json; charset=utf-8')] if headers is None else headers
+        # read1 returns these chunks in order; a fail_at='read' error is raised once they are exhausted.
+        self.chunks = ([body] if body else []) if chunks is None else list(chunks)
+        self.length = length
 
 
 class FakeResponse:
     def __init__(self, connection):
         self.connection, script = connection, connection.script
-        self.status, self.reason = script.status, script.reason
+        self.status, self.reason, self.length = script.status, script.reason, script.length
+        self.pending, self.ended = list(script.chunks), False
 
     def getheaders(self):
+        self.connection.step('getheaders')
         return list(self.connection.script.headers)
 
     def read(self):
         self.connection.step('read')
         return self.connection.script.body
+
+    def read1(self, n=-1):
+        if self.pending:
+            chunk = self.pending.pop(0)
+            if 0 <= n < len(chunk):
+                self.pending.insert(0, chunk[n:])
+                chunk = chunk[:n]
+            return chunk
+        if not self.ended:
+            self.ended = True
+            self.connection.step('read')
+        return b''
 
 
 class FakeConnection:
@@ -170,6 +189,57 @@ class FakeConnection:
         self.closed = True
 
 
+class ScriptedRaw(io.RawIOBase):
+    """Raw stream yielding one scripted segment per readinto, then the scripted error (or EOF). No socket."""
+
+    def __init__(self, segments, error=None):
+        self.segments, self.error = list(segments), error
+
+    def readable(self):
+        return True
+
+    def readinto(self, buffer):
+        if not self.segments:
+            if self.error is not None:
+                raise self.error
+            return 0
+        segment = self.segments.pop(0)
+        size = min(len(buffer), len(segment))
+        buffer[:size] = segment[:size]
+        if size < len(segment):
+            self.segments.insert(0, segment[size:])
+        return size
+
+
+class ScriptedSocket:
+    def __init__(self, raw):
+        self.raw = raw
+
+    def makefile(self, mode, *args, **kwargs):
+        return io.BufferedReader(self.raw)
+
+
+class StdlibConnection:
+    """Generation connection whose response is parsed by the real http.client.HTTPResponse from scripted bytes."""
+
+    def __init__(self, segments, error=None):
+        self.segments, self.error, self.requests, self.closed = segments, error, [], False
+
+    def connect(self):
+        pass
+
+    def request(self, method, path, body=None, headers=None):
+        self.requests.append({'method': method, 'path': path, 'body': body, 'headers': dict(headers or {})})
+
+    def getresponse(self):
+        response = http.client.HTTPResponse(ScriptedSocket(ScriptedRaw(self.segments, self.error)), method='POST')
+        response.begin()
+        return response
+
+    def close(self):
+        self.closed = True
+
+
 class Provider:
     """Connection factory; each scripted exchange gets a brand-new connection object."""
 
@@ -182,7 +252,8 @@ class Provider:
     def __call__(self, host, port, timeout):
         if not self.scripts:
             raise AssertionError('unscripted connection')
-        connection = FakeConnection(self, host, port, timeout, self.scripts.pop(0))
+        script = self.scripts.pop(0)
+        connection = script if isinstance(script, StdlibConnection) else FakeConnection(self, host, port, timeout, script)
         self.connections.append(connection)
         return connection
 
@@ -593,6 +664,210 @@ def adapter_tests(package, binding, checks):
                      'runner_contract', 'failure without usable receipt ' + name)
 
 
+# -- interrupted response reads ----------------------------------------------------------
+BASE_RECEIPT_KEYS = {'schema_version', 'transport_version', 'synthetic_only', 'call_id', 'request_sha256',
+                     'schedule_position', 'adapter_start_position', 'seed', 'model', 'provider',
+                     'provider_version_verified', 'metadata_receipts_sha256', 'endpoint', 'method',
+                     'request_body_b64', 'request_body_length', 'post_transmission', 'connection',
+                     'internal_option_honoring'}
+EVENTS = {'timeout': 'PROVIDER_TIMEOUT_WITH_FAILURE_RECEIPT', 'error': 'PROVIDER_ERROR_WITH_FAILURE_RECEIPT'}
+
+
+class CustomControl(BaseException):
+    pass
+
+
+def interrupted_read_tests(package, binding, checks):
+    schedule, row, request = package.schedule, package.schedule[0], package.wire(package.schedule[0])
+    headers = [('Content-Type', 'application/json; charset=utf-8'), ('Date', 'Mon, 05 Oct 2026 00:00:00 GMT'),
+               ('X-Dup', 'a'), ('X-Dup', 'b')]
+
+    def exchange(connection_script):
+        transport, provider, _ = verified(binding, schedule)
+        provider.add(connection_script)
+        return transport, provider, transport(request, copy.deepcopy(row))
+
+    def interrupted(name, transport, provider, result, kind, reason, stage, status, phrase, observed_headers, body_bytes,
+                    error, partial=None, **detail):
+        """Every expected field is asserted unconditionally; absent evidence fails."""
+        receipt = result.get('receipt') or {}
+        capture = receipt.get('response_capture') or {}
+        read_started = stage == 'response_body_read'
+        checks.check(set(result) == {'failure', 'receipt'} and result['failure'] == kind and
+                     receipt.get('failure_kind') == kind and receipt.get('failure_reason') == reason,
+                     'interrupted_read', name + ' failure kind/reason ' + repr((result.get('failure'),
+                                                                                receipt.get('failure_reason'))))
+        checks.check(receipt.get('failure_stage') == stage, 'interrupted_read',
+                     name + ' accurate stage ' + repr(receipt.get('failure_stage')))
+        checks.check(receipt.get('http_status') == status and receipt.get('http_reason') == phrase,
+                     'interrupted_read', name + ' exact observed status/reason')
+        if observed_headers is None:
+            checks.check('response_headers' not in receipt, 'interrupted_read', name + ' unobserved headers absent')
+        else:
+            checks.check(receipt.get('response_headers') == [[k, v] for k, v in observed_headers], 'interrupted_read',
+                         name + ' exact observed headers ' + repr(receipt.get('response_headers')))
+        if read_started:
+            checks.check(receipt.get('response_body_b64') == base64.b64encode(body_bytes).decode('ascii') and
+                         receipt.get('response_body_sha256') == digest(body_bytes) and
+                         receipt.get('response_body_length') == len(body_bytes), 'interrupted_read',
+                         name + ' exact available body bytes ' + repr(receipt.get('response_body_b64')))
+        else:
+            checks.check(not {'response_body_b64', 'response_body_sha256', 'response_body_length'} & set(receipt),
+                         'interrupted_read', name + ' unread body not fabricated')
+        checks.check(capture.get('state') == 'INTERRUPTED_INCOMPLETE' and capture.get('body_complete') is False and
+                     capture.get('interrupted_stage') == stage and capture.get('status_observed') is True and
+                     capture.get('headers_observed') is (observed_headers is not None) and
+                     capture.get('body_read_started') is read_started, 'interrupted_read',
+                     name + ' truthful incomplete capture state ' + repr(capture))
+        checks.check(receipt.get('exception_type') == (None if error is None else type(error).__name__) and
+                     receipt.get('exception_message') == (None if error is None else str(error)) and
+                     receipt.get('errno') == (error.errno if isinstance(error, OSError) else None),
+                     'interrupted_read', name + ' original error evidence')
+        if partial is None:
+            checks.check(not any(k.startswith('exception_partial') for k in receipt), 'interrupted_read',
+                         name + ' no fabricated exception partial')
+        else:
+            checks.check(receipt.get('exception_partial_b64') == base64.b64encode(partial).decode('ascii') and
+                         receipt.get('exception_partial_sha256') == digest(partial) and
+                         receipt.get('exception_partial_length') == len(partial), 'interrupted_read',
+                         name + ' IncompleteRead.partial preserved')
+        for key, value in detail.items():
+            checks.check(receipt.get(key) == value, 'interrupted_read', name + ' ' + key)
+        checks.check('raw_output' not in result and 'truncation' not in receipt and 'provider_fields' not in receipt,
+                     'interrupted_read', name + ' never classified as a response')
+        checks.check(receipt.get('call_id') == row['call_id'] and receipt.get('request_sha256') == row['request_sha256'] and
+                     receipt.get('post_transmission') == 'COMPLETED' and
+                     transport_outcome(row, result) == result and failure_event(row, kind, receipt) == EVENTS[kind],
+                     'interrupted_read', name + ' receipt binding and frozen failure event')
+        checks.check(len(provider.posts()) == 1 and provider.connections[-1].closed, 'interrupted_read',
+                     name + ' exactly one POST, connection closed')
+        checks.raises(lambda: transport(request, copy.deepcopy(row)), TransportContractError, 'interrupted_read',
+                      name + ' no retry')
+        checks.check(len(provider.posts()) == 1, 'interrupted_read', name + ' still one POST')
+
+    # Scripted responses: interruption after status, after headers (zero bytes) and after partial bytes.
+    first, second = b'{"model":"q', b'wen3.8:27b","resp'
+    for label, make, kind, reason in [
+            ('timeout', lambda: TimeoutError('read timed out'), 'timeout', 'socket_timeout'),
+            ('reset', lambda: ConnectionResetError(10054, 'reset by peer'), 'error', 'transport_exception'),
+            ('incomplete', lambda: http.client.IncompleteRead(b'ing"', 9), 'error', 'transport_exception')]:
+        partial = b'ing"' if label == 'incomplete' else None
+        detail = {'exception_expected_more': 9} if label == 'incomplete' else {}
+        error = make()
+        transport, provider, result = exchange(Script(status=200, reason='OK', headers=headers,
+                                                      fail_at='getheaders', error=error))
+        interrupted(label + '_after_status', transport, provider, result, kind, reason, 'response_headers', 200, 'OK',
+                    None, b'', error, partial, **detail)
+        error = make()
+        transport, provider, result = exchange(Script(headers=headers, chunks=[], fail_at='read', error=error))
+        interrupted(label + '_after_headers_zero_bytes', transport, provider, result, kind, reason,
+                    'response_body_read', 200, 'OK', headers, b'', error, partial, **detail)
+        error = make()
+        transport, provider, result = exchange(Script(headers=headers, chunks=[first], fail_at='read', error=error))
+        interrupted(label + '_after_one_chunk', transport, provider, result, kind, reason, 'response_body_read', 200,
+                    'OK', headers, first, error, partial, **detail)
+        error = make()
+        transport, provider, result = exchange(Script(status=503, reason='Service Unavailable', headers=headers,
+                                                      chunks=[first, second], fail_at='read', error=error))
+        interrupted(label + '_after_two_chunks_non_200', transport, provider, result, kind, reason,
+                    'response_body_read', 503, 'Service Unavailable', headers, first + second, error, partial,
+                    **detail)
+
+    # Premature EOF before the declared Content-Length is incomplete, not a parseable response.
+    transport, provider, result = exchange(Script(headers=headers, chunks=[first], length=7))
+    interrupted('eof_before_content_length', transport, provider, result, 'error',
+                'eof_before_declared_content_length', 'response_body_read', 200, 'OK', headers, first, None,
+                content_length_remaining=7)
+
+    # The real http.client parser over scripted bytes (no socket): bytes returned before the interruption survive.
+    complete = envelope(row, 'kept')
+    head = (b'HTTP/1.1 200 OK\r\nContent-Type: application/json; charset=utf-8\r\nContent-Length: ' +
+            str(len(complete)).encode() + b'\r\nX-Dup: a\r\nX-Dup: b\r\nConnection: close\r\n\r\n')
+    wire_headers = [('Content-Type', 'application/json; charset=utf-8'), ('Content-Length', str(len(complete))),
+                    ('X-Dup', 'a'), ('X-Dup', 'b'), ('Connection', 'close')]
+    chunked_head = b'HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nTransfer-Encoding: chunked\r\n\r\n'
+    chunked_headers = [('Content-Type', 'application/json'), ('Transfer-Encoding', 'chunked')]
+    for name, segments, error, kind, reason, observed_headers, body_bytes, extra in [
+            ('stdlib_timeout_after_partial', [head, complete[:9], complete[9:20]], TimeoutError('timed out'),
+             'timeout', 'socket_timeout', wire_headers, complete[:20], {}),
+            ('stdlib_reset_after_partial', [head, complete[:13]], ConnectionResetError(10054, 'reset'), 'error',
+             'transport_exception', wire_headers, complete[:13], {}),
+            ('stdlib_timeout_zero_bytes', [head], TimeoutError('timed out'), 'timeout', 'socket_timeout',
+             wire_headers, b'', {}),
+            ('stdlib_eof_short_content_length', [head, complete[:11]], None, 'error',
+             'eof_before_declared_content_length', wire_headers, complete[:11],
+             {'content_length_remaining': len(complete) - 11}),
+            ('stdlib_chunked_reset_after_chunk', [chunked_head, b'5\r\nhello\r\n'],
+             ConnectionResetError(10054, 'reset'), 'error', 'transport_exception', chunked_headers, b'hello', {}),
+            ('stdlib_chunked_timeout_after_chunks', [chunked_head, b'5\r\nhello\r\n', b'3\r\nabc\r\n'],
+             TimeoutError('timed out'), 'timeout', 'socket_timeout', chunked_headers, b'helloabc', {})]:
+        transport, provider, result = exchange(StdlibConnection(segments, error))
+        interrupted(name, transport, provider, result, kind, reason, 'response_body_read', 200, 'OK', observed_headers,
+                    body_bytes, error, **extra)
+    # A malformed chunk size makes http.client raise IncompleteRead(b'') itself; earlier chunks survive.
+    transport, provider, result = exchange(StdlibConnection([chunked_head, b'5\r\nhello\r\nZZ\r\n']))
+    raised = result.get('receipt', {}).get('exception_message')
+    interrupted('stdlib_chunked_incomplete_read', transport, provider, result, 'error', 'transport_exception',
+                'response_body_read', 200, 'OK', chunked_headers, b'hello',
+                http.client.IncompleteRead(b''), b'', exception_expected_more=None)
+    checks.check(raised == str(http.client.IncompleteRead(b'')), 'interrupted_read', 'stdlib IncompleteRead message')
+
+    # Complete responses are unchanged: Content-Length and chunked framing, split across reads.
+    chunked_body = (format(len(complete[:10]), 'x').encode() + b'\r\n' + complete[:10] + b'\r\n' +
+                    format(len(complete[10:]), 'x').encode() + b'\r\n' + complete[10:] + b'\r\n0\r\n\r\n')
+    for name, segments, observed_headers in [
+            ('stdlib_complete_content_length', [head, complete[:5], complete[5:]], wire_headers),
+            ('stdlib_complete_chunked', [chunked_head, chunked_body[:7], chunked_body[7:]], chunked_headers),
+            ('stdlib_complete_single_segment', [head + complete], wire_headers)]:
+        transport, provider, result = exchange(StdlibConnection(segments))
+        receipt = result.get('receipt') or {}
+        checks.check(result.get('raw_output') == 'kept' and result.get('provider_truncated') is False and
+                     base64.b64decode(receipt.get('response_body_b64', '')) == complete and
+                     receipt.get('response_body_length') == len(complete) and
+                     receipt.get('response_headers') == [[k, v] for k, v in observed_headers] and
+                     receipt.get('http_status') == 200 and set(receipt) == BASE_RECEIPT_KEYS | {
+                         'http_status', 'http_reason', 'response_headers', 'response_body_b64',
+                         'response_body_sha256', 'response_body_length', 'response_body_scope', 'provider_fields',
+                         'truncation'}, 'complete_response', name + ' unchanged complete receipt')
+    transport, provider, result = exchange(Script(envelope(row, 'kept'), headers=headers))
+    checks.check(result.get('raw_output') == 'kept' and 'response_capture' not in result['receipt'] and
+                 base64.b64decode(result['receipt']['response_body_b64']) == envelope(row, 'kept'),
+                 'complete_response', 'scripted complete response unchanged')
+    transport, provider, result = exchange(Script(headers=headers, chunks=[b'{"model":', b'"x"}']))
+    checks.check(result.get('failure') == 'error' and result['receipt']['failure_reason'] == 'model_identity_mismatch' and
+                 base64.b64decode(result['receipt']['response_body_b64']) == b'{"model":"x"}',
+                 'complete_response', 'multi-chunk complete body joined exactly')
+
+    # Pre-response failures keep their original receipt shape and stages.
+    for name, stage, error, kind, expected_stage, transmission in [
+            ('connect_refused', 'connect', ConnectionRefusedError(10061, 'refused'), 'error', 'connect', 'NOT_STARTED'),
+            ('connect_timeout', 'connect', TimeoutError('t'), 'timeout', 'connect', 'NOT_STARTED'),
+            ('send_reset', 'request', ConnectionResetError(10054, 'reset'), 'error', 'send', 'STARTED'),
+            ('send_timeout', 'request', TimeoutError('t'), 'timeout', 'send', 'STARTED'),
+            ('getresponse_disconnect', 'getresponse', http.client.RemoteDisconnected('closed'), 'error', 'response',
+             'COMPLETED'),
+            ('getresponse_timeout', 'getresponse', TimeoutError('t'), 'timeout', 'response', 'COMPLETED')]:
+        transport, provider, result = exchange(Script(fail_at=stage, error=error))
+        receipt = result['receipt']
+        extra = {'failure_kind', 'failure_reason', 'failure_stage', 'exception_type'} | (
+            {'errno'} if kind == 'error' else set())
+        checks.check(result['failure'] == kind and receipt['failure_stage'] == expected_stage and
+                     receipt['post_transmission'] == transmission and set(receipt) == BASE_RECEIPT_KEYS | extra,
+                     'pre_response_unchanged', name + ' receipt shape/stage unchanged ' + repr(sorted(set(receipt))))
+
+    # Process control during an interrupted read still propagates unchanged; no receipt is fabricated.
+    for make in (KeyboardInterrupt, SystemExit, GeneratorExit, CustomControl):
+        transport, provider, _ = verified(binding, schedule)
+        error = make('control')
+        provider.add(Script(headers=headers, chunks=[first], fail_at='read', error=error))
+        checks.raises(lambda: transport(request, copy.deepcopy(row)), make, 'process_control',
+                      make.__name__ + ' after partial bytes propagates unchanged', lambda exc: exc is error)
+        checks.check(provider.connections[-1].closed and transport.consumed_calls == 1 and len(provider.posts()) == 1,
+                     'process_control', make.__name__ + ' after partial bytes: consumed, closed, one POST')
+        checks.raises(lambda: transport(request, copy.deepcopy(row)), TransportContractError, 'process_control',
+                      make.__name__ + ' after partial bytes: no retry')
+
+
 # -- live Run integration ----------------------------------------------------------------
 def namespace(root, package, provider_binding):
     """Temporary test-only authority/candidate namespace; never copied from real authority."""
@@ -764,6 +1039,13 @@ def integration_tests(package, binding, checks, root):
                 ('missing', Script(envelope(schedule[0], REMOVE)), 'MISSING_RESPONSE_WITH_FAILURE_RECEIPT', 'INCOMPLETE'),
                 ('wrong_model', Script(envelope(schedule[0], 'x', model='other:1b')),
                  'PROVIDER_ERROR_WITH_FAILURE_RECEIPT', 'INCOMPLETE'),
+                ('read_reset_partial', Script(chunks=[b'{"model":"qw'], fail_at='read',
+                                              error=ConnectionResetError(10054, 'reset')),
+                 'PROVIDER_ERROR_WITH_FAILURE_RECEIPT', 'INCOMPLETE'),
+                ('read_timeout_partial', Script(chunks=[b'{"mo', b'del"'], fail_at='read', error=TimeoutError('t')),
+                 'PROVIDER_TIMEOUT_WITH_FAILURE_RECEIPT', 'INCOMPLETE'),
+                ('read_timeout_zero_bytes', Script(chunks=[], fail_at='read', error=TimeoutError('t')),
+                 'PROVIDER_TIMEOUT_WITH_FAILURE_RECEIPT', 'INCOMPLETE'),
                 ('unreceipted', Script(fail_at='connect', error=ValueError('bug')),
                  'PROVIDER_FAILURE_WITHOUT_RECEIPT', 'INVALID')]:
             failing, failing_provider = fresh_transport()
@@ -780,6 +1062,16 @@ def integration_tests(package, binding, checks, root):
                 checks.check(records[-1]['receipt']['call_id'] == schedule[0]['call_id'] and
                              records[-1]['receipt']['request_sha256'] == schedule[0]['request_sha256'],
                              'integration_failure', name + ' receipt bound')
+                if name.startswith('read_'):
+                    journaled = records[-1]['receipt']
+                    checks.check(journaled.get('failure_stage') == 'response_body_read' and
+                                 journaled.get('response_body_b64') ==
+                                 base64.b64encode(b''.join(script.chunks)).decode('ascii') and
+                                 journaled.get('response_body_length') == len(b''.join(script.chunks)) and
+                                 journaled.get('http_status') == script.status and
+                                 journaled.get('response_headers') == [[k, v] for k, v in script.headers] and
+                                 (journaled.get('response_capture') or {}).get('state') == 'INTERRUPTED_INCOMPLETE',
+                                 'integration_failure', name + ' journaled partial bytes/status/headers preserved')
             else:
                 checks.check(records[-1]['receipt'] is None, 'integration_failure', name + ' no fabricated receipt')
             before = len(failing_provider.connections)
@@ -841,6 +1133,7 @@ def main():
                  'test_package', 'committed provider binding/config/wire bytes agree')
     with tempfile.TemporaryDirectory(prefix='g-cal1-transport-tests-', ignore_cleanup_errors=True) as tmp:
         adapter_tests(package, binding, checks)
+        interrupted_read_tests(package, binding, checks)
         integration_tests(package, binding, checks, Path(tmp))
     checks.check(protected_snapshot() == before, 'protection', 'G-CAL1 tree, tools and untracked artifacts unchanged')
     checks.check(len(AUDIT) == self_test, 'no_contact', 'zero socket/subprocess audit events during tests')

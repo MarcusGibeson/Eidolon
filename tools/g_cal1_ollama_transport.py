@@ -38,6 +38,7 @@ BLOB_REFERENCE = re.compile('sha256-([0-9a-f]{64})')
 IO_STDLIB = 'STDLIB_HTTP_CLIENT_LOOPBACK'
 IO_INJECTED = 'INJECTED_CONNECTION_FACTORY_OFFLINE_TEST_ONLY'
 TRANSPORT_ERRORS = (OSError, http.client.HTTPException)
+READ_CHUNK = 65536
 
 
 class TransportContractError(RuntimeError):
@@ -360,7 +361,7 @@ class OllamaLiveTransport:
 
     def _generate(self, request_bytes, row):
         ordinal, transmission, stage = None, 'NOT_STARTED', 'connect'
-        connection = None
+        connection, observed, chunks = None, {}, []
         try:
             connection, ordinal = self._connect()
             connection.connect()
@@ -369,14 +370,34 @@ class OllamaLiveTransport:
                                headers={'Content-Type': 'application/json', 'Connection': 'close'})
             stage, transmission = 'response', 'COMPLETED'
             response = connection.getresponse()
-            status, reason, headers = response.status, response.reason, response.getheaders()
-            body = response.read()
+            # Only values http.client actually returned are recorded; nothing is filled in later.
+            observed['status'], observed['reason'] = response.status, response.reason
+            stage = 'response_headers'
+            observed['headers'] = response.getheaders()
+            stage = 'response_body_read'
+            while True:
+                # read1 performs at most one underlying socket read, so every chunk
+                # already returned survives a later timeout/reset in `chunks`.
+                chunk = response.read1(READ_CHUNK)
+                if not chunk:
+                    break
+                chunks.append(chunk)
+            remaining = getattr(response, 'length', None)
+            if _integer(remaining) and remaining > 0:
+                # http.client reports EOF before the declared Content-Length as b'', not an exception.
+                receipt = self._base_receipt(request_bytes, row, ordinal, transmission)
+                return self._interrupted(receipt, 'error', 'eof_before_declared_content_length', stage,
+                                         observed, chunks, None, content_length_remaining=remaining)
         except TimeoutError as exc:
             receipt = self._base_receipt(request_bytes, row, ordinal, transmission)
+            if observed:
+                return self._interrupted(receipt, 'timeout', 'socket_timeout', stage, observed, chunks, exc)
             return self._failure(receipt, 'timeout', 'socket_timeout', failure_stage=stage,
                                  exception_type=type(exc).__name__)
         except TRANSPORT_ERRORS as exc:
             receipt = self._base_receipt(request_bytes, row, ordinal, transmission)
+            if observed:
+                return self._interrupted(receipt, 'error', 'transport_exception', stage, observed, chunks, exc)
             return self._failure(receipt, 'error', 'transport_exception', failure_stage=stage,
                                  exception_type=type(exc).__name__,
                                  errno=exc.errno if isinstance(exc, OSError) and _integer(exc.errno) else None)
@@ -387,7 +408,41 @@ class OllamaLiveTransport:
                 except Exception:
                     pass
         receipt = self._base_receipt(request_bytes, row, ordinal, transmission)
-        return self._classify(receipt, row, status, reason, headers, body)
+        return self._classify(receipt, row, observed['status'], observed['reason'], observed['headers'],
+                              b''.join(chunks))
+
+    def _interrupted(self, receipt, kind, reason, stage, observed, chunks, exc, **detail):
+        """Failure after getresponse() returned: exactly the HTTP evidence observed, flagged incomplete.
+
+        The entity body is the concatenation of bytes returned by completed read1
+        calls. An IncompleteRead.partial is preserved separately and losslessly:
+        under read1 http.client may place chunk-framing bytes there, so it is not
+        spliced into the entity body.
+        """
+        headers_observed = 'headers' in observed
+        body_read_started = stage == 'response_body_read'
+        evidence = {'http_status': observed['status'], 'http_reason': observed['reason']}
+        if headers_observed:
+            evidence['response_headers'] = [[str(k), str(v)] for k, v in observed['headers']]
+        if body_read_started:
+            evidence.update(self._http_evidence(observed['status'], observed['reason'], observed['headers'],
+                                                b''.join(chunks)))
+        evidence['response_capture'] = {
+            'state': 'INTERRUPTED_INCOMPLETE', 'interrupted_stage': stage, 'status_observed': True,
+            'headers_observed': headers_observed, 'body_read_started': body_read_started, 'body_complete': False,
+            'body_read_calls_returning_bytes': len(chunks),
+            'read_method': 'http.client HTTPResponse.read1 incremental; at most one socket read per call'}
+        partial = getattr(exc, 'partial', None) if isinstance(exc, http.client.IncompleteRead) else None
+        if type(partial) is bytes:
+            expected = getattr(exc, 'expected', None)
+            evidence.update(exception_partial_b64=_b64(partial), exception_partial_sha256=digest(partial),
+                            exception_partial_length=len(partial),
+                            exception_expected_more=expected if _integer(expected) else None)
+        return self._failure(receipt, kind, reason, failure_stage=stage,
+                             exception_type=None if exc is None else type(exc).__name__,
+                             exception_message=None if exc is None else str(exc),
+                             errno=exc.errno if isinstance(exc, OSError) and _integer(exc.errno) else None,
+                             **detail, **evidence)
 
     def _classify(self, receipt, row, status, reason, headers, body):
         """Envelope classification. Never cleans, repairs or substitutes the response."""

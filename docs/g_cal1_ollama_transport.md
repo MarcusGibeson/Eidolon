@@ -148,6 +148,28 @@ Receipt evidence includes:
   not as wire bytes;
 - selected scalar provider fields and the truncation basis.
 
+Interrupted response reads. Once `getresponse()` has returned, a timeout or
+transport error is still a `timeout`/`error` failure with the same frozen event,
+and its receipt keeps exactly what was observed:
+- `failure_stage` is `response_headers` or `response_body_read`. Before
+  `getresponse()` returns, the stages stay `connect`/`send`/`response` with the
+  original receipt shape;
+- the HTTP status and reason; the headers if they were returned;
+- once body reading started, the entity body made of every byte already returned
+  (it may be empty). The body is read incrementally with `HTTPResponse.read1`,
+  which does at most one socket read per call, so bytes received before a later
+  timeout or reset are kept;
+- an `IncompleteRead.partial` is stored losslessly in `exception_partial_*`
+  fields. It is not spliced into the body, because `http.client` may put
+  chunk-framing bytes there;
+- an EOF before the declared `Content-Length` (`http.client` returns `b''`
+  here, not an exception) is an `error` with
+  `eof_before_declared_content_length` and `content_length_remaining`;
+- `response_capture.state` is `INTERRUPTED_INCOMPLETE`. The exception type,
+  message and errno are recorded.
+Unavailable metadata and bytes are left out; nothing is filled in. Partial bytes
+are never classified or parsed as a response.
+
 ## Limitations
 
 - Offline tests only. No real provider behavior has been observed by this task.
