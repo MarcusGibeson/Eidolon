@@ -1,16 +1,16 @@
 {
   "schema_version": "g-cal1.design-stage-status.v1",
   "experiment": "G-CAL1",
-  "status": "LOCK_TIMEOUT_REPAIR_AUDITED_PUBLICATION_BLOCKED",
-  "readiness": "G_CAL1_LOCK_TIMEOUT_REPAIR_INCOMPLETE",
+  "status": "PUBLICATION_REBOUND_AWAITING_INTEGRITY_VERIFICATION",
+  "readiness": "G_CAL1_PUBLICATION_REPAIR_INCOMPLETE",
   "audited_local_readiness": "READY_FOR_G_CAL1_EXECUTION_FREEZE_REVIEW",
-  "publication_status": "PUSH_REJECTED_GITHUB_LARGE_HISTORICAL_BLOB",
+  "publication_status": "LFS_MIGRATED_LOCAL; UPLOAD_AND_PUSH_PENDING",
   "publication_failure_record": "audit/lock_timeout_repair/PUSH_FAILURE_REPORT.json",
   "remote_head_verified": "1757155387af122d126f6db9fd03477e2823c2bb",
   "scientific_observations": 0,
   "scientific_result": "NOT_OBSERVED",
-  "authoring_commit": "0473daf55fde1cb85e54aae1a65987d4a1ed19ac",
-  "byte_preservation_commit": "dbea3241abb8e798b62783b7135b74967db924ea",
+  "authoring_commit": "a4adc96f48ddc9a4a83f5a671d9b76d5732ef531",
+  "byte_preservation_commit": "4447c2000348b2212b03450cda3a34424a0a3d53",
   "independent_audit_count": 3,
   "independent_audit_verdict": "PASS; PREVIOUS_REVIEW_REMAINS_BLOCKED",
   "blocking_findings": [],
@@ -35,9 +35,14 @@
       "status": "BLOCKED_UNACTIVATED_SUPERSEDED"
     },
     {
-      "path": "preexecution/lock_timeout_repair/EXECUTION_FREEZE_CANDIDATE.json",
+      "path": "publication/archived_prepublication_freeze_package/EXECUTION_FREEZE_CANDIDATE.json",
       "sha256": "59924e2546dc103ed84bc298c489de40e6a63a1815985af0b3b78f0ad7a0dbc9",
-      "status": "EXECUTION_FREEZE_CANDIDATE_ONLY_REVIEW_READY"
+      "status": "UNACTIVATED_SUPERSEDED_BY_PUBLICATION_REBIND"
+    },
+    {
+      "path": "preexecution/lock_timeout_repair/EXECUTION_FREEZE_CANDIDATE.json",
+      "sha256": "fad0fddd74723a7019f30b8debe0a8f239ba8fbf31a3fcd49e593e0f795e9cd8",
+      "status": "EXECUTION_FREEZE_CANDIDATE_ONLY_PUBLICATION_PENDING"
     }
   ],
   "candidate_bytes_unchanged": true,
@@ -80,7 +85,7 @@
   "autonomy": false,
   "belief_effects": "none",
   "next_work_authorized": false,
-  "stop_reason": "The new independent audit completed PASS and local candidate is ready for freeze review only. GitHub rejected the full preserved history because an earlier audit commit contains a 143930946-byte blob. No history rewrite, evidence deletion or semantic repair attempted. Delivery remains incomplete; activation and execution remain unauthorized.",
+  "stop_reason": "Publication-only LFS migration and metadata rebind complete locally; pending publication verification/upload/push. No science or implementation changes; no execution authority.",
   "prior_status_record": "preexecution/lock_timeout_repair/PRIOR_STAGE_STATUS.json",
   "independent_audits_this_task": 1,
   "independent_core_report_verdict": "PASS",
@@ -99,12 +104,14 @@
   ],
   "remaining_verification_gaps": [],
   "audit_completion_record": "audit/lock_timeout_repair/INDEPENDENT_REVIEW_COMPLETION.json",
-  "implementation_repair_commit": "c01706ca04f14e88819b26bdd148a3d61b5688ec",
-  "repair_pilot_evidence_commit": "ae7902c72384a65d65db53a56fc6afc5b119f8d9",
+  "implementation_repair_commit": "f09c00aba9c6bd14b209cdc215a2209999f77dd4",
+  "repair_pilot_evidence_commit": "eebacec3d93645cef7c3732011fd4e390a6f2aab",
   "producer_timeout_assertions": 89,
   "actual_default_timeout_seconds_observed": 120.00428300001658,
   "producer_timeout_outcome": "durable INVALID; original exception; all B/C/restart continuations rejected; zero transport/START",
   "new_protected_file_count": 99,
   "new_independent_audit_required": false,
-  "historical_failed_review_preserved": true
+  "historical_failed_review_preserved": true,
+  "publication_migration_record": "publication/PUBLICATION_MIGRATION.json",
+  "original_commit_mapping_recorded": true
 }

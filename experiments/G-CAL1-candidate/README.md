@@ -1,19 +1,35 @@
-# G-CAL1: Audited Locally, Publication Blocked
+# G-CAL1: Publication Rebind Awaiting Integrity Verification
 
-## Publication stop
+## Publication-only repair
 
-The new independent audit is PASS and local technical readiness is freeze REVIEW
-only. The task delivery is nevertheless INCOMPLETE: GitHub rejected the attempted
-push of the full preserved history at local commit
-`0e8c1db97689d179e735d47faf8144d8d4faf24e`. A preexisting failed-audit clone contains
-a 143,930,946-byte `AUTHORING_ATTEMPTS.json`, exceeding GitHub's 100 MB file limit.
-The remote branch remains `1757155387af122d126f6db9fd03477e2823c2bb`.
-No squash, history rewrite, LFS migration, evidence deletion or workaround was
-performed. See `audit/lock_timeout_repair/PUSH_FAILURE_REPORT.json`. All local
-commits and historical evidence remain preserved; freeze inactive, execution
-unauthorized. Publication needs a separately authorized resolution.
+The operator separately authorized a local storage-only rewrite after the
+historical oversized audit blob blocked publication. One 143,930,946-byte object
+is shared by four exact audit-copy paths, now narrowly tracked in Git LFS.
+All checked-out evidence bytes, science, implementation and audit conclusions
+remain unchanged. The remote base is not rewritten and no force-push is permitted.
 
-## Current lock-timeout repair and independent closure
+The original eleven-commit chain is preserved at
+`refs/heads/archive/g-cal1-pre-lfs-publication`, tip
+`349cc4ac44dae608d4418db21be7ebb0b1c2c09f`, and in an external verified Git bundle.
+`publication/PUBLICATION_MIGRATION.json` records every original-to-published
+commit mapping, bundle identity, exact LFS paths/content identity and the tool's
+unexpected archival-ref move followed by restoration to the original tip.
+
+The complete original 1,149-file freeze package is preserved byte-for-byte in
+`publication/archived_prepublication_freeze_package/`. Source candidate
+`59924e2546dc103ed84bc298c489de40e6a63a1815985af0b3b78f0ad7a0dbc9` is
+UNACTIVATED / SUPERSEDED_BY_PUBLICATION_REBIND, not scientifically failed.
+The frozen runner's fixed candidate path now holds the metadata-only rebind:
+`fad0fddd74723a7019f30b8debe0a8f239ba8fbf31a3fcd49e593e0f795e9cd8`.
+All 99 protected hashes, operational binding, requests, schedule and config are
+unchanged. The completed independent audit remains PASS; its original evidence
+and conclusions are preserved, with rewritten commit identities resolved by the
+publication map. No scientific tests or model observations are rerun.
+
+Publication verification, LFS upload and normal branch push remain pending.
+Freeze inactive, execution unauthorized; readiness grants freeze REVIEW only.
+
+## Preserved prepublication lock-timeout repair and independent closure
 
 The actual 120-second supplement blocked the previous implementation: it emitted
 INVALID `PROVENANCE_MISMATCH` without retaining an incident. The failed review
