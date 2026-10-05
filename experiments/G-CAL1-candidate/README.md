@@ -1,4 +1,4 @@
-# G-CAL1: Publication Verified, Branch Push Pending
+# G-CAL1: Published, Ready for Execution-Freeze Review Only
 
 ## Publication-only repair
 
@@ -30,8 +30,12 @@ Publication verification is PASS: all 99 protected hashes and preexisting
 non-metadata file bytes match, and the push range has no oversized ordinary blob.
 The single LFS object was uploaded and downloaded through normal Git LFS into
 an initially empty external cache; exact SHA-256 and size match, with LFS fsck OK.
-Normal descendant branch push remains pending. Verification and command records
-are preserved in `publication/`; no scientific or implementation audit was rerun.
+The normal descendant payload push succeeded, and the remote chain, candidate,
+migration record and LFS content were verified at
+`ffb777dcc73a567e2c9f43b665dbefa1fdf6c808`. A second empty-cache fetch using that
+published revision verified the same complete LFS object. Verification receipts
+and command records are preserved in `publication/`; no scientific or
+implementation audit was rerun. This advisory completion commit adds no authority.
 Freeze inactive, execution unauthorized; readiness grants freeze REVIEW only.
 
 ## Preserved prepublication lock-timeout repair and independent closure
