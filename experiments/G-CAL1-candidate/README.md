@@ -1,4 +1,17 @@
-# G-CAL1: Ready for Execution-Freeze Review Only
+# G-CAL1: Audited Locally, Publication Blocked
+
+## Publication stop
+
+The new independent audit is PASS and local technical readiness is freeze REVIEW
+only. The task delivery is nevertheless INCOMPLETE: GitHub rejected the attempted
+push of the full preserved history at local commit
+`0e8c1db97689d179e735d47faf8144d8d4faf24e`. A preexisting failed-audit clone contains
+a 143,930,946-byte `AUTHORING_ATTEMPTS.json`, exceeding GitHub's 100 MB file limit.
+The remote branch remains `1757155387af122d126f6db9fd03477e2823c2bb`.
+No squash, history rewrite, LFS migration, evidence deletion or workaround was
+performed. See `audit/lock_timeout_repair/PUSH_FAILURE_REPORT.json`. All local
+commits and historical evidence remain preserved; freeze inactive, execution
+unauthorized. Publication needs a separately authorized resolution.
 
 ## Current lock-timeout repair and independent closure
 
