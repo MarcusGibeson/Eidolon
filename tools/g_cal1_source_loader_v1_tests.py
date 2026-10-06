@@ -11,6 +11,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import tempfile
+import types
 from unittest.mock import patch
 
 ROOT = Path(__file__).absolute().parent.parent
@@ -35,6 +36,63 @@ def boot():
 
 
 BOOT = boot()
+
+
+def stdlib_worker(kind, expected_path, directory):
+    expected = json.loads(Path(expected_path).read_bytes())
+    directory = Path(directory)
+    sentinel = 'UNBOUND_STANDARD_LIBRARY_PROBE'
+    shadow = directory / ('site-packages' if kind == 'site_packages' else 'shadow')
+    shadow.mkdir()
+    fixture = shadow / 'copy.py'
+    fixture.write_bytes(('PROBE_ORIGIN_SENTINEL = ' + repr(sentinel) + '\n').encode())
+    (shadow / 'gcal_third_party_package.py').write_bytes(('PROBE_ORIGIN_SENTINEL = ' + repr(sentinel) + '\n').encode())
+    sys.modules.pop('copy', None)
+    if kind in ('preloaded_external', 'preloaded_repository', 'forged_origin'):
+        stale = types.ModuleType('copy')
+        stale.__file__ = str(fixture if kind == 'preloaded_external' else ROOT / 'tools/g_cal1_authority_v2.py')
+        stale.__spec__ = importlib.util.spec_from_file_location('copy', stale.__file__)
+        stale.PROBE_ORIGIN_SENTINEL = sentinel
+        if kind == 'forged_origin':
+            legitimate = Path(sys._stdlib_dir) / 'copy.py'
+            stale.__file__ = str(legitimate)
+            stale.__spec__ = importlib.util.spec_from_file_location('copy', legitimate)
+            exec(compile('def deepcopy(value): return value\n', str(fixture), 'exec'), stale.__dict__)
+        sys.modules['copy'] = stale
+    if kind == 'cwd':
+        os.chdir(shadow)
+        sys.path.insert(0, '')
+    else:
+        sys.path.insert(0, str(shadow))
+    try:
+        trusted = boot()
+        runtime = trusted['VerifiedRuntime'](expected)
+    except Exception as exc:
+        assert kind in ('preloaded_external', 'preloaded_repository', 'forged_origin')
+        assert type(exc).__name__ == 'SourceVerificationError'
+        assert sys.modules['copy'] is stale
+        result = dict(foreign_preloaded_module_rejected=True, reason=str(exc), global_foreign_module_unchanged=True)
+    else:
+        assert kind in ('path', 'cwd', 'site_packages')
+        copy_module = runtime.module('g_cal1_authority_v2').copy
+        assert not hasattr(copy_module, 'PROBE_ORIGIN_SENTINEL')
+        assert Path(copy_module.__file__).resolve() == (Path(sys._stdlib_dir) / 'copy.py').resolve()
+        data = {'nested': [1,2]}
+        copied = copy_module.deepcopy(data)
+        assert copied == data and copied is not data and copied['nested'] is not data['nested']
+        runtime.module('g_cal1_authority_v2').verify_sources(expected)
+        try:
+            trusted['_STDLIB']('gcal_third_party_package')
+        except trusted['SourceVerificationError']:
+            third_party_rejected = True
+        else:
+            third_party_rejected = False
+        assert third_party_rejected and 'gcal_third_party_package' not in sys.modules
+        result = dict(external_fixture_not_executed=True, legitimate_copy_origin=copy_module.__file__,
+                      legitimate_behavior_unchanged=True, authority_source_verification=True,
+                      existing_third_party_source_rejected=True)
+    assert AUDIT == []
+    print(json.dumps(dict(probe=kind, provider_calls=0, **result), sort_keys=True))
 
 
 def worker(kind, expected_path, directory):
@@ -164,6 +222,23 @@ def main():
 
         expected_file = directory / 'EXPECTED_INVENTORY_TEST_ONLY.json'
         expected_file.write_bytes(json.dumps(expected, sort_keys=True).encode())
+        for kind in ('path','cwd','site_packages','preloaded_external','preloaded_repository','forged_origin'):
+            target = directory / kind
+            target.mkdir()
+            result = subprocess.run([sys.executable, '-B', str(Path(__file__).absolute()), '--stdlib-worker',
+                                     kind, str(expected_file), str(target)], capture_output=True, timeout=60)
+            check(result.returncode == 0, kind + ' standard-library boundary:' + result.stderr.decode(errors='replace'))
+            row = json.loads(result.stdout)
+            check(row['provider_calls'] == 0, kind + ' standard-library zero provider calls')
+            print(json.dumps({'probe':'stdlib_' + kind,'result':row},sort_keys=True))
+        for name, origin in [('copy', 'source'), ('textwrap', 'source'), ('sys', 'built-in'), ('os', 'frozen')]:
+            module = BOOT['_STDLIB'](name)
+            check(module.__spec__.origin == origin if origin != 'source' else
+                  BOOT['_STDLIB'].origin(module.__spec__.origin) == BOOT['_STDLIB'].origin(module.__file__),
+                  'legitimate interpreter import:' + name)
+        for name in ('gcal_third_party_package', 'gcal_missing_external_dependency'):
+            reject(lambda name=name: BOOT['_STDLIB'](name), 'unproven external dependency fails closed:' + name)
+        reject(lambda: runtime._import('g_cal1_authority_v2', level=1), 'relative repository import cannot escape graph')
         for kind, module, marker in (
                 ('cached_transport', 'g_cal1_ollama_transport', b'\nREVIEW_UNREVIEWED_BYTECODE_MARKER = "not in frozen source"\n'),
                 ('unchecked_hash_transport', 'g_cal1_ollama_transport', b'\nREVIEW_UNREVIEWED_BYTECODE_MARKER = "not in frozen source"\n'),
@@ -220,7 +295,9 @@ def main():
 
 
 if __name__ == '__main__':
-    if sys.argv[1:2] == ['--worker']:
+    if sys.argv[1:2] == ['--stdlib-worker']:
+        stdlib_worker(*sys.argv[2:])
+    elif sys.argv[1:2] == ['--worker']:
         worker(*sys.argv[2:])
     else:
         raise SystemExit(main())

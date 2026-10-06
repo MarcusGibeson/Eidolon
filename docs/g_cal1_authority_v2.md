@@ -135,6 +135,33 @@ literal False; numeric/string/container substitutes reject. Other declared grant
 fields, including nested science binding and namespace Boolean, are also typed.
 No unrelated candidate/review/activation schema was redesigned by this repair.
 
+### Interpreter Library Import Boundary
+
+The subsequent supervised repair removes ambient import-path authority for
+standard-library dependencies. Before ordinary source imports, the loader uses
+CPython's initialized builtin/frozen import machinery and frozen OS path helpers
+to establish the interpreter library from `sys._stdlib_dir`, checked against
+`sys.base_prefix`, plus its native extension directory. Unsupported interpreter
+layouts fail closed. Site-packages, dist-packages and other resolved origins are
+excluded even when present on sys.path.
+
+During standard-library imports, an import-lock-scoped resolver uses only these
+roots and builtin/frozen modules. It constrains transitive imports too and restores
+the ambient import environment afterward. Newly loaded Python library code is
+compiled from trusted-root source bytes rather than external bytecode caches.
+Preloaded standard-library objects require module/spec identity and trusted
+resolved origins; external Python function origins are rejected. Legitimate
+library identities are retained for compatibility with frozen exception types.
+Unchanged module identity signatures may be reused within that boundary; mutable
+CPython internals, arbitrary monkeypatching and writes inside trusted interpreter
+roots remain outside the declared runtime trust model.
+
+Repository modules still come only from the private verified source graph. The
+executable inventory remains 18 sources: only the bound loader hash changes in
+this repair. No standard-library hash inventory or scientific refreeze is made.
+The original failing external-copy probe and both interrupted Sol review records
+remain immutable evidence. Mechanical validation is not independent approval.
+
 ## Run And Resume
 
 RUN_RESERVED is an append-only transition binding the ID to its current activation

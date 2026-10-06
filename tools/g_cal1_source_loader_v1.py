@@ -4,28 +4,160 @@ Launch this .py file directly, or execute its explicitly verified source bytes.
 It loads no repository module through importlib, sys.path, sys.modules or pyc.
 The CLI loads/attests code only: no candidate, activation, grant or provider API.
 """
-from __future__ import annotations
-
-import ast
-import builtins
-import hashlib
-import json
-from pathlib import Path
-import re
 import sys
-import types
-
-VERSION = 'g-cal1.source-loader.v1'
-_ROOT_CODE = sys._getframe().f_code
-_SELF = Path(__file__).absolute()
-_IMPORT = builtins.__import__
-_COMPILE = builtins.compile
-_CONTEXT = '__g_cal1_verified_source_context__'
-ROOTS = ('g_cal1_live_v4', 'g_cal1_authority_v2', 'g_cal1_ollama_transport', 'g_cal1_source_loader_v1')
+import _imp
 
 
 class SourceVerificationError(Exception):
     pass
+
+
+# CPython's initialized builtin/frozen import machinery is a runtime trust root.
+# Establish it before importing any ordinary Python source, including our own
+# standard-library dependencies. No ambient path is a standard-library root.
+_BOOTSTRAP = sys.modules['_frozen_importlib']
+_EXTERNAL = sys.modules['_frozen_importlib_external']
+_CORE_OS = sys.modules['os']
+_RAW_IMPORT, _RAW_COMPILE = __import__, compile
+for _core in (_BOOTSTRAP, _EXTERNAL, _CORE_OS, _CORE_OS.path):
+    if type(_core) is not type(sys) or _core.__spec__.origin != 'frozen':
+        raise SourceVerificationError('unsupported/untrusted CPython bootstrap module')
+
+
+class _TrustedSourceLoader(_EXTERNAL.SourceFileLoader):
+    def get_code(self, fullname):
+        # Even an external pycache_prefix cannot substitute stdlib source code.
+        return _RAW_COMPILE(self.get_data(self.path), self.path, 'exec', dont_inherit=True)
+
+
+class _StandardLibraryBoundary:
+    def __init__(self):
+        self.path = _CORE_OS.path
+        library = getattr(sys, '_stdlib_dir', None)
+        if not library:
+            raise SourceVerificationError('CPython standard-library root unavailable')
+        expected = self.path.join(sys.base_prefix, 'Lib') if sys.platform == 'win32' else \
+            self.path.join(sys.base_prefix, 'lib', 'python' + str(sys.version_info.major) + '.' + str(sys.version_info.minor))
+        if self.normal(library) != self.normal(expected):
+            raise SourceVerificationError('standard-library root is not the interpreter library')
+        roots = [self.normal(library)]
+        extension = self.path.join(sys.base_exec_prefix, 'DLLs') if sys.platform == 'win32' else \
+            self.path.join(library, 'lib-dynload')
+        if self.path.isdir(extension):
+            roots.append(self.normal(extension))
+        self.roots = tuple(roots)
+        self.names = sys.stdlib_module_names
+        self.finders = {}
+        self.identities = {}
+
+    def normal(self, path):
+        return self.path.normcase(self.path.realpath(path))
+
+    def origin(self, path):
+        if type(path) is not str:
+            raise SourceVerificationError('trusted module origin missing')
+        normal = self.normal(path)
+        if any(p in ('site-packages', 'dist-packages') for p in normal.replace('\\', '/').split('/')) or \
+                not any(normal == root or normal.startswith(root + self.path.sep) for root in self.roots):
+            raise SourceVerificationError('module outside interpreter standard-library roots: ' + path)
+        return normal
+
+    def find_spec(self, fullname, path=None, target=None):
+        if fullname.split('.')[0] not in self.names:
+            # True stdlib source may probe optional implementations (e.g. Jython)
+            # in an ImportError guard. Never resolve them, but preserve that guard.
+            raise ModuleNotFoundError('non-standard-library external dependency: ' + fullname)
+        for finder in (_BOOTSTRAP.BuiltinImporter, _BOOTSTRAP.FrozenImporter):
+            spec = finder.find_spec(fullname)
+            if spec is not None:
+                return spec
+        for directory in self.roots if path is None else path:
+            directory = self.origin(directory)
+            if directory not in self.finders:
+                self.finders[directory] = _EXTERNAL.FileFinder(directory,
+                    (_TrustedSourceLoader, _EXTERNAL.SOURCE_SUFFIXES),
+                    (_EXTERNAL.ExtensionFileLoader, _EXTERNAL.EXTENSION_SUFFIXES))
+            spec = self.finders[directory].find_spec(fullname)
+            if spec is not None:
+                self.origin(spec.origin)
+                return spec
+        return None
+
+    def validate_cache(self):
+        aliases = {'os.path': ('ntpath', 'posixpath'), 'importlib._bootstrap': ('_frozen_importlib',),
+                   'importlib._bootstrap_external': ('_frozen_importlib_external',)}
+        for name, module in tuple(sys.modules.items()):
+            if name.split('.')[0] not in self.names or module is None:
+                continue
+            # These deprecated typing aliases are generated classes, not modules.
+            if name in ('typing.io', 'typing.re') and isinstance(module, type) and \
+                    sys.modules.get('typing').__dict__.get(name.split('.')[1]) is module:
+                continue
+            if type(module) is not type(sys):
+                raise SourceVerificationError('untrusted preloaded standard-library object: ' + name)
+            spec = module.__dict__.get('__spec__')
+            if type(spec) is not _BOOTSTRAP.ModuleSpec or \
+                    spec.name not in (name, *aliases.get(name, ())):
+                raise SourceVerificationError('untrusted preloaded standard-library identity: ' + name)
+            functions = tuple(v for v in module.__dict__.values() if type(v) is type(lambda: None))
+            identity = (id(module), id(spec), spec.name, spec.origin, module.__dict__.get('__file__'),
+                        tuple(module.__dict__.get('__path__', ())),
+                        tuple((id(v.__code__), v.__code__.co_filename, v.__module__) for v in functions))
+            if self.identities.get(name) == identity:
+                continue
+            if spec.origin == 'built-in':
+                valid = _BOOTSTRAP.BuiltinImporter.find_spec(spec.name) is not None
+            elif spec.origin == 'frozen':
+                valid = _BOOTSTRAP.FrozenImporter.find_spec(spec.name) is not None
+            else:
+                valid = self.origin(spec.origin) == self.origin(module.__dict__.get('__file__'))
+            if not valid:
+                raise SourceVerificationError('preloaded module is not a builtin/frozen/stdlib component: ' + name)
+            for directory in module.__dict__.get('__path__', ()):
+                self.origin(directory)
+            # A claimed legitimate __file__ must not hide external Python code.
+            for value in functions:
+                if value.__module__ == spec.name:
+                    filename = value.__code__.co_filename
+                    if not filename.startswith('<frozen ') and filename != '<string>':
+                        self.origin(filename)
+            self.identities[name] = identity
+
+    def __call__(self, name, globals=None, locals=None, fromlist=(), level=0):
+        # Restrict nested imports too, including imports inside true stdlib code.
+        # Existing legitimate modules retain identity; foreign preloaded objects
+        # fail before import execution, rather than being adopted or rewritten.
+        if not level and name.split('.')[0] not in self.names:
+            raise SourceVerificationError('non-standard-library external dependency: ' + name)
+        _imp.acquire_lock()
+        old = sys.path, sys.meta_path, sys.path_hooks, sys.path_importer_cache
+        try:
+            self.validate_cache()
+            sys.path, sys.meta_path, sys.path_hooks, sys.path_importer_cache = list(self.roots), [self], [], {}
+            result = _RAW_IMPORT(name, globals, locals, fromlist, level)
+            self.validate_cache()
+            return result
+        finally:
+            sys.path, sys.meta_path, sys.path_hooks, sys.path_importer_cache = old
+            _imp.release_lock()
+
+
+_STDLIB = _StandardLibraryBoundary()
+ast = _STDLIB('ast')
+builtins = _STDLIB('builtins')
+hashlib = _STDLIB('hashlib')
+json = _STDLIB('json')
+Path = _STDLIB('pathlib', fromlist=('Path',)).Path
+re = _STDLIB('re')
+types = _STDLIB('types')
+
+VERSION = 'g-cal1.source-loader.v1'
+_ROOT_CODE = sys._getframe().f_code
+_SELF = Path(__file__).absolute()
+_IMPORT = _STDLIB
+_COMPILE = builtins.compile
+_CONTEXT = '__g_cal1_verified_source_context__'
+ROOTS = ('g_cal1_live_v4', 'g_cal1_authority_v2', 'g_cal1_ollama_transport', 'g_cal1_source_loader_v1')
 
 
 def _check(condition, message):
@@ -155,7 +287,7 @@ def verified_context(owner):
 
 
 def main():
-    import argparse
+    argparse = _STDLIB('argparse')
     parser = argparse.ArgumentParser(description='Load verified code only; no provider or execution authority.')
     parser.add_argument('--inventory-file', required=True)
     parser.add_argument('--inventory-sha256', required=True)
