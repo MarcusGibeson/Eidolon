@@ -15,14 +15,18 @@ import copy
 import http.client
 import json
 import math
+from pathlib import Path
 import re
 import threading
 
 from g_extract1_contract import canonical, digest
 
-VERSION = 'g-cal1.ollama-live-transport.v1'
+VERSION = 'g-cal1.ollama-live-transport.v2'
 RECEIPT_SCHEMA = 'g-cal1.ollama-live-transport.receipt.v1'
-METADATA_SCHEMA = 'g-cal1.ollama-live-transport.metadata.v1'
+METADATA_SCHEMA = 'g-cal1.ollama-live-transport.metadata.v2'
+COMPONENT_SCHEMA = 'g-cal1.ollama-model-components.v1'
+COMPONENT_ROLES = ('model', 'projector')
+METADATA_LAYER_TYPES = ('license', 'params', 'template', 'system', 'messages')
 HOST, PORT = '127.0.0.1', 11434
 ENDPOINT = 'http://127.0.0.1:11434'
 GENERATE_PATH = '/api/generate'
@@ -88,6 +92,86 @@ def _integer(value):
     return type(value) is int
 
 
+def _components(values, primary):
+    _check(type(values) is list and 1 <= len(values) <= 2, 'explicit component list')
+    for item in values:
+        _check(type(item) is dict and set(item) == {'role', 'sha256'} and
+               type(item['role']) is str and item['role'] in COMPONENT_ROLES and
+               type(item['sha256']) is str and HEX64.fullmatch(item['sha256']), 'component schema')
+    roles = [item['role'] for item in values]
+    _check(roles in (['model'], ['model', 'projector']) and
+           len({item['sha256'] for item in values}) == len(values), 'component order/duplicates')
+    _check(values[0]['sha256'] == primary, 'primary component contradicts blob_sha256')
+    return values
+
+
+def manifest_components(raw, model):
+    """Read-only role proof from exact digest-bound manifest bytes, not FROM position."""
+    _check(type(raw) is bytes and digest(raw) == model['manifest_digest'], 'local manifest digest mismatch')
+    try:
+        manifest = _strict_json(raw)
+    except (ValueError, UnicodeError, RecursionError) as exc:
+        raise TransportContractError('malformed local manifest') from exc
+    _check(type(manifest) is dict and type(manifest.get('schemaVersion')) is int and
+           manifest['schemaVersion'] == 2 and
+           manifest.get('mediaType') == 'application/vnd.docker.distribution.manifest.v2+json', 'manifest schema')
+    config = manifest.get('config')
+    _check(type(config) is dict and config.get('mediaType') == 'application/vnd.docker.container.image.v1+json' and
+           type(config.get('digest')) is str and re.fullmatch('sha256:[0-9a-f]{64}', config['digest']) and
+           _integer(config.get('size')) and config['size'] >= 0, 'manifest config')
+    layers = manifest.get('layers')
+    _check(type(layers) is list and layers, 'manifest layers')
+    found = {}
+    for layer in layers:
+        _check(type(layer) is dict and type(layer.get('mediaType')) is str and
+               type(layer.get('digest')) is str and re.fullmatch('sha256:[0-9a-f]{64}', layer['digest']) and
+               _integer(layer.get('size')) and layer['size'] >= 0, 'manifest layer schema')
+        kind = layer['mediaType'].removeprefix('application/vnd.ollama.image.')
+        _check(layer['mediaType'] == 'application/vnd.ollama.image.' + kind and
+               kind in (*COMPONENT_ROLES, *METADATA_LAYER_TYPES), 'unsupported manifest layer role')
+        if kind in COMPONENT_ROLES:
+            _check(kind not in found, 'duplicate manifest component role')
+            found[kind] = layer['digest'][7:]
+    result = [dict(role=role, sha256=found[role]) for role in COMPONENT_ROLES if role in found]
+    return _components(result, model['blob_sha256'])
+
+
+def component_provider_binding(binding, manifest_bytes):
+    """Prospective binding only; never publishes a freeze or grants authority."""
+    result = _frozen_binding(binding)
+    _check(type(manifest_bytes) is dict and set(manifest_bytes) == {m['model'] for m in result['models']},
+           'manifest evidence coverage')
+    for model in result['models']:
+        model['components'] = manifest_components(manifest_bytes[model['model']], model)
+    return _frozen_binding(result)
+
+
+def _manifest_path(name):
+    # This version supports the fixed default local Ollama registry, not ambient
+    # OLLAMA_MODELS overrides or arbitrary caller-selected component evidence.
+    _check(type(name) is str and re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]*:[A-Za-z0-9][A-Za-z0-9._-]*', name),
+           'unsupported local manifest model name')
+    library, tag = name.split(':')
+    return Path.home() / '.ollama/models/manifests/registry.ollama.ai/library' / library / tag
+
+
+def _from_references(modelfile):
+    _check(type(modelfile) is str, 'show modelfile')
+    references = []
+    for line in modelfile.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith('#'):
+            continue
+        if re.match(r'(?i)^FROM(?:\s|$)', stripped):
+            # One complete blob path per directive; comments/extra tokens,
+            # generic model names and malformed/truncated hashes are not proof.
+            match = re.fullmatch(r'FROM\s+(?:[^\s"\x00]+[/\\])?sha256-([0-9a-f]{64})', stripped)
+            _check(match is not None, 'malformed FROM blob reference')
+            references.append(match.group(1))
+    _check(references and len(references) == len(set(references)), 'missing/duplicate FROM component')
+    return references
+
+
 def _frozen_binding(binding):
     binding = _plain(binding)
     _check(type(binding) is dict and binding.get('provider') == 'ollama', 'provider binding must be Ollama')
@@ -102,6 +186,8 @@ def _frozen_binding(binding):
                type(model.get('manifest_digest')) is str and HEX64.fullmatch(model['manifest_digest']) and
                type(model.get('blob_sha256')) is str and HEX64.fullmatch(model['blob_sha256']), 'model identity')
         names.append(model['model'])
+        if 'components' in model:
+            _components(model['components'], model['blob_sha256'])
     _check(len(set(names)) == len(names), 'duplicate model identity')
     config = binding.get('generation_configuration')
     _check(type(config) is dict, 'generation_configuration')
@@ -281,10 +367,33 @@ class OllamaLiveTransport:
             show, observation = self._metadata_exchange('POST', '/api/show', canonical({'model': name}))
             observations.append(observation)
             _check(type(show) is dict and type(show.get('modelfile')) is str, 'show envelope:' + name, fail)
-            lines = [x for x in show['modelfile'].splitlines() if x.startswith('FROM ')]
-            references = [BLOB_REFERENCE.findall(x) for x in lines]
-            _check(len(lines) == 1 and references == [[model['blob_sha256']]], 'model blob reference mismatch:' + name, fail)
-            verified.append({'model': name, 'manifest_digest': entry['digest'], 'blob_sha256': references[0][0]})
+            try:
+                references = _from_references(show['modelfile'])
+                component_evidence = None
+                if 'components' in model:
+                    path = _manifest_path(name)
+                    raw_manifest = path.read_bytes()
+                    components = manifest_components(raw_manifest, model)
+                    _check(components == model['components'], 'manifest component roles/identities mismatch')
+                    expected = {item['sha256'] for item in components}
+                    _check(set(references) == expected and len(references) == len(components),
+                           'show component set mismatch')
+                    component_evidence = dict(schema_version=COMPONENT_SCHEMA, components=components,
+                        role_source='digest-bound local manifest layer mediaType, never FROM order',
+                        manifest_path=str(path), manifest_sha256=digest(raw_manifest),
+                        manifest_body_b64=_b64(raw_manifest), FROM_blob_references=references,
+                        FROM_order_semantics='unordered exact set; binding order model then projector',
+                        blob_content_rehashed=False)
+                else:
+                    # Historical single-component inputs retain their narrower
+                    # meaning; they never gain implied projector authority.
+                    _check(references == [model['blob_sha256']], 'legacy single-component blob mismatch')
+            except (TransportContractError, OSError) as exc:
+                raise MetadataVerificationError('model components:' + name + ':' + str(exc)) from exc
+            identity = {'model': name, 'manifest_digest': entry['digest'], 'blob_sha256': model['blob_sha256']}
+            if component_evidence is not None:
+                identity['component_evidence'] = component_evidence
+            verified.append(identity)
         return {'schema_version': METADATA_SCHEMA, 'transport_version': VERSION, 'endpoint': ENDPOINT,
                 'provider': 'ollama', 'provider_version': version['version'],
                 # Frozen entries echoed after their provider-observable fields matched;
@@ -295,7 +404,8 @@ class OllamaLiveTransport:
                 'verification_sources': {
                     'provider_version': 'GET /api/version version field',
                     'manifest_digest': 'GET /api/tags digest field for the exact model name',
-                    'blob_sha256': 'POST /api/show modelfile single FROM line sha256-<hex> blob reference',
+                    'blob_sha256': 'POST /api/show exact FROM blob set; legacy input requires single FROM',
+                    'component_roles': 'explicit components require exact digest-bound local manifest layers',
                     'blob_content_rehashed': False,
                     'generation_configuration': 'frozen binding only; not provider-reported'},
                 'internal_option_honoring_attested_by_provider': False,

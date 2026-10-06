@@ -67,7 +67,10 @@ def main():
     checks = mocks.Checks()
     protected = mocks.protected_snapshot()
     audit_before = len(mocks.AUDIT)
-    checks.check(not authority.NAMESPACE.exists(), 'isolation', 'no actual v2 authority directory')
+    production_before = {p.relative_to(authority.NAMESPACE).as_posix(): mocks.file_digest(p)
+                         for p in authority.NAMESPACE.rglob('*') if p.is_file()}
+    checks.check(all((authority.NAMESPACE / p).is_file() for p in production_before),
+                 'isolation', 'existing production authority is read-only evidence')
     checks.check(authority.historical()['binding']['schedule_sha256'] ==
                  'b4d4a5a7ba37961dcfbbe0c6aa6101fbbeb40dcf2dad0c54c8680d216c2e1858', 'preservation', 'frozen schedule')
     # Same verified source facts/schedule as the reviewed transport tests. Remove
@@ -357,7 +360,9 @@ def main():
                                          transport=tt, resume=True), IntegrityError, 'terminal', 'restart rejects')
 
     checks.check(mocks.protected_snapshot() == protected, 'preservation', 'all existing protected/untracked bytes unchanged')
-    checks.check(not authority.NAMESPACE.exists(), 'isolation', 'no real activation/candidate/grant created')
+    checks.check({p.relative_to(authority.NAMESPACE).as_posix(): mocks.file_digest(p)
+                  for p in authority.NAMESPACE.rglob('*') if p.is_file()} == production_before,
+                 'isolation', 'no real authority artifacts created or changed')
     checks.check(len(mocks.AUDIT) == audit_before, 'no_contact', 'no socket/process/provider contact')
     result = dict(schema_version='g-cal1.authority-v2.offline-tests.v1', passed=checks.passed, failed=len(checks.failed),
                   categories=checks.categories, failures=checks.failed, provider_metadata_calls=0,

@@ -51,13 +51,14 @@ closed afterwards:
 1. `GET /api/version`: `version` must equal the frozen `provider_version`.
 2. `GET /api/tags`: each frozen model name must be listed exactly once, and its
    `digest` (the installed manifest digest) must equal `manifest_digest`.
-3. `POST /api/show` with body `{"model":<name>}`: the reported `modelfile` must
-   contain exactly one `FROM` line, and the single `sha256-<hex>` blob reference
-   in that line must equal the frozen `blob_sha256`.
+3. `POST /api/show` with body `{"model":<name>}`: legacy bindings require one
+   exact primary FROM reference. Explicit component bindings require the exact
+   model/projector set and manifest role proof described below.
 
-What is not checked: the multi-GB blob content is **not rehashed**, and no local
-manifest or blob files are read. Blob identity is the provider-reported
-reference only. The returned receipts record `blob_content_rehashed: false`.
+The multi-GB blob content is **not rehashed**. Explicit component bindings read
+and hash the local manifest and verify its layer roles against the provider's
+FROM set; legacy single-component bindings retain reference-only verification.
+Receipts record `blob_content_rehashed: false`.
 
 The adapter never issues pull, create, copy, delete, preload or `keep_alive`
 requests. Any mismatch or exception disables the adapter permanently.
@@ -185,3 +186,59 @@ are never classified or parsed as a response.
   grant are never parsed, copied or used as authority; they are only hashed,
   together with the rest of the G-CAL1 tree, to prove they are unchanged. The
   committed candidate is read only to get the frozen `provider_binding` values.
+# Prospective Multicomponent Metadata Repair
+
+This repair is implementation only and awaits independent Sol review. It creates
+no freeze candidate, activation, CAL grant, reservation, or execution authority.
+The old candidate/activation and the blocked intent
+`G-CAL1-CAL-20261006T063011Z-706d0b9fa5764a64` remain unchanged. That intent and grant
+must not be reused. Existing active authority pins older executable hashes and
+cannot authorize this repaired transport.
+
+The preserved `/api/show` response contains two FROM directives. The exact local
+manifest SHA-256 is `22130167c4c20e20c7b71454612966ca8e8171e9b3cc8ab6ce8aa6cbfec79643`,
+matching the recorded `/api/tags` digest. Its layer media types identify:
+
+| Role | Component SHA-256 |
+| --- | --- |
+| model | `f5f1dd8920d417aac2718b0bda3403da274301efdd6760b4f0f4b864ff2ad57d` |
+| projector | `ac3714bfdddeca31351f2752bf1a63f266f4df87c0b68c895e44945ca704448e` |
+
+The remaining layers are license and parameters; the manifest also identifies a
+Docker config object. No other executable model component is present. Blob content
+was not rehashed; component identities/roles are manifest-derived, not guessed
+from FROM order, model name, or model_info. Raw manifest and preserved HTTP response
+bytes are retained in `preexecution/multicomponent_metadata_repair/provider_evidence`.
+
+Transport version v2 adds a prospective per-model `components` field, with exact
+entries `{role, sha256}`. The versioned semantics are
+`g-cal1.ollama-model-components.v1`; binding order is model first, then optional
+projector. Duplicate roles/hashes, unknown roles, invalid hashes and a primary
+component inconsistent with the existing `blob_sha256` are rejected. Legacy input
+without components still requires exactly one FROM reference and does not imply
+projector coverage.
+
+For explicit components the adapter requires all of the following:
+
+1. Exact existing provider/version/name and `/api/tags` manifest digest.
+2. Exact raw local manifest digest at the default local Ollama registry path.
+3. Complete model/projector composition and roles matching that manifest.
+4. Exact FROM component set, without duplicates, malformed references or extras.
+
+FROM order is not role authority and may vary. Each directive must contain one
+complete, unquoted, whitespace-free blob path/reference; unsupported syntax fails
+closed. The local manifest supports only schemaVersion 2 and declared model,
+projector and recognized non-executable metadata layer types. Unknown layer types
+fail closed. This version does not infer alternate OLLAMA_MODELS locations or pull
+missing manifests. A missing/inconsistent local manifest blocks verification.
+
+Metadata receipts v2 preserve every verified component, its role source, manifest
+bytes/hash/path and the actual FROM order. They do not claim blob-content rehashing
+or internal sampling-option honoring. Internal option honoring remains UNATTESTED.
+Generation/wire/session/retry behavior is unchanged. Tests use scripted HTTP and
+temporary manifest files, with socket contact denied.
+
+`component_provider_binding(binding, manifest_bytes)` is an offline prospective
+binding constructor, not a candidate or authority action. A future independently
+reviewed replacement freeze must bind the new executable inventory and explicit
+component binding; the old candidate must never be rewritten to cover a projector.

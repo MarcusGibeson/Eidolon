@@ -18,10 +18,12 @@ from g_cal1_lock import run_lock
 from g_extract1_contract import canonical, digest, file_digest, load, require
 from g_extract1_journal import Journal, write_once
 from g_cal1_source_loader_v1 import inventory, verified_context, launch_profile
+from g_cal1_ollama_transport import _frozen_binding
 
 VERSION = 'g-cal1.authority.v2'
 TRANSPORT_COMMIT = '9636b7e1fb1f5af05cb27ed29dfa6c9f5c63869c'
 TRANSPORT_SHA256 = 'f7591ec18860cf65ca532bf3bd3956b86a7fd084a30e9dcc05538f3bd16b9e6c'
+COMPONENT_TRANSPORT_SHA256 = '83cd91b7e8c9d68a3cef5dd4638d550a04190d4338a45565a8878ddb3a983fb2'
 ANCHOR = {
     'pointer_sha256': '52869014eae6561b25ebefbbece43f5bdcab08876bbc9d6d29224560f317ae94',
     'activation_sha256': '60e2d5ed08661deb7647511dcc47ef45a637a1a37f2411167b987241aec0aae7',
@@ -76,6 +78,24 @@ def exact_schema(value, template):
         return set(value) == set(template) and all(exact_schema(value[k], v) for k, v in template.items())
     if type(template) is list:
         return len(value) == len(template) and all(exact_schema(a, b) for a, b in zip(value, template))
+    return True
+
+
+def provider_extension(binding, baseline):
+    """A prospective component extension cannot alter existing provider science."""
+    check(type(binding) is dict and set(binding) == set(baseline), 'provider binding shape')
+    if binding == baseline:
+        return False
+    try:
+        validated = _frozen_binding(binding)
+    except Exception as exc:
+        check(False, 'provider component schema:' + str(exc))
+    projection = copy.deepcopy(validated)
+    check(len(projection['models']) == len(baseline['models']), 'provider model count')
+    for model in projection['models']:
+        check('components' in model, 'explicit component coverage required')
+        model.pop('components')
+    check(exact_schema(projection, baseline) and projection == baseline, 'provider/science changed')
     return True
 
 
@@ -219,10 +239,11 @@ class Registry:
                         'executable_sources', 'execution_sha256', 'transport_timeout_seconds', 'execution_authorized',
                         'protected_artifacts', 'launch_profile'},
               'candidate shape')
+        extended = provider_extension(c['provider_binding'], old['provider_binding'])
         check(c['schema_version'] == 'g-cal1.candidate.v2' and c['experiment'] == 'G-CAL1' and
               c['status'] == 'EXECUTION_FREEZE_CANDIDATE_ONLY' and c['activated'] is False and
               c['execution_authorized'] is False and c['predecessor'] == predecessor and
-              c['science_binding'] == old['binding'] and c['provider_binding'] == old['provider_binding'] and
+              c['science_binding'] == old['binding'] and
               c['protected_artifacts'] == protected_set(old) and
               c['reviewed_transport_commit'] == TRANSPORT_COMMIT, 'candidate lineage/science/authority')
         sources = c['executable_sources']
@@ -231,7 +252,10 @@ class Registry:
         check(exact_schema(c['launch_profile'], profile) and c['launch_profile'] == profile, 'clean launch profile')
         check(c['execution_sha256'] == digest(canonical(dict(executable_sources=sources, launch_profile=profile))),
               'execution/launch digest')
-        check(c['executable_sources'].get('tools/g_cal1_ollama_transport.py') == TRANSPORT_SHA256,
+        transport_sha = c['executable_sources'].get('tools/g_cal1_ollama_transport.py')
+        expected_sha = COMPONENT_TRANSPORT_SHA256 if extended else TRANSPORT_SHA256
+        check(transport_sha == expected_sha or
+              (self.test_only and not extended and transport_sha == COMPONENT_TRANSPORT_SHA256),
               'reviewed transport identity, not just commit label')
         check(type(c['transport_timeout_seconds']) in (int, float) and math.isfinite(c['transport_timeout_seconds']) and
               c['transport_timeout_seconds'] > 0, 'explicit transport timeout')
@@ -241,17 +265,22 @@ class Registry:
               candidate_sha256=candidate_sha, execution_sha256=c['execution_sha256'],
               reviewer='Sol 6.1', scope='EXECUTION_FREEZE_REVIEW'), 'unreviewed candidate/review binding')
 
-    def candidate(self, *, timeout_seconds):
+    def candidate(self, *, timeout_seconds, provider_binding=None):
         """Future preparation only: returns an unactivated object, does not publish."""
         with self.locked():
             predecessor, _ = self.history()
             old = historical()
+            check(provider_binding is not None or self.test_only,
+                  'future production candidate requires explicit component binding')
+            binding = old['provider_binding'] if provider_binding is None else copy.deepcopy(provider_binding)
+            if not self.test_only:
+                check(provider_extension(binding, old['provider_binding']), 'explicit new component binding required')
             sources = source_inventory()
             verify_sources(sources)
             profile = launch_profile(sources)
             c = dict(self.fields(), schema_version='g-cal1.candidate.v2', experiment='G-CAL1',
                      status='EXECUTION_FREEZE_CANDIDATE_ONLY', activated=False, execution_authorized=False,
-                     predecessor=predecessor, science_binding=old['binding'], provider_binding=old['provider_binding'],
+                     predecessor=predecessor, science_binding=old['binding'], provider_binding=binding,
                      protected_artifacts=protected_set(old),
                      reviewed_transport_commit=TRANSPORT_COMMIT, executable_sources=sources,
                      launch_profile=profile,

@@ -50,7 +50,9 @@ rewritten to describe supersession.
 ## Future Separate Actions
 
 1. Independent implementation review, then separately authorized candidate
-   preparation. `Registry.candidate(timeout_seconds=...)` only returns an object.
+   preparation. `Registry.candidate(timeout_seconds=..., provider_binding=...)`
+   only returns an object; future production preparation now requires the explicit
+   component binding described below.
    The operator must explicitly choose the positive per-blocking-socket-operation
    transport timeout before freeze; no default or scientific setting is invented.
 2. Separate freeze review binds the exact candidate and execution digest. Its
@@ -275,3 +277,35 @@ reserve activation path. That exclusion is recorded explicitly, not counted
 as a verified-source load. Read-only actual-package construction and all 80
 request hashes provide additional live-path closure evidence without provider
 contact or authority creation.
+# Multicomponent Binding Extension (Pending Review)
+
+The transport metadata repair prospectively extends each provider-model entry
+with a typed `components` list, ordered model then optional projector. Existing
+provider/version/model/manifest/primary blob/configuration values must project
+exactly to the unchanged historical provider binding. Component roles are proved
+by exact-digest local manifest layer media types; `/api/show` must expose exactly
+the same blob set. This is not a scientific configuration change.
+
+The candidate envelope remains `g-cal1.candidate.v2`. Future production candidate
+preparation requires an explicitly supplied component-extended `provider_binding`;
+there is no silent legacy fallback. This implementation task does not invoke that
+preparation in production. Historical candidates continue to validate against
+their original single-component binding and original transport source hash for
+history replay only. Authorization still requires the complete source-only graph
+to match the selected candidate, so the old active freeze rejects repaired code.
+
+`reviewed_transport_commit` retains its original reviewed transport-lineage anchor;
+it is not approval of the pending repair. Exact executable hashes, separate Sol
+implementation review, future candidate-linked provenance/review evidence and
+subsequent explicit activation are still mandatory. The component-aware transport
+has a separate exact source pin; no branch label or historical commit label can
+replace executable identity. Legacy bindings with repaired code are accepted only
+inside explicitly test-only namespaces for historical regression fixtures, never
+as a future production candidate.
+
+The import closure remains 18 sources. Only the transport and authority resolver
+executable hashes change; the frozen lab, manifest, loader, live entrypoint,
+scientific contract, scorer and request rendering remain untouched. Production
+authority artifacts and the stopped precontact attempt are preserved byte-exact.
+The existing authority test now snapshots an already-existing production namespace
+instead of assuming it is absent; no production authority is created in tests.
