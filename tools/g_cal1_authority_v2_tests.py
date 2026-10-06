@@ -12,12 +12,26 @@ from pathlib import Path
 import tempfile
 from unittest.mock import patch
 
-import g_cal1_authority_v2 as authority
-from g_cal1_live_v4 import LiveRun
-from g_cal1_contract import Package
-from g_extract1_contract import canonical, digest, IntegrityError, load
-from g_extract1_journal import Journal, write_once
+# The bootstrap itself is executed from its source bytes, not normal import/pyc.
+BOOT_PATH = Path(__file__).absolute().with_name('g_cal1_source_loader_v1.py')
+BOOT = {'__file__': str(BOOT_PATH), '__name__': 'gcal_test_verified_bootstrap'}
+exec(compile(BOOT_PATH.read_bytes(), str(BOOT_PATH), 'exec', dont_inherit=True), BOOT)
+RUNTIME = BOOT['VerifiedRuntime'](BOOT['inventory']())
+authority = RUNTIME.module('g_cal1_authority_v2')
+LiveRun = RUNTIME.module('g_cal1_live_v4').LiveRun
+Package = RUNTIME.module('g_cal1_contract').Package
+contract = RUNTIME.module('g_extract1_contract')
+canonical, digest, IntegrityError, load = contract.canonical, contract.digest, contract.IntegrityError, contract.load
+Journal, write_once = RUNTIME.module('g_extract1_journal').Journal, RUNTIME.module('g_extract1_journal').write_once
 from g_extract1_scoring import synthetic_gold
+
+
+def verified(binding, schedule, provider=None, **kwargs):
+    provider = provider or mocks.Provider()
+    provider.add(*mocks.metadata_scripts(binding))
+    transport = RUNTIME.module('g_cal1_ollama_transport').OllamaLiveTransport(
+        binding, schedule, timeout_seconds=30, connection_factory=provider, **kwargs)
+    return transport, provider, transport.verify_metadata()
 
 
 def fixture(root, package):
@@ -64,7 +78,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix='g-cal1-v2-tests-') as tmp:
         root = Path(tmp)
         reg, c, cs, rs, act, op = fixture(root / 'authority', package)
-        checks.check(len(c['executable_sources']) == 17 and len(c['protected_artifacts']) == 107 and c['provider_binding'] == binding,
+        checks.check(len(c['executable_sources']) == 18 and len(c['protected_artifacts']) == 107 and c['provider_binding'] == binding,
                      'binding', 'exact executable closure and provider baseline')
         checks.check(reg.history()[0]['activation_sha256'] == act, 'lineage', 'selected v2 activation')
         checks.check(authority.historical()['status'] == 'EXECUTION_FREEZE_CANDIDATE_ONLY',
@@ -107,6 +121,21 @@ def main():
             bad = reg.publish('grants', mutated)
             checks.raises(lambda bad=bad: reg.authorize(package, run_id, act, bad), IntegrityError,
                           'grants', 'stale/wrong grant:' + field)
+        for value in (0, 1, 0.0, 1.0, 'false', 'False', 'true', None, [], {}):
+            malformed = copy.deepcopy(reg.read('grants', gs))
+            malformed['synthetic_evidence_allowed'] = value
+            bad = reg.publish('grants', malformed)
+            checks.raises(lambda bad=bad: reg.authorize(package, run_id, act, bad), IntegrityError,
+                          'grant_schema', 'exact Boolean required:' + repr(value))
+        for field in reg.read('grants', gs):
+            if field == 'synthetic_evidence_allowed':
+                continue
+            malformed = copy.deepcopy(reg.read('grants', gs))
+            malformed[field] = 0 if type(malformed[field]) is bool else []
+            # Namespace/test flag has a separate exact publication check.
+            checks.raises(lambda malformed=malformed: reg._grant(malformed, reg.history()[0], run_id), IntegrityError,
+                          'grant_schema', 'typed grant field:' + field)
+        checks.check(gate()['authorization_sha256'] == gs, 'grant_schema', 'literal Boolean false remains valid')
 
         # No operator action, unreviewed content or unsupported candidate can activate.
         prospective = reg.candidate(timeout_seconds=30)
@@ -145,9 +174,15 @@ def main():
         checks.raises(lambda: reg.publish('candidates', c), IntegrityError, 'immutability', 'write-once collision')
 
         # Exercise the actual frozen collection kernel through the new authority consumer.
-        t, provider, metadata = mocks.verified(binding, package.schedule)
+        t, provider, metadata = verified(binding, package.schedule)
         row = package.schedule[0]
         provider.add(mocks.Script(mocks.envelope(row, synthetic_gold(package.members[row['fixture_id']]))))
+        class UnboundEntrypoint(LiveRun):
+            pass
+        checks.raises(lambda: UnboundEntrypoint(package, reg, run_id, activation_sha256=act, grant_sha256=gs, transport=t),
+                      IntegrityError, 'source_loading', 'unbound subclass cannot substitute the verified live entrypoint')
+        checks.check(provider.posts() == [] and not (reg.root / 'runs' / run_id).exists(),
+                     'source_loading', 'entrypoint identity refusal before contact/reservation')
         run = LiveRun(package, reg, run_id, activation_sha256=act, grant_sha256=gs, transport=t)
         checks.check(t.synthetic_only is False and metadata['internal_option_honoring'] == 'UNATTESTED',
                      'transport', 'live marker and honest sampling status')
@@ -160,7 +195,7 @@ def main():
         same = authority.Registry(reg.root, test_only=True)
         checks.raises(lambda: same.authorize(package, run_id, act, gs), IntegrityError,
                       'run_id', 'reservation persists across registry reconstruction')
-        resumed, provider2, _ = mocks.verified(binding, package.schedule, start_position=2)
+        resumed, provider2, _ = verified(binding, package.schedule, start_position=2)
         again = LiveRun(package, reg, run_id, activation_sha256=act, grant_sha256=gs, transport=resumed, resume=True)
         checks.raises(lambda: again.perform(package.schedule[1]), IntegrityError, 'checkpoint', 'unverified resume blocked')
         checks.check(provider2.posts() == [], 'checkpoint', 'zero transport after failed unverified resume')
@@ -189,7 +224,7 @@ def main():
         r, cc, _, _, aa, _ = fixture(root / 'stale-object', package)
         rid = 'G-CAL1-CAL-offline-stale-0003'
         gg = grant(r, rid)
-        tt, pp, _ = mocks.verified(binding, package.schedule)
+        tt, pp, _ = verified(binding, package.schedule)
         rr = LiveRun(package, r, rid, activation_sha256=aa, grant_sha256=gg, transport=tt)
         nc = r.candidate(timeout_seconds=31)
         ncs = r.publish('candidates', nc)
@@ -207,7 +242,7 @@ def main():
             r, _, _, _, aa, _ = fixture(root / ('transport-' + label), package)
             rid = 'G-CAL1-CAL-offline-transport-' + label
             gg = grant(r, rid)
-            tt, pp, _ = mocks.verified(binding, package.schedule)
+            tt, pp, _ = verified(binding, package.schedule)
             if label == 'synthetic':
                 tt.synthetic_only = True
             elif label == 'timeout':
@@ -242,13 +277,13 @@ def main():
         r, cc, _, _, aa, _ = fixture(root / 'complete', package)
         rid = 'G-CAL1-CAL-offline-complete-0002'
         gg = grant(r, rid)
-        t, p, _ = mocks.verified(binding, package.schedule)
+        t, p, _ = verified(binding, package.schedule)
         rr = LiveRun(package, r, rid, activation_sha256=aa, grant_sha256=gg, transport=t)
         for row in package.schedule[:40]:
             p.add(mocks.Script(mocks.envelope(row, synthetic_gold(package.members[row['fixture_id']]))))
             checks.check(rr.perform(row)['semantic_correct'], 'full_schedule', row['call_id'])
         cp = rr.checkpoint()
-        t2, p2, _ = mocks.verified(binding, package.schedule, start_position=41)
+        t2, p2, _ = verified(binding, package.schedule, start_position=41)
         rr2 = LiveRun(package, r, rid, activation_sha256=aa, grant_sha256=gg, transport=t2, resume=True)
         rr2.verify_resume(cp)
         for row in package.schedule[40:]:
@@ -268,7 +303,7 @@ def main():
             r, _, _, _, aa, _ = fixture(root / ('checkpoint-' + label), package)
             rid = 'G-CAL1-CAL-offline-checkpoint-' + label
             gg = grant(r, rid)
-            tt, pp, _ = mocks.verified(binding, package.schedule)
+            tt, pp, _ = verified(binding, package.schedule)
             rr = LiveRun(package, r, rid, activation_sha256=aa, grant_sha256=gg, transport=tt)
             cp = rr.checkpoint()
             bad = rr.directory / 'malformed.json'
@@ -283,7 +318,7 @@ def main():
             r, _, _, _, aa, _ = fixture(root / ('failure-' + type(failure).__name__), package)
             rid = 'G-CAL1-CAL-offline-failure-' + type(failure).__name__
             gg = grant(r, rid)
-            tt, pp, _ = mocks.verified(binding, package.schedule)
+            tt, pp, _ = verified(binding, package.schedule)
             pp.add(mocks.Script(body=b'{}') if failure is None else mocks.Script(fail_at='read', error=failure))
             rr = LiveRun(package, r, rid, activation_sha256=aa, grant_sha256=gg, transport=tt)
             caught = checks.raises(lambda: rr.perform(package.schedule[0]), IntegrityError if failure is None else type(failure),

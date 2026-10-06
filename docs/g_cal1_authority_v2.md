@@ -18,6 +18,10 @@ no automatic execution CLI and no monkeypatch of the historical authority path.
 The versioned constructor and authority-boundary overrides replace only the
 fixed v1 authority consumer.
 
+The bounded post-review repair adds `g_cal1_source_loader_v1.py`. The supported
+authority entry is now its source-only bootstrap, not ordinary imports of these
+two modules. The original implementation/review evidence remains historical.
+
 ## Append-Only Selection
 
 Future production namespace: `experiments/G-CAL1-candidate/execution/authority_v2`.
@@ -63,6 +67,9 @@ rewritten to describe supersession.
    invokes metadata or generation. Provider version, model identity, manifest/blob
    evidence and generation configuration remain the existing frozen binding;
    internal option honoring remains UNATTESTED.
+   Obtain Registry, Package, LiveRun and OllamaLiveTransport from one verified
+   runtime graph as described below; never mix ordinary-import or other-graph
+   classes with it.
 6. Inject that verified exact `OllamaLiveTransport` instance into `LiveRun` with
    activation_sha256 and grant_sha256. It requires synthetic_only=false. Production
    requires the exact frozen Package class and the adapter's standard-library
@@ -74,22 +81,59 @@ No step above is authorized or performed by the implementation task.
 ## Executable Identity
 
 The candidate binds the transitive static repository Python import closure rooted
-at the versioned authority consumer, live entrypoint and reviewed adapter: 17
-modules in this implementation. It includes the frozen kernel, contract, lock,
+at the versioned authority consumer, live entrypoint, reviewed adapter and trusted
+source loader: **18 modules after repair, previously 17**. The loader is explicitly
+authority-critical because it determines which source bytes become executable
+code. It includes the frozen kernel, contract, lock,
 journal, scorer and imported normalization/semantic/contract dependencies. The
 exact adapter SHA is additionally fixed to reviewed commit 9636b7e1, independently
 of its commit-label field. Tests and documentation are review evidence, not
 executable authority. Standard-library/runtime identity remains an environmental
 dependency; it is not falsely represented as a repository source hash.
 
-Every authorization rehashes the closure and verifies imported-module origins
-and the import-time inventory. Source drift requires a new reviewed implementation
+Every authorization rehashes the closure and requires ownership by the verified
+private module graph. Source drift requires a new reviewed implementation
 and future freeze, never an update of historical hashes. Historical activations
 are validated against their own serialized bindings rather than claiming their
 old executable bytes must equal a later version.
 All 107 existing protected artifacts are carried unchanged in future candidates;
 the original frozen manifest, candidate and six blocked-run files are additionally
 checked as immutable predecessor evidence. No historical hash is rebound.
+
+### Source-Only Bootstrap
+
+The trusted entrypoint must execute the reviewed loader .py source directly
+(CPython main-script invocation), or explicitly verify/read/compile/execute those
+loader source bytes. **Do not bootstrap by ordinary importing a cached loader**,
+sys.path order, cache deletion, or -B. The trusted CPython/standard-library runtime
+and the independently reviewed loader source are the bootstrap trust roots.
+
+The loader validates its executing module code against compilation of its bound
+source, snapshots all 18 canonical source paths, verifies every hash and the full
+dependency closure, then compiles those exact immutable buffers. Its import hook
+resolves repository dependencies only through that private graph, not sys.path,
+sys.modules, importlib loaders or pyc files. Existing global/historical modules
+are left untouched. Ordinary-import authority consumers lack the owned execution
+context and fail closed, even when their source/path hashes are correct.
+
+Its CLI accepts a separately reviewed source-inventory file and its exact SHA-256:
+
+```text
+python <absolute-path-to-g_cal1_source_loader_v1.py> --inventory-file <reviewed-inventory.json> --inventory-sha256 <reviewed-digest>
+```
+
+This command only loads and attests code. It creates no candidate, activation,
+grant or run and calls no provider. A supervised host using the same verified
+bootstrap obtains classes from `VERIFIED_RUNTIME.module(...)`. An interactive
+host may retain the graph; this is not an automatic execution loop. Future real
+use still requires all distinct review/activation/grant actions above and the
+same fixed provider and scientific configuration.
+
+The CAL-grant validator now checks the complete exact field/type topology before
+comparing values. `synthetic_evidence_allowed` must have Python type bool and be
+literal False; numeric/string/container substitutes reject. Other declared grant
+fields, including nested science binding and namespace Boolean, are also typed.
+No unrelated candidate/review/activation schema was redesigned by this repair.
 
 ## Run And Resume
 
@@ -130,12 +174,19 @@ package; production explicitly rejects that class. Simulated activation/review/
 grant records are fixture data, not real operator/reviewer actions. Full mocked
 run reports are marked MOCKED_LIVE_BOUNDARY_TEST with zero provider calls and zero
 scientific observations. The existing reviewed transport suite remains unchanged.
+The migration tests use the verified private graph, with only their HTTP factory
+mocked. `python -B tools/g_cal1_source_loader_v1_tests.py` tests every dependency
+hash, source/path drift, buffer-to-code correspondence, preloaded-module isolation,
+and the exact Sol timestamp-valid pyc attack with an external cache prefix. -B is
+used for test housekeeping only and is not credited as cache-read protection.
 
 ## Independent Review Handoff
 
-Review only the additive implementation commit against base
-`9636b7e1fb1f5af05cb27ed29dfa6c9f5c63869c`, this document and
-`preexecution/versioned_authority_v2/IMPLEMENTATION_VALIDATION_REPORT.json`.
+For the mandatory post-repair review, inspect the single repair commit against
+`9f3a30d05b75d6e9278ffe840404e830b918834d`, this document and the append-only
+`preexecution/versioned_authority_v2/repair_01/REPAIR_VALIDATION_REPORT.json`.
+The prior IMPLEMENTATION_VALIDATION_REPORT.json is unchanged historical evidence,
+not certification of the repaired version.
 Use Sol 6.1, with local/mock tests only. This task has prepared the packet; it has
 not invoked a reviewer or claimed independent approval.
 

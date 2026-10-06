@@ -9,7 +9,8 @@ import copy
 import threading
 
 import g_cal1_lab as frozen
-from g_cal1_authority_v2 import Registry, check
+from g_cal1_authority_v2 import Registry, check, verify_sources, IMPORTED_SOURCES
+from g_cal1_source_loader_v1 import verified_context
 from g_cal1_lock import run_lock
 from g_cal1_ollama_transport import OllamaLiveTransport, IO_INJECTED, IO_STDLIB
 from g_extract1_contract import canonical, digest, file_digest, require, IntegrityError
@@ -22,6 +23,9 @@ VERSION = 'g-cal1.live.v4'
 class LiveRun(frozen.Run):
     @guarded
     def __init__(self, package, registry, run_id, *, activation_sha256, grant_sha256, transport, resume=False):
+        check(type(self) is LiveRun, 'unbound live-entrypoint subclass forbidden')
+        verify_sources(IMPORTED_SOURCES)
+        verified_context(globals()).verify(IMPORTED_SOURCES, globals())
         check(type(registry) is Registry, 'registry type')
         self.registry, self.transport = registry, transport
         self.package, self.directory, self.run_id = package, registry.root / 'runs' / run_id, run_id
@@ -121,6 +125,7 @@ class LiveRun(frozen.Run):
         self._replay()
 
     def _ready(self):
+        verified_context(globals()).verify(IMPORTED_SOURCES, globals())
         self._reject_boundary_incidents()
         require(self._checkpoint_verified, 'UNVERIFIABLE_INTERRUPTION_CHECKPOINT', 'verify before collection')
         require(not self.events, self.events[0] if self.events else 'PROVENANCE_MISMATCH', 'terminal retained incident')

@@ -6,19 +6,18 @@ has no CLI, provider API, automatic activation, or automatic CAL grant.
 """
 from __future__ import annotations
 
-import ast
 import copy
 from contextlib import contextmanager
 import math
 from pathlib import Path
 import re
-import sys
 import threading
 
 from g_cal1_contract import DATA, ROOT, Package
 from g_cal1_lock import run_lock
 from g_extract1_contract import canonical, digest, file_digest, load, require
 from g_extract1_journal import Journal, write_once
+from g_cal1_source_loader_v1 import inventory, verified_context
 
 VERSION = 'g-cal1.authority.v2'
 TRANSPORT_COMMIT = '9636b7e1fb1f5af05cb27ed29dfa6c9f5c63869c'
@@ -53,39 +52,31 @@ def source_inventory():
     Standard-library imports are excluded; tests/docs are evidence, not executable
     authority. Resolve repository imports from tools, never from arbitrary sys.path.
     """
-    pending = ['g_cal1_live_v4', 'g_cal1_authority_v2', 'g_cal1_ollama_transport']
-    found = {}
-    while pending:
-        name = pending.pop()
-        relative = 'tools/' + name + '.py'
-        if relative in found:
-            continue
-        path = ROOT / relative
-        check(path.is_file() and not path.is_symlink(), 'executable source missing:' + relative)
-        found[relative] = file_digest(path)
-        for node in ast.walk(ast.parse(path.read_bytes(), filename=relative)):
-            names = []
-            if isinstance(node, ast.Import):
-                names = [a.name.split('.')[0] for a in node.names]
-            elif isinstance(node, ast.ImportFrom) and node.module:
-                names = [node.module.split('.')[0]]
-            pending.extend(n for n in names if (ROOT / 'tools' / (n + '.py')).is_file())
-    return dict(sorted(found.items()))
+    return inventory(ROOT)
 
 
-# Detect disk changes since import, as well as a wrong imported-module origin.
-# Files must already exist when this versioned module is imported.
+# A source snapshot is not loaded-code authority without the source-only context.
 IMPORTED_SOURCES = source_inventory()
 
 
 def verify_sources(expected):
     check(type(expected) is dict and expected == IMPORTED_SOURCES == source_inventory(),
           'executable implementation hash mismatch')
-    for relative in expected:
-        name = Path(relative).stem
-        module = sys.modules.get(name)
-        if module is not None:
-            check(Path(module.__file__).resolve() == (ROOT / relative).resolve(), 'import origin:' + name)
+    try:
+        verified_context(globals()).verify(expected, globals())
+    except Exception as exc:
+        check(False, 'verified-source execution required:' + str(exc))
+
+
+def exact_schema(value, template):
+    """Field types precede binding comparisons; bool is never int/float."""
+    if type(value) is not type(template):
+        return False
+    if type(template) is dict:
+        return set(value) == set(template) and all(exact_schema(value[k], v) for k, v in template.items())
+    if type(template) is list:
+        return len(value) == len(template) and all(exact_schema(a, b) for a, b in zip(value, template))
+    return True
 
 
 def historical():
@@ -290,12 +281,14 @@ class Registry:
 
     def _grant(self, g, current, run_id):
         a = self.read('activations', current['activation_sha256'])
-        check(g == dict(self.fields(), schema_version='g-cal1.cal-grant.v2', experiment='G-CAL1', phase='CAL',
+        expected = dict(self.fields(), schema_version='g-cal1.cal-grant.v2', experiment='G-CAL1', phase='CAL',
               status='EXPLICIT_OPERATOR_PHASE_AUTHORIZATION', freeze_status='EXECUTION_FREEZE_ACTIVE',
               run_id=run_id, activation_sha256=current['activation_sha256'], candidate_sha256=current['candidate_sha256'],
               generation_head=current['generation_head'], execution_sha256=a['execution_sha256'],
               science_binding=a['science_binding'], synthetic_evidence_allowed=False,
-              authority_source='EXPLICIT_OPERATOR_CAL_AUTHORIZATION'), 'fresh activation-bound CAL grant')
+              authority_source='EXPLICIT_OPERATOR_CAL_AUTHORIZATION')
+        check(exact_schema(g, expected), 'CAL grant exact schema/types')
+        check(g['synthetic_evidence_allowed'] is False and g == expected, 'fresh activation-bound CAL grant')
 
     def authorize(self, package, run_id, activation_sha, grant_sha, *, resume=False, reserve=False):
         """Offline gate to run BEFORE any future metadata contact; no writes unless reserve=True."""
