@@ -5,6 +5,9 @@ All HTTP is scripted and sockets/process launches are denied.
 """
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).absolute().parent))  # Test-only imports after -I -S startup.
 import g_cal1_ollama_transport_tests as mocks
 import copy
 import json
@@ -139,6 +142,26 @@ def main():
 
         # No operator action, unreviewed content or unsupported candidate can activate.
         prospective = reg.candidate(timeout_seconds=30)
+        checks.check(prospective['launch_profile'] == BOOT['launch_profile'](authority.IMPORTED_SOURCES),
+                     'bootstrap', 'candidate binds exact clean launch profile')
+        checks.check(prospective['execution_sha256'] == digest(canonical(dict(
+                     executable_sources=prospective['executable_sources'], launch_profile=prospective['launch_profile']))),
+                     'bootstrap', 'review/activation/grant execution digest includes launch profile')
+        for field, value in [('isolated_required', False), ('isolated_required', 1),
+                             ('no_site_required', False), ('no_site_required', 1),
+                             ('entrypoint', 'tools/g_cal1_live_v4.py'), ('entrypoint_sha256', '0' * 64),
+                             ('authority_version', 'g-cal1.authority.v1'), ('bootstrap_version', 'wrong'),
+                             ('schema_version', 'wrong'), ('interpreter', 'untrusted')]:
+            bad = copy.deepcopy(prospective)
+            bad['launch_profile'][field] = value
+            bad['execution_sha256'] = digest(canonical(dict(executable_sources=bad['executable_sources'],
+                                                           launch_profile=bad['launch_profile'])))
+            checks.raises(lambda bad=bad: reg._candidate(bad, authority.historical(), prospective['predecessor']),
+                          IntegrityError, 'bootstrap', 'wrong/malformed launch profile:' + field + ':' + repr(value))
+        bad = copy.deepcopy(prospective)
+        del bad['launch_profile']
+        checks.raises(lambda: reg._candidate(bad, authority.historical(), prospective['predecessor']),
+                      IntegrityError, 'bootstrap', 'missing launch profile never accepted')
         for field, value in [('predecessor', {}), ('science_binding', {}), ('provider_binding', {}),
                              ('reviewed_transport_commit', '0' * 40), ('activated', True)]:
             bad = copy.deepcopy(prospective)
@@ -148,7 +171,8 @@ def main():
                           'activation', 'candidate mutation:' + field)
         bad = copy.deepcopy(prospective)
         bad['executable_sources']['tools/g_cal1_live_v4.py'] = '0' * 64
-        bad['execution_sha256'] = digest(canonical(bad['executable_sources']))
+        bad['execution_sha256'] = digest(canonical(dict(executable_sources=bad['executable_sources'],
+                                                        launch_profile=bad['launch_profile'])))
         bs = reg.publish('candidates', bad)
         br = dict(reg.fields(), schema_version='g-cal1.freeze-review.v2', verdict='PASS', candidate_sha256=bs,
                   execution_sha256=bad['execution_sha256'], reviewer='Sol 6.1', scope='EXECUTION_FREEZE_REVIEW')

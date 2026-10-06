@@ -15,6 +15,7 @@ import types
 from unittest.mock import patch
 
 ROOT = Path(__file__).absolute().parent.parent
+sys.path.insert(0, str(ROOT / 'tools'))  # Test fixtures only, after isolated startup.
 SOURCE = ROOT / 'tools/g_cal1_source_loader_v1.py'
 AUDIT = []
 
@@ -225,7 +226,7 @@ def main():
         for kind in ('path','cwd','site_packages','preloaded_external','preloaded_repository','forged_origin'):
             target = directory / kind
             target.mkdir()
-            result = subprocess.run([sys.executable, '-B', str(Path(__file__).absolute()), '--stdlib-worker',
+            result = subprocess.run([sys.executable, '-I', '-S', '-B', str(Path(__file__).absolute()), '--stdlib-worker',
                                      kind, str(expected_file), str(target)], capture_output=True, timeout=60)
             check(result.returncode == 0, kind + ' standard-library boundary:' + result.stderr.decode(errors='replace'))
             row = json.loads(result.stdout)
@@ -262,21 +263,61 @@ def main():
                     payload, importlib.util.source_hash(source.read_bytes()), checked=kind.startswith('checked')))
             else:
                 cache.write_bytes(importlib._bootstrap_external._code_to_timestamp_pyc(payload, int(stat.st_mtime), stat.st_size))
-            result = subprocess.run([sys.executable, '-B', '-X', 'pycache_prefix=' + str(prefix),
+            result = subprocess.run([sys.executable, '-I', '-S', '-B', '-X', 'pycache_prefix=' + str(prefix),
                                      str(Path(__file__).absolute()), '--worker', kind, str(expected_file), str(directory / kind)],
                                     capture_output=True, timeout=120)
             check(result.returncode == 0, kind + ' fresh-process cached/preloaded attack closed:' + result.stderr.decode(errors='replace'))
             row = json.loads(result.stdout)
             check(row['provider_calls'] == 0, kind + ' zero provider calls')
             print(json.dumps({'probe': kind, 'result': row}, sort_keys=True))
-        direct = subprocess.run([sys.executable, '-B', str(SOURCE), '--inventory-file', str(expected_file),
+        direct = subprocess.run([sys.executable, '-I', '-S', '-B', str(SOURCE), '--inventory-file', str(expected_file),
                                  '--inventory-sha256', hashlib.sha256(expected_file.read_bytes()).hexdigest()],
                                 capture_output=True, timeout=60)
         check(direct.returncode == 0 and json.loads(direct.stdout) == dict(verified_source_count=18, provider_calls=0,
               execution_authorized=False, authority_created=False), 'direct-source CLI loads code only, no authority')
-        bad_cli = subprocess.run([sys.executable, '-B', str(SOURCE), '--inventory-file', str(expected_file),
+        bad_cli = subprocess.run([sys.executable, '-I', '-S', '-B', str(SOURCE), '--inventory-file', str(expected_file),
                                   '--inventory-sha256', '0' * 64], capture_output=True, timeout=60)
         check(bad_cli.returncode != 0, 'direct-source CLI rejects wrong reviewed inventory identity')
+        # Exact startup attack: hooks write only harmless external markers.
+        # The positive guarantee is the initial -I -S process, not an in-file guard.
+        startup = directory / 'STARTUP_ATTACK'
+        startup.mkdir()
+        marker = startup / 'UNBOUND_STARTUP_EXECUTED.txt'
+        hook = ('from pathlib import Path\nPath(' + repr(str(marker)) + ').write_bytes(b"startup executed")\n').encode()
+        for name in ('sitecustomize.py', 'usercustomize.py', 'copy.py', 'g_cal1_authority_v2.py'):
+            (startup / name).write_bytes(hook)
+        user_site = startup / 'USERBASE' / ('Python' + str(sys.version_info.major) + str(sys.version_info.minor)) / 'site-packages'
+        user_site.mkdir(parents=True)
+        for name in ('sitecustomize.py', 'usercustomize.py'):
+            (user_site / name).write_bytes(hook)
+        argv = [str(SOURCE), '--inventory-file', str(expected_file), '--inventory-sha256',
+                hashlib.sha256(expected_file.read_bytes()).hexdigest()]
+        for label, extras in (
+                ('PYTHONPATH/sitecustomize exact attack', {'PYTHONPATH': str(startup)}),
+                ('PYTHONHOME ignored', {'PYTHONHOME': str(startup / 'INVALID_HOME')}),
+                ('user site and usercustomize suppressed', {'PYTHONUSERBASE': str(startup / 'USERBASE')}),
+                ('combined ambient startup configuration', {'PYTHONPATH': str(startup),
+                 'PYTHONHOME': str(startup / 'INVALID_HOME'), 'PYTHONUSERBASE': str(startup / 'USERBASE')})):
+            result = subprocess.run([sys.executable, '-I', '-S', '-B', *argv], cwd=startup,
+                                    env=dict(os.environ, **extras), capture_output=True, timeout=60)
+            check(result.returncode == 0, label + ' verified graph operates:' + result.stderr.decode(errors='replace'))
+            check(not marker.exists(), label + ' no startup/ambient module executed')
+            check(json.loads(result.stdout)['verified_source_count'] == 18, label + ' exact source graph')
+        for flags in ([], ['-I'], ['-S']):
+            result = subprocess.run([sys.executable, *flags, '-B', *argv], cwd=startup,
+                                    env=dict(os.environ, PYTHONPATH=str(startup)), capture_output=True, timeout=60)
+            check(result.returncode != 0 and b'requires direct trusted CPython -I -S' in result.stderr,
+                  'unsafe/missing startup isolation rejected:' + repr(flags))
+            check(not result.stdout, 'unsafe invocation never attests graph:' + repr(flags))
+            if not flags:
+                check(marker.read_bytes() == b'startup executed',
+                      'unsafe guard cannot undo already-executed startup hook')
+                marker.unlink()
+        check(BOOT['launch_profile'](expected)['entrypoint_sha256'] == expected['tools/g_cal1_source_loader_v1.py'],
+              'launch profile binds exact explicit loader source')
+        print(json.dumps(dict(probe='clean_bootstrap', bootstrap='PASS', protected_startup_hooks_not_executed=True,
+                              unsafe_launch_rejected=True, unsafe_guard_not_startup_prevention=True,
+                              launch_profile=BOOT['launch_profile'](expected), provider_calls=0), sort_keys=True))
         # A preloaded object bearing the expected name/path cannot affect a graph.
         import types
         stale = types.ModuleType('g_cal1_ollama_transport')

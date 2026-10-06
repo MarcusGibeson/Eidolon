@@ -102,9 +102,12 @@ checked as immutable predecessor evidence. No historical hash is rebound.
 
 ### Source-Only Bootstrap
 
-The trusted entrypoint must execute the reviewed loader .py source directly
-(CPython main-script invocation), or explicitly verify/read/compile/execute those
-loader source bytes. **Do not bootstrap by ordinary importing a cached loader**,
+The trusted first executable step is the explicitly selected trusted CPython
+executable starting directly with **-I -S**, then CPython main-script execution
+of the explicit reviewed loader source path. Only CPython and its interpreter-owned
+standard library precede that loader. A supervised host may explicitly verify,
+read and compile those loader bytes only within that same clean launch profile.
+**Do not bootstrap by ordinary importing a cached loader**,
 sys.path order, cache deletion, or -B. The trusted CPython/standard-library runtime
 and the independently reviewed loader source are the bootstrap trust roots.
 
@@ -119,7 +122,7 @@ context and fail closed, even when their source/path hashes are correct.
 Its CLI accepts a separately reviewed source-inventory file and its exact SHA-256:
 
 ```text
-python <absolute-path-to-g_cal1_source_loader_v1.py> --inventory-file <reviewed-inventory.json> --inventory-sha256 <reviewed-digest>
+<trusted-CPython-executable> -I -S <absolute-path-to-g_cal1_source_loader_v1.py> --inventory-file <reviewed-inventory.json> --inventory-sha256 <reviewed-digest>
 ```
 
 This command only loads and attests code. It creates no candidate, activation,
@@ -128,6 +131,26 @@ bootstrap obtains classes from `VERIFIED_RUNTIME.module(...)`. An interactive
 host may retain the graph; this is not an automatic execution loop. Future real
 use still requires all distinct review/activation/grant actions above and the
 same fixed provider and scientific configuration.
+
+The initial flags are the startup boundary: -I ignores ambient PYTHONPATH,
+PYTHONHOME, user-site and working-directory import precedence; -S prevents
+automatic site/sitecustomize/usercustomize execution. Starting normally and then
+re-executing an isolated interpreter is NOT a supported bootstrap. In-process
+guards check CPython, `sys.flags.isolated == 1` and `sys.flags.no_site == 1`
+before direct CLI loading, every VerifiedRuntime creation and source verification.
+They reject unsafe authority but cannot undo hooks already executed during an
+unsafe process startup. -B may prevent cache writes, not startup execution or
+cache reads. It is optional housekeeping, never authority.
+
+Future v2 candidates require `launch_profile` (g-cal1.clean-launch.v1): exact
+CPython identity label, literal Boolean isolated_required/no_site_required=true,
+the canonical tools/g_cal1_source_loader_v1.py entrypoint and its bound SHA-256,
+authority-v2 version and source-loader version. Exact type validation rejects
+integer Boolean substitutes. The execution digest is compact canonical JSON of
+`{executable_sources: ..., launch_profile: ...}`, so review, activation and CAL
+grant bindings seal both. Existing v1 artifacts remain unchanged; no replacement
+authority has been created. The loader is already in the 18-source inventory,
+so no new launcher or executable dependency is added by this bootstrap repair.
 
 The CAL-grant validator now checks the complete exact field/type topology before
 comparing values. `synthetic_evidence_allowed` must have Python type bool and be
@@ -194,7 +217,7 @@ rewrite the protected legacy Python API.
 
 ## Offline Validation
 
-`python -B tools/g_cal1_authority_v2_tests.py` constructs explicitly test-only
+`python -I -S -B tools/g_cal1_authority_v2_tests.py` constructs explicitly test-only
 registries outside the repository, uses mocked HTTP and denies sockets/process
 launches. Its local test package is read-only and science-equivalent to the frozen
 package; production explicitly rejects that class. Simulated activation/review/
@@ -202,7 +225,7 @@ grant records are fixture data, not real operator/reviewer actions. Full mocked
 run reports are marked MOCKED_LIVE_BOUNDARY_TEST with zero provider calls and zero
 scientific observations. The existing reviewed transport suite remains unchanged.
 The migration tests use the verified private graph, with only their HTTP factory
-mocked. `python -B tools/g_cal1_source_loader_v1_tests.py` tests every dependency
+mocked. `python -I -S -B tools/g_cal1_source_loader_v1_tests.py` tests every dependency
 hash, source/path drift, buffer-to-code correspondence, preloaded-module isolation,
 and the exact Sol timestamp-valid pyc attack with an external cache prefix. -B is
 used for test housekeeping only and is not credited as cache-read protection.
@@ -228,3 +251,27 @@ finding; they must not be silently omitted or counted as successful checks.
 A review PASS would not prepare or activate a replacement freeze and would not
 authorize CAL. Candidate preparation, freeze review, explicit activation, and a
 fresh activation-bound CAL authorization remain subsequent separate actions.
+
+### Clean-Startup Repair Handoff
+
+The next bounded repair closes the demonstrated PYTHONPATH/sitecustomize startup
+defect. Its additive report is `repair_03/REPAIR_VALIDATION_REPORT.json`; review
+the repair against ee423980 without rewriting that commit or its failed bootstrap
+packet. Both interrupted Sol stop records and the failed startup probe remain
+historical evidence. Mechanical validation is not independent review approval.
+
+The supported command now begins directly with the required -I -S profile.
+No wrapper, normal-start/re-exec path, new executable source or automatic live
+execution CLI is added. Test hosts explicitly add their fixture import directory
+only after isolated startup; those ordinary imports never confer authority.
+The private source graph and production class checks remain mandatory.
+
+The closure assessment includes direct, transitive and conditional import nodes,
+aliases, relative-import refusal and dynamic-loader sites. The G-EXTRACT1-only
+`actual_reserve_profile` dynamic design-validator loader is not reachable from
+G-CAL1: its sole caller is the reserve_replacements helper, the G-CAL1 Run does
+not inherit the G-EXTRACT1 Run and imports neither helper, and G-CAL1 has no
+reserve activation path. That exclusion is recorded explicitly, not counted
+as a verified-source load. Read-only actual-package construction and all 80
+request hashes provide additional live-path closure evidence without provider
+contact or authority creation.

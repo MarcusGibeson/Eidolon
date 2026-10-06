@@ -17,7 +17,7 @@ from g_cal1_contract import DATA, ROOT, Package
 from g_cal1_lock import run_lock
 from g_extract1_contract import canonical, digest, file_digest, load, require
 from g_extract1_journal import Journal, write_once
-from g_cal1_source_loader_v1 import inventory, verified_context
+from g_cal1_source_loader_v1 import inventory, verified_context, launch_profile
 
 VERSION = 'g-cal1.authority.v2'
 TRANSPORT_COMMIT = '9636b7e1fb1f5af05cb27ed29dfa6c9f5c63869c'
@@ -217,7 +217,7 @@ class Registry:
         check(set(c) == {'schema_version', 'experiment', 'status', 'activated', 'namespace', 'test_only',
                         'predecessor', 'science_binding', 'provider_binding', 'reviewed_transport_commit',
                         'executable_sources', 'execution_sha256', 'transport_timeout_seconds', 'execution_authorized',
-                        'protected_artifacts'},
+                        'protected_artifacts', 'launch_profile'},
               'candidate shape')
         check(c['schema_version'] == 'g-cal1.candidate.v2' and c['experiment'] == 'G-CAL1' and
               c['status'] == 'EXECUTION_FREEZE_CANDIDATE_ONLY' and c['activated'] is False and
@@ -225,8 +225,12 @@ class Registry:
               c['science_binding'] == old['binding'] and c['provider_binding'] == old['provider_binding'] and
               c['protected_artifacts'] == protected_set(old) and
               c['reviewed_transport_commit'] == TRANSPORT_COMMIT, 'candidate lineage/science/authority')
-        check(type(c['executable_sources']) is dict and c['execution_sha256'] == digest(canonical(c['executable_sources'])),
-              'execution digest')
+        sources = c['executable_sources']
+        check(type(sources) is dict and 'tools/g_cal1_source_loader_v1.py' in sources, 'bootstrap source binding')
+        profile = launch_profile(sources)
+        check(exact_schema(c['launch_profile'], profile) and c['launch_profile'] == profile, 'clean launch profile')
+        check(c['execution_sha256'] == digest(canonical(dict(executable_sources=sources, launch_profile=profile))),
+              'execution/launch digest')
         check(c['executable_sources'].get('tools/g_cal1_ollama_transport.py') == TRANSPORT_SHA256,
               'reviewed transport identity, not just commit label')
         check(type(c['transport_timeout_seconds']) in (int, float) and math.isfinite(c['transport_timeout_seconds']) and
@@ -244,12 +248,15 @@ class Registry:
             old = historical()
             sources = source_inventory()
             verify_sources(sources)
+            profile = launch_profile(sources)
             c = dict(self.fields(), schema_version='g-cal1.candidate.v2', experiment='G-CAL1',
                      status='EXECUTION_FREEZE_CANDIDATE_ONLY', activated=False, execution_authorized=False,
                      predecessor=predecessor, science_binding=old['binding'], provider_binding=old['provider_binding'],
                      protected_artifacts=protected_set(old),
                      reviewed_transport_commit=TRANSPORT_COMMIT, executable_sources=sources,
-                     execution_sha256=digest(canonical(sources)), transport_timeout_seconds=timeout_seconds)
+                     launch_profile=profile,
+                     execution_sha256=digest(canonical(dict(executable_sources=sources, launch_profile=profile))),
+                     transport_timeout_seconds=timeout_seconds)
             self._candidate(c, old, predecessor)
             return c
 

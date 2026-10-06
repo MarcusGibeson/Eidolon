@@ -1,6 +1,6 @@
 """Source-only bootstrap for the versioned G-CAL1 authority path.
 
-Launch this .py file directly, or execute its explicitly verified source bytes.
+Launch the trusted CPython executable with -I -S and this explicit .py path.
 It loads no repository module through importlib, sys.path, sys.modules or pyc.
 The CLI loads/attests code only: no candidate, activation, grant or provider API.
 """
@@ -12,12 +12,24 @@ class SourceVerificationError(Exception):
     pass
 
 
+def require_clean_interpreter():
+    if sys.implementation.name != 'cpython' or sys.flags.isolated != 1 or sys.flags.no_site != 1:
+        raise SourceVerificationError('authority bootstrap requires direct trusted CPython -I -S launch')
+
+
+# A guard cannot undo startup hooks. Isolation must be present from process start.
+if __name__ == '__main__':
+    require_clean_interpreter()
+
+
 # CPython's initialized builtin/frozen import machinery is a runtime trust root.
 # Establish it before importing any ordinary Python source, including our own
 # standard-library dependencies. No ambient path is a standard-library root.
 _BOOTSTRAP = sys.modules['_frozen_importlib']
 _EXTERNAL = sys.modules['_frozen_importlib_external']
-_CORE_OS = sys.modules['os']
+_CORE_OS = sys.modules.get('os')
+if _CORE_OS is None:
+    _CORE_OS = _BOOTSTRAP._load(_BOOTSTRAP.FrozenImporter.find_spec('os'))
 _RAW_IMPORT, _RAW_COMPILE = __import__, compile
 for _core in (_BOOTSTRAP, _EXTERNAL, _CORE_OS, _CORE_OS.path):
     if type(_core) is not type(sys) or _core.__spec__.origin != 'frozen':
@@ -152,6 +164,7 @@ re = _STDLIB('re')
 types = _STDLIB('types')
 
 VERSION = 'g-cal1.source-loader.v1'
+LAUNCH_VERSION = 'g-cal1.clean-launch.v1'
 _ROOT_CODE = sys._getframe().f_code
 _SELF = Path(__file__).absolute()
 _IMPORT = _STDLIB
@@ -207,8 +220,17 @@ def inventory(root=None):
     return {p: _sha(raw) for p, raw in _buffers(root or _SELF.parent.parent).items()}
 
 
+def launch_profile(expected):
+    """Exact future candidate binding; constructing a profile grants no authority."""
+    return dict(schema_version=LAUNCH_VERSION, interpreter='CPython', isolated_required=True,
+                no_site_required=True, entrypoint='tools/g_cal1_source_loader_v1.py',
+                entrypoint_sha256=expected['tools/g_cal1_source_loader_v1.py'],
+                authority_version='g-cal1.authority.v2', bootstrap_version=VERSION)
+
+
 class VerifiedRuntime:
     def __init__(self, expected, *, root=None):
+        require_clean_interpreter()
         self.root = Path(root or _SELF.parent.parent).absolute()
         _check(type(expected) is dict and all(type(p) is str and type(h) is str and
                re.fullmatch('[0-9a-f]{64}', h) for p, h in expected.items()), 'executable inventory schema')
@@ -263,6 +285,7 @@ class VerifiedRuntime:
         return self
 
     def verify(self, expected, owner=None):
+        require_clean_interpreter()
         if owner is not None:
             self.require_owner(owner)
         _check(type(expected) is dict and expected == self.expected == inventory(self.root),
